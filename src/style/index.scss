@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './theme.scss';
+
+@layer components {
+  // @import './components/btn.scss';
+
+  .k-card {
+    background-color: theme('colors.white');
+    border-radius: theme('borderRadius.lg');
+    padding: theme('spacing.6');
+    box-shadow: theme('boxShadow.xl');
+  }
+  .k-btn {
+    @apply px-4 py-1 rounded inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50
+  }
+  .k-btn-red {
+    @apply bg-red-600 hover:bg-red-700;
+  }
+  .k-btn-blue {
+    @apply bg-blue-600 hover:bg-blue-700;
+  }
+  .k-btn-green {
+    @apply bg-green-600 hover:bg-green-700;
+  }
+  .k-btn-yellow {
+    @apply bg-yellow-600 hover:bg-yellow-700;
+  }
+}

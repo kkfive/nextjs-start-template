@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -30,6 +30,9 @@
     "eslint-plugin-unused-imports": "^3.0.0",
     "postcss": "latest",
     "prettier": "^3.0.3",
+    "sass": "^1.68.0",
+    "stylelint": "^15.10.3",
+    "stylelint-config-standard": "^34.0.0",
     "tailwindcss": "latest",
     "typescript": "latest"
   }
