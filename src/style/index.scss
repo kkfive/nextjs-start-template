@@ -5,8 +5,6 @@
 @import './theme.scss';
 
 @layer components {
-  // @import './components/btn.scss';
-
   .k-card {
     background-color: theme('colors.white');
     border-radius: theme('borderRadius.lg');
@@ -14,7 +12,7 @@
     box-shadow: theme('boxShadow.xl');
   }
   .k-btn {
-    @apply px-4 py-1 rounded inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50
+    @apply px-4 py-1 rounded inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50;
   }
   .k-btn-red {
     @apply bg-red-600 hover:bg-red-700;
