@@ -10,6 +10,9 @@ export default async function twPage() {
   return (
     <div>
       <div className='k-btn-red k-btn'>sadsda</div>
+      <div>
+        <span className='i-mdi-uber h-5 w-5'></span>
+      </div>
     </div>
   )
 }

@@ -1,9 +1,11 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { getIconCollections, iconsPlugin } from '@egoist/tailwindcss-icons'
 import { nextui } from '@nextui-org/react'
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
@@ -18,7 +20,13 @@ const config: Config = {
       },
     },
   },
-  plugins: [nextui()],
-  darkMode: "class",
+  plugins: [
+    nextui(),
+    iconsPlugin({
+      // Select the icon collections you want to use
+      collections: getIconCollections(['mdi', 'lucide']),
+    }),
+  ],
+  darkMode: 'class',
 }
 export default config
