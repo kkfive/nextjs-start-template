@@ -3,7 +3,6 @@ export default function Layout(props: {
   test1: React.ReactNode
   test2: React.ReactNode
 }) {
-  console.log(props)
   return (
     <>
       {props.children}
