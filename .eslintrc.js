@@ -14,6 +14,7 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
+    'no-console': 'error', // Allow console.log
   },
   overrides: [
     // Configuration for TypeScript files
