@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { getIconCollections, iconsPlugin } from '@egoist/tailwindcss-icons'
 import { nextui } from '@nextui-org/react'
 import type { Config } from 'tailwindcss'
