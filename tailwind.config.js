@@ -1,8 +1,8 @@
 import { getIconCollections, iconsPlugin } from '@egoist/tailwindcss-icons'
 import { nextui } from '@nextui-org/react'
-import type { Config } from 'tailwindcss'
 
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+const config = {
   content: [
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -23,7 +23,7 @@ const config: Config = {
     nextui(),
     iconsPlugin({
       // Select the icon collections you want to use
-      collections: getIconCollections(['mdi', 'lucide']),
+      collections: getIconCollections('all'),
     }),
   ],
   darkMode: 'class',

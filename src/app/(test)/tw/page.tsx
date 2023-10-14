@@ -11,7 +11,7 @@ export default async function twPage() {
     <div>
       <div className="k-btn-red k-btn">sadsda</div>
       <div>
-        <span className="i-mdi-uber h-5 w-5"></span>
+        <span className="w-5 h-5 i-mdi-uber"></span>
       </div>
     </div>
   );
