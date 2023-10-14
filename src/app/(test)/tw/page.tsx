@@ -2,17 +2,26 @@ export default async function twPage() {
   async function getData() {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve("hello");
-      }, 3000);
-    });
+        resolve('hello')
+      }, 3000)
+    })
   }
-  await getData();
+  await getData()
   return (
     <div>
-      <div className="k-btn-red k-btn">sadsda</div>
+      <div className="btn">sadsda</div>
+      <div className=":uno: text-6 font-800 text-red">
+        transform-text
+      </div>
+      <div className="font-(light mono) hover:(bg-gray-400 font-medium)">
+        gggggg
+      </div>
+      <div text-red text-center text-5xl animate-bounce>
+        unocss
+      </div>
       <div>
-        <span className="w-5 h-5 i-mdi-uber"></span>
+        <span className="i-mdi-uber text-32 text-red"></span>
       </div>
     </div>
-  );
+  )
 }

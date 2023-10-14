@@ -1,15 +1,19 @@
 {
+  // unocss config file path
+  "unocss.root": ".",
+
   // Enable the ESlint flat config support
   "eslint.experimental.useFlatConfig": true,
 
   // Disable the default formatter, use eslint instead
-  "prettier.enable": false,
+  "prettier.enable": true,
   "editor.formatOnSave": false,
 
   // Auto fix
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
-    "source.organizeImports": "never"
+    "source.organizeImports": "never",
+    "source.fixAll.stylelint": true
   },
 
   // Silent the stylistic rules in you IDE, but still auto fix them
@@ -31,11 +35,21 @@
     "javascriptreact",
     "typescript",
     "typescriptreact",
-    "vue",
-    "html",
     "markdown",
     "json",
     "jsonc",
     "yaml"
-  ]
+  ],
+
+  "stylelint.enable": true,
+  // 关闭编辑器内置样式检查（避免与stylelint冲突）
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "stylelint.validate": ["css", "less", "postcss", "scss", "sass", "vue"],
+  "stylelint.customSyntax": "postcss-scss",
+  "[scss]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

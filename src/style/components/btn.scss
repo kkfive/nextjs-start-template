@@ -1,27 +1,36 @@
 .k-btn {
   @apply px-4 py-1 rounded inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50;
+
   transition: all 0.2s ease-in-out;
+
   &-red {
     @apply bg-red-600 hover:bg-red-700;
   }
+
   &-blue {
     @apply bg-blue-600 hover:bg-blue-700;
   }
+
   &-green {
     @apply bg-green-600 hover:bg-green-700;
   }
+
   &-yellow {
     @apply bg-yellow-600 hover:bg-yellow-700;
   }
+
   &-gray {
     @apply bg-gray-600 hover:bg-gray-700;
   }
+
   &-white {
     @apply bg-white hover:bg-gray-200 text-gray-700;
   }
+
   &-black {
     @apply bg-black hover:bg-gray-900 text-white;
   }
+
   &-outline {
     @apply bg-transparent border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white;
   }
