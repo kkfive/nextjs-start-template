@@ -16,6 +16,7 @@ export default {
         'style', // 格式需改
         'perf', // 性能提升
         'ci', // ci
+        'build', // 依赖相关
         'revert', // 版本回退
         'chore', // 其他修改
       ],
