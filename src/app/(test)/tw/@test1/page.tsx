@@ -1,11 +1,11 @@
 export default async function TwTest1Page() {
   async function getData() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(() => {
-        resolve('hello')
-      }, 1000)
-    })
+        resolve("hello");
+      }, 1000);
+    });
   }
-  await getData()
-  return <div> test1 </div>
+  await getData();
+  return <div> test1 </div>;
 }
