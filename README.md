@@ -10,4 +10,4 @@
 - [x] husky + lint-staged 作为 git 钩子
 - [x] commitlint作为 commit 规范
 - [ ] monorepo 多包管理 
-- [ ] SWR & ahooks
+- [x] SWR & ahooks
