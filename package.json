@@ -61,7 +61,10 @@
     "stylelint-prettier": "^4.0.2",
     "stylelint-scss": "^5.2.1",
     "typescript": "^5.2.2",
-    "unocss": "^0.56.5"
+    "unocss": "^0.56.5",
+    "unocss-preset-extra": "^0.5.2",
+    "unocss-preset-scrollbar": "^0.3.0",
+    "unocss-preset-scrollbar-hide": "^1.0.1"
   },
   "lint-staged": {
     "src/**/*": [

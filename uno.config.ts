@@ -10,6 +10,9 @@ import transformerCompileClass from '@unocss/transformer-compile-class'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
 import transformerDirectives from '@unocss/transformer-directives'
 import transformerAttributifyJsx from '@unocss/transformer-attributify-jsx'
+import { presetExtra } from 'unocss-preset-extra'
+import { presetScrollbar } from 'unocss-preset-scrollbar'
+import { presetScrollbarHide } from 'unocss-preset-scrollbar-hide'
 
 export default defineConfig({
   content: {
@@ -36,6 +39,14 @@ export default defineConfig({
         'vertical-align': 'middle',
       },
     }),
+    /** @url https://github.com/MoomFE/unocss-preset-extra */
+    presetExtra(),
+    /** @url https://github.com/unpreset/unocss-preset-scrollbar */
+    presetScrollbar({
+      // config
+    }),
+    /** @url https://github.com/reslear/unocss-preset-scrollbar-hide */
+    presetScrollbarHide(),
   ],
   transformers: [
     transformerCompileClass(),
