@@ -1,11 +1,5 @@
 /** @type {import('postcss-load-config').Config} */
 const config = {
-  overrides: [
-    {
-      files: ['**/*.scss'],
-      customSyntax: 'postcss-scss',
-    },
-  ],
   plugins: {
     '@unocss/postcss': {
       // Optional
@@ -13,6 +7,5 @@ const config = {
     },
     'autoprefixer': {},
   },
-
 }
 module.exports = config
