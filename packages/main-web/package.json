@@ -1,0 +1,30 @@
+{
+  "name": "kkpages",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "pnpm eslint:fix && pnpm stylelint:fix",
+    "eslint": "cross-env ESLINT_USE_FLAT_CONFIG=true TIMING=1 eslint .",
+    "eslint:fix": "cross-env ESLINT_USE_FLAT_CONFIG=true TIMING=1 eslint . --fix",
+    "lint-staged": "cross-env ESLINT_USE_FLAT_CONFIG=true lint-staged",
+    "stylelint": "stylelint ./src/**/*.scss",
+    "stylelint:fix": "stylelint ./src/**/*.scss --fix"
+  },
+  "dependencies": {
+    "@kkpages/components": "workspace:^",
+    "ahooks": "^3.7.8",
+    "next": "^13.5.4",
+    "swr": "^2.2.4",
+    "zustand": "^4.4.3"
+  },
+  "lint-staged": {
+    "src/**/*": [
+      "pnpm lint",
+      "git add"
+    ]
+  }
+}

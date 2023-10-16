@@ -4,150 +4,160 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
-  ahooks:
-    specifier: ^3.7.8
-    version: 3.7.8(react@18.2.0)
-  lodash-es:
-    specifier: ^4.17.21
-    version: 4.17.21
-  next:
-    specifier: ^13.5.4
-    version: 13.5.4(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)(sass@1.69.3)
-  react:
-    specifier: ^18.2.0
-    version: 18.2.0
-  react-dom:
-    specifier: ^18.2.0
-    version: 18.2.0(react@18.2.0)
-  swr:
-    specifier: ^2.2.4
-    version: 2.2.4(react@18.2.0)
-  zustand:
-    specifier: ^4.4.3
-    version: 4.4.3(@types/react@18.2.28)(react@18.2.0)
+importers:
 
-devDependencies:
-  '@antfu/eslint-config':
-    specifier: 1.0.0-beta.27
-    version: 1.0.0-beta.27(eslint@8.51.0)(typescript@5.2.2)(vitest@0.34.6)
-  '@commitlint/cli':
-    specifier: ^17.8.0
-    version: 17.8.0
-  '@commitlint/config-angular':
-    specifier: ^17.8.0
-    version: 17.8.0
-  '@commitlint/config-conventional':
-    specifier: ^17.8.0
-    version: 17.8.0
-  '@eslint/eslintrc':
-    specifier: ^2.1.2
-    version: 2.1.2
-  '@iconify/json':
-    specifier: ^2.2.128
-    version: 2.2.128
-  '@types/lodash':
-    specifier: ^4.14.199
-    version: 4.14.199
-  '@types/node':
-    specifier: ^20.8.6
-    version: 20.8.6
-  '@types/react':
-    specifier: ^18.2.28
-    version: 18.2.28
-  '@types/react-dom':
-    specifier: ^18.2.13
-    version: 18.2.13
-  '@typescript-eslint/eslint-plugin':
-    specifier: ^6.7.5
-    version: 6.7.5(@typescript-eslint/parser@6.7.5)(eslint@8.51.0)(typescript@5.2.2)
-  '@unocss/eslint-config':
-    specifier: ^0.56.5
-    version: 0.56.5(eslint@8.51.0)(typescript@5.2.2)
-  '@unocss/postcss':
-    specifier: ^0.56.5
-    version: 0.56.5(postcss@8.4.31)
-  '@unocss/transformer-attributify-jsx':
-    specifier: ^0.56.5
-    version: 0.56.5
-  '@unocss/transformer-compile-class':
-    specifier: ^0.56.5
-    version: 0.56.5
-  '@unocss/transformer-directives':
-    specifier: ^0.56.5
-    version: 0.56.5
-  '@unocss/transformer-variant-group':
-    specifier: ^0.56.5
-    version: 0.56.5
-  '@unocss/webpack':
-    specifier: ^0.56.5
-    version: 0.56.5(webpack@5.89.0)
-  autoprefixer:
-    specifier: ^10.4.16
-    version: 10.4.16(postcss@8.4.31)
-  cross-env:
-    specifier: ^7.0.3
-    version: 7.0.3
-  eslint:
-    specifier: ^8.51.0
-    version: 8.51.0
-  eslint-config-next:
-    specifier: ^13.5.4
-    version: 13.5.4(eslint@8.51.0)(typescript@5.2.2)
-  eslint-plugin-simple-import-sort:
-    specifier: ^10.0.0
-    version: 10.0.0(eslint@8.51.0)
-  husky:
-    specifier: ^8.0.3
-    version: 8.0.3
-  lint-staged:
-    specifier: ^15.0.1
-    version: 15.0.1
-  postcss:
-    specifier: ^8.4.31
-    version: 8.4.31
-  postcss-load-config:
-    specifier: ^4.0.1
-    version: 4.0.1(postcss@8.4.31)(ts-node@10.9.1)
-  postcss-scss:
-    specifier: ^4.0.9
-    version: 4.0.9(postcss@8.4.31)
-  prettier:
-    specifier: ^3.0.3
-    version: 3.0.3
-  sass:
-    specifier: ^1.69.3
-    version: 1.69.3
-  stylelint:
-    specifier: ^15.10.3
-    version: 15.10.3(typescript@5.2.2)
-  stylelint-config-rational-order:
-    specifier: ^0.1.2
-    version: 0.1.2
-  stylelint-config-standard-scss:
-    specifier: ^11.0.0
-    version: 11.0.0(postcss@8.4.31)(stylelint@15.10.3)
-  stylelint-prettier:
-    specifier: ^4.0.2
-    version: 4.0.2(prettier@3.0.3)(stylelint@15.10.3)
-  stylelint-scss:
-    specifier: ^5.2.1
-    version: 5.2.1(stylelint@15.10.3)
-  typescript:
-    specifier: ^5.2.2
-    version: 5.2.2
-  unocss:
-    specifier: ^0.56.5
-    version: 0.56.5(@unocss/webpack@0.56.5)(postcss@8.4.31)(vite@4.4.11)
-  unocss-preset-extra:
-    specifier: ^0.5.2
-    version: 0.5.2(unocss@0.56.5)
-  unocss-preset-scrollbar:
-    specifier: ^0.3.0
-    version: 0.3.0(unocss@0.56.5)
-  unocss-preset-scrollbar-hide:
-    specifier: ^1.0.1
-    version: 1.0.1(unocss@0.56.5)
+  .:
+    dependencies:
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@antfu/eslint-config':
+        specifier: 1.0.0-beta.27
+        version: 1.0.0-beta.27(eslint@8.51.0)(typescript@5.2.2)(vitest@0.34.6)
+      '@commitlint/cli':
+        specifier: ^17.8.0
+        version: 17.8.0
+      '@commitlint/config-angular':
+        specifier: ^17.8.0
+        version: 17.8.0
+      '@commitlint/config-conventional':
+        specifier: ^17.8.0
+        version: 17.8.0
+      '@eslint/eslintrc':
+        specifier: ^2.1.2
+        version: 2.1.2
+      '@iconify/json':
+        specifier: ^2.2.128
+        version: 2.2.128
+      '@types/lodash':
+        specifier: ^4.14.199
+        version: 4.14.199
+      '@types/node':
+        specifier: ^20.8.6
+        version: 20.8.6
+      '@types/react':
+        specifier: ^18.2.28
+        version: 18.2.28
+      '@types/react-dom':
+        specifier: ^18.2.13
+        version: 18.2.13
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.7.5
+        version: 6.7.5(@typescript-eslint/parser@6.7.5)(eslint@8.51.0)(typescript@5.2.2)
+      '@unocss/eslint-config':
+        specifier: ^0.56.5
+        version: 0.56.5(eslint@8.51.0)(typescript@5.2.2)
+      '@unocss/postcss':
+        specifier: ^0.56.5
+        version: 0.56.5(postcss@8.4.31)
+      '@unocss/transformer-attributify-jsx':
+        specifier: ^0.56.5
+        version: 0.56.5
+      '@unocss/transformer-compile-class':
+        specifier: ^0.56.5
+        version: 0.56.5
+      '@unocss/transformer-directives':
+        specifier: ^0.56.5
+        version: 0.56.5
+      '@unocss/transformer-variant-group':
+        specifier: ^0.56.5
+        version: 0.56.5
+      '@unocss/webpack':
+        specifier: ^0.56.5
+        version: 0.56.5(webpack@5.89.0)
+      autoprefixer:
+        specifier: ^10.4.16
+        version: 10.4.16(postcss@8.4.31)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      eslint:
+        specifier: ^8.51.0
+        version: 8.51.0
+      eslint-config-next:
+        specifier: ^13.5.4
+        version: 13.5.4(eslint@8.51.0)(typescript@5.2.2)
+      eslint-plugin-simple-import-sort:
+        specifier: ^10.0.0
+        version: 10.0.0(eslint@8.51.0)
+      husky:
+        specifier: ^8.0.3
+        version: 8.0.3
+      lint-staged:
+        specifier: ^15.0.1
+        version: 15.0.1
+      postcss:
+        specifier: ^8.4.31
+        version: 8.4.31
+      postcss-load-config:
+        specifier: ^4.0.1
+        version: 4.0.1(postcss@8.4.31)(ts-node@10.9.1)
+      postcss-scss:
+        specifier: ^4.0.9
+        version: 4.0.9(postcss@8.4.31)
+      prettier:
+        specifier: ^3.0.3
+        version: 3.0.3
+      sass:
+        specifier: ^1.69.3
+        version: 1.69.3
+      stylelint:
+        specifier: ^15.10.3
+        version: 15.10.3(typescript@5.2.2)
+      stylelint-config-rational-order:
+        specifier: ^0.1.2
+        version: 0.1.2
+      stylelint-config-standard-scss:
+        specifier: ^11.0.0
+        version: 11.0.0(postcss@8.4.31)(stylelint@15.10.3)
+      stylelint-prettier:
+        specifier: ^4.0.2
+        version: 4.0.2(prettier@3.0.3)(stylelint@15.10.3)
+      stylelint-scss:
+        specifier: ^5.2.1
+        version: 5.2.1(stylelint@15.10.3)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+      unocss:
+        specifier: ^0.56.5
+        version: 0.56.5(@unocss/webpack@0.56.5)(postcss@8.4.31)(vite@4.4.11)
+      unocss-preset-extra:
+        specifier: ^0.5.2
+        version: 0.5.2(unocss@0.56.5)
+      unocss-preset-scrollbar:
+        specifier: ^0.3.0
+        version: 0.3.0(unocss@0.56.5)
+      unocss-preset-scrollbar-hide:
+        specifier: ^1.0.1
+        version: 1.0.1(unocss@0.56.5)
+
+  libs/components: {}
+
+  packages/main-web:
+    dependencies:
+      '@kkpages/components':
+        specifier: workspace:^
+        version: link:../../libs/components
+      ahooks:
+        specifier: ^3.7.8
+        version: 3.7.8(react@18.2.0)
+      next:
+        specifier: ^13.5.4
+        version: 13.5.4(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)(sass@1.69.3)
+      swr:
+        specifier: ^2.2.4
+        version: 2.2.4(react@18.2.0)
+      zustand:
+        specifier: ^4.4.3
+        version: 4.4.3(@types/react@18.2.28)(react@18.2.0)
 
 packages:
 

@@ -16,7 +16,7 @@ import { presetScrollbarHide } from 'unocss-preset-scrollbar-hide'
 export default defineConfig({
   content: {
     pipeline: {
-      include: [/src\/.*\.(s?css|tsx?)$/],
+      include: [/.*\.(s?css|tsx?)$/],
       exclude: [],
     },
   },

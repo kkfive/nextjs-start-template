@@ -16,6 +16,9 @@ export default antfu(
       'import/first': 'error',
       'import/newline-after-import': 'error',
       'import/no-duplicates': 'error',
+      'import/no-unused-modules': 'error',
+      'unused-imports/no-unused-vars': 'error',
+      'unused-imports/no-unused-imports': 'error',
     },
   },
   ...compat.config({
