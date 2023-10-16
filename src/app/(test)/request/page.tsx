@@ -1,5 +1,6 @@
-import { ClientPage } from './page.client'
-import { hitokotoApi } from '@/api/hitokoto'
+import { hitokotoApi } from '@/service/hitokoto'
+
+import ClientPage from './page.client'
 
 export default async function SWRPage() {
   const data = await hitokotoApi.getHitokoto()

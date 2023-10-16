@@ -1,6 +1,6 @@
 'use client'
 import { SWRConfig } from 'swr'
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({ children }: { children: React.ReactNode }) {
   return <SWRConfig>{children}</SWRConfig>
 }

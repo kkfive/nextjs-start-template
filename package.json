@@ -11,8 +11,8 @@
     "eslint": "cross-env ESLINT_USE_FLAT_CONFIG=true TIMING=1 eslint .",
     "eslint:fix": "cross-env ESLINT_USE_FLAT_CONFIG=true TIMING=1 eslint . --fix",
     "lint-staged": "cross-env ESLINT_USE_FLAT_CONFIG=true lint-staged",
-    "stylelint": "stylelint '**/*.scss'",
-    "stylelint:fix": "stylelint '**/*.scss' --fix",
+    "stylelint": "stylelint ./src/**/*.scss",
+    "stylelint:fix": "stylelint ./src/**/*.scss --fix",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky install"
   },
@@ -48,6 +48,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.51.0",
     "eslint-config-next": "^13.5.4",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.0.1",
     "postcss": "^8.4.31",
