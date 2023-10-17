@@ -9,6 +9,7 @@ export default function ClientPage(options: { hitokoto: string }) {
   const [hitokoto, setHitokoto] = useState(options.hitokoto)
   const { run } = useRequest(hitokotoApi.getHitokoto, {
     manual: true,
+    staleTime: 86400,
     onSuccess: (result) => {
       setHitokoto(result.hitokoto)
     },
@@ -18,7 +19,7 @@ export default function ClientPage(options: { hitokoto: string }) {
       <div className="cursor-pointer">
         {hitokoto}
         <div>
-          <button className="btn" onClick={run}>刷新</button>
+          <button className="btn" onClick={() => run()}>刷新</button>
         </div>
       </div>
     </>
