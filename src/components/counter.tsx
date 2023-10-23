@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-export default function Counter({
+function Counter({
   dictionary,
 }: {
   dictionary: {
@@ -27,3 +27,4 @@ export default function Counter({
     </p>
   )
 }
+export default Counter

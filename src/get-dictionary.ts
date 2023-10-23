@@ -1,15 +1,20 @@
 import 'server-only'
 
 import type { Locale } from '@/i18n-config'
+import { i18n } from '@/i18n-config'
 
-// We enumerate all dictionaries here for better linting and typescript support
-// We also get the default import for cleaner types
-const dictionaries = {
-  en: () => import('@/dictionaries/en.json').then(module => module.default),
-  de: () => import('@/dictionaries/de.json').then(module => module.default),
-  cs: () => import('@/dictionaries/cs.json').then(module => module.default),
-}
+// eslint-disable-next-line ts/ban-ts-comment
+// @ts-expect-error
+const dictionaries: {
+  [locale in Locale]: () => Promise<Dictionary>
+} = {}
+i18n.locales.forEach((locale) => {
+  dictionaries[locale] = async () => {
+    const { default: dictionary } = await import(`@/dictionaries/${locale}.ts`)
+    return dictionary
+  }
+})
 
-export async function getDictionary(locale: Locale) {
-  return dictionaries[locale]?.() ?? dictionaries.en()
+export default async function getDictionary(locale: Locale): Promise<Dictionary> {
+  return dictionaries[locale]?.() ?? await dictionaries.zh()
 }
