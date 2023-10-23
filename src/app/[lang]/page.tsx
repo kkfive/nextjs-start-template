@@ -21,7 +21,7 @@ export default function Home() {
             By
             {' '}
             <Image
-              src="/vercel.svg"
+              src="/image/vercel.svg"
               alt="Vercel Logo"
               className="dark:invert"
               width={100}
@@ -35,7 +35,7 @@ export default function Home() {
       <div className="after:via-blue-200 before:dark:to-blue-700 relative z-[-1] flex place-items-center after:absolute before:absolute after:h-[180px] after:w-[240px] before:h-[300px] before:w-[480px] after:translate-x-1/3 before:rounded-full after:from-sky-200 before:from-white before:to-transparent after:bg-gradient-conic before:bg-gradient-radial after:blur-2xl before:blur-2xl after:content-[''] before:content-[''] after:-z-20 before:lg:h-[360px] before:-translate-x-1/2 after:dark:from-sky-900 before:dark:from-transparent after:dark:via-[#0141ff] before:dark:bg-gradient-to-br after:dark:opacity-40 before:dark:opacity-10">
         <Image
           className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
+          src="/image/next.svg"
           alt="Next.js Logo"
           width={180}
           height={37}
