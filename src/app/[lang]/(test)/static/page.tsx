@@ -1,5 +1,5 @@
 async function getProjects() {
-  const data = [
+  return [
     {
       url: 'https://baidu.com',
     },
@@ -7,8 +7,6 @@ async function getProjects() {
       url: 'https://google.com',
     },
   ]
-
-  return data
 }
 
 export default async function Index() {
