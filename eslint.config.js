@@ -12,6 +12,7 @@ export default antfu(
   unocss,
   {
     rules: {
+      // 'unocss/order': 'off',
       'import/order': 'off', // Import configuration for `eslint-plugin-import`
       'import/first': 'error',
       'import/newline-after-import': 'error',
