@@ -64,6 +64,9 @@ devDependencies:
   '@types/lodash':
     specifier: ^4.14.200
     version: 4.14.200
+  '@types/lodash-es':
+    specifier: ^4.17.10
+    version: 4.17.10
   '@types/negotiator':
     specifier: ^0.6.2
     version: 0.6.2
@@ -1260,6 +1263,12 @@ packages:
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/lodash-es@4.17.10:
+    resolution: {integrity: sha512-YJP+w/2khSBwbUSFdGsSqmDvmnN3cCKoPOL7Zjle6s30ZtemkkqhjVfFqGwPN7ASil5VyjE2GtyU/yqYY6mC0A==}
+    dependencies:
+      '@types/lodash': 4.14.200
     dev: true
 
   /@types/lodash@4.14.200:
