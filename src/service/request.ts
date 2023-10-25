@@ -3,6 +3,7 @@ export class Request {
     headers: {
       'Content-Type': 'application/json',
     },
+    cache: 'no-cache',
   }
 
   private readonly baseUrl: string = ''
