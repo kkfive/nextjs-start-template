@@ -1,12 +1,9 @@
 import 'server-only'
 
-import type { Locale } from '@/i18n-config'
 import { i18n } from '@/i18n-config'
 
-// eslint-disable-next-line ts/ban-ts-comment
-// @ts-expect-error
 const dictionaries: {
-  [locale in Locale]: () => Promise<Dictionary>
+  [locale in Lang.Locale]: () => Promise<Lang.Dictionary>
 } = {}
 i18n.locales.forEach((locale) => {
   dictionaries[locale] = async () => {
@@ -15,6 +12,6 @@ i18n.locales.forEach((locale) => {
   }
 })
 
-export default async function getDictionary(locale: Locale): Promise<Dictionary> {
+export default async function getDictionary(locale: Lang.Locale): Promise<Lang.Dictionary> {
   return dictionaries[locale]?.() ?? await dictionaries.zh()
 }

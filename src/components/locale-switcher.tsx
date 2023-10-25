@@ -10,8 +10,15 @@ function LocaleSwitcher() {
   const redirectedPathName = (locale: string) => {
     if (!pathName)
       return '/'
+
     const segments = pathName.split('/')
-    segments[1] = locale
+    const [currentLocale] = segments
+
+    if (i18n.locales.includes(segments[1] as Lang.Locale))
+      segments[1] = locale
+    else if (locale !== i18n.defaultLocale && currentLocale !== locale)
+      segments[0] = locale
+
     return segments.join('/')
   }
 

@@ -1,4 +1,4 @@
-const dictionaries: Dictionary = {
+const dictionaries: Lang.Dictionary = {
   'server-component': {
     welcome: '你好',
   },

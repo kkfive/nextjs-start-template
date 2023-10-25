@@ -19,6 +19,7 @@ export default {
         'build', // 依赖相关
         'revert', // 版本回退
         'chore', // 其他修改
+        'type', // 类型修改
       ],
     ],
     'type-empty': [2, 'never'], // type不能为空
