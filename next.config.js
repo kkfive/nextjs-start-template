@@ -1,4 +1,5 @@
 import UnoCSS from '@unocss/webpack'
+import nextPwa from 'next-pwa'
 
 import i18n from './src/i18n-config.js'
 
@@ -17,5 +18,9 @@ const nextConfig = {
     ]
   },
 }
+const withPWA = nextPwa({
+  disable: require('node:process').env.NODE_ENV === 'development',
+  dest: 'public',
+})
 
-export default nextConfig
+export default withPWA(nextConfig)

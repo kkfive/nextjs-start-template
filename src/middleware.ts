@@ -25,7 +25,7 @@ function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   // 忽略public下的其他文件
-  const publicFiles = ['/favicon.ico', '/robots.txt', '/sitemap.xml']
+  const publicFiles = ['/favicon.ico', '/robots.txt', '/sitemap.xml', '/manifest.json']
   if (publicFiles.includes(pathname))
     return
 

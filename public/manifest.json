@@ -1,0 +1,17 @@
+{
+  "short_name": "小康的自留地",
+  "name": "小康的自留地",
+  "description": "小康的自留地",
+  "icons": [
+    {
+      "src": "/image/logo.webp",
+      "type": "image/webp",
+      "sizes": "520x520"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#f7f9fe",
+  "background_color": "#f7f9fe"
+}
