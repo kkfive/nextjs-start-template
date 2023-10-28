@@ -1,3 +1,4 @@
+import type { EnvModule } from './modules/env'
 import type LangModule from './modules/lang'
 
 declare global {
@@ -9,4 +10,5 @@ declare global {
     // 多语言字典类型
     export type Dictionary = LangModule.Dictionary
   }
+  type Env = EnvModule.Env
 }
