@@ -7,6 +7,9 @@ const nextConfig = {
   webpack(config) {
     // UnoCSS Support
     config.plugins.push(UnoCSS())
+    config.infrastructureLogging = {
+      level: 'error',
+    }
     return config
   },
   rewrites() {
