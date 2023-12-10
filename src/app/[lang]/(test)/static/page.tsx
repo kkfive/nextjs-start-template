@@ -12,5 +12,5 @@ async function getProjects() {
 export default async function Index() {
   const projects = await getProjects()
 
-  return projects.map(project => <div>{project.url}</div>)
+  return projects.map(project => <div key={project.url}>{project.url}</div>)
 }

@@ -9,6 +9,6 @@
 - [x] eslint + stylelint + prettier 作为代码规范
 - [x] husky + lint-staged 作为 git 钩子
 - [x] commitlint作为 commit 规范
-- [ ] ~~monorepo 多包管理~~ 
+- [ ] ~~monorepo 多包管理~~
 - [x] SWR & ahooks
 - [x] i18n国际化

@@ -5,8 +5,8 @@
   // Auto fix
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
-    "source.organizeImports": false,
-    "source.fixAll.stylelint": true
+    "source.organizeImports": "never",
+    "source.fixAll.stylelint": "explicit"
   },
 
   // unocss config file path

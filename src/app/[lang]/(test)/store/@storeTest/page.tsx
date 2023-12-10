@@ -16,7 +16,7 @@ export default function StoreTestPage() {
       </div>
 
       <div>
-        <button className="font-light font-mono text-red btn hover:bg-gray-400 hover:font-medium" onClick={increaseHandler}>increase</button>
+        <button className="text-red font-light font-mono btn hover:bg-gray-400 hover:font-medium" onClick={increaseHandler}>increase</button>
       </div>
 
     </>

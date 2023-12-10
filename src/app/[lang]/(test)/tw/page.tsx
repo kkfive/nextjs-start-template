@@ -17,13 +17,13 @@ export default async function twPage() {
   return (
     <div>
       <div className="btn">sadsda</div>
-      <div className=":uno: text-6 font-800 text-red">
+      <div className=":uno: text-6 text-red font-800">
         transform-text
       </div>
       <div className="font-(light mono) hover:(bg-gray-400 font-medium)">
         gggggg
       </div>
-      <div text-red text-center text-5xl animate-bounce>
+      <div className="animate-bounce text-center text-5xl text-red">
         unocss
       </div>
       <div>
