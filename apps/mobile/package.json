@@ -1,0 +1,17 @@
+{
+  "name": "@kkproject/mobile",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ./src"
+  },
+  "dependencies": {
+    "@kkproject/brand-default": "workspace:^",
+    "@kkproject/brand-skii": "workspace:^"
+  },
+  "devDependencies": {}
+}
