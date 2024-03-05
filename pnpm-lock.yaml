@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
-      '@kkproject/shared':
+      '@kkproject/business':
         specifier: workspace:^
-        version: link:shared/shared
+        version: link:shared/business
+      '@kkproject/fetch':
+        specifier: workspace:^
+        version: link:shared/fetch
+      '@kkproject/utils':
+        specifier: workspace:^
+        version: link:shared/utils
       consola:
         specifier: ^3.2.3
         version: 3.2.3
@@ -128,11 +134,15 @@ importers:
 
   packages/brand-skii: {}
 
+  shared/business: {}
+
   shared/configs: {}
 
-  shared/shared: {}
+  shared/fetch: {}
 
   shared/types: {}
+
+  shared/utils: {}
 
 packages:
 

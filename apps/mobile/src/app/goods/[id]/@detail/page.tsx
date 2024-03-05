@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { path } from '@kkproject/shared'
+import { path } from '@kkproject/business'
 import Result from '@/components/Result'
 import CommonIdAction from '@/components/CommonIdAction'
 import { goodsDetailApi } from '@/services/mock/api'

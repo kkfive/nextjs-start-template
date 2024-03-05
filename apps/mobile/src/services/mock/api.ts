@@ -1,5 +1,5 @@
-import type { GoodsDetail } from '../../../../../shared/types'
-import { request } from '@/utils/fetch'
+import type { GoodsDetail } from '@kkproject/types'
+import { request } from '@kkproject/fetch'
 
 export function goodsDetailApi(commonId: string, goodsId?: string | null) {
   const urlencoded = new URLSearchParams()

@@ -1,9 +1,9 @@
 import consola from 'consola'
-import { getUUID } from '@/utils/tools'
-import type { MockAPI } from '@/services/mock/typings'
+import type { BaseResponse } from '@kkproject/types'
+import { getUUID } from '@kkproject/utils'
 
 // todo: 二次封装fetch
-export async function request<T>(input: string, init?: RequestInit | undefined): Promise<MockAPI.BaseResponse<T>> {
+export async function request<T>(input: string, init?: RequestInit | undefined): Promise<BaseResponse<T>> {
   const uuid = getUUID()
   try {
     consola.info(`fetch请求开始: ${uuid}`, input, init)

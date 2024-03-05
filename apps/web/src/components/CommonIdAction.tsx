@@ -1,7 +1,7 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
-import { path } from '@kkproject/shared'
+import { path } from '@kkproject/business'
 import { goodsDetailApi } from '@/services/mock/api'
 
 export default function CommonIdAction() {
