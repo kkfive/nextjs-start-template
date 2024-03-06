@@ -6,9 +6,9 @@ import { getUUID } from '@kkproject/utils'
 export async function request<T>(input: string, init?: RequestInit | undefined): Promise<BaseResponse<T>> {
   const uuid = getUUID()
   try {
-    consola.info(`fetch请求开始: ${uuid}`, input, init)
+    // consola.info(`fetch请求开始: ${uuid}`, input, init)
     const result = await fetch(input, init)
-    consola.info(`fetch请求结束: ${uuid}`, input, init)
+    // consola.info(`fetch请求结束: ${uuid}`, input, init)
     return await result.json()
   }
   catch (e) {

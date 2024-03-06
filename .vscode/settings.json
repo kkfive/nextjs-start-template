@@ -17,7 +17,8 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "never"
   },
-
+  "css.customData": [".vscode/tailwind.json"],
+  "scss.lint.unknownAtRules": "ignore",
   // Silent the stylistic rules in you IDE, but still auto fix them
   "eslint.rules.customizations": [
     { "rule": "style/*", "severity": "off" },

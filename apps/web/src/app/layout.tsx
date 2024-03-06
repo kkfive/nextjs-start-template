@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import '@kkproject/configs/tailwind/src/style/base.scss'
 import '@/style/index.scss'
 
 const inter = Inter({ subsets: ['latin'] })

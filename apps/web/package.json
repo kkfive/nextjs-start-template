@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@kkproject/brand-default": "workspace:^",
-    "@kkproject/brand-skii": "workspace:^"
-  },
-  "devDependencies": {}
+    "@kkproject/brand-skii": "workspace:^",
+    "@kkproject/components": "workspace:^"
+  }
 }

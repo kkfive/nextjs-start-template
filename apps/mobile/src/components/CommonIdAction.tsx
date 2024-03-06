@@ -8,6 +8,7 @@ export default function CommonIdAction() {
   const [commonId, setCommonId] = useState('')
   const router = useRouter()
   const params = useSearchParams()
+
   return (
     <>
       <input
@@ -21,7 +22,7 @@ export default function CommonIdAction() {
         Go
         {commonId}
       </button>
-      <button className="ml-4 btn" onClick={() => goodsDetailApi('123', params.get('goodsId'))}>goodsDetailFetcher</button>
+      <button className="btn ml-4" onClick={() => goodsDetailApi('123', params.get('goodsId'))}>goodsDetailFetcher</button>
     </>
   )
 }

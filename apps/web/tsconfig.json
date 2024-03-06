@@ -9,6 +9,7 @@
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
+    "types": ["unplugin-icons/types/react"],
     "allowJs": true,
     "strict": true,
     "noEmit": true,

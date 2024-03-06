@@ -35,17 +35,17 @@ export default async function Page({ params, searchParams }: { params: { id: str
 
       <div>
         <Link href={path.GOODS_PATH('16799')}>
-          <button className="mr-4 inline-block cursor-pointer rounded bg-teal-600 px-4 py-1 text-white disabled:cursor-default disabled:bg-gray-600 hover:bg-teal-700 disabled:opacity-50">
+          <button className="mr-4 inline-block cursor-pointer rounded bg-teal-600 px-4 py-1 text-white hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50">
             SKII
           </button>
         </Link>
         <Link href={path.GOODS_PATH('19953')}>
-          <button className="mr-4 inline-block cursor-pointer rounded bg-teal-600 px-4 py-1 text-white disabled:cursor-default disabled:bg-gray-600 hover:bg-teal-700 disabled:opacity-50">
+          <button className="mr-4 inline-block cursor-pointer rounded bg-teal-600 px-4 py-1 text-white hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50">
             default
           </button>
         </Link>
         <Link href={path.GOODS_PATH('1')}>
-          <button className="mr-4 inline-block cursor-pointer rounded bg-teal-600 px-4 py-1 text-white disabled:cursor-default disabled:bg-gray-600 hover:bg-teal-700 disabled:opacity-50">
+          <button className="mr-4 inline-block cursor-pointer rounded bg-teal-600 px-4 py-1 text-white hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50">
             404
           </button>
         </Link>
