@@ -13,4 +13,5 @@ export default {
 
     return config
   },
+  transpilePackages: ['antd-mobile'],
 }

@@ -1,6 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { Button } from 'antd-mobile'
 
 interface ResultComponentProps {
   message: string
@@ -9,10 +11,16 @@ interface ResultComponentProps {
 }
 export default function Result({ code, message, time }: ResultComponentProps) {
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
   function reload() {
     router.refresh()
+    setLoading(true)
     // retry?.()
   }
+  useEffect(() => {
+    if (loading)
+      setLoading(false)
+  }, [])
   return (
     <>
       <div>
@@ -28,7 +36,7 @@ export default function Result({ code, message, time }: ResultComponentProps) {
           {time}
         </p>
         <div>
-          <button className="btn" onClick={reload}>重试</button>
+          <Button onClick={reload} loading={loading}>重试</Button>
         </div>
       </div>
     </>

@@ -1,5 +1,7 @@
+'use client'
 import Link from 'next/link'
 import { path } from '@kkproject/business'
+import { Button } from 'antd-mobile'
 import CommonIdAction from '@/components/CommonIdAction'
 
 export default function Page() {
@@ -25,6 +27,13 @@ export default function Page() {
 
       <div className="mt-4">
         <CommonIdAction />
+      </div>
+      <div>
+
+        <Button>123</Button>
+      </div>
+      <div className="flex justify-center">
+        <button className="h-[92px] w-[680px] rounded-lg bg-[#0B56A4]">登录</button>
       </div>
     </>
   )
