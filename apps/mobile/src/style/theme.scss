@@ -1,0 +1,23 @@
+:root:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --adm-font-size-1: 12px;
+  --adm-font-size-2: 13px;
+  --adm-font-size-3: 14px;
+  --adm-font-size-4: 15px;
+  --adm-font-size-5: 16px;
+  --adm-font-size-6: 17px;
+  --adm-font-size-7: 18px;
+  --adm-font-size-8: 19px;
+  --adm-font-size-9: 20px;
+  --adm-font-size-10: 21px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}

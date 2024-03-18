@@ -1,0 +1,25 @@
+{
+  "name": "@kkproject/mobile",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "lint": "eslint ./src"
+  },
+  "dependencies": {
+    "@kkproject/brand-default": "workspace:^",
+    "@kkproject/brand-skii": "workspace:^",
+    "@kkproject/components": "workspace:^",
+    "@tanstack/react-query": "^5.25.0",
+    "@tanstack/react-query-devtools": "^5.25.0",
+    "@tanstack/react-query-next-experimental": "^5.25.0",
+    "antd-mobile": "^5.34.0",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "postcss-pxtorem": "^6.1.0"
+  }
+}
