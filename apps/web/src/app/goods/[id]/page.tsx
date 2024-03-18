@@ -18,12 +18,12 @@ export default async function Page({ params, searchParams }: { params: { id: str
   const DynamicComponent: any = dynamic(async () => {
     let comp
     try {
-      comp = await import(`@kkproject/brand-${compName}`)
+      comp = await import(`@kkproject/brand-${compName}/web`)
     }
     catch (e) {
-      comp = await import(`@kkproject/brand-default`)
+      comp = await import(`@kkproject/brand-default/web`)
     }
-    return comp.GoodsDetailCompWeb
+    return comp.GoodsDetail
   })
 
   return (

@@ -5,8 +5,7 @@ export default function Page({ params }: { params: { brandName: string, slug: st
   const brandName = params.brandName
   const path = params.slug.join('/').replace('.html', '')
 
-  let DynamicComponent: any = <div></div>
-  DynamicComponent = dynamic(() => import(`@kkproject/brand-${brandName}/src/app/${path}/pageWeb.tsx`).catch(() => {
+  const DynamicComponent = dynamic(() => import(`@kkproject/brand-${brandName}/web/app/${path}/page.tsx`).catch(() => {
     notFound()
   }))
 

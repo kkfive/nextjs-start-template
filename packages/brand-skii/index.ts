@@ -1,7 +1,4 @@
-import GoodsDetailCompWeb from './src/components/GoodsDetailWeb'
-import GoodsDetailCompMobile from './src/components/GoodsDetailMobile'
+import * as Web from './web/index'
+import * as Wap from './wap/index'
 
-export {
-  GoodsDetailCompWeb,
-  GoodsDetailCompMobile,
-}
+export default { Web, Wap }
