@@ -13,5 +13,5 @@ export default {
 
     return config
   },
-  transpilePackages: ['antd-mobile'],
+  transpilePackages: ['antd-mobile', '@nutui/nutui-react', '@nutui/icons-react'],
 }

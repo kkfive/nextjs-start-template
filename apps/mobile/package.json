@@ -20,6 +20,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "postcss-mobile-forever": "^4.1.3",
     "postcss-pxtorem": "^6.1.0"
   }
 }

@@ -172,6 +172,9 @@ importers:
         specifier: ^4.5.2
         version: 4.5.2(@types/react@18.3.2)(react@18.3.1)
     devDependencies:
+      postcss-mobile-forever:
+        specifier: ^4.1.3
+        version: 4.1.3(postcss@8.4.38)
       postcss-pxtorem:
         specifier: ^6.1.0
         version: 6.1.0(postcss@8.4.38)
@@ -5709,6 +5712,14 @@ packages:
     dependencies:
       postcss: 8.4.38
       postcss-selector-parser: 6.0.16
+    dev: true
+
+  /postcss-mobile-forever@4.1.3(postcss@8.4.38):
+    resolution: {integrity: sha512-gM/ucCWRqApnQ5yJOqela5PnCxhIX6zN3ZQN2Zx4rt74yRXMsZes6HyWntKXV4PlBfCG8/Q+d2DR4Iak0JJCUg==}
+    peerDependencies:
+      postcss: ^8.0.0
+    dependencies:
+      postcss: 8.4.38
     dev: true
 
   /postcss-nested@6.0.1(postcss@8.4.38):
