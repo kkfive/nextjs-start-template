@@ -7,7 +7,7 @@ export async function goodsDetailApi(commonId: string, goodsId?: string | null) 
   if (goodsId)
     urlencoded.append('goodsId', goodsId)
 
-  const result = await request<GoodsDetail>('https://mock.apifox.com/m1/4081920-0-default/goods', {
+  const result = await request<any>('https://mock.apifox.com/m1/4081920-0-default/goods', {
     method: 'post',
     body: urlencoded,
     cache: 'no-store',

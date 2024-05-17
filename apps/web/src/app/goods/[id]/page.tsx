@@ -10,7 +10,7 @@ export default async function Page({ params, searchParams }: { params: { id: str
   let compName = 'default'
 
   const data = await goodsDetailApi(params.id, searchParams.goodsId)
-  compName = data.datas.brandName
+  compName = data?.brandName || 'default'
 
   if (!data || data.code === 404)
     notFound()
