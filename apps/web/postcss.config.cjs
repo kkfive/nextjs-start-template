@@ -1,3 +1,13 @@
-const postcssConfig = require('@kkproject/configs/tailwind/postcss.config.cjs')
+const config = {
+  plugins: {
+    'postcss-import': {},
+    'tailwindcss': {},
+    'autoprefixer': {},
+    // eslint-disable-next-line node/prefer-global/process
+    ...(process.env.NODE_ENV === 'production' ? { cssnano: {} } : {}),
+  },
+}
 
-module.exports = postcssConfig
+// export default config
+// module.exports = config
+module.exports = config
