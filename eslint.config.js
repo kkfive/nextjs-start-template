@@ -1,31 +1,74 @@
+import path from 'node:path'
+
+import { fileURLToPath } from 'node:url'
 import antfu from '@antfu/eslint-config'
 import { FlatCompat } from '@eslint/eslintrc'
+import js from '@eslint/js'
 
-const compat = new FlatCompat()
-export default antfu(
-  {
-    vue: false,
-    // unicorn: false,
-    react: true,
-    unocss: false,
-    formatters: true,
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
+})
+
+// export default [
+//   ...compat.extends('next')
+// ]
+//
+export default antfu({
+// Type of the project. 'lib' for libraries, the default is 'app'
+  type: 'app',
+
+  // Enable stylistic formatting rules
+  // stylistic: true,
+
+  // Or customize the stylistic rules
+  stylistic: {
+    indent: 2, // 4, or 'tab'
+    quotes: 'single', // or 'double'
   },
-  {
-    rules: {
-      'import/order': 'error', // Import configuration for `eslint-plugin-import`
-      'import/first': 'error',
-      'import/newline-after-import': 'error',
-      'import/no-duplicates': 'error',
-      'react-refresh/only-export-components': 'off',
-      'react-hooks/exhaustive-deps': 'off',
-    },
+
+  // TypeScript and Vue are autodetected, you can also explicitly enable them:
+  typescript: true,
+  react: true,
+  vue: false,
+
+  // Disable jsonc and yaml support
+  jsonc: true,
+  yaml: true,
+
+  // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
+  ignores: [
+    '**/fixtures',
+    '**/.next',
+    // ...globs
+  ],
+  formatters: {
+    /**
+     * Format CSS, LESS, SCSS files, also the `<style>` blocks in Vue
+     * By default uses Prettier
+     */
+    css: true,
+    /**
+     * Format HTML files
+     * By default uses Prettier
+     */
+    html: true,
+    /**
+     * Format Markdown files
+     * Supports Prettier and dprint
+     * By default uses Prettier
+     */
+    markdown: 'prettier',
   },
-  // ...compat.config({ extends: ['next'] }),
-  ...compat.config({
-    extends: ['plugin:tailwindcss/recommended'],
-    rules: {
-      'tailwindcss/no-custom-classname': 'off',
-      'tailwindcss/migration-from-tailwind-2': 'off',
-    },
-  }),
-)
+},
+// ...compat.config({ extends: ['next'] }),
+...compat.config({
+  extends: ['plugin:tailwindcss/recommended'],
+  rules: {
+    'tailwindcss/no-custom-classname': 'off',
+    'tailwindcss/migration-from-tailwind-2': 'off',
+  },
+}))

@@ -1,9 +1,0 @@
-@layer components {
-  .btn {
-    @apply inline-block cursor-pointer rounded bg-teal-600 px-4 py-1 text-white disabled:cursor-default disabled:bg-gray-600 hover:bg-teal-700 disabled:opacity-50;
-  }
-
-  .btn-blue {
-    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
-  }
-}

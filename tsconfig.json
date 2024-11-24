@@ -1,19 +1,27 @@
 {
   "compilerOptions": {
     "incremental": true,
+    "target": "ES2017",
     "jsx": "preserve",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "baseUrl": "./",
     "module": "esnext",
     "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "resolveJsonModule": true,
     "allowJs": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "./types/**/*.ts", "tailwind.config.cjs", "apps/mobile/postcss.config.ts", "eslint.config.ts", "apps/mobile/tailwind.config.ts", "shared/configs/eslint/eslint.config.js", "shared/configs/tailwind/postcss.config.cjs"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
