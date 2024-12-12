@@ -7,7 +7,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@base/*": ["./base/*"],
+      "@domain/*": ["./domain/*"]
     },
     "resolveJsonModule": true,
     "allowJs": true,
