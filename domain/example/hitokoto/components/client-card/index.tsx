@@ -12,6 +12,7 @@ export default function HitokotoClientCard({ initialData }: { initialData: any }
     initialData,
     queryKey: [apis.getData.url],
     queryFn: ({ signal }) => getData(httpBase, { signal, params: { c: 'a' } }),
+    enabled: false,
   })
 
   return (
