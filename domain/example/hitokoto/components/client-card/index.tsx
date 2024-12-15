@@ -2,7 +2,7 @@
 import Button from '@/components/button'
 import { EosBubbleLoading } from '@/components/icon'
 import { httpBase } from '@/service/index.base'
-import { HitokotoCard } from '@domain/hitokoto/components/card'
+import { HitokotoCard } from '@domain/example/hitokoto/components/card'
 import { useQuery } from '@tanstack/react-query'
 import apis from '../../const/api'
 import { getData } from '../../service'
