@@ -1,8 +1,8 @@
 'use client'
 import Button from '@/components/button'
+import { Card } from '@/components/card/index'
 import { EosBubbleLoading } from '@/components/icon'
 import { httpBase } from '@/service/index.base'
-import { HitokotoCard } from '@domain/example/hitokoto/components/card'
 import { useQuery } from '@tanstack/react-query'
 import apis from '../../const/api'
 import { getData } from '../../service'
@@ -17,12 +17,12 @@ export default function HitokotoClientCard({ initialData }: { initialData: any }
 
   return (
     <div>
-      <HitokotoCard text={data.hitokoto}>
+      <Card text={data.hitokoto}>
         <Button primary disabled={isFetching} className="mt-2" onClick={() => refetch()}>
           {isFetching ? <EosBubbleLoading /> : null}
           刷新
         </Button>
-      </HitokotoCard>
+      </Card>
     </div>
   )
 }

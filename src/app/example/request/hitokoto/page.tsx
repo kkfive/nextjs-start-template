@@ -1,6 +1,6 @@
 import { httpBase } from '@/service/index.base'
 import { to } from '@base/utils/promise'
-import HitokotoClientCard from '@domain/example/hitokoto/components/client-card/index'
+import HitokotoClientCard from '@domain/example/hitokoto/components/hitokoto-card/index'
 import { getData } from '@domain/example/hitokoto/service'
 
 export default async function Page() {
