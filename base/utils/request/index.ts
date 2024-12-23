@@ -37,7 +37,7 @@ export class HttpService {
     return this.axiosInstance.interceptors.request.use(fulfilled, rejected)
   }
 
-  async request<T = unknown, D = any, P = any, R = RequestResponse<T, D>>(config: RequestConfig<D, P>): Promise<R> {
+  async request<T = unknown, D = any, R = RequestResponse<T, D>, P = Record<string, any>>(config: RequestConfig<D, P>): Promise<R> {
     try {
       const res = await this.axiosInstance.request<T, R, D>(config)
       return res as R
@@ -54,5 +54,29 @@ export class HttpService {
 
       throw err
     }
+  }
+
+  async get<T = unknown, P = Record<string, any>, R = RequestResponse<T, null> >(url: string, config?: RequestConfig<null, P>): Promise<R> {
+    return await this.request<T, null, R, P>({ ...config, url, method: 'GET' })
+  }
+
+  async post<T = unknown, D = any, R = RequestResponse<T, D>, P = Record<string, any>>(url: string, data?: D, config?: RequestConfig<D, P>): Promise<R> {
+    return await this.request<T, D, R, P>({ ...config, url, method: 'POST', data })
+  }
+
+  async put<T = unknown, D = any, R = RequestResponse<T, D>, P = Record<string, any>>(url: string, data?: D, config?: RequestConfig<D, P>): Promise<R> {
+    return await this.request<T, D, R, P>({ ...config, url, method: 'PUT', data })
+  }
+
+  async delete<T = unknown, P = Record<string, any>, R = RequestResponse<T, null>>(url: string, config?: RequestConfig<null, P>): Promise<R> {
+    return await this.request<T, null, R, P>({ ...config, url, method: 'DELETE' })
+  }
+
+  async patch<T = unknown, D = any, R = RequestResponse<T, D>, P = Record<string, any>>(url: string, data?: D, config?: RequestConfig<D, P>): Promise<R> {
+    return await this.request<T, D, R, P>({ ...config, url, method: 'PATCH', data })
+  }
+
+  async head<T = unknown, P = Record<string, any>, R = RequestResponse<T, null>>(url: string, config?: RequestConfig<null, P>): Promise<R> {
+    return await this.request<T, null, R, P>({ ...config, url, method: 'HEAD' })
   }
 }

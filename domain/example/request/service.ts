@@ -6,22 +6,22 @@ type GetDataResponse = ExampleRequest.SuccessAPI['Response']
 type GetDataParams = ExampleRequest.SuccessAPI['Params']
 async function getSuccess(client: HttpService, config?: RequestConfig<unknown, GetDataParams>): Promise<GetDataResponse> {
   const { url, method } = api.successApi
-  return await client.request<GetDataResponse, unknown, GetDataParams, GetDataResponse>({ ...config, url, method })
+  return await client.request({ ...config, url, method })
 }
 
 async function getErrorBusiness(client: HttpService, config?: RequestConfig<unknown, GetDataParams>): Promise<GetDataResponse> {
   const { url, method } = api.errorBusinessApi
-  return await client.request<GetDataResponse, unknown, GetDataParams, GetDataResponse>({ ...config, url, method })
+  return await client.request({ ...config, url, method })
 }
 
 async function getError400(client: HttpService, config?: RequestConfig<unknown, GetDataParams>): Promise<GetDataResponse> {
   const { url, method } = api.error400Api
-  return await client.request<GetDataResponse, unknown, GetDataParams, GetDataResponse>({ ...config, url, method })
+  return await client.request({ ...config, url, method })
 }
 
 async function getError401(client: HttpService, config?: RequestConfig<unknown, GetDataParams>): Promise<GetDataResponse> {
   const { url, method } = api.error401Api
-  return await client.request<GetDataResponse, unknown, GetDataParams, GetDataResponse>({ ...config, url, method })
+  return await client.request({ ...config, url, method })
 }
 
 export const service = {

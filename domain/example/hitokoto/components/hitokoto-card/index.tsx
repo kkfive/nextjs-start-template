@@ -18,7 +18,12 @@ export default function HitokotoClientCard({ initialData }: { initialData: any }
   return (
     <div>
       <Card text={data.hitokoto}>
-        <Button primary disabled={isFetching} className="mt-2" onClick={() => refetch()}>
+        <Button
+          primary
+          disabled={isFetching}
+          className="mt-2"
+          onClick={() => refetch()}
+        >
           {isFetching ? <EosBubbleLoading /> : null}
           刷新
         </Button>
