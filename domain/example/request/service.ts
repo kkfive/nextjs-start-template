@@ -1,27 +1,26 @@
-import type { HttpService } from '@base/utils/request'
-import type { RequestConfig } from '@base/utils/request/type'
+import type { HttpResponseSuccess, RequestOptions } from '@base/utils/request/type'
+import type { HttpService } from '../../../base/utils/request'
 import api from './const/api'
 
 type GetDataResponse = ExampleRequest.SuccessAPI['Response']
-type GetDataParams = ExampleRequest.SuccessAPI['Params']
-async function getSuccess(client: HttpService, config?: RequestConfig<unknown, GetDataParams>): Promise<GetDataResponse> {
+function getSuccess(client: HttpService, config?: RequestOptions) {
   const { url, method } = api.successApi
-  return await client.request({ ...config, url, method })
+  return client.request<HttpResponseSuccess<GetDataResponse>>(url, { ...config, method })
 }
 
-async function getErrorBusiness(client: HttpService, config?: RequestConfig<unknown, GetDataParams>): Promise<GetDataResponse> {
+function getErrorBusiness(client: HttpService, config?: RequestOptions) {
   const { url, method } = api.errorBusinessApi
-  return await client.request({ ...config, url, method })
+  return client.request<HttpResponseSuccess<GetDataResponse>>(url, { ...config, method })
 }
 
-async function getError400(client: HttpService, config?: RequestConfig<unknown, GetDataParams>): Promise<GetDataResponse> {
+function getError400(client: HttpService, config?: RequestOptions) {
   const { url, method } = api.error400Api
-  return await client.request({ ...config, url, method })
+  return client.request<HttpResponseSuccess<GetDataResponse>>(url, { ...config, method })
 }
 
-async function getError401(client: HttpService, config?: RequestConfig<unknown, GetDataParams>): Promise<GetDataResponse> {
+function getError401(client: HttpService, config?: RequestOptions) {
   const { url, method } = api.error401Api
-  return await client.request({ ...config, url, method })
+  return client.request<HttpResponseSuccess<GetDataResponse>>(url, { ...config, method })
 }
 
 export const service = {

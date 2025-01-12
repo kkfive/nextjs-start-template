@@ -1,17 +1,18 @@
 'use client'
 import Button from '@/components/button'
-import { Card } from '@/components/card/index'
+import { Card } from '@/components/card'
 import { EosBubbleLoading } from '@/components/icon'
-import { httpBase } from '@/service/index.base'
+import { http } from '@/service/index.base'
 import { useQuery } from '@tanstack/react-query'
 import apis from '../../const/api'
-import { getData } from '../../service'
+import { Controller } from '../../controller'
 
 export default function HitokotoClientCard({ initialData }: { initialData: any }) {
-  const { data, refetch, isFetching } = useQuery<Hitokoto.GetDataAPI['Response']>({
+  const { data, refetch, isFetching } = useQuery<Hitokoto.Hitokoto>({
     initialData,
     queryKey: [apis.getData.url],
-    queryFn: ({ signal }) => getData(httpBase, { signal, params: { c: 'a' } }),
+    queryFn: ({ signal }) =>
+      Controller.getData(http, { signal, searchParams: { c: 'a' } }),
     enabled: false,
   })
 

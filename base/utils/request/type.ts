@@ -1,24 +1,10 @@
-import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import type { Input, KyInstance, Options } from 'ky'
 
-export interface RequestConfigMeta {
-  /**
-   * 仅响应数据
-   * @default true
-   */
-  isOnlyData?: boolean
+export type RequestInput = Input
 
-  /**
-   * 是否处理响应数据
-   */
-  isTransformResponse?: boolean
+export interface RequestOptions extends Options {}
 
-  dataField?: string
-}
-export interface RequestConfig<D = unknown, P = Record<string, string>> extends AxiosRequestConfig<D> {
-  fetchOptions?: RequestInit
-  meta?: RequestConfigMeta
-  params?: P
-}
+export type RequestInstance = KyInstance
 
 enum ERROR_SHOW_TYPE {
   // 不提示
@@ -47,29 +33,4 @@ export interface HttpResponseSuccess<T = unknown> {
   code?: number
   message?: string
   success: true
-}
-
-export interface InternalRequestConfig<D = any> extends InternalAxiosRequestConfig<D> {
-  // config?: RequestConfig<D>
-  meta?: RequestConfigMeta
-}
-export interface RequestResponse<T = any, D = any> extends AxiosResponse<T, D> {
-  // config: RequestConfig<D>
-  // headers: AxiosRequestHeaders
-  config: InternalRequestConfig<D>
-}
-export interface RequestInterceptorConfig {
-  fulfilled?: (
-    config: InternalRequestConfig,
-  ) =>
-    | InternalRequestConfig<any>
-    | Promise<InternalRequestConfig<any>>
-  rejected?: (error: any) => any
-}
-
-export interface ResponseInterceptorConfig<T = any> {
-  fulfilled?: (
-    response: RequestResponse<T>,
-  ) => RequestResponse | Promise<RequestResponse>
-  rejected?: (error: any) => any
 }

@@ -1,12 +1,10 @@
-import { httpBase } from '@/service/index.base'
-import { to } from '@base/utils/promise'
+import { http } from '@/service/index.base'
+import { httpTo } from '@base/utils/promise'
 import HitokotoClientCard from '@domain/example/hitokoto/components/hitokoto-card/index'
-import { getData } from '@domain/example/hitokoto/service'
+import { Controller } from '@domain/example/hitokoto/controller'
 
 export default async function Page() {
-  const [error, result] = await to(getData(httpBase, {
-    fetchOptions: { cache: 'no-store', next: { revalidate: 120, tags: ['getData'] } },
-  }))
+  const [error, result] = await httpTo(Controller.getData(http))
 
   return (
     <div className="mx-auto mt-12 max-w-screen-sm overflow-hidden text-center">
