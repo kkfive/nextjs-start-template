@@ -5,9 +5,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  sassOptions: {
-    silenceDeprecations: ['legacy-js-api'],
-  },
+  sassOptions: {},
 }
 
 export default nextConfig
