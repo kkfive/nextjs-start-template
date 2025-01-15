@@ -27,7 +27,7 @@ export default function Button(props: ButtonProps) {
     'opacity-90 cursor-not-allowed': disabled,
   }, className)
 
-  const _signalsnippet = (
+  const _signalSnippet = (
     <span className="absolute right-[-5px] top-[-5px] flex size-3">
       <span className="absolute inline-flex size-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
       <span className="relative inline-flex size-3 rounded-full bg-sky-500"></span>
@@ -35,9 +35,9 @@ export default function Button(props: ButtonProps) {
   )
 
   return (
-    <button className={cls} {...other}>
+    <button type="button" className={cls} {...other}>
       {children}
-      {signal && _signalsnippet}
+      {signal && _signalSnippet}
     </button>
   )
 }
