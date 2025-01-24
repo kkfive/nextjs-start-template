@@ -24,7 +24,7 @@ export default function Button(props: ButtonProps) {
     'text-lg py-2 px-6': lg,
     'w-8 h-8 p-0': rect,
   }, {
-    'opacity-90 cursor-not-allowed': disabled,
+    'opacity-75 cursor-not-allowed': disabled,
   }, className)
 
   const _signalSnippet = (
