@@ -1,17 +1,15 @@
-import path from 'node:path'
-
-import { fileURLToPath } from 'node:url'
+// import { fileURLToPath } from 'node:url'
 import antfu from '@antfu/eslint-config'
-import { FlatCompat } from '@eslint/eslintrc'
-import js from '@eslint/js'
+// import { FlatCompat } from '@eslint/eslintrc'
+// import js from '@eslint/js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-})
+// const __filename = fileURLToPath(import.meta.url)
+// const __dirname = path.dirname(__filename)
+// const compat = new FlatCompat({
+//   baseDirectory: __dirname,
+//   recommendedConfig: js.configs.recommended,
+//   allConfig: js.configs.all,
+// })
 
 // export default [
 //   ...compat.extends('next')
@@ -64,11 +62,4 @@ export default antfu({
     markdown: 'prettier',
   },
 },
-// ...compat.config({ extends: ['next'] }),
-...compat.config({
-  extends: ['plugin:tailwindcss/recommended'],
-  rules: {
-    'tailwindcss/no-custom-classname': 'off',
-    'tailwindcss/migration-from-tailwind-2': 'off',
-  },
-}))
+)
