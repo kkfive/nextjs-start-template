@@ -1,5 +1,6 @@
 // import { fileURLToPath } from 'node:url'
 import antfu from '@antfu/eslint-config'
+// import tailwind from "eslint-plugin-tailwindcss";
 // import { FlatCompat } from '@eslint/eslintrc'
 // import js from '@eslint/js'
 
@@ -62,4 +63,5 @@ export default antfu({
     markdown: 'prettier',
   },
 },
+  // ...tailwind.configs["flat/recommended"]
 )
