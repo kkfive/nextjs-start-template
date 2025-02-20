@@ -1,0 +1,19 @@
+@use './tailwind' as *;
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+// @supports (-webkit-touch-callout: none) {
+//   /* iOS Safari only */
+//   .safe-area-inset-bottom {
+//     // padding-bottom: 80px;
+//     box-sizing: border-box;
+//     min-height: 100vh;
+//     /* mobile viewport bug fix */
+//     min-height: -webkit-fill-available;
+
+//   }
+// }

@@ -1,4 +1,4 @@
-import { cn } from '@base/utils/atom-css'
+import { cn } from '@/lib/utils'
 
 export function CreateIcon(className: string) {
   return (props: { className?: string }) => {

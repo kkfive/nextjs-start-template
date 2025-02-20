@@ -42,6 +42,7 @@ export default antfu({
   ignores: [
     '**/fixtures',
     '**/.next',
+    '**/components/ui',
     // ...globs
   ],
   formatters: {

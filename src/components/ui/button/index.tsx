@@ -1,7 +1,7 @@
 import type { ButtonProps } from './props'
-import { cn } from '@base/utils/atom-css'
+import { cn } from '@/lib/utils'
 
-export default function Button(props: ButtonProps) {
+export function Button(props: ButtonProps) {
   const { className, primary, danger, sm, lg, signal, success, ghost, rect, children, disabled, ...other } = props
   const base = 'rounded border border-transparent font-medium cursor-pointer transition relative mx-1'
 

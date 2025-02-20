@@ -1,5 +1,5 @@
-import type { HttpService } from '@base/utils/request'
-import type { RequestOptions } from '@base/utils/request/type'
+import type { HttpService } from '@/lib/request'
+import type { RequestOptions } from '@/lib/request/type'
 import api from './const/api'
 
 type GetDataResponse = Hitokoto.GetDataAPI['Response']

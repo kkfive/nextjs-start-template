@@ -1,4 +1,4 @@
-import type { HttpResponseSuccess, RequestOptions } from '@base/utils/request/type'
+import type { HttpResponseSuccess, RequestOptions } from '@/lib/request/type'
 import type { HttpService } from '../../../base/utils/request'
 import api from './const/api'
 

@@ -1,6 +1,6 @@
-import type { HttpService } from '@base/utils/request'
-import type { HttpResponseError, HttpResponseSuccess, RequestOptions } from '@base/utils/request/type'
-import { BusinessError } from '@base/utils/request/error'
+import type { HttpService } from '@/lib/request'
+import type { HttpResponseError, HttpResponseSuccess, RequestOptions } from '@/lib/request/type'
+import { BusinessError } from '@/lib/request/error'
 import { service } from './service'
 
 export class Controller {

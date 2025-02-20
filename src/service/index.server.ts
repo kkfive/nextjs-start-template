@@ -1,4 +1,4 @@
-import { HttpService } from '@base/utils/request'
+import { HttpService } from '@/lib/request'
 import { cookies } from 'next/headers'
 
 const http = new HttpService({

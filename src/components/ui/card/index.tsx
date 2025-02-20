@@ -1,5 +1,5 @@
 import type { CardProps } from './props'
-import { cn } from '@base/utils/atom-css'
+import { cn } from '@/lib/utils'
 
 export function Card({ text, children, className }: CardProps) {
   return (

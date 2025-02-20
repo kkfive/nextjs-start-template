@@ -1,4 +1,4 @@
-import type { HttpResponseError, RequestOptions } from '@base/utils/request/type'
+import type { HttpResponseError, RequestOptions } from '@/lib/request/type'
 
 interface BusinessErrorOptions<T> {
   code: number

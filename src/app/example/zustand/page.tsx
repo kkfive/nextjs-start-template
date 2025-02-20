@@ -1,5 +1,5 @@
 'use client'
-import { Card } from '@/components/card'
+import { Card } from '@/components/ui/card'
 import { useMouseStore } from '@/store/mouse-store'
 import { useEffect } from 'react'
 

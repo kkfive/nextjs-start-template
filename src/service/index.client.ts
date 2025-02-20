@@ -1,4 +1,4 @@
-import { HttpService } from '@base/utils/request'
+import { HttpService } from '@/lib/request'
 
 const http = new HttpService({
   hooks: {

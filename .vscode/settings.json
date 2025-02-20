@@ -53,5 +53,5 @@
     ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
-  "tailwindCSS.experimental.configFile": "src/style/tailwindcss.scss"
+  "tailwindCSS.experimental.configFile": "src/styles/tailwindcss.css"
 }

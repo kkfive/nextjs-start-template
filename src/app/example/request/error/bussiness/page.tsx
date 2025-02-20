@@ -1,5 +1,5 @@
 import { httpServer } from '@/service/index.server'
-import { httpTo } from '@base/utils/promise'
+import { httpTo } from '@base/utils'
 import { Controller } from '@domain/example/request/controller'
 
 export default async function Page() {
