@@ -1,5 +1,5 @@
+import { httpTo } from '@/lib/utils'
 import { http } from '@/service/index.base'
-import { httpTo } from '@base/utils'
 import HitokotoClientCard from '@domain/example/hitokoto/components/hitokoto-card/index'
 import { Controller } from '@domain/example/hitokoto/controller'
 

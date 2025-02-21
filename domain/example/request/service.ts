@@ -1,5 +1,5 @@
+import type { HttpService } from '@/lib/request'
 import type { HttpResponseSuccess, RequestOptions } from '@/lib/request/type'
-import type { HttpService } from '../../../base/utils/request'
 import api from './const/api'
 
 type GetDataResponse = ExampleRequest.SuccessAPI['Response']

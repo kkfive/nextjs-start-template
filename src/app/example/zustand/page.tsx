@@ -13,7 +13,7 @@ export default function Page() {
     return () => {
       window.removeEventListener('mousemove', update)
     }
-  }, [])
+  })
 
   return (
     <div className="w-2xl mt-12 mx-auto">

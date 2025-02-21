@@ -1,6 +1,6 @@
 import type { HttpResponseError } from '@/lib/request/type'
+import { to } from '@/lib/utils'
 import { httpServer } from '@/service/index.server'
-import { to } from '@base/utils'
 import { Controller } from '@domain/example/request/controller'
 
 export default async function Page() {
