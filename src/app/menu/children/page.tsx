@@ -3,7 +3,7 @@
 export default function MenuPage() {
   return (
     <>
-      <div className="px-2 box-border">
+      <div className="box-border px-2">
         123
       </div>
     </>

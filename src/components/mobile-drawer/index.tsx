@@ -1,12 +1,12 @@
 'use client'
 
-import { AppSidebarGroup } from '@/app/menu/app-sidebar-group'
+import { CommandIcon } from 'lucide-react'
 
+import { AppSidebarGroup } from '@/app/menu/app-sidebar-group'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { SidebarContent } from '@/components/ui/sidebar'
-import { CommandIcon } from 'lucide-react'
 
 export function MobileDrawer() {
   return (
@@ -22,7 +22,7 @@ export function MobileDrawer() {
             <DrawerTitle></DrawerTitle>
             {/* <DrawerDescription>Set your daily activity goal.</DrawerDescription> */}
           </DrawerHeader>
-          <ScrollArea className="w-full h-128">
+          <ScrollArea className="h-128 w-full">
             <SidebarContent>
               <AppSidebarGroup isDrawer />
             </SidebarContent>

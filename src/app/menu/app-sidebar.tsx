@@ -5,8 +5,8 @@ import { Sidebar } from '@/components/ui/sidebar'
 export function AppSidebar() {
   return (
     <Sidebar>
-      <ScrollArea className="w-full h-screen">
-        <div className="w-full h-20 bg-red-500 rounded-md">card</div>
+      <ScrollArea className="h-screen w-full">
+        <div className="h-20 w-full rounded-md bg-red-500">card</div>
         <AppSidebarGroup />
       </ScrollArea>
     </Sidebar>

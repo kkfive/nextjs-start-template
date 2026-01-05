@@ -1,6 +1,6 @@
+import { Controller } from '@domain/example/request/controller'
 import { to } from '@/lib/utils'
 import { httpServer } from '@/service/index.server'
-import { Controller } from '@domain/example/request/controller'
 
 export default async function Page() {
   // 一切正常的请求 (默认情况下只获取response.data的数据)

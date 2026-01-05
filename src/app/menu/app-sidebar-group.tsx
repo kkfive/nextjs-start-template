@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
+import { ExternalLink, Home, Inbox, WandSparkles } from 'lucide-react'
 import { DrawerClose } from '@/components/ui/drawer'
 import { Link } from '@/components/ui/link'
 import { NavigationLink } from '@/components/ui/navigation-link'
 import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu } from '@/components/ui/sidebar'
-import { ExternalLink, Home, Inbox, WandSparkles } from 'lucide-react'
 
 interface LinkItems {
   title: string

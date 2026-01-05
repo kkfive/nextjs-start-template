@@ -1,7 +1,7 @@
-import { httpTo } from '@/lib/utils'
-import { http } from '@/service/index.base'
 import HitokotoClientCard from '@domain/example/hitokoto/components/hitokoto-card/index'
 import { Controller } from '@domain/example/hitokoto/controller'
+import { httpTo } from '@/lib/utils'
+import { http } from '@/service/index.base'
 
 export default async function Page() {
   const [error, result] = await httpTo(Controller.getData(http))

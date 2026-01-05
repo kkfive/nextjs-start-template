@@ -1,7 +1,7 @@
 'use client'
+import { useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { useMouseStore } from '@/store/mouse-store'
-import { useEffect } from 'react'
 
 export default function Page() {
   const x = useMouseStore(state => state.x)
@@ -16,10 +16,10 @@ export default function Page() {
   })
 
   return (
-    <div className="w-2xl mt-12 mx-auto">
+    <div className="mx-auto mt-12 w-2xl">
       <Card className="text-center" text=" ">
         <p>当前鼠标位置</p>
-        <p className="flex gap-4 justify-center">
+        <p className="flex justify-center gap-4">
           <span>
             x:
             {x}

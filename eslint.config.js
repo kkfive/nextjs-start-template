@@ -1,68 +1,51 @@
-// import { fileURLToPath } from 'node:url'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 import antfu from '@antfu/eslint-config'
-// import tailwind from "eslint-plugin-tailwindcss";
-// import { FlatCompat } from '@eslint/eslintrc'
-// import js from '@eslint/js'
+import tailwind from 'eslint-plugin-tailwindcss'
 
-// const __filename = fileURLToPath(import.meta.url)
-// const __dirname = path.dirname(__filename)
-// const compat = new FlatCompat({
-//   baseDirectory: __dirname,
-//   recommendedConfig: js.configs.recommended,
-//   allConfig: js.configs.all,
-// })
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-// export default [
-//   ...compat.extends('next')
-// ]
-//
-export default antfu({
-// Type of the project. 'lib' for libraries, the default is 'app'
-  type: 'app',
+export default antfu(
+  {
+    // Type of the project. 'lib' for libraries, the default is 'app'
+    type: 'app',
 
-  // Enable stylistic formatting rules
-  // stylistic: true,
+    // Enable stylistic formatting rules
+    stylistic: true,
 
-  // Or customize the stylistic rules
-  stylistic: {
-    indent: 2, // 4, or 'tab'
-    quotes: 'single', // or 'double'
-  },
+    // Or customize the stylistic rules
+    // stylistic: {
+    //   indent: 2, // 4, or 'tab'
+    //   quotes: 'single', // or 'double'
+    // },
 
-  // TypeScript and Vue are autodetected, you can also explicitly enable them:
-  typescript: true,
-  react: true,
-  vue: false,
+    // TypeScript and Vue are autodetected, you can also explicitly enable them:
+    nextjs: true,
 
-  // Disable jsonc and yaml support
-  jsonc: true,
-  yaml: true,
+    // Disable jsonc and yaml support
+    jsonc: true,
+    yaml: true,
 
-  // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
-  ignores: [
-    '**/fixtures',
-    '**/.next',
-    '**/components/ui',
+    // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
+    ignores: [
+      '**/fixtures',
+      '**/.next',
+      '**/components/ui',
     // ...globs
-  ],
-  formatters: {
-    /**
-     * Format CSS, LESS, SCSS files, also the `<style>` blocks in Vue
-     * By default uses Prettier
-     */
-    css: true,
-    /**
-     * Format HTML files
-     * By default uses Prettier
-     */
-    html: true,
-    /**
-     * Format Markdown files
-     * Supports Prettier and dprint
-     * By default uses Prettier
-     */
-    markdown: 'prettier',
+    ],
+    formatters: true,
   },
-},
-  // ...tailwind.configs["flat/recommended"]
+  ...tailwind.configs['flat/recommended'],
+  {
+    settings: {
+      tailwindcss: {
+        // For Tailwind CSS v4, the config path should point to the CSS file
+        config: path.join(__dirname, 'src/styles/tailwind.css'),
+        // Optional, default values: ["class", "className", "ngClass", "@apply"]
+        callees: ['classnames', 'clsx', 'ctl', 'cva', 'tv', 'tw', 'cn', 'className'],
+      },
+    },
+  },
 )
