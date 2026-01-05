@@ -30,9 +30,11 @@ export default antfu(
 
     // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
     ignores: [
-      '**/fixtures',
       '**/.next',
       '**/components/ui',
+      '**/node_modules',
+      '**/.pnpm-store',
+      '**/pnpm-lock.yaml',
     // ...globs
     ],
     formatters: true,
