@@ -1,10 +1,10 @@
 'use client'
 
-import { CommandIcon } from 'lucide-react'
-
 import { AppSidebarGroup } from '@/app/menu/app-sidebar-group'
+
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
+import { LucideCommand } from '@/components/ui/icon'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { SidebarContent } from '@/components/ui/sidebar'
 
@@ -13,7 +13,7 @@ export function MobileDrawer() {
     <Drawer shouldScaleBackground>
       <DrawerTrigger asChild>
         <Button variant="ghost" size="icon" title="Toggle drawer">
-          <CommandIcon size={16} />
+          <LucideCommand className="size-4" />
         </Button>
       </DrawerTrigger>
       <DrawerContent>
