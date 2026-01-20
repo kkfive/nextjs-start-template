@@ -9,33 +9,34 @@ const __dirname = path.dirname(__filename)
 
 export default antfu(
   {
-    // Type of the project. 'lib' for libraries, the default is 'app'
+    // 项目类型：'lib' 用于库，默认为 'app'
     type: 'app',
 
-    // Enable stylistic formatting rules
+    // 启用代码风格格式化规则
     stylistic: true,
 
-    // Or customize the stylistic rules
+    // 或自定义代码风格规则
     // stylistic: {
-    //   indent: 2, // 4, or 'tab'
-    //   quotes: 'single', // or 'double'
+    //   indent: 2, // 4 或 'tab'
+    //   quotes: 'single', // 或 'double'
     // },
 
-    // TypeScript and Vue are autodetected, you can also explicitly enable them:
+    // TypeScript 和 Vue 会自动检测，也可以显式启用：
     nextjs: true,
 
-    // Disable jsonc and yaml support
+    // 启用 jsonc 和 yaml 支持
     jsonc: true,
     yaml: true,
 
-    // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
+    // Flat config 不再支持 `.eslintignore`，使用 `ignores` 代替
     ignores: [
       '**/.next',
+      '**/.claude',
       '**/components/ui',
       '**/node_modules',
       '**/.pnpm-store',
       '**/pnpm-lock.yaml',
-    // ...globs
+    // ...其他 glob 模式
     ],
     formatters: true,
   },
@@ -43,11 +44,25 @@ export default antfu(
   {
     settings: {
       tailwindcss: {
-        // For Tailwind CSS v4, the config path should point to the CSS file
+        // Tailwind CSS v4 的配置路径应指向 CSS 文件
         config: path.join(__dirname, 'src/styles/tailwind.css'),
-        // Optional, default values: ["class", "className", "ngClass", "@apply"]
+        // 可选，默认值：["class", "className", "ngClass", "@apply"]
         callees: ['classnames', 'clsx', 'ctl', 'cva', 'tv', 'tw', 'cn', 'className'],
       },
+    },
+  },
+  // 层级依赖强制规则
+  // 注意：domain/ 目前从 @/lib/request 导入是允许的
+  // 此规则防止 domain 导入 React 组件
+  {
+    files: ['domain/**/*.ts', 'domain/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': ['warn', {
+        patterns: [{
+          group: ['@/components/*', '@/app/*', '@/hooks/*', '@/store/*'],
+          message: 'Domain layer should not import React components, hooks, or stores. Keep domain code framework-agnostic.',
+        }],
+      }],
     },
   },
 )

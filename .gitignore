@@ -45,3 +45,5 @@ dist/**
 
 # ai
 .workflow
+data/WebGUI.md
+.ace-tool/

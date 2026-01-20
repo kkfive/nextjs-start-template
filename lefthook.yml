@@ -4,6 +4,11 @@ commit-msg:
       run: npx commitlint --edit {1}
 
 pre-commit:
+  parallel: true
   commands:
     lint:
-      run: npm run lint:fix
+      glob: '*.{js,jsx,ts,tsx}'
+      run: pnpm lint:fix {staged_files}
+    test:
+      glob: '*.{ts,tsx}'
+      run: pnpm vitest run --passWithNoTests --changed HEAD~1

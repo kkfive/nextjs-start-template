@@ -1,102 +1,93 @@
-import Image from 'next/image'
+import { AlertTriangle, Database, FileText, Palette, Store } from 'lucide-react'
+import { FeatureCard } from '@/components/home/feature-card'
+import { HeroSection } from '@/components/home/hero-section'
+import { getTechStackFromReadme } from '@/lib/tech-stack'
 
-export default function Home() {
+const examples = [
+  {
+    category: 'UI',
+    icon: <Palette className="size-6" />,
+    items: [
+      { name: 'Color Palette', href: '/example/color', description: 'Tailwind CSS color system demonstration' },
+    ],
+  },
+  {
+    category: 'Forms',
+    icon: <FileText className="size-6" />,
+    items: [
+      { name: 'Form Validation', href: '/example/form', description: 'react-hook-form + zod validation' },
+    ],
+  },
+  {
+    category: 'Data Fetching',
+    icon: <Database className="size-6" />,
+    items: [
+      { name: 'Hitokoto API', href: '/example/request/hitokoto', description: 'External API request with ky' },
+      { name: 'Success Response', href: '/example/success', description: 'Successful API response handling' },
+    ],
+  },
+  {
+    category: 'Error Handling',
+    icon: <AlertTriangle className="size-6" />,
+    items: [
+      { name: '400 Bad Request', href: '/example/request/error/400', description: 'Client error handling' },
+      { name: '401 Unauthorized', href: '/example/request/error/401', description: 'Authentication error handling' },
+      { name: 'Business Error', href: '/example/request/error/bussiness', description: 'Custom business logic error' },
+    ],
+  },
+  {
+    category: 'State Management',
+    icon: <Store className="size-6" />,
+    items: [
+      { name: 'Zustand Store', href: '/example/zustand', description: 'Global state with Zustand' },
+    ],
+  },
+]
+
+export default async function HomePage() {
+  const techStack = await getTechStackFromReadme()
+
   return (
-    <div className="grid min-h-screen grid-rows-[20px_1fr_20px] place-items-center gap-16 p-8 pb-20 font-(family-name:--font-geist-sans) sm:p-20">
-      <main className="row-start-2 flex flex-col items-center gap-8 sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-center font-(family-name:--font-geist-mono) text-sm sm:text-left">
-          <li className="mb-2">
-            Get started by editing
-            {' '}
-            <code className="rounded bg-black/5 px-1 py-0.5 font-semibold dark:bg-white/6">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-linear-to-b from-white to-neutral-50">
+      {/* Hero Section */}
+      <HeroSection
+        title="Next.js Start Template"
+        subtitle="现代化 Next.js 启动模板，集成领域驱动架构，助力快速项目开发"
+        techStack={techStack.map(item => ({
+          name: item.technology,
+          color: 'bg-blue-50 text-blue-700',
+        }))}
+        ctaButtons={[
+          { text: '查看示例', href: '/example', variant: 'default' },
+          { text: '浏览代码', href: 'https://github.com/kkfive/nextjs-start-template', variant: 'outline' },
+        ]}
+      />
 
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          <a
-            className="flex h-10 items-center justify-center gap-2 rounded-full border border-solid border-transparent bg-foreground px-4 text-sm text-background transition-colors hover:bg-[#383838] sm:h-12 sm:px-5 sm:text-base dark:hover:bg-[#ccc]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="flex h-10 items-center justify-center rounded-full border border-solid border-black/8 px-4 text-sm transition-colors hover:border-transparent hover:bg-[#f2f2f2] sm:h-12 sm:min-w-44 sm:px-5 sm:text-base dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Features Grid */}
+      <div className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="mb-4 text-center text-3xl font-bold text-neutral-900">功能演示</h2>
+        <p className="mb-12 text-center text-lg text-neutral-600">
+          探索模板提供的各种功能和最佳实践示例
+        </p>
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {examples.flatMap((category, catIndex) =>
+            category.items.map((item, itemIndex) => (
+              <FeatureCard
+                key={item.href}
+                title={item.name}
+                description={item.description}
+                icon={category.icon}
+                href={item.href}
+                category={category.category}
+                delay={catIndex * 0.1 + itemIndex * 0.05}
+              />
+            )),
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex flex-wrap items-center justify-center gap-6">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   )
 }
+
+export const runtime = 'nodejs'

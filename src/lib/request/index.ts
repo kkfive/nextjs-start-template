@@ -1,37 +1,40 @@
 import type { RequestInput, RequestInstance, RequestOptions } from './type'
+import { Request } from '@kkfive/request'
 import defu from 'defu'
-import ky from 'ky'
 
 export class HttpService {
   instance: RequestInstance
   constructor(defaultOptions: RequestOptions = {}) {
-    const options: RequestOptions = { retry: 0 }
-    this.instance = ky.create(
+    const options: RequestOptions = {
+      retry: 0,
+      responseParser: { responseReturn: 'raw' },
+    }
+    this.instance = Request.create(
       defu(options, defaultOptions),
     )
   }
 
   request<T = unknown>(input: RequestInput, options?: RequestOptions) {
-    return this.instance<T>(input, options)
+    return this.instance.request<T>(input, options)
   }
 
   get<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.request<T>(url, { ...options, method: 'get' })
+    return this.instance.get<T>(url, options)
   }
 
   post<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.request<T>(url, { ...options, method: 'post' })
+    return this.instance.post<T>(url, options?.json, options)
   }
 
   put<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.request<T>(url, { ...options, method: 'put' })
+    return this.instance.put<T>(url, options?.json, options)
   }
 
   delete<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.request<T>(url, { ...options, method: 'delete' })
+    return this.instance.delete<T>(url, options?.json, options)
   }
 
   patch<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.request<T>(url, { ...options, method: 'patch' })
+    return this.instance.patch<T>(url, options?.json, options)
   }
 }

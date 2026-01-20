@@ -1,10 +1,10 @@
-import type { Input, KyInstance, Options } from 'ky'
+import type { Request, RequestOption } from '@kkfive/request'
 
-export type RequestInput = Input
+export type RequestInput = string
 
-export interface RequestOptions extends Options {}
+export interface RequestOptions extends RequestOption {}
 
-export type RequestInstance = KyInstance
+export type RequestInstance = Request
 
 enum ERROR_SHOW_TYPE {
   // 不提示
