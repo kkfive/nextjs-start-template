@@ -3,7 +3,7 @@ import type { HttpResponseError, HttpResponseSuccess, RequestOptions } from '@/l
 import { BusinessError } from '@/lib/request/error'
 import { service } from './service'
 
-type ScenarioType = 'success' | 'business-error' | 'error-400' | 'error-401'
+type ScenarioType = 'success' | 'business-error' | 'error-400' | 'error-401' | 'error-404' | 'error-500' | 'error-503'
 
 export class Controller {
   static async unifiedScenario(
@@ -20,6 +20,23 @@ export class Controller {
       // Handle RequestError from @kkfive/request for HTTP error status codes
       if (error.name === 'RequestError' && error.raw) {
         return transformData(error.raw, config)
+      }
+      throw error
+    }
+  }
+
+  static async rawScenario(
+    client: HttpService | any,
+    scenario: ScenarioType,
+    config?: RequestOptions & { method?: 'GET' | 'POST' | 'PUT' | 'DELETE' },
+  ) {
+    try {
+      const response = await service.unifiedScenario(client, scenario, config)
+      return await response.json()
+    }
+    catch (error: any) {
+      if (error.name === 'RequestError' && error.raw) {
+        return error.raw
       }
       throw error
     }

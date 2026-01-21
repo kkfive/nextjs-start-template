@@ -9,7 +9,7 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
-    API_BASE_URL: z.string().url().optional(),
+    API_BASE_URL: z.string().optional(),
     // 在此添加更多服务端环境变量
     // JWT_SECRET: z.string().min(32),
     // DATABASE_URL: z.string().url(),
@@ -20,8 +20,8 @@ export const env = createEnv({
    * 这些变量会暴露给浏览器（必须以 NEXT_PUBLIC_ 为前缀）
    */
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
-    NEXT_PUBLIC_API_URL: z.string().url().optional(),
+    NEXT_PUBLIC_APP_URL: z.url().default(''),
+    NEXT_PUBLIC_API_URL: z.url().optional(),
     NEXT_PUBLIC_DEBUG: z.coerce.boolean().default(false),
     // 在此添加更多客户端环境变量
     // NEXT_PUBLIC_GA_ID: z.string().optional(),

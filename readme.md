@@ -12,7 +12,7 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view your application.
+Open [/](/) to view your application.
 
 ## Tech Stack
 

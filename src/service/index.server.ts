@@ -1,8 +1,10 @@
 import process from 'node:process'
 import { cookies } from 'next/headers'
+import { env } from '@/config/env'
 import { HttpService } from '@/lib/request'
 
 const http = new HttpService({
+  prefixUrl: env.API_BASE_URL || 'http://localhost:5373',
   hooks: {
     beforeRequest: [
       // Cookie injection interceptor - injects customer ID from cookies

@@ -24,7 +24,7 @@ describe('httpService', () => {
 
   it('should make GET requests with prefixUrl', async () => {
     const http = new HttpService({
-      prefixUrl: 'http://localhost:3000',
+      prefixUrl: '/',
     })
 
     const response = await http.get<Response>('api/example/request/success')
@@ -38,7 +38,7 @@ describe('httpService', () => {
 
   it('should handle 400 errors', async () => {
     const http = new HttpService({
-      prefixUrl: 'http://localhost:3000',
+      prefixUrl: '/',
     })
 
     await expect(http.get('api/example/request/error/400')).rejects.toThrow()
@@ -46,7 +46,7 @@ describe('httpService', () => {
 
   it('should handle 401 errors', async () => {
     const http = new HttpService({
-      prefixUrl: 'http://localhost:3000',
+      prefixUrl: '/',
     })
 
     await expect(http.get('api/example/request/error/401')).rejects.toThrow()

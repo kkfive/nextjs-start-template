@@ -33,7 +33,7 @@ export const handlers = [
   }),
 
   // 示例：模拟内部 API 成功端点
-  http.get('http://localhost:3000/api/example/request/success', () => {
+  http.get('//api/example/request/success', () => {
     return HttpResponse.json({
       success: true,
       data: { message: 'Success response' },
@@ -41,14 +41,14 @@ export const handlers = [
   }),
 
   // 示��：模拟内部 API 错误端点
-  http.get('http://localhost:3000/api/example/request/error/400', () => {
+  http.get('//api/example/request/error/400', () => {
     return HttpResponse.json(
       { success: false, error: 'Bad Request' },
       { status: 400 },
     )
   }),
 
-  http.get('http://localhost:3000/api/example/request/error/401', () => {
+  http.get('//api/example/request/error/401', () => {
     return HttpResponse.json(
       { success: false, error: 'Unauthorized' },
       { status: 401 },
@@ -56,7 +56,7 @@ export const handlers = [
   }),
 
   // Unified scenario endpoint for controller tests
-  http.post('http://localhost:3000/api/example/request/scenario', async ({ request }) => {
+  http.post('//api/example/request/scenario', async ({ request }) => {
     const body = await request.json() as { scenario: string }
     const { scenario } = body
 

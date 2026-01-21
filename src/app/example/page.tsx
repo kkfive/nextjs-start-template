@@ -17,15 +17,7 @@ const examples = [
     category: 'Data Fetching',
     items: [
       { name: 'Hitokoto API', href: '/example/request/hitokoto', description: 'External API request with ky' },
-      { name: 'Success Response', href: '/example/success', description: 'Successful API response handling' },
-    ],
-  },
-  {
-    category: 'Error Handling',
-    items: [
-      { name: '400 Bad Request', href: '/example/request/error/400', description: 'Client error handling' },
-      { name: '401 Unauthorized', href: '/example/request/error/401', description: 'Authentication error handling' },
-      { name: 'Business Error', href: '/example/request/error/bussiness', description: 'Custom business logic error' },
+      { name: 'HTTP Request Examples', href: '/example/request-demo', description: 'Unified request handling with interceptors (success, business errors, HTTP errors)' },
     ],
   },
   {
