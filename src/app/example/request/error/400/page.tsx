@@ -5,7 +5,7 @@ import { httpServer } from '@/service/index.server'
 
 export default async function Page() {
   // 当请求错误时，返回的是 RequestError 对象
-  const [error1, _1] = await to<any, HttpResponseError>(Controller.getError400Data(httpServer))
+  const [error1, _1] = await to<any, HttpResponseError>(Controller.unifiedScenario(httpServer, 'error-400', { method: 'GET' }))
 
   return (
     <div>

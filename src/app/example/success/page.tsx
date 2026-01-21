@@ -8,7 +8,7 @@ export default async function Page() {
   //
   // const [_2, result2] = await to(service.getSuccess(httpServer))
 
-  const [error, result1] = await to(Controller.getSuccessData(httpServer))
+  const [error, result1] = await to(Controller.unifiedScenario(httpServer, 'success', { method: 'GET' }))
   return (
     <div>
       <div>

@@ -4,7 +4,7 @@ import { httpServer } from '@/service/index.server'
 
 export default async function Page() {
   // 当请求错误时，返回的是 RequestError 对象
-  const [error1, result] = await httpTo(Controller.getErrorBusinessData(httpServer))
+  const [error1, result] = await httpTo(Controller.unifiedScenario(httpServer, 'business-error', { method: 'GET' }))
 
   return (
     <div>
