@@ -5,6 +5,9 @@ import { httpServer } from '@/service/index.server'
 import { ClientScenarioCard } from './client-scenario-card'
 import { InterceptedClientCard } from './intercepted-client-card'
 
+// Force dynamic rendering to ensure cookies() is called within request context
+export const dynamic = 'force-dynamic'
+
 export default async function RequestDemoPage() {
   // Interceptor applied: returns data directly or throws BusinessError
   const [interceptedSuccessErr, interceptedSuccessData] = await httpTo(

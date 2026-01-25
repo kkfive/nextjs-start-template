@@ -6,6 +6,7 @@ import { service } from './service'
 export class Controller {
   static async getData(client: HttpService, options?: RequestOptions) {
     const result = await service.getData(client, options)
+    // @ts-expect-error - responseReturn: 'raw' returns Response, but type inference shows Hitokoto
     const jsonData = await result.json()
     return jsonData
   }

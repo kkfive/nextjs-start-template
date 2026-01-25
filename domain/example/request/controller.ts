@@ -13,6 +13,7 @@ export class Controller {
   ) {
     try {
       const response = await service.unifiedScenario(client, scenario, config)
+      // @ts-expect-error - responseReturn: 'raw' returns Response, but type inference shows HttpResponseSuccess
       const result = await response.json()
       return transformData(result, config)
     }
@@ -32,6 +33,7 @@ export class Controller {
   ) {
     try {
       const response = await service.unifiedScenario(client, scenario, config)
+      // @ts-expect-error - responseReturn: 'raw' returns Response, but type inference shows HttpResponseSuccess
       return await response.json()
     }
     catch (error: any) {

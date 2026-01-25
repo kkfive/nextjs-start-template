@@ -12,11 +12,11 @@ export interface ValidationErrorOptions extends AppErrorOptions {
 }
 
 export class ValidationError extends AppError {
-  public override readonly name = 'ValidationError'
   public readonly fields: FieldError[]
 
   constructor(message: string, options?: ValidationErrorOptions) {
     super(message, options)
+    Object.defineProperty(this, 'name', { value: 'ValidationError', writable: false })
     this.fields = options?.fields ?? []
   }
 

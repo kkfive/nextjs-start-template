@@ -8,13 +8,13 @@ export interface ApiErrorOptions extends AppErrorOptions {
 }
 
 export class ApiError extends AppError {
-  public override readonly name = 'ApiError'
   public readonly status: number
   public readonly statusText?: string
   public readonly url?: string
 
   constructor(message: string, options: ApiErrorOptions) {
     super(message, options)
+    Object.defineProperty(this, 'name', { value: 'ApiError', writable: false })
     this.status = options.status
     this.statusText = options.statusText
     this.url = options.url

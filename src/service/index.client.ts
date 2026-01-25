@@ -1,6 +1,15 @@
+import { env } from '@/config/env'
 import { HttpService } from '@/lib/request'
 
+function getBaseUrl() {
+  if (env.NEXT_PUBLIC_API_URL) {
+    return env.NEXT_PUBLIC_API_URL
+  }
+  return '/'
+}
+
 const http = new HttpService({
+  prefixUrl: getBaseUrl(),
   hooks: {
     afterResponse: [
       // Response logging interceptor - logs request details and timing

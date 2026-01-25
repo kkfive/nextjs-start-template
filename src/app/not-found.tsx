@@ -43,7 +43,7 @@ export default function NotFound() {
             <Link href="/">返回首页</Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
-            <Link href="/example">查看示例</Link>
+            <Link href="/#features">查看示例</Link>
           </Button>
         </div>
       </div>

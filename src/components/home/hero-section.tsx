@@ -1,3 +1,6 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
@@ -28,7 +31,15 @@ export function HeroSection({
 }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white to-neutral-50 px-4 py-12 sm:py-16 md:py-20 lg:py-24">
-      <div className="mx-auto max-w-6xl">
+      <motion.div
+        className="mx-auto max-w-6xl"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          duration: 0.6,
+          ease: 'easeOut',
+        }}
+      >
         {/* Hero Content */}
         <div className="text-center">
           {/* Title with gradient */}
@@ -72,7 +83,7 @@ export function HeroSection({
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </section>
   )
 }
