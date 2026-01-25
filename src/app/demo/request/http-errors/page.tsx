@@ -1,9 +1,9 @@
 import { ScenarioCard } from '@domain/example/request/components/scenario-card'
 import { Controller } from '@domain/example/request/controller'
-import { ClientScenarioCard } from '@/app/example/request-demo/client-scenario-card'
 import { httpTo } from '@/lib/utils'
 import { httpServer } from '@/service/index.server'
 import { DemoWrapper } from '../../components/demo-wrapper'
+import { ClientScenarioCard } from '../components/client-scenario-card'
 
 // Force dynamic rendering to ensure cookies() is called within request context
 export const dynamic = 'force-dynamic'
