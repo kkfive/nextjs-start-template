@@ -67,7 +67,7 @@ export function HomePageClient({ techStack }: HomePageClientProps) {
         }))}
         ctaButtons={[
           { text: '浏览代码', href: 'https://github.com/kkfive/nextjs-start-template', variant: 'default' },
-          { text: '开始探索', href: '#features', variant: 'outline' },
+          { text: '查看示例', href: '/demo', variant: 'outline' },
         ]}
       />
 

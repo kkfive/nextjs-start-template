@@ -52,9 +52,9 @@ export const categoryIcons: Record<string, ReactNode> = {
  * 集中管理所有功能示例的数据，供首页和示例列表页共享使用
  *
  * 数据统计：
- * - 总功能数：6 个
+ * - 总功能数：9 个
  * - 分类数：4 个（UI, Forms, Data Fetching, State Management）
- * - 优先级分布：P5(1), P4(2), P3(3)
+ * - 优先级分布：P5(2), P4(4), P3(3)
  */
 export const siteFeatures: FeatureCategory[] = [
   {
@@ -62,8 +62,14 @@ export const siteFeatures: FeatureCategory[] = [
     icon: categoryIcons.UI,
     items: [
       {
+        name: 'Demo 示例集合',
+        href: '/demo',
+        description: '浏览所有功能示例，包含 UI、表单、数据请求、状态管理等完整演示',
+        priority: 5,
+      },
+      {
         name: 'Color Palette',
-        href: '/example/color',
+        href: '/demo/ui/color-palette',
         description: 'Tailwind CSS color system demonstration',
         priority: 3,
       },
@@ -75,7 +81,7 @@ export const siteFeatures: FeatureCategory[] = [
     items: [
       {
         name: 'Form Validation',
-        href: '/example/form',
+        href: '/demo/forms/form-validation',
         description: 'react-hook-form + zod validation',
         priority: 4,
       },
@@ -86,16 +92,28 @@ export const siteFeatures: FeatureCategory[] = [
     icon: categoryIcons['Data Fetching'],
     items: [
       {
-        name: 'HTTP Request Examples',
-        href: '/example/request-demo',
-        description: 'Unified request handling with interceptors (success, business errors, HTTP errors)',
-        priority: 5,
+        name: 'Request Interceptor',
+        href: '/demo/request/interceptor',
+        description: 'Request interceptor transforms response envelope',
+        priority: 4,
+      },
+      {
+        name: 'Raw Response Envelope',
+        href: '/demo/request/raw-envelope',
+        description: 'Raw response envelope without interceptor',
+        priority: 4,
+      },
+      {
+        name: 'HTTP Error Handling',
+        href: '/demo/request/http-errors',
+        description: 'HTTP error status codes (404, 500, 503)',
+        priority: 4,
       },
       {
         name: 'Hitokoto API',
-        href: '/example/request/hitokoto',
+        href: '/demo/request/hitokoto',
         description: 'External API request with ky',
-        priority: 4,
+        priority: 3,
       },
     ],
   },
@@ -105,7 +123,7 @@ export const siteFeatures: FeatureCategory[] = [
     items: [
       {
         name: 'Zustand Store',
-        href: '/example/zustand',
+        href: '/demo/state/zustand-mouse',
         description: 'Global state with Zustand',
         priority: 3,
       },
