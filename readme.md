@@ -33,27 +33,32 @@ Open [/](/) to view your application.
 
 ```
 nextjs-start-template/
-├── domain/                    # Business logic layer
+├── domain/                    # Business logic layer (framework-agnostic)
 │   └── example/               # Example domain modules
 │       ├── hitokoto/          # Hitokoto API example
-│       │   ├── const/         # Constants and API definitions
-│       │   ├── components/    # Domain-specific components
 │       │   ├── controller.ts  # Business logic orchestration
 │       │   ├── service.ts     # API service layer
 │       │   └── type.d.ts      # Type definitions
+│       ├── forms/             # Form schemas and types
 │       └── request/           # Request example module
 │
 ├── src/                       # Application layer
-│   ├── app/                   # Next.js App Router
-│   │   ├── api/               # API routes
-│   │   ├── example/           # Example pages
-│   │   └── menu/              # Menu example with sidebar
-│   ├── components/            # Shared UI components
-│   │   └── ui/                # Base UI components
+│   ├── app/                   # Next.js App Router (pages & routes only)
+│   │   ├── demo/              # Demo pages
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/            # React components
+│   │   ├── ui/                # Base UI components (shadcn)
+│   │   ├── domain/            # Domain-specific UI components
+│   │   │   ├── hitokoto/      # Hitokoto UI components
+│   │   │   └── request/       # Request UI components
+│   │   ├── demo/              # Demo-specific components
+│   │   ├── home/              # Home page components
+│   │   └── providers.tsx      # Global providers
+│   ├── config/                # Application configuration
 │   ├── hooks/                 # Custom React hooks
 │   ├── lib/                   # Core utilities
 │   │   └── request/           # HTTP client abstraction
-│   ├── service/               # HTTP service instances
 │   ├── store/                 # Zustand stores
 │   └── styles/                # Global styles
 │
@@ -63,14 +68,29 @@ nextjs-start-template/
 
 ### Architecture Overview
 
-- **`domain/`**: Contains business logic, organized by feature. Each module includes its own types, services, controllers, and components.
-- **`src/`**: Contains application-level code including pages, shared components, hooks, and utilities.
+This template follows a **three-layer architecture**:
 
-This separation ensures:
+1. **Domain Layer** (`domain/`)
+   - Pure business logic (Controllers, Services, Types)
+   - Framework-agnostic, no React/Next.js dependencies
+   - Can only depend on `src/lib/*` abstractions
 
-- Clear boundaries between business logic and UI
-- Reusable domain modules
-- Easier testing and maintenance
+2. **Component Layer** (`src/components/`)
+   - **`ui/`**: Base UI components (shadcn) - globally reusable
+   - **`domain/`**: Domain-specific UI components that combine domain logic with UI
+   - **`demo/`**, **`home/`**: Feature-specific components
+
+3. **Page Layer** (`src/app/`)
+   - Next.js App Router pages and routes
+   - Only contains page.tsx, layout.tsx, and route files
+   - No reusable components (move to `src/components/`)
+
+**Key Benefits**:
+
+- ✅ Clear separation of concerns (business logic vs UI vs routing)
+- ✅ Domain layer is portable and testable
+- ✅ UI components are reusable and well-organized
+- ✅ Follows Next.js App Router best practices
 
 ## Available Scripts
 
@@ -85,19 +105,35 @@ This separation ensures:
 
 ## Examples
 
-The template includes several example implementations:
+The template includes several example implementations in `/demo`:
 
-- **Color Palette** (`/example/color`) - Tailwind CSS color showcase
-- **Request Patterns** (`/example/request/*`) - HTTP request examples with error handling
-- **Zustand Store** (`/example/zustand`) - State management example
-- **Sidebar Menu** (`/menu`) - Navigation with sidebar layout
+- **Color Palette** (`/demo/ui/color-palette`) - Tailwind CSS color showcase
+- **Form Validation** (`/demo/forms/form-validation`) - react-hook-form + zod validation
+- **Request Patterns** (`/demo/request/*`) - HTTP request examples with error handling
+  - Hitokoto API integration
+  - HTTP error scenarios (400, 401, 404, 500, 503)
+  - Request interceptors
+  - Raw/Envelope response patterns
+- **Zustand Store** (`/demo/state/zustand-mouse`) - State management example
+
+Visit [http://localhost:3000/demo](http://localhost:3000/demo) to explore all examples.
 
 ## Path Aliases
 
 ```typescript
-import { Controller } from '@domain/example/hitokoto/controller' // domain/*
-import { cn } from '@/lib/utils' // src/*
+// Domain layer (business logic)
+import { Controller } from '@domain/example/hitokoto/controller'
+import { contactFormSchema } from '@domain/example/forms/contact'
+
+// Application layer (UI components, utilities)
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { HitokotoCard } from '@/components/domain/hitokoto/hitokoto-card'
 ```
+
+**Alias Configuration**:
+- `@domain/*` → `domain/*` (business logic)
+- `@/*` → `src/*` (application layer)
 
 ## License
 
