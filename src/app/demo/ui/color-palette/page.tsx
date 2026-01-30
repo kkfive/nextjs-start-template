@@ -1,4 +1,4 @@
-import { DemoWrapper } from '../../components/demo-wrapper'
+import { DemoWrapper } from '@/components/demo/demo-wrapper'
 
 export default function ColorPalettePage() {
   return (

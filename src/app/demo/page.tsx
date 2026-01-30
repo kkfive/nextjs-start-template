@@ -1,6 +1,6 @@
 import { ArrowRight, Trash2 } from 'lucide-react'
 import Link from 'next/link'
-import { demoNavConfig } from './config/demo-nav'
+import { demoNavConfig } from '@/config/demo-nav'
 
 export default function DemoIndexPage() {
   return (

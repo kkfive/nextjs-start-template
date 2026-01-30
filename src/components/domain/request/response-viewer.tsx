@@ -12,13 +12,13 @@ interface ResponseViewerProps {
   isExpanded?: boolean
 }
 
-export const ResponseViewer: React.FC<ResponseViewerProps> = ({
+export function ResponseViewer({
   status,
   data,
   statusCode,
   latency,
   isExpanded = true,
-}) => {
+}: ResponseViewerProps) {
   const getBorderColor = () => {
     switch (status) {
       case 'success':
@@ -99,5 +99,3 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
     </div>
   )
 }
-
-export default ResponseViewer

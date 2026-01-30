@@ -5,7 +5,7 @@ import { contactFormSchema } from '@domain/example/forms/contact'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { DemoWrapper } from '../../components/demo-wrapper'
+import { DemoWrapper } from '@/components/demo/demo-wrapper'
 
 export default function FormValidationPage() {
   const [submitted, setSubmitted] = useState<ContactFormData | null>(null)

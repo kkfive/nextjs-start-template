@@ -1,13 +1,13 @@
 'use client'
+import apis from '@domain/example/hitokoto/const/api'
+import { Controller } from '@domain/example/hitokoto/controller'
 import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button/index'
 import { Card } from '@/components/ui/card'
 import { EosBubbleLoading } from '@/components/ui/icon'
 import { http } from '@/service/index.base'
-import apis from '../../const/api'
-import { Controller } from '../../controller'
 
-export default function HitokotoClientCard({ initialData }: { initialData: any }) {
+export function HitokotoCard({ initialData }: { initialData: any }) {
   const { data, refetch, isFetching } = useQuery<Hitokoto.Hitokoto>({
     initialData,
     queryKey: [apis.getData.url],

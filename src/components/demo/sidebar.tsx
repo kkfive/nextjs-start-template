@@ -1,6 +1,6 @@
 'use client'
 
-import type { DemoNavCategory } from '../config/demo-nav'
+import type { DemoNavCategory } from '@/config/demo-nav'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'

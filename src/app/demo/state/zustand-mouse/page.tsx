@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect } from 'react'
+import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { Card } from '@/components/ui/card'
 import { useMouseStore } from '@/store/mouse-store'
-import { DemoWrapper } from '../../components/demo-wrapper'
 
 export default function ZustandMousePage() {
   const x = useMouseStore(state => state.x)

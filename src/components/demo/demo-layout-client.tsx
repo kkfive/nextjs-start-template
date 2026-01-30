@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { createContext, useEffect, useState } from 'react'
-import { Sidebar } from './components/sidebar'
-import { demoNavConfig } from './config/demo-nav'
+import { demoNavConfig } from '@/config/demo-nav'
+import { Sidebar } from './sidebar'
 
 interface SidebarContextValue {
   isOpen: boolean

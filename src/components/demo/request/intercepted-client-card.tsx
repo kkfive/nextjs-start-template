@@ -1,8 +1,8 @@
 'use client'
 
 import type { HttpMethod } from '@/components/ui/method-badge'
-import { ScenarioCard } from '@domain/example/request/components/scenario-card'
 import { Controller } from '@domain/example/request/controller'
+import { ScenarioCard } from '@/components/domain/request/scenario-card'
 import { httpClient } from '@/service/index.client'
 
 type ScenarioType = 'success' | 'business-error' | 'error-400' | 'error-401' | 'error-404' | 'error-500' | 'error-503'

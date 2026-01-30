@@ -3,7 +3,7 @@
 import { ChevronRight, Home } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { demoNavConfig } from '../config/demo-nav'
+import { demoNavConfig } from '@/config/demo-nav'
 
 interface DemoWrapperProps {
   children: React.ReactNode
