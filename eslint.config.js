@@ -36,7 +36,7 @@ export default antfu(
       '**/node_modules',
       '**/.pnpm-store',
       '**/pnpm-lock.yaml',
-    // ...其他 glob 模式
+      '**/docs',
     ],
     formatters: true,
   },

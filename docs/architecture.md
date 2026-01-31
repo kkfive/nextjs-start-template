@@ -1,65 +1,38 @@
-# Architecture
+# 架构文档
 
-This document describes the project architecture and module organization.
+本文档描述项目架构和模块组织。
 
-## Directory Structure
+## 目录结构
 
 ```
-├── domain/           # Business logic layer (framework-agnostic)
-│   ├── example/      # Example domain module
-│   │   ├── hitokoto/ # Hitokoto API integration
-│   │   │   ├── controller.ts  # Business logic orchestration
-│   │   │   ├── service.ts     # API service layer
-│   │   │   └── type.d.ts      # Type definitions
-│   │   ├── forms/    # Form schemas and types
-│   │   └── request/  # Request example module
-│   └── shared/       # Shared domain utilities
-│
-├── src/              # Application layer (Next.js specific)
-│   ├── app/          # Next.js App Router pages (pages & routes only)
-│   │   ├── demo/     # Demo pages
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   ├── components/   # React components
-│   │   ├── ui/       # Base UI components (shadcn)
-│   │   ├── domain/   # Domain-specific UI components
-│   │   │   ├── hitokoto/  # Hitokoto UI components
-│   │   │   └── request/   # Request UI components
-│   │   ├── demo/     # Demo-specific components
-│   │   └── home/     # Home page components
-│   ├── config/       # Application configuration
-│   ├── hooks/        # React hooks
-│   ├── lib/          # Utilities and services
-│   │   └── request/  # HTTP client (ky wrapper)
-│   ├── store/        # Zustand stores
-│   └── __tests__/    # Test utilities and mocks
-│
-└── docs/             # Documentation
+├── domain/           # 业务逻辑层 (框架无关，禁止 React)
+│   ├── {module}/     # 业务模块 (controller/service/type.d.ts)
+│   └── _shared/      # 共享工具 (下划线前缀 = 内部模块)
+├── src/              # 应用层 (Next.js)
+│   ├── app/          # 页面路由 (仅 page/layout/route)
+│   ├── components/   # UI 组件 (ui/ + domain/)
+│   ├── lib/          # 基础设施 (HTTP、工具函数)
+│   ├── hooks/        # React Hooks
+│   └── store/        # Zustand stores
+└── docs/             # 文档
 ```
 
-## Layer Separation
+> 详细目录约定见 `docs/conventions/directory.md`
 
-### Domain Layer (`domain/`)
+## 层级分离
 
-The domain layer contains **pure business logic** that is **framework-agnostic**:
+### 领域层 (`domain/`)
 
-- **Purpose**: Business logic orchestration, API services, data schemas, type definitions
-- **Dependencies**: Only `src/lib/*` abstractions (HttpService, etc.) and external libraries (zod, etc.)
-- **Restrictions**: NO React, NO Next.js, NO UI components
-- **Exports**: Controllers, Services, Schemas, Types
+领域层包含**纯业务逻辑**，**框架无关**：
 
-**Key Principle**: Domain layer must remain framework-agnostic to ensure portability and testability.
+- **职责**: 业务逻辑编排、API 服务、数据 Schema、类型定义
+- **依赖**: 仅 `src/lib/*` 抽象层和外部库 (zod 等)
+- **限制**: 禁止 React、Next.js、UI 组件
+- **导出**: Controller、Service、Schema、Type
+
+**核心原则**: 领域层必须保持框架无关，确保可移植性和可测试性。
 
 ```typescript
-// domain/example/forms/contact/schema.ts
-import { z } from 'zod'
-
-export const contactFormSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  message: z.string().min(10),
-})
-
 // domain/example/hitokoto/controller.ts
 import type { HttpService } from '@/lib/request'
 
@@ -71,160 +44,21 @@ export class Controller {
 }
 ```
 
-### Application Layer (`src/`)
+### 应用层 (`src/`)
 
-The application layer contains Next.js-specific code organized by responsibility:
+应用层包含 Next.js 特定代码，按职责组织：
 
-#### Pages (`src/app/`)
-- **Purpose**: Next.js App Router pages and routes
-- **Contains**: ONLY page.tsx, layout.tsx, and route-related files
-- **Restrictions**: NO reusable components (move to `src/components/`)
+#### 页面 (`src/app/`)
 
-#### Components (`src/components/`)
-- **`ui/`**: Base UI components (shadcn) - globally reusable
-- **`domain/`**: Domain-specific UI components that combine domain logic with UI
-- **`demo/`**: Demo-specific components
-- **`home/`**: Home page-specific components
-- **Root level**: Global components (providers, etc.)
+- **职责**: Next.js App Router 页面和路由
+- **内容**: 仅 page.tsx、layout.tsx 和路由相关文件
+- **限制**: 禁止可复用组件（移至 `src/components/`）
 
-#### Other Directories
-- **`hooks/`**: Custom React hooks
-- **`lib/`**: Utilities and services (HTTP client, utils, etc.)
-- **`store/`**: Zustand state management
-- **`config/`**: Application configuration
+#### 组件 (`src/components/`)
 
-```typescript
-// src/app/demo/page.tsx - Page file
-import { Controller } from '@domain/example/request/controller'
-import { ScenarioCard } from '@/components/domain/request/scenario-card'
+- **`ui/`**: 基础 UI 组件 (shadcn) - 全局可复用
+- **`domain/`**: 领域 UI 组件 - 结合业务逻辑与 UI
 
-// src/components/domain/request/scenario-card.tsx - Domain UI component
-import { Badge } from '@/components/ui/badge'
-import { Controller } from '@domain/example/request/controller'
-
-export function ScenarioCard() {
-  // Combines domain logic with UI presentation
-}
-```
-
-## Dependency Rules
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    src/ (Application)                       │
-│                                                             │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │              src/app/ (Pages & Routes)               │  │
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐    │  │
-│  │  │  page.tsx  │  │ layout.tsx │  │  route.ts  │    │  │
-│  │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘    │  │
-│  └────────┼───────────────┼───────────────┼───────────┘  │
-│           │               │               │              │
-│           ▼               ▼               ▼              │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │           src/components/ (UI Components)            │  │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐          │  │
-│  │  │   ui/    │  │  domain/ │  │   demo/  │          │  │
-│  │  │(shadcn)  │  │(Domain UI)│  │(Demo UI) │          │  │
-│  │  └────┬─────┘  └─────┬────┘  └─────┬────┘          │  │
-│  └───────┼──────────────┼──────────────┼───────────────┘  │
-│          │              │              │                  │
-│          │              ▼              │                  │
-│          │     ┌────────────────┐     │                  │
-│          │     │   src/lib/     │     │                  │
-│          │     │  (Utilities)   │     │                  │
-│          │     └────────┬───────┘     │                  │
-│          │              │             │                  │
-└──────────┼──────────────┼─────────────┼──────────────────┘
-           │              │             │
-           │              ▼             │
-           │     ┌────────────────┐    │
-           │     │   domain/      │    │
-           │     │ (Business Logic)│   │
-           │     └────────────────┘    │
-           │                           │
-           └───────────────────────────┘
-```
-
-**Architecture Layers**:
-
-1. **Base UI Layer** (`src/components/ui/`)
-   - shadcn components: Button, Card, Badge, etc.
-   - Globally reusable, no business logic
-   - Can be used anywhere in the application
-
-2. **Domain UI Layer** (`src/components/domain/`)
-   - Domain-specific UI components
-   - Combines domain logic with UI presentation
-   - Depends on: `domain/*` (business logic) + `src/components/ui/*` (base UI)
-
-3. **Business Logic Layer** (`domain/`)
-   - Pure business logic, framework-agnostic
-   - Controllers, Services, Types
-   - Depends on: `src/lib/*` abstractions only
-
-**Dependency Flow**:
-```
-Pages → Domain UI Components → Domain Logic
-  ↓           ↓
-Base UI ←─────┘
-```
-
-**Rules**:
-
-1. `domain/` MUST NOT import from `src/` (except `src/lib/*` abstractions)
-2. `domain/` MUST NOT contain React components or UI code
-3. `src/app/` MUST ONLY contain page.tsx, layout.tsx, and route files
-4. `src/components/domain/` CAN import from `domain/*` and `src/components/ui/*`
-5. `src/components/ui/` SHOULD be framework-agnostic (shadcn components)
-6. All reusable components MUST be in `src/components/`, not `src/app/`
-
-## Module Organization
-
-### Domain Modules
-
-Each domain module follows this structure:
-
-```
-domain/{module}/
-├── index.ts          # Barrel export (Controllers, Services, Types)
-├── controller.ts     # Business logic orchestration
-├── service.ts        # API service layer
-├── type.d.ts         # TypeScript types
-└── schema.ts         # Zod schemas (optional)
-```
-
-**Example**:
-```typescript
-// domain/example/hitokoto/index.ts
-export { Controller } from './controller'
-export { service } from './service'
-export type * from './type.d'
-```
-
-### UI Components
-
-#### Base UI Components (`src/components/ui/`)
-
-shadcn components follow this structure:
-
-```
-src/components/ui/{component}/
-├── index.tsx         # Component implementation
-├── props.ts          # Props interface (optional)
-└── {component}.test.tsx  # Tests
-```
-
-#### Domain UI Components (`src/components/domain/`)
-
-Domain-specific UI components:
-
-```
-src/components/domain/{module}/
-└── {component}.tsx   # Component that combines domain logic with UI
-```
-
-**Example**:
 ```typescript
 // src/components/domain/hitokoto/hitokoto-card.tsx
 import { Controller } from '@domain/example/hitokoto/controller'
@@ -232,13 +66,70 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
 export function HitokotoCard() {
-  // Combines domain logic (Controller) with UI (Button, Card)
+  // 结合领域逻辑 (Controller) 与 UI (Button, Card)
 }
 ```
 
-## Path Aliases
+## 依赖规则
 
-Configured in `tsconfig.json`:
+| 层级 | 可以导入 | 禁止导入 |
+|------|----------|----------|
+| `domain/` | `@/lib/*`、外部库 | `@/components/*`、`@/app/*`、`@/hooks/*`、`@/store/*` |
+| `src/components/domain/` | `@domain/*`、`@/components/ui/*`、`@/lib/*` | - |
+| `src/components/ui/` | 外部库 | `@domain/*`、业务逻辑 |
+| `src/app/` | 所有 | - |
+
+**依赖流向**:
+
+```
+页面 → 领域 UI 组件 → 领域逻辑
+  ↓         ↓
+基础 UI ←───┘
+```
+
+**规则**:
+
+1. `domain/` 禁止导入 `src/`（`src/lib/*` 除外）
+2. `domain/` 禁止包含 React 组件或 UI 代码
+3. `src/app/` 仅包含 page.tsx、layout.tsx 和路由文件
+4. `src/components/domain/` 可导入 `domain/*` 和 `src/components/ui/*`
+5. 所有可复用组件必须在 `src/components/`，而非 `src/app/`
+
+## 模块组织
+
+### 领域模块
+
+每个领域模块遵循以下结构：
+
+```
+domain/{module}/
+├── index.ts          # 统一导出
+├── controller.ts     # 业务逻辑编排
+├── service.ts        # API 服务层
+├── type.d.ts         # TypeScript 类型
+└── schema.ts         # Zod schemas (可选)
+```
+
+### UI 组件
+
+#### 基础 UI (`src/components/ui/`)
+
+```
+src/components/ui/{component}/
+├── index.tsx         # 组件实现
+└── {component}.test.tsx  # 测试
+```
+
+#### 领域 UI (`src/components/domain/`)
+
+```
+src/components/domain/{module}/
+└── {component}.tsx   # 结合领域逻辑与 UI 的组件
+```
+
+## 路径别名
+
+配置于 `tsconfig.json`：
 
 ```json
 {
@@ -249,11 +140,11 @@ Configured in `tsconfig.json`:
 }
 ```
 
-## Testing Strategy
+## 测试策略
 
-- **Unit tests**: Pure functions, schemas, utilities
-- **Component tests**: React components with Testing Library
-- **Integration tests**: API routes, data fetching
-- **Mocking**: MSW for HTTP requests
+- **单元测试**: 纯函数、Schema、工具函数
+- **组件测试**: React 组件 + Testing Library
+- **集成测试**: API 路由、数据获取
+- **Mock**: MSW 处理 HTTP 请求
 
-See `src/__tests__/` for test utilities and mock setup.
+详见 `src/__tests__/` 测试工具和 mock 配置。
