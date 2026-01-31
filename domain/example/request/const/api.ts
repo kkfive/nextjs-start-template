@@ -1,19 +1,22 @@
-const BASE_URL = 'http://localhost:3000'
 export default {
-  successApi: {
-    url: `${BASE_URL}/api/example/request/success`,
+  unifiedScenario: {
+    url: '/api/example/request/scenario',
+    method: 'POST',
+  },
+  success: {
+    url: '/api/example/request/success',
     method: 'GET',
   },
-  errorBusinessApi: {
-    url: `${BASE_URL}/api/example/request/error/bussiness`,
+  http404: {
+    url: '/api/example/request/error/404',
     method: 'GET',
   },
-  error400Api: {
-    url: `${BASE_URL}/api/example/request/error/400`,
+  http500: {
+    url: '/api/example/request/error/500',
     method: 'GET',
   },
-  error401Api: {
-    url: `${BASE_URL}/api/example/request/error/401`,
+  http503: {
+    url: '/api/example/request/error/503',
     method: 'GET',
   },
 }

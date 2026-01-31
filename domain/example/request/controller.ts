@@ -3,31 +3,48 @@ import type { HttpResponseError, HttpResponseSuccess, RequestOptions } from '@/l
 import { BusinessError } from '@/lib/request/error'
 import { service } from './service'
 
+type ScenarioType = 'success' | 'business-error' | 'error-400' | 'error-401' | 'error-404' | 'error-500' | 'error-503'
+
 export class Controller {
-  static async getSuccessData(client: HttpService | any, config?: RequestOptions) {
-    const result = await service.getSuccess(client, config)
-    const data = await result.json()
-    return transformData(data, config)
+  static async unifiedScenario(
+    client: HttpService | any,
+    scenario: ScenarioType,
+    config?: RequestOptions & { method?: 'GET' | 'POST' | 'PUT' | 'DELETE' },
+  ) {
+    try {
+      const response = await service.unifiedScenario(client, scenario, config)
+      // @ts-expect-error - responseReturn: 'raw' returns Response, but type inference shows HttpResponseSuccess
+      const result = await response.json()
+      return transformData(result, config)
+    }
+    catch (error: any) {
+      // Handle RequestError from @kkfive/request for HTTP error status codes
+      if (error.name === 'RequestError' && error.raw) {
+        return transformData(error.raw, config)
+      }
+      throw error
+    }
   }
 
-  static async getErrorBusinessData(client: HttpService | any, config?: RequestOptions) {
-    const result = await service.getErrorBusiness(client, config)
-    const data = await result.json()
-    return transformData(data, config)
-  }
-
-  static async getError400Data(client: HttpService | any, config?: RequestOptions) {
-    const result = await service.getError400(client, config)
-    const data = await result.json()
-    return transformData(data, config)
-  }
-
-  static async getError401Data(client: HttpService | any, config?: RequestOptions) {
-    const result = await service.getError401(client, config)
-    const data = await result.json()
-    return transformData(data, config)
+  static async rawScenario(
+    client: HttpService | any,
+    scenario: ScenarioType,
+    config?: RequestOptions & { method?: 'GET' | 'POST' | 'PUT' | 'DELETE' },
+  ) {
+    try {
+      const response = await service.unifiedScenario(client, scenario, config)
+      // @ts-expect-error - responseReturn: 'raw' returns Response, but type inference shows HttpResponseSuccess
+      return await response.json()
+    }
+    catch (error: any) {
+      if (error.name === 'RequestError' && error.raw) {
+        return error.raw
+      }
+      throw error
+    }
   }
 }
+
 function transformData<T>(data: HttpResponseSuccess<T> | HttpResponseError<T>, options?: RequestOptions) {
   if (data.success) {
     return data.data

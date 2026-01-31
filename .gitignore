@@ -42,3 +42,9 @@ dist/**
 
 # Jetbrains
 .idea
+
+# ai
+.workflow
+data/WebGUI.md
+.ace-tool/
+.claude

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import { Providers } from './providers'
+import { Providers } from '@/components/providers'
 import '@/styles/index.scss'
 
 const geistSans = localFont({
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} safe-area-inset-bottom overflow-hidden antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} safe-area-inset-bottom antialiased`}
       >
         <Providers>{children}</Providers>
       </body>
