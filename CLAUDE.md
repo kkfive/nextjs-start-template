@@ -38,12 +38,12 @@ src/app/             → 页面路由层 (仅 page/layout/route)
 
 ## 参考文档
 
-| 任务 | 文档 |
-|------|------|
-| 架构详情 | @docs/architecture.md |
+| 任务     | 文档                           |
+| -------- | ------------------------------ |
+| 架构详情 | @docs/architecture.md          |
 | 目录约定 | @docs/conventions/directory.md |
-| 命名规范 | @docs/conventions/naming.md |
-| 编码规范 | @docs/conventions/coding.md |
+| 命名规范 | @docs/conventions/naming.md    |
+| 编码规范 | @docs/conventions/coding.md    |
 
 ## 路径别名
 
