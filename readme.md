@@ -178,4 +178,4 @@ export function UserCard({ userId }: { userId: string }) {
 
 ## License
 
-MIT
+[MIT](https://github.com/kkfive/nextjs-start-template/blob/master/LICENSE)
