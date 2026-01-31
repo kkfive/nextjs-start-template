@@ -1,4 +1,5 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { TEST_BASE_URL } from '@/__tests__/mocks/handlers'
 import { server } from '@/__tests__/mocks/server'
 import { HttpService } from './index'
 
@@ -24,7 +25,7 @@ describe('httpService', () => {
 
   it('should make GET requests with prefixUrl', async () => {
     const http = new HttpService({
-      prefixUrl: '/',
+      prefixUrl: TEST_BASE_URL,
     })
 
     const response = await http.get<Response>('api/example/request/success')
@@ -38,7 +39,7 @@ describe('httpService', () => {
 
   it('should handle 400 errors', async () => {
     const http = new HttpService({
-      prefixUrl: '/',
+      prefixUrl: TEST_BASE_URL,
     })
 
     await expect(http.get('api/example/request/error/400')).rejects.toThrow()
@@ -46,7 +47,7 @@ describe('httpService', () => {
 
   it('should handle 401 errors', async () => {
     const http = new HttpService({
-      prefixUrl: '/',
+      prefixUrl: TEST_BASE_URL,
     })
 
     await expect(http.get('api/example/request/error/401')).rejects.toThrow()

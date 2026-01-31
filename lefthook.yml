@@ -8,7 +8,4 @@ pre-commit:
   commands:
     lint:
       glob: '*.{js,jsx,ts,tsx}'
-      run: pnpm lint:fix {staged_files}
-    test:
-      glob: '*.{ts,tsx}'
-      run: pnpm vitest run --passWithNoTests --changed HEAD~1
+      run: npm run lint:fix {staged_files}

@@ -19,7 +19,15 @@ describe('businessError', () => {
   it('should store error code', () => {
     const error = new BusinessError('Unauthorized', {
       code: 401,
-      response: { status: 401, data: null },
+      response: {
+        code: 401,
+        data: null,
+        success: false,
+        message: 'Unauthorized',
+        errorShowType: 2,
+        requestId: 'req-401',
+        timestamp: '2026-01-21T10:00:00Z',
+      },
     })
 
     expect(error.code).toBe(401)
@@ -27,8 +35,13 @@ describe('businessError', () => {
 
   it('should store response data', () => {
     const responseData = {
-      status: 400,
+      code: 400,
       data: { field: 'email', message: 'Invalid email' },
+      success: false as const,
+      message: 'Validation failed',
+      errorShowType: 2,
+      requestId: 'req-400',
+      timestamp: '2026-01-21T10:00:00Z',
     }
 
     const error = new BusinessError('Validation failed', {
@@ -47,7 +60,15 @@ describe('businessError', () => {
 
     const error = new BusinessError('Request failed', {
       code: 500,
-      response: { status: 500, data: null },
+      response: {
+        code: 500,
+        data: null,
+        success: false,
+        message: 'Internal Server Error',
+        errorShowType: 2,
+        requestId: 'req-500',
+        timestamp: '2026-01-21T10:00:00Z',
+      },
       options,
     })
 

@@ -11,7 +11,7 @@ describe('hitokoto service', () => {
   it('should fetch hitokoto data', async () => {
     const http = new HttpService()
 
-    const response = await service.getData(http)
+    const response = await service.getData(http) as unknown as Response
     const data = await response.json()
 
     expect(data).toHaveProperty('hitokoto')
@@ -22,7 +22,7 @@ describe('hitokoto service', () => {
   it('should return expected data structure', async () => {
     const http = new HttpService()
 
-    const response = await service.getData(http)
+    const response = await service.getData(http) as unknown as Response
     const data = await response.json()
 
     // Verify the mocked response structure

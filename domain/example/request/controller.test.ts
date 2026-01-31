@@ -1,4 +1,5 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { TEST_BASE_URL } from '@/__tests__/mocks/handlers'
 import { server } from '@/__tests__/mocks/server'
 import { HttpService } from '@/lib/request'
 import { BusinessError } from '@/lib/request/error'
@@ -9,7 +10,7 @@ describe('controller', () => {
 
   beforeAll(() => {
     server.listen()
-    httpClient = new HttpService()
+    httpClient = new HttpService({ prefixUrl: TEST_BASE_URL })
   })
 
   afterEach(() => {

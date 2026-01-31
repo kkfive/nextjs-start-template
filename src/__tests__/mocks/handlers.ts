@@ -1,5 +1,8 @@
 import { http, HttpResponse } from 'msw'
 
+// 测试环境的基础 URL
+export const TEST_BASE_URL = 'http://localhost:3000'
+
 /**
  * MSW 请求处理器，用于模拟 API 端点
  *
@@ -33,22 +36,22 @@ export const handlers = [
   }),
 
   // 示例：模拟内部 API 成功端点
-  http.get('//api/example/request/success', () => {
+  http.get(`${TEST_BASE_URL}/api/example/request/success`, () => {
     return HttpResponse.json({
       success: true,
       data: { message: 'Success response' },
     })
   }),
 
-  // 示��：模拟内部 API 错误端点
-  http.get('//api/example/request/error/400', () => {
+  // 示例：模拟内部 API 错误端点
+  http.get(`${TEST_BASE_URL}/api/example/request/error/400`, () => {
     return HttpResponse.json(
       { success: false, error: 'Bad Request' },
       { status: 400 },
     )
   }),
 
-  http.get('//api/example/request/error/401', () => {
+  http.get(`${TEST_BASE_URL}/api/example/request/error/401`, () => {
     return HttpResponse.json(
       { success: false, error: 'Unauthorized' },
       { status: 401 },
@@ -56,7 +59,7 @@ export const handlers = [
   }),
 
   // Unified scenario endpoint for controller tests
-  http.post('//api/example/request/scenario', async ({ request }) => {
+  http.post(`${TEST_BASE_URL}/api/example/request/scenario`, async ({ request }) => {
     const body = await request.json() as { scenario: string }
     const { scenario } = body
 
