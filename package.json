@@ -13,6 +13,7 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "preinstall": "npx only-allow pnpm",
+    "postinstall": "lefthook install",
     "up": "taze major -I",
     "prebuild": "npm run lint"
   },
