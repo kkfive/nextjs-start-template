@@ -1,7 +1,7 @@
-import type { VariantProps } from 'class-variance-authority'
+import type { VariantProps } from '@esdora/biz/atom-css'
 import { cn } from '@/lib/utils'
 import { Slot } from '@radix-ui/react-slot'
-import { cva } from 'class-variance-authority'
+import { cva } from '@esdora/biz/atom-css'
 
 import * as React from 'react'
 

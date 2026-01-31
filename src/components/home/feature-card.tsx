@@ -1,8 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { LucideArrowRight } from '@/components/ui/icon'
 
 export interface FeatureCardProps {
   title: string
@@ -81,7 +81,7 @@ export function FeatureCard({
         {/* Arrow indicator */}
         <div className="flex items-center text-sm font-medium text-blue-600 transition-transform group-hover:translate-x-1">
           <span>查看示例</span>
-          <ArrowRight className="ml-1 size-4" />
+          <LucideArrowRight className="ml-1 size-4" />
         </div>
       </Link>
     </motion.div>

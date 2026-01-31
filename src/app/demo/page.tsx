@@ -1,5 +1,5 @@
-import { ArrowRight, Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { LucideArrowRight, LucideTrash2 } from '@/components/ui/icon'
 import { demoNavConfig } from '@/config/demo-nav'
 
 export default function DemoIndexPage() {
@@ -17,7 +17,7 @@ export default function DemoIndexPage() {
       {/* How to Remove Demos */}
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-6">
         <div className="flex items-start gap-3">
-          <Trash2 className="mt-1 size-5 text-amber-700" />
+          <LucideTrash2 className="mt-1 size-5 text-amber-700" />
           <div className="space-y-2">
             <h2 className="font-semibold text-amber-900">
               How to Remove Demo Code
@@ -74,7 +74,7 @@ export default function DemoIndexPage() {
                         {item.description}
                       </p>
                     </div>
-                    <ArrowRight className="size-5 text-neutral-400 transition-transform group-hover:translate-x-1 group-hover:text-blue-700" />
+                    <LucideArrowRight className="size-5 text-neutral-400 transition-transform group-hover:translate-x-1 group-hover:text-blue-700" />
                   </div>
                 </Link>
               ))}

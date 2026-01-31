@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react'
-import { Database, FileText, Palette, Store } from 'lucide-react'
+import {
+  LucideDatabase,
+  LucideFileText,
+  LucidePalette,
+  LucideStore,
+} from '@/components/ui/icon'
 
 /**
  * Demo 导航项配置接口
@@ -34,7 +39,7 @@ export interface DemoNavCategory {
 export const demoNavConfig: DemoNavCategory[] = [
   {
     category: 'UI',
-    icon: <Palette className="size-5" />,
+    icon: <LucidePalette className="size-5" />,
     items: [
       {
         name: 'Color Palette',
@@ -45,7 +50,7 @@ export const demoNavConfig: DemoNavCategory[] = [
   },
   {
     category: 'Forms',
-    icon: <FileText className="size-5" />,
+    icon: <LucideFileText className="size-5" />,
     items: [
       {
         name: 'Form Validation',
@@ -56,7 +61,7 @@ export const demoNavConfig: DemoNavCategory[] = [
   },
   {
     category: 'Data Fetching',
-    icon: <Database className="size-5" />,
+    icon: <LucideDatabase className="size-5" />,
     items: [
       {
         name: 'HTTP Request - Interceptor',
@@ -82,7 +87,7 @@ export const demoNavConfig: DemoNavCategory[] = [
   },
   {
     category: 'State Management',
-    icon: <Store className="size-5" />,
+    icon: <LucideStore className="size-5" />,
     items: [
       {
         name: 'Zustand Store',

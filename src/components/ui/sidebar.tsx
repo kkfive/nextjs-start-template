@@ -1,6 +1,6 @@
 'use client'
 
-import type { VariantProps } from 'class-variance-authority'
+import type { VariantProps } from '@esdora/biz/atom-css'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
@@ -22,7 +22,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib/utils'
 import { Slot } from '@radix-ui/react-slot'
-import { cva } from 'class-variance-authority'
+import { cva } from '@esdora/biz/atom-css'
 import { LucidePanelLeft } from '@/components/ui/icon'
 import * as React from 'react'
 

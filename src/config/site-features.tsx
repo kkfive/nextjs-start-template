@@ -1,5 +1,11 @@
 import type { ReactNode } from 'react'
-import { AlertTriangle, Database, FileText, Palette, Store } from 'lucide-react'
+import {
+  LucideAlertTriangle,
+  LucideDatabase,
+  LucideFileText,
+  LucidePalette,
+  LucideStore,
+} from '@/components/ui/icon'
 
 /**
  * 功能卡片配置接口
@@ -40,11 +46,11 @@ export interface FeatureCategory {
  * 为每个分类提供对应的 Lucide 图标
  */
 export const categoryIcons: Record<string, ReactNode> = {
-  'UI': <Palette className="size-6" />,
-  'Forms': <FileText className="size-6" />,
-  'Data Fetching': <Database className="size-6" />,
-  'Error Handling': <AlertTriangle className="size-6" />,
-  'State Management': <Store className="size-6" />,
+  'UI': <LucidePalette className="size-6" />,
+  'Forms': <LucideFileText className="size-6" />,
+  'Data Fetching': <LucideDatabase className="size-6" />,
+  'Error Handling': <LucideAlertTriangle className="size-6" />,
+  'State Management': <LucideStore className="size-6" />,
 }
 
 /**

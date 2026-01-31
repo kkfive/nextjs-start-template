@@ -1,7 +1,7 @@
 'use client'
 
-import { Loader2 } from 'lucide-react'
 import React from 'react'
+import { LucideLoader2 } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 
 interface ResponseViewerProps {
@@ -46,7 +46,7 @@ export function ResponseViewer({
       <div className="flex items-center justify-between text-xs font-medium tracking-wider text-gray-500 uppercase">
         <div className="flex items-center gap-2">
           <span>Response Body</span>
-          {status === 'loading' && <Loader2 className="h-3 w-3 animate-spin text-blue-500" />}
+          {status === 'loading' && <LucideLoader2 className="h-3 w-3 animate-spin text-blue-500" />}
         </div>
         <div className="flex gap-3">
           {statusCode !== undefined && (
@@ -79,7 +79,7 @@ export function ResponseViewer({
         {status === 'loading' && !data
           ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                <LucideLoader2 className="h-8 w-8 animate-spin text-gray-400" />
               </div>
             )
           : (

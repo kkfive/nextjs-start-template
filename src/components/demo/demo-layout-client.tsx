@@ -1,9 +1,9 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { createContext, useEffect, useState } from 'react'
+import { LucideMenu, LucideX } from '@/components/ui/icon'
 import { demoNavConfig } from '@/config/demo-nav'
 import { Sidebar } from './sidebar'
 
@@ -50,7 +50,7 @@ export function DemoLayoutClient({ children }: { children: React.ReactNode }) {
             className="rounded-lg p-2 hover:bg-neutral-100"
             aria-label="Toggle sidebar"
           >
-            <Menu className="size-5" />
+            <LucideMenu className="size-5" />
           </button>
           <h1 className="text-lg font-semibold">Demo Examples</h1>
         </header>
@@ -89,7 +89,7 @@ export function DemoLayoutClient({ children }: { children: React.ReactNode }) {
                   className="rounded-lg p-2 hover:bg-neutral-100"
                   aria-label="Close sidebar"
                 >
-                  <X className="size-5" />
+                  <LucideX className="size-5" />
                 </button>
               </div>
 

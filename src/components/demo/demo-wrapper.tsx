@@ -1,8 +1,8 @@
 'use client'
 
-import { ChevronRight, Home } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { LucideChevronRight, LucideHome } from '@/components/ui/icon'
 import { demoNavConfig } from '@/config/demo-nav'
 
 interface DemoWrapperProps {
@@ -36,21 +36,21 @@ export function DemoWrapper({ children, title, description }: DemoWrapperProps) 
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-neutral-600">
         <Link href="/" className="hover:text-neutral-900">
-          <Home className="size-4" />
+          <LucideHome className="size-4" />
         </Link>
-        <ChevronRight className="size-4" />
+        <LucideChevronRight className="size-4" />
         <Link href="/demo" className="hover:text-neutral-900">
           Demo
         </Link>
         {categoryName && (
           <>
-            <ChevronRight className="size-4" />
+            <LucideChevronRight className="size-4" />
             <span className="text-neutral-400">{categoryName}</span>
           </>
         )}
         {demoTitle && (
           <>
-            <ChevronRight className="size-4" />
+            <LucideChevronRight className="size-4" />
             <span className="font-medium text-neutral-900">{demoTitle}</span>
           </>
         )}
