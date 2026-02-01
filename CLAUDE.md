@@ -1,68 +1,67 @@
 # 项目规范
 
-Next.js 16 + React 19 项目，采用领域驱动三层架构。
+Next.js 16 + React 19，三层架构 (Domain/应用/UI)。**输出语言**: 中文
 
-**输出语言**: 所有回复必须使用中文
+## 核心约束
 
-## 架构 (三层)
+**架构**: `domain/` (业务逻辑，禁止 React) → `src/lib/` (基础设施) → `src/components/` (UI) → `src/app/` (路由)
+
+**依赖**: `domain/` 仅可导入 `@/lib/*`，禁止 `@/components/*`、`@/app/*`、`@/hooks/*`、`@/store/*`
+
+**组件**: `export function Name() {}` (禁止箭头函数，仅限组件导出)
+
+**类型**: 优先 `type` (非 interface)
+
+**数据流**: 组件 (useQuery) → Controller → Service → HTTP
+
+**Server/Client**: 默认 Server Component，需要交互时添加 `'use client'`
+
+**UI 导入**: 必须通过 `@/components/ui/*` 使用 UI 组件，禁止直接导入 antd/sonner 等。例外: `ConfigProvider` 可在 `src/app/layout.tsx` 直接导入
+
+**错误处理**: 关键业务组件使用 `<ErrorBoundary>` 包裹，防止单点故障。全局错误由 `src/app/error.tsx` 处理
+
+## Domain 层规范（重要）
+
+**依赖注入**: `http: HttpService` **始终作为第一个参数**，禁止直接 import 全局 http 实例
+
+```typescript
+// ✅ 正确
+getList: async (http: HttpService, query?: ListQuery) => { ... }
+
+// ❌ 错误：http 不是第一个参数
+getList: async (query?: ListQuery, http: HttpService) => { ... }
+
+// ❌ 错误：直接 import 全局实例
+import { http } from '@/service/index.base'
+```
+
+**文件结构**:
 
 ```
-domain/              → 业务逻辑层 (框架无关，禁止 React)
-src/lib/             → 基础设施层 (HTTP、工具函数)
-src/components/ui/   → 基础 UI (shadcn，禁止业务逻辑)
-src/components/domain/ → 业务 UI (连接 domain 与 ui)
-src/app/             → 页面路由层 (仅 page/layout/route)
+domain/{module}/
+├── const/api.ts      # API 常量 + Query Keys（函数式）
+├── type.d.ts         # 类型定义（declare namespace + type）
+├── service.ts        # 纯数据获取（导出 {module}Service 对象）
+├── controller.ts     # 数据转换 + 业务编排（导出 {module}Controller 对象）
+├── hooks.ts          # React Query 封装（内部注入 httpClient）
+└── index.ts          # 统一导出
 ```
 
-**依赖规则**: `domain/` 可以导入 `@/lib/*`，禁止导入 `@/components/*`、`@/app/*`、`@/hooks/*`、`@/store/*`
+**Hooks 层**: 内部注入 `httpClient`（从 `@/service/index.client` 导入）
 
-## 关键规则
+## 详细规范 (按需加载)
 
-- **组件定义**: 使用 `export function Name() {}` (禁止箭头函数，仅限组件导出，回调/闭包允许箭头函数)
-- **类型定义**: 优先使用 `type` (非 interface)
-
-## 数据流模式
-
-```
-组件 (useQuery) → Domain Controller (静态方法) → Service → HTTP
-```
-
-- 组件层使用 `useQuery` 管理状态，调用 `Controller.method(http, options)`
-- HTTP 实例从 `@/service/index.base` 导入并注入
-- Query Key 必须来源于 Domain 层常量 (`domain/{module}/const/api.ts`)
-
-## 测试策略
-
-- **domain 层**: 优先编写单元测试（纯逻辑）
-- **UI 层**: 主要进行集成测试
-
-## 参考文档
-
-| 任务     | 文档                           |
-| -------- | ------------------------------ |
-| 架构详情 | @docs/architecture.md          |
-| 目录约定 | @docs/conventions/directory.md |
-| 命名规范 | @docs/conventions/naming.md    |
-| 编码规范 | @docs/conventions/coding.md    |
-
-## 路径别名
-
-- `@/*` → `src/*`
-- `@domain/*` → `domain/*`
-
-## 技术栈
-
-Next.js 16 (App Router) | React 19 | TypeScript 5.9 | Tailwind CSS 4 | Zustand | TanStack Query | ky | Vitest + MSW
-
-## 命令
-
-```bash
-pnpm dev          # 开发服务器 (port 5373)
-pnpm lint:fix     # ESLint 修复
-pnpm test:run     # 运行测试
-```
+| 任务       | Skill                       | 覆盖                                         |
+| ---------- | --------------------------- | -------------------------------------------- |
+| Domain 层  | /domain-layer               | 依赖注入、Service/Controller/Hooks、命名规范 |
+| 样式       | /styling-system             | ConfigProvider、CSS Variables、Tailwind      |
+| 编码       | /coding-standards           | TypeScript、React、错误处理、图标            |
+| 架构       | /project-architecture       | 层级、目录、命名                             |
+| Next.js    | /nextjs-app-router-patterns | Server/Client Components、路由               |
+| Ant Design | /ant-design                 | 组件选择、主题、SSR、**必须先查 API**        |
+| 动画       | /motion                     | Motion (Framer Motion)                       |
 
 ## Git 钩子
 
-- **commit-msg**: commitlint 校验（angular preset，类型见 `commitlint.config.js`）
-- **pre-commit**: lefthook 自动执行 `lint:fix` + `vitest --changed`
+- commit-msg: commitlint (angular preset)
+- pre-commit: lint:fix + vitest --changed

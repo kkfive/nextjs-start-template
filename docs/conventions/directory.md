@@ -3,7 +3,7 @@
 ## 根目录结构
 
 ```
-├── domain/           # 业务逻辑层 (框架无关)
+├── domain/           # 业务逻辑层 (框架无关，hooks.ts 除外)
 ├── src/              # 应用层 (Next.js)
 ├── docs/             # 文档
 ├── public/           # 静态资源
@@ -19,9 +19,10 @@ domain/
 │   ├── index.ts           # 统一导出
 │   ├── controller.ts      # 业务逻辑编排
 │   ├── service.ts         # API 服务层
-│   ├── type.d.ts          # 类型定义
+│   ├── hooks.ts           # React Query 封装（仅限数据获取/状态逻辑，禁止 JSX/UI 渲染）
+│   ├── type.d.ts          # 类型定义 (全局命名空间，禁止 export)
 │   ├── schema.ts          # Zod schemas (可选)
-│   └── const/             # 常量 (如 api.ts)
+│   └── const/             # 常量目录（如 api.ts 定义 API 常量 + Query Keys）
 └── _shared/               # 共享工具 (下划线前缀表示内部模块)
     ├── types/
     └── utils/
@@ -29,6 +30,7 @@ domain/
 
 **规则**:
 - 每个模块必须有 `index.ts` 作为唯一出口
+- `type.d.ts` 使用 `declare namespace` 声明全局类型，**禁止添加 export 语句**
 - `_shared/` 前缀表示跨模块共享的内部代码
 
 ## 应用层 (`src/`)
@@ -43,7 +45,8 @@ src/
 │       └── {endpoint}/
 │           └── route.ts
 ├── components/
-│   ├── ui/                # 基础 UI (shadcn)
+│   ├── ui/                # 基础 UI (透传或封装 antd)
+│   ├── common/            # 通用功能组件 (可复用的功能性组件)
 │   ├── domain/            # 领域 UI (结合业务逻辑)
 │   │   └── {module}/
 │   ├── {feature}/         # 功能特定组件
@@ -59,6 +62,14 @@ src/
 └── __tests__/             # 测试工具和 mocks
 ```
 
+**组件分类说明**：
+
+| 目录 | 用途 | 特点 | 示例 |
+|------|------|------|------|
+| `ui/` | 基础 UI 组件 | 纯 UI，无业务逻辑，透传或封装第三方 UI 库 | Button, Input, Modal |
+| `common/` | 通用功能组件 | 可复用的功能性组件，与业务场景相关但不依赖特定 domain | PdfViewer, ImageCropper, RichTextEditor |
+| `domain/` | 领域 UI 组件 | 结合特定业务逻辑，依赖 domain 层 | MaterialDocumentViewer, HitokotoCard |
+
 ## 文件放置规则
 
 | 文件类型 | 位置 | 示例 |
@@ -66,8 +77,12 @@ src/
 | 页面组件 | `src/app/{route}/page.tsx` | `src/app/demo/page.tsx` |
 | API 路由 | `src/app/api/{endpoint}/route.ts` | `src/app/api/revalidate/route.ts` |
 | 基础 UI | `src/components/ui/{component}/` | `src/components/ui/button/` |
-| 领域 UI | `src/components/domain/{module}/` | `src/components/domain/hitokoto/` |
-| 业务逻辑 | `domain/{module}/` | `domain/example/hitokoto/` |
+| 通用功能组件 | `src/components/common/{component}/` | `src/components/common/pdf-viewer/` |
+| 领域 UI | `src/components/domain/{module}/` | `src/components/domain/material/` |
+| 业务逻辑 | `domain/{module}/` | `domain/material/` |
+| Domain 类型定义 | `domain/{module}/type.d.ts` | `domain/material/type.d.ts` |
+| 工具类型定义 | `src/lib/types/{name}.ts` | `src/lib/types/utility.ts` |
+| 全局类型扩展 | `typings/{library}.d.ts` | `typings/axios.d.ts` |
 | React Hook | `src/hooks/use-{name}.ts` | `src/hooks/use-mobile.ts` |
 | Zustand Store | `src/store/{name}-store.ts` | `src/store/mouse-store.ts` |
 | 测试文件 | 与源文件同目录 `{name}.test.ts` | `src/lib/utils.test.ts` |
