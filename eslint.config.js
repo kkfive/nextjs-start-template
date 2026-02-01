@@ -37,6 +37,7 @@ export default antfu(
       '**/.pnpm-store',
       '**/pnpm-lock.yaml',
       '**/docs',
+      'CLAUDE.md',
     ],
     formatters: true,
   },

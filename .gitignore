@@ -47,4 +47,4 @@ dist/**
 .workflow
 data/WebGUI.md
 .ace-tool/
-.claude
+.claude/plan
