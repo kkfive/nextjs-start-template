@@ -1,24 +1,25 @@
 'use client'
-import apis from '@domain/example/hitokoto/const/api'
-import { Controller } from '@domain/example/hitokoto/controller'
+import type { Hitokoto } from '@domain/example/hitokoto'
+import { Controller } from '@domain/example/hitokoto'
+import { getData } from '@domain/example/hitokoto/const/api'
 import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button/index'
 import { Card } from '@/components/ui/card'
 import { EosBubbleLoading } from '@/components/ui/icon'
 import { http } from '@/service/index.base'
 
-export function HitokotoCard({ initialData }: { initialData: any }) {
-  const { data, refetch, isFetching } = useQuery<Hitokoto.Hitokoto>({
+export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
+  const { data, refetch, isFetching } = useQuery<Hitokoto>({
     initialData,
-    queryKey: [apis.getData.url],
-    queryFn: ({ signal }) =>
-      Controller.getData(http, { signal, searchParams: { c: 'a' } }),
+    queryKey: [getData.url],
+    queryFn: () =>
+      Controller.getData(http, { searchParams: { c: 'a' } }),
     enabled: false,
   })
 
   return (
     <div>
-      <Card text={data.hitokoto}>
+      <Card text={data?.hitokoto || ''}>
         <Button
           primary
           disabled={isFetching}

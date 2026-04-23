@@ -1,2 +1,2 @@
 export { contactFormSchema } from './schema'
-export type { ContactFormData } from './type'
+export type * from './type'

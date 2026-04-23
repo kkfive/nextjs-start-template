@@ -32,6 +32,9 @@ jobs:
       - name: Run ESLint
         run: pnpm lint
 
+      - name: Verify conventions
+        run: pnpm verify:conventions
+
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest

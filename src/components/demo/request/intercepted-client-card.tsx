@@ -1,7 +1,7 @@
 'use client'
 
 import type { HttpMethod } from '@/components/ui/method-badge'
-import { Controller } from '@domain/example/request/controller'
+import { Controller } from '@domain/example/request'
 import { ScenarioCard } from '@/components/domain/request/scenario-card'
 import { httpClient } from '@/service/index.client'
 

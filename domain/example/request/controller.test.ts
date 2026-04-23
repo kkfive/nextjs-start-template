@@ -3,7 +3,7 @@ import { TEST_BASE_URL } from '@/__tests__/mocks/handlers'
 import { server } from '@/__tests__/mocks/server'
 import { HttpService } from '@/lib/request'
 import { BusinessError } from '@/lib/request/error'
-import { Controller } from './controller'
+import * as Controller from './controller'
 
 describe('controller', () => {
   let httpClient: HttpService
@@ -42,9 +42,9 @@ describe('controller', () => {
       }
       catch (error) {
         expect(error).toBeInstanceOf(BusinessError)
-        expect((error as BusinessError<null>).code).toBe(1001)
-        expect((error as BusinessError<null>).message).toBe('Business logic error')
-        expect((error as BusinessError<null>).response).toMatchObject({
+        expect((error as BusinessError).code).toBe(1001)
+        expect((error as BusinessError).message).toBe('Business logic error')
+        expect((error as BusinessError).response).toMatchObject({
           success: false,
           code: 1001,
           message: 'Business logic error',
@@ -62,8 +62,8 @@ describe('controller', () => {
       }
       catch (error) {
         expect(error).toBeInstanceOf(BusinessError)
-        expect((error as BusinessError<null>).code).toBe(400)
-        expect((error as BusinessError<null>).message).toBe('Bad Request')
+        expect((error as BusinessError).code).toBe(400)
+        expect((error as BusinessError).message).toBe('Bad Request')
       }
     })
 
@@ -77,8 +77,8 @@ describe('controller', () => {
       }
       catch (error) {
         expect(error).toBeInstanceOf(BusinessError)
-        expect((error as BusinessError<null>).code).toBe(401)
-        expect((error as BusinessError<null>).message).toBe('Unauthorized')
+        expect((error as BusinessError).code).toBe(401)
+        expect((error as BusinessError).message).toBe('Unauthorized')
       }
     })
 
@@ -104,7 +104,7 @@ describe('controller', () => {
       }
       catch (error) {
         expect(error).toBeInstanceOf(BusinessError)
-        expect((error as BusinessError<null>).options).toMatchObject({
+        expect((error as BusinessError).options).toMatchObject({
           method: 'POST',
         })
       }
@@ -146,7 +146,7 @@ describe('controller', () => {
       }
       catch (error) {
         expect(error).toBeInstanceOf(BusinessError)
-        const businessError = error as BusinessError<null>
+        const businessError = error as BusinessError
         expect(businessError.code).toBe(1001)
         expect(businessError.message).toBe('Business logic error')
         expect(businessError.response).toMatchObject({

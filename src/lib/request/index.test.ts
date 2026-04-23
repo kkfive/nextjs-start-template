@@ -28,8 +28,7 @@ describe('httpService', () => {
       prefixUrl: TEST_BASE_URL,
     })
 
-    const response = await http.get<Response>('api/example/request/success')
-    const data = await response.json()
+    const data = await http.get<{ success: true, data: { message: string } }>('api/example/request/success')
 
     expect(data).toEqual({
       success: true,

@@ -1,4 +1,4 @@
-import { Controller } from '@domain/example/request/controller'
+import { Controller } from '@domain/example/request'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { InterceptedClientCard } from '@/components/demo/request/intercepted-client-card'
 import { ScenarioCard } from '@/components/domain/request/scenario-card'
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function InterceptorPage() {
   // Interceptor applied: returns data directly or throws BusinessError
-  const [interceptedSuccessErr, interceptedSuccessData] = await httpTo(
+  const [_interceptedSuccessErr, interceptedSuccessData] = await httpTo(
     Controller.unifiedScenario(httpServer, 'success'),
   )
   const [interceptedBusinessErr, interceptedBusinessData] = await httpTo(
@@ -37,7 +37,7 @@ export default async function InterceptorPage() {
             method="GET"
             endpoint="/api/example/request/success"
             mode="server"
-            initialData={interceptedSuccessData || interceptedSuccessErr}
+            initialData={interceptedSuccessData ?? undefined}
             expectedStatus="success"
           />
           <InterceptedClientCard
@@ -54,9 +54,16 @@ export default async function InterceptorPage() {
             method="POST"
             endpoint="/api/example/request/scenario"
             mode="server"
-            initialData={interceptedBusinessData || interceptedBusinessErr}
+            initialData={interceptedBusinessData ?? undefined}
             expectedStatus="business-error"
           />
+          {interceptedBusinessErr && (
+            <div className="col-span-full rounded-lg border border-orange-200 bg-orange-50 p-3 text-sm text-orange-700 dark:border-orange-800 dark:bg-orange-950/20">
+              Business Error:
+              {' '}
+              {interceptedBusinessErr.message}
+            </div>
+          )}
           <InterceptedClientCard
             title="Client: Business Error → BusinessError"
             description="Click to see interceptor convert to BusinessError"

@@ -105,6 +105,45 @@ export const handlers = [
           },
           { status: 401 },
         )
+      case 'error-404':
+        return HttpResponse.json(
+          {
+            success: false,
+            code: 404,
+            message: 'Not Found',
+            data: null,
+            errorShowType: 2,
+            requestId: 'req-404',
+            timestamp: '2026-01-21T10:00:00Z',
+          },
+          { status: 404 },
+        )
+      case 'error-500':
+        return HttpResponse.json(
+          {
+            success: false,
+            code: 500,
+            message: 'Internal Server Error',
+            data: null,
+            errorShowType: 2,
+            requestId: 'req-500',
+            timestamp: '2026-01-21T10:00:00Z',
+          },
+          { status: 500 },
+        )
+      case 'error-503':
+        return HttpResponse.json(
+          {
+            success: false,
+            code: 503,
+            message: 'Service Unavailable',
+            data: null,
+            errorShowType: 2,
+            requestId: 'req-503',
+            timestamp: '2026-01-21T10:00:00Z',
+          },
+          { status: 503 },
+        )
       default:
         return HttpResponse.json(
           { success: false, error: 'Unknown scenario' },

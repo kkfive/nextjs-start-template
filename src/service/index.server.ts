@@ -2,6 +2,7 @@ import process from 'node:process'
 import { cookies } from 'next/headers'
 import { env } from '@/config/env'
 import { HttpService } from '@/lib/request'
+import { createErrorResponse } from '@/lib/request/error-handler'
 
 function getBaseUrl() {
   if (env.API_BASE_URL) {
@@ -60,39 +61,15 @@ const http = new HttpService({
         return response
       },
 
-      // Server-side error handling interceptor - handles authentication and server errors
+      // Error handling interceptor - converts HTTP errors to structured BusinessError
       async (request, options, response) => {
-        const url = request.url
-
-        // Handle 401 Unauthorized - could trigger server-side redirect
-        if (response.status === 401) {
-          console.error(
-            `[Server Error] Unauthorized request to ${url}`,
-            'Consider redirecting to login page',
-          )
-          // In a real app, you might want to:
-          // - Clear invalid cookies
-          // - Redirect to login page
-          // - Return a specific error response
-        }
-
-        // Handle 5xx server errors
-        if (response.status >= 500) {
-          console.error(
-            `[Server Error] Server error ${response.status} for ${url}`,
-            'Upstream service may be down',
-          )
-          // In a real app, you might want to:
-          // - Trigger retry logic
-          // - Send error to monitoring service
-          // - Return fallback data
-        }
-
-        // Handle 403 Forbidden
-        if (response.status === 403) {
-          console.warn(
-            `[Server Error] Access forbidden to ${url}`,
-            'User may lack required permissions',
+        if (!response.ok) {
+          const url = request.url
+          const method = request.method || 'GET'
+          createErrorResponse(
+            { url, method, status: response.status, statusText: response.statusText },
+            null,
+            options,
           )
         }
 

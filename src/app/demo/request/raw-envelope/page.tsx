@@ -1,4 +1,4 @@
-import { Controller } from '@domain/example/request/controller'
+import { Controller } from '@domain/example/request'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { ClientScenarioCard } from '@/components/demo/request/client-scenario-card'
 import { ScenarioCard } from '@/components/domain/request/scenario-card'
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function RawEnvelopePage() {
   // Raw response: returns full response object
-  const [successErr, successData] = await httpTo(
+  const [, successData] = await httpTo(
     Controller.rawScenario(httpServer, 'success'),
   )
   const [businessErr, businessData] = await httpTo(
@@ -37,7 +37,7 @@ export default async function RawEnvelopePage() {
             method="GET"
             endpoint="/api/example/request/success"
             mode="server"
-            initialData={successData || successErr}
+            initialData={successData ?? undefined}
             expectedStatus="success"
           />
           <ClientScenarioCard
@@ -54,9 +54,16 @@ export default async function RawEnvelopePage() {
             method="POST"
             endpoint="/api/example/request/scenario"
             mode="server"
-            initialData={businessData || businessErr}
+            initialData={businessData ?? undefined}
             expectedStatus="business-error"
           />
+          {businessErr && (
+            <div className="col-span-full rounded-lg border border-orange-200 bg-orange-50 p-3 text-sm text-orange-700 dark:border-orange-800 dark:bg-orange-950/20">
+              Business Error:
+              {' '}
+              {businessErr.message}
+            </div>
+          )}
           <ClientScenarioCard
             title="Client: Business Error → Full Envelope"
             description="Click to see complete error envelope"

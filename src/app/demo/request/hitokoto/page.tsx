@@ -1,4 +1,4 @@
-import { Controller } from '@domain/example/hitokoto/controller'
+import { Controller } from '@domain/example/hitokoto'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { HitokotoCard } from '@/components/domain/hitokoto/hitokoto-card'
 import { httpTo } from '@/lib/utils'

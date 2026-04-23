@@ -14,6 +14,7 @@ export const LucidePanelLeft = CreateIcon('icon-[lucide--panel-left]')
 
 // Navigation & Actions
 export const LucideMenu = CreateIcon('icon-[lucide--menu]')
+export const LucideChevronLeft = CreateIcon('icon-[lucide--chevron-left]')
 export const LucideChevronRight = CreateIcon('icon-[lucide--chevron-right]')
 export const LucideArrowRight = CreateIcon('icon-[lucide--arrow-right]')
 export const LucideTrash2 = CreateIcon('icon-[lucide--trash-2]')
@@ -25,3 +26,8 @@ export const LucideFileText = CreateIcon('icon-[lucide--file-text]')
 export const LucidePalette = CreateIcon('icon-[lucide--palette]')
 export const LucideStore = CreateIcon('icon-[lucide--store]')
 export const LucideAlertTriangle = CreateIcon('icon-[lucide--alert-triangle]')
+
+// PDF Controls
+export const LucideZoomIn = CreateIcon('icon-[lucide--zoom-in]')
+export const LucideZoomOut = CreateIcon('icon-[lucide--zoom-out]')
+export const LucideRotateCw = CreateIcon('icon-[lucide--rotate-cw]')

@@ -1,5 +1,6 @@
 import { env } from '@/config/env'
 import { HttpService } from '@/lib/request'
+import { createErrorResponse } from '@/lib/request/error-handler'
 
 function getBaseUrl() {
   if (env.NEXT_PUBLIC_API_URL) {
@@ -27,28 +28,16 @@ const http = new HttpService({
         return response
       },
 
-      // Error transformation interceptor - converts HTTP errors to user-friendly messages
+      // Error handling interceptor - converts HTTP errors to structured BusinessError
       async (input, options, response) => {
         if (!response.ok) {
           const url = typeof input === 'string' ? input : input.url
-          console.error(
-            `[Client Error] Request failed: ${response.status} ${response.statusText}`,
-            { url, method: options.method || 'GET' },
+          const method = options.method || 'GET'
+          createErrorResponse(
+            { url, method, status: response.status, statusText: response.statusText },
+            null,
+            options,
           )
-
-          // For client-side, we can show user-friendly error messages
-          if (response.status >= 500) {
-            console.error('[Client Error] Server error occurred, please try again later')
-          }
-          else if (response.status === 401) {
-            console.warn('[Client Error] Authentication required, redirecting to login...')
-          }
-          else if (response.status === 403) {
-            console.warn('[Client Error] Access denied')
-          }
-          else if (response.status === 404) {
-            console.warn('[Client Error] Resource not found')
-          }
         }
 
         return response
@@ -67,15 +56,13 @@ const http = new HttpService({
             // Validate response structure (optional - can be customized)
             if (data && typeof data === 'object') {
               if ('success' in data && !data.success && 'code' in data) {
-                console.warn('[Client Validation] Business error detected:', {
-                  code: data.code,
-                  message: data.message,
-                })
+                // 业务错误已在 error-handler 中统一处理，此处仅做数据验证
               }
             }
           }
           catch (error) {
-            console.error('[Client Validation] Failed to parse JSON response:', error)
+            // JSON 解析失败由请求库底层处理，此处静默忽略
+            void error
           }
         }
 

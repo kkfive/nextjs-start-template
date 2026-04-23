@@ -6,8 +6,9 @@ export class HttpService {
   instance: RequestInstance
   constructor(defaultOptions: RequestOptions = {}) {
     const options: RequestOptions = {
-      retry: 0,
-      responseParser: { responseReturn: 'raw' },
+      retry: 1,
+      timeout: 30000,
+      responseParser: { responseReturn: 'body' },
     }
     this.instance = Request.create(
       defu(options, defaultOptions),
@@ -22,19 +23,19 @@ export class HttpService {
     return this.instance.get<T>(url, options)
   }
 
-  post<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.instance.post<T>(url, options?.json, options)
+  post<T = unknown>(url: RequestInput, body?: unknown, options?: RequestOptions) {
+    return this.instance.post<T>(url, body, options)
   }
 
-  put<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.instance.put<T>(url, options?.json, options)
+  put<T = unknown>(url: RequestInput, body?: unknown, options?: RequestOptions) {
+    return this.instance.put<T>(url, body, options)
   }
 
   delete<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.instance.delete<T>(url, options?.json, options)
+    return this.instance.delete<T>(url, options)
   }
 
-  patch<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.instance.patch<T>(url, options?.json, options)
+  patch<T = unknown>(url: RequestInput, body?: unknown, options?: RequestOptions) {
+    return this.instance.patch<T>(url, body, options)
   }
 }

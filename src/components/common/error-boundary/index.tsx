@@ -1,8 +1,8 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { Button } from 'antd'
 import { Component } from 'react'
-import { Button } from '@/components/ui/button'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -72,7 +72,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       // 默认错误 UI
       return (
-        <div className="flex min-h-[200px] items-center justify-center rounded-lg border border-red-200 bg-red-50 p-8">
+        <div className="flex min-h-50 items-center justify-center rounded-lg border border-red-200 bg-red-50 p-8">
           <div className="text-center">
             <div className="mb-4 text-4xl">⚠️</div>
             <h3 className="mb-2 text-lg font-semibold text-gray-800">组件加载失败</h3>

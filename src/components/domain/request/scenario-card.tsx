@@ -13,8 +13,8 @@ interface ScenarioCardProps {
   method: HttpMethod
   endpoint: string
   mode: 'server' | 'client'
-  initialData?: any
-  requestAction?: () => Promise<any>
+  initialData?: unknown
+  requestAction?: () => Promise<unknown>
   expectedStatus: 'success' | 'business-error' | 'http-error'
 }
 
@@ -37,7 +37,7 @@ export function ScenarioCard({
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>(
     mode === 'server' ? 'success' : 'idle',
   )
-  const [data, setData] = useState<any>(initialData)
+  const [data, setData] = useState<unknown>(initialData)
   const [statusCode, setStatusCode] = useState<number | undefined>()
   const [latency, setLatency] = useState<number | undefined>()
 
@@ -55,10 +55,15 @@ export function ScenarioCard({
       setStatusCode(200)
       setLatency(Date.now() - startTime)
     }
-    catch (error: any) {
+    catch (error) {
       setData(error)
       setStatus('error')
-      setStatusCode(error.statusCode || 500)
+      if (error instanceof Error && 'statusCode' in error) {
+        setStatusCode(error.statusCode as number)
+      }
+      else {
+        setStatusCode(500)
+      }
       setLatency(Date.now() - startTime)
     }
   }

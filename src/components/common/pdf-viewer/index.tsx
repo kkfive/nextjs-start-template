@@ -1,8 +1,8 @@
 'use client'
 
+import { Button } from 'antd'
 import { useState } from 'react'
 import { Document, Page } from 'react-pdf'
-import { Button } from '@/components/ui/button'
 import {
   LucideChevronLeft,
   LucideChevronRight,
@@ -127,7 +127,7 @@ export function PdfViewer({ file, className, onLoadSuccess, onError }: PdfViewer
       </div>
 
       {/* PDF 渲染区域 */}
-      <div className="flex min-h-[400px] justify-center overflow-hidden rounded-md border bg-muted/20">
+      <div className="flex min-h-100 justify-center overflow-hidden rounded-md border bg-muted/20">
         {file
           ? (
               <Document

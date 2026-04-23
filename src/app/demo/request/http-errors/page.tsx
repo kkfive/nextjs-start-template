@@ -1,4 +1,4 @@
-import { Controller } from '@domain/example/request/controller'
+import { Controller } from '@domain/example/request'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { ClientScenarioCard } from '@/components/demo/request/client-scenario-card'
 import { ScenarioCard } from '@/components/domain/request/scenario-card'
@@ -35,9 +35,16 @@ export default async function HttpErrorsPage() {
             method="GET"
             endpoint="/api/example/request/error/404"
             mode="server"
-            initialData={error404Data || error404Err}
+            initialData={error404Data ?? undefined}
             expectedStatus="http-error"
           />
+          {error404Err && (
+            <div className="col-span-full rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/20">
+              Server 404 Error:
+              {' '}
+              {error404Err.message}
+            </div>
+          )}
           <ClientScenarioCard
             title="Client-Side 404 Error"
             description="Click to trigger 404 error from client"
@@ -52,9 +59,16 @@ export default async function HttpErrorsPage() {
             method="GET"
             endpoint="/api/example/request/error/500"
             mode="server"
-            initialData={error500Data || error500Err}
+            initialData={error500Data ?? undefined}
             expectedStatus="http-error"
           />
+          {error500Err && (
+            <div className="col-span-full rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/20">
+              Server 500 Error:
+              {' '}
+              {error500Err.message}
+            </div>
+          )}
           <ClientScenarioCard
             title="Client-Side 500 Error"
             description="Click to trigger 500 error from client"
@@ -69,9 +83,16 @@ export default async function HttpErrorsPage() {
             method="GET"
             endpoint="/api/example/request/error/503"
             mode="server"
-            initialData={error503Data || error503Err}
+            initialData={error503Data ?? undefined}
             expectedStatus="http-error"
           />
+          {error503Err && (
+            <div className="col-span-full rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/20">
+              Server 503 Error:
+              {' '}
+              {error503Err.message}
+            </div>
+          )}
           <ClientScenarioCard
             title="Client-Side 503 Error"
             description="Click to trigger 503 error from client"
