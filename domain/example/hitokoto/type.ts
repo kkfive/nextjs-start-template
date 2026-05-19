@@ -1,4 +1,4 @@
-export interface Hitokoto {
+export type Hitokoto = {
   id: number
   uuid: string
   hitokoto: string
@@ -13,7 +13,7 @@ export interface Hitokoto {
   length: number
 }
 
-export interface GetDataAPI {
+export type GetDataAPI = {
   Params: {
     c?: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | '其他'
     encode?: 'text' | 'js' | 'json' | '其他'

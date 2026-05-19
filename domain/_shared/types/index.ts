@@ -1,11 +1,11 @@
-export interface Pagination {
+export type Pagination = {
   page: number
   pageSize: number
   total: number
   totalPages: number
 }
 
-export interface PaginatedResponse<T> {
+export type PaginatedResponse<T> = {
   data: T[]
   pagination: Pagination
 }

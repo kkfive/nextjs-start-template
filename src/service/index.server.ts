@@ -1,5 +1,6 @@
 import process from 'node:process'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { env } from '@/config/env'
 import { HttpService } from '@/lib/request'
 import { createErrorResponse } from '@/lib/request/error-handler'
@@ -7,6 +8,9 @@ import { createErrorResponse } from '@/lib/request/error-handler'
 function getBaseUrl() {
   if (env.API_BASE_URL) {
     return env.API_BASE_URL
+  }
+  if (env.NODE_ENV === 'production') {
+    throw new Error('API_BASE_URL environment variable is required in production')
   }
   return 'http://localhost:5373'
 }
@@ -66,6 +70,12 @@ const http = new HttpService({
         if (!response.ok) {
           const url = request.url
           const method = request.method || 'GET'
+
+          // 401 自动跳转登录页（可通过 context.skipAuthRedirect 禁用）
+          if (response.status === 401 && !options.context?.skipAuthRedirect) {
+            redirect('/login')
+          }
+
           createErrorResponse(
             { url, method, status: response.status, statusText: response.statusText },
             null,

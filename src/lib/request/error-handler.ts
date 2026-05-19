@@ -1,7 +1,7 @@
 import type { RequestOptions } from './type'
 import { BusinessError } from './error'
 
-export interface ErrorContext {
+export type ErrorContext = {
   url: string
   method: string
   status: number

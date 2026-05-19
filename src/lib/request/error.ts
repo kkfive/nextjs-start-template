@@ -1,6 +1,6 @@
 import type { RequestOptions } from '@/lib/request/type'
 
-interface BusinessErrorOptions {
+type BusinessErrorOptions = {
   code?: number
   options?: RequestOptions
   response?: unknown

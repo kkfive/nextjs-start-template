@@ -1,13 +1,13 @@
 import { create } from 'zustand'
 
-interface Store {
+type Store = {
   x: number
   y: number
-  update: () => void
+  update: (x: number, y: number) => void
 }
 
 export const useMouseStore = create<Store>(set => ({
   x: 0,
   y: 0,
-  update: () => set(state => ({ x: state.x + 1, y: state.y + 1 })),
+  update: (x: number, y: number) => set({ x, y }),
 }))

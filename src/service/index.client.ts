@@ -33,6 +33,12 @@ const http = new HttpService({
         if (!response.ok) {
           const url = typeof input === 'string' ? input : input.url
           const method = options.method || 'GET'
+
+          // 401 自动跳转登录页（可通过 context.skipAuthRedirect 禁用）
+          if (response.status === 401 && !options.context?.skipAuthRedirect && typeof window !== 'undefined') {
+            window.location.href = '/login'
+          }
+
           createErrorResponse(
             { url, method, status: response.status, statusText: response.statusText },
             null,

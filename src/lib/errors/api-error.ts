@@ -1,11 +1,11 @@
 import type { AppErrorOptions } from './app-error'
 import { AppError } from './app-error'
 
-export interface ApiErrorOptions extends AppErrorOptions {
+export type ApiErrorOptions = {
   status: number
   statusText?: string
   url?: string
-}
+} & AppErrorOptions
 
 export class ApiError extends AppError {
   public readonly status: number

@@ -1,4 +1,4 @@
-export interface SuccessAPI {
+export type SuccessAPI = {
   Response: {
     a: number
     b: number

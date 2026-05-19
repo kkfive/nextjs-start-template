@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 
-export interface TechStackItem {
+export type TechStackItem = {
   category: string
   technology: string
 }
