@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes } from 'react'
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLElement> {
+export type ButtonProps = ButtonHTMLAttributes<HTMLElement> & {
   primary?: boolean
   danger?: boolean
   sm?: boolean

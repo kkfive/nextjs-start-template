@@ -3,7 +3,7 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
 
-interface StatusBadgeProps {
+type StatusBadgeProps = {
   type: 'server' | 'client'
   className?: string
 }
