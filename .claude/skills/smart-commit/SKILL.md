@@ -270,7 +270,7 @@ function inferCommitType(files, changeType, allowedTypes) {
 **文件** (3):
 - domain/auth/index.ts
 - domain/auth/schema.ts
-- domain/auth/type.d.ts
+- domain/auth/type.ts
 
 **说明**: 实现用户认证的 Domain 层逻辑
 

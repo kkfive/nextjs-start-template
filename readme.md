@@ -5,7 +5,7 @@
 ## 特性
 
 - **Next.js 16** + **React 19** - 最新框架版本
-- **领域驱动架构** - 业务逻辑与 UI 分离，框架无关
+- **领域驱动架构** - 业务能力与 UI 分离，核心逻辑框架无关
 - **TypeScript 5.9** - 完整类型支持
 - **Tailwind CSS 4** - 原子化 CSS
 - **TanStack Query** - 服务端状态管理
@@ -69,8 +69,8 @@ pnpm dev
 ## 项目结构
 
 ```
-├── domain/           # 业务逻辑层 (框架无关)
-│   └── {module}/     # 业务模块 (controller/service/type.d.ts)
+├── domain/           # 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
+│   └── {module}/     # 业务模块 (controller/service/type.ts)
 ├── src/
 │   ├── app/          # 页面路由 (仅 page/layout/route)
 │   ├── components/
@@ -119,26 +119,32 @@ mkdir -p domain/user
 ```
 
 ```typescript
-// domain/user/service.ts
+// domain/user/controller.ts
 import type { HttpService } from '@/lib/request'
 
 import { service } from './service'
 
-export class Controller {
-  static async getUser(http: HttpService, id: string) {
-    return service.getUser(http, id)
-  }
+export async function getUser(http: HttpService, id: string) {
+  return service.getUser(http, id)
 }
+```
+
+```typescript
+// domain/user/service.ts
+import type { HttpService } from '@/lib/request'
 
 export const service = {
   async getUser(http: HttpService, id: string) {
-    return http.get(`/api/users/${id}`).json()
+    return http.get(`/api/users/${id}`)
   }
 }
+```
 
+```typescript
 // domain/user/index.ts
-export { Controller } from './controller'
+export * as Controller from './controller'
 export { service } from './service'
+export type * from './type'
 ```
 
 ### 2. 创建领域 UI 组件
@@ -150,12 +156,12 @@ export { service } from './service'
 import { Controller } from '@domain/user'
 import { useQuery } from '@tanstack/react-query'
 import { Card } from '@/components/ui/card'
-import { http } from '@/service/index.base'
+import { httpClient } from '@/service/index.client'
 
 export function UserCard({ userId }: { userId: string }) {
   const { data, isLoading } = useQuery({
     queryKey: ['user', userId],
-    queryFn: () => Controller.getUser(http, userId),
+    queryFn: () => Controller.getUser(httpClient, userId),
   })
 
   if (isLoading)

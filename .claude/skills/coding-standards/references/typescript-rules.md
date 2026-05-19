@@ -4,7 +4,7 @@
 
 | 场景 | 文件类型 | 原因 |
 |------|----------|------|
-| Domain 层业务类型 | `type.d.ts` + `declare namespace` | 全局可用，避免导入，框架无关 |
+| Domain 层业务类型 | `type.ts` + `export type` | 显式导入导出，避免全局污染 |
 | 工具类型 | `type.ts` + `export type` | 需要显式导入，避免全局污染 |
 | 第三方库扩展 | `.d.ts` + `declare module` | TypeScript 模块扩展机制 |
 
@@ -22,14 +22,25 @@ type UserData = {
 // ✅ const data: unknown = await fetch()
 ```
 
-## 特殊情况：何时使用 export type
+## 类型导出
 
-仅在以下场景使用 `type.ts` + `export type`（非 Domain 层）：
+Domain 层和工具类型都使用 `type.ts` + `export type`：
 
 ```typescript
+// domain/user/type.ts
+export type User = {
+  id: string
+  name: string
+}
+
 // src/lib/types/utility.ts - 工具类型
 export type Nullable<T> = T | null
-export type AsyncReturnType<T> = T extends (...args: any[]) => Promise<infer R> ? R : never
+export type AsyncReturnType<T> = T extends (...args: unknown[]) => Promise<infer R> ? R : never
+```
+
+仅第三方库扩展使用 `.d.ts`：
+
+```typescript
 
 // typings/axios.d.ts - 第三方库扩展
 import 'axios'

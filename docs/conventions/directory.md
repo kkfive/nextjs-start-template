@@ -20,7 +20,7 @@ domain/
 │   ├── controller.ts      # 业务逻辑编排
 │   ├── service.ts         # API 服务层
 │   ├── hooks.ts           # React Query 封装（仅限数据获取/状态逻辑，禁止 JSX/UI 渲染）
-│   ├── type.d.ts          # 类型定义 (全局命名空间，禁止 export)
+│   ├── type.ts            # 类型定义（export type）
 │   ├── schema.ts          # Zod schemas (可选)
 │   └── const/             # 常量目录（如 api.ts 定义 API 常量 + Query Keys）
 └── _shared/               # 共享工具 (下划线前缀表示内部模块)
@@ -30,7 +30,7 @@ domain/
 
 **规则**:
 - 每个模块必须有 `index.ts` 作为唯一出口
-- `type.d.ts` 使用 `declare namespace` 声明全局类型，**禁止添加 export 语句**
+- `type.ts` 使用 `export type` 导出类型，`index.ts` 统一 `export type * from './type'`
 - `_shared/` 前缀表示跨模块共享的内部代码
 
 ## 应用层 (`src/`)
@@ -80,7 +80,7 @@ src/
 | 通用功能组件 | `src/components/common/{component}/` | `src/components/common/pdf-viewer/` |
 | 领域 UI | `src/components/domain/{module}/` | `src/components/domain/material/` |
 | 业务逻辑 | `domain/{module}/` | `domain/material/` |
-| Domain 类型定义 | `domain/{module}/type.d.ts` | `domain/material/type.d.ts` |
+| Domain 类型定义 | `domain/{module}/type.ts` | `domain/material/type.ts` |
 | 工具类型定义 | `src/lib/types/{name}.ts` | `src/lib/types/utility.ts` |
 | 全局类型扩展 | `typings/{library}.d.ts` | `typings/axios.d.ts` |
 | React Hook | `src/hooks/use-{name}.ts` | `src/hooks/use-mobile.ts` |

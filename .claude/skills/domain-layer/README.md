@@ -30,7 +30,7 @@ getList: async (http: HttpService, query?: ListQuery) => { ... }
 ```
 domain/{module}/
 ├── const/api.ts      # API 常量 + Query Keys
-├── type.d.ts         # 类型定义
+├── type.ts           # 类型定义
 ├── service.ts        # 纯数据获取
 ├── controller.ts     # 数据转换 + 业务编排
 ├── hooks.ts          # React Query 封装

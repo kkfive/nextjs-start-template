@@ -135,7 +135,7 @@ git add -A
 **文件** (3):
 - domain/auth/index.ts
 - domain/auth/schema.ts
-- domain/auth/type.d.ts
+- domain/auth/type.ts
 
 ### Commit 2: feat: 新增认证页面
 **类型推断**: feat (新增页面路由)

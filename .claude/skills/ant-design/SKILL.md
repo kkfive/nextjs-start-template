@@ -127,4 +127,4 @@ import { Table } from '@/components/ui/table'
 
 - /styling-system: Ant Design 样式自定义规范（5 级优先级体系）
 - /coding-standards: UI 组件导入规范（必须通过 `@/components/ui/*`）
-- /nextjs-app-router-patterns: Next.js SSR 配置和 Server Components
+- /nextjs-app-router: Next.js SSR 配置和 Server Components

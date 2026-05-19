@@ -37,7 +37,7 @@ export default antfu(
       '**/.pnpm-store',
       '**/pnpm-lock.yaml',
       '**/docs',
-      'CLAUDE.md',
+      'AGENTS.md',
     ],
     formatters: true,
   },
@@ -56,9 +56,14 @@ export default antfu(
   // 注意：domain/ 目前从 @/lib/request 导入是允许的
   // 此规则防止 domain 导入 React 组件
   {
+    rules: {
+      'ts/consistent-type-definitions': ['error', 'type'],
+    },
+  },
+  {
     files: ['domain/**/*.ts', 'domain/**/*.tsx'],
     rules: {
-      'no-restricted-imports': ['warn', {
+      'no-restricted-imports': ['error', {
         patterns: [{
           group: ['@/components/*', '@/app/*', '@/hooks/*', '@/store/*'],
           message: 'Domain layer should not import React components, hooks, or stores. Keep domain code framework-agnostic.',

@@ -28,7 +28,7 @@ Topic | Description | `Reference`
    - `src/components/ui/` 仅封装或透传第三方 UI 库
    - `src/app/` 通过 `@/components/ui/*` 使用 UI 组件
 3. **选择目录结构**：
-   - Domain 模块：`domain/{module}/` (controller/service/type.d.ts)
+   - Domain 模块：`domain/{module}/` (controller/service/type.ts)
    - UI 组件：`src/components/ui/{component}/index.tsx`
    - 领域 UI：`src/components/domain/{module}/{component}.tsx`
 4. **应用命名规范**：
@@ -46,7 +46,7 @@ Topic | Description | `Reference`
 ## 三层架构
 
 ```
-domain/              → 业务逻辑层 (框架无关，禁止 React)
+domain/              → 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
 src/lib/             → 基础设施层 (HTTP、工具函数)
 src/components/ui/   → 基础 UI (透传或封装 antd)
 src/components/common/ → 通用功能组件 (可复用的功能性组件)

@@ -13,7 +13,7 @@ domain/
 └── {module}/
     ├── const/
     │   └── api.ts          # API 常量 + Query Keys（必需）
-    ├── type.d.ts           # 类型定义（必需）
+    ├── type.ts             # 类型定义（必需）
     ├── service.ts          # 服务层（必需）
     ├── controller.ts       # 控制器层（必需）
     ├── hooks.ts            # React Query 封装（推荐）
@@ -72,32 +72,28 @@ export const MATERIAL_QUERY_KEYS = {
 } as const
 ```
 
-### type.d.ts
+### type.ts
 
 ```typescript
-declare namespace Material {
-  // 响应类型
-  type ListResponse = { items: Item[], total: number }
-  type Item = { id: string, name: string }
-  type CreateResponse = { id: string }
-
-  // 请求类型
-  type CreateRequest = { name: string }
-  type UpdateRequest = { name?: string }
-  type ListQuery = { page?: number, keyword?: string }
-}
+export type ListResponse = { items: Item[], total: number }
+export type Item = { id: string, name: string }
+export type CreateResponse = { id: string }
+export type CreateRequest = { name: string }
+export type UpdateRequest = { name?: string }
+export type ListQuery = { page?: number, keyword?: string }
 ```
 
 ### service.ts
 
 ```typescript
 import type { HttpService } from '@/lib/request'
+import type { CreateRequest, ListQuery, UpdateRequest } from './type'
 
 export const materialService = {
-  getList: async (http: HttpService, query?: Material.ListQuery) => { ... },
+  getList: async (http: HttpService, query?: ListQuery) => { ... },
   getDetail: async (http: HttpService, id: string) => { ... },
-  create: async (http: HttpService, data: Material.CreateRequest) => { ... },
-  update: async (http: HttpService, id: string, data: Material.UpdateRequest) => { ... },
+  create: async (http: HttpService, data: CreateRequest) => { ... },
+  update: async (http: HttpService, id: string, data: UpdateRequest) => { ... },
   delete: async (http: HttpService, id: string) => { ... },
 }
 ```
@@ -106,16 +102,17 @@ export const materialService = {
 
 ```typescript
 import type { HttpService } from '@/lib/request'
+import type { CreateRequest, ListQuery } from './type'
 import { materialService } from './service'
 
 export const materialController = {
   // 直接透传
-  getList: async (http: HttpService, query?: Material.ListQuery) => {
+  getList: async (http: HttpService, query?: ListQuery) => {
     return materialService.getList(http, query)
   },
 
   // 业务编排
-  createAndRefresh: async (http: HttpService, data: Material.CreateRequest) => {
+  createAndRefresh: async (http: HttpService, data: CreateRequest) => {
     const created = await materialController.create(http, data)
     const list = await materialController.getList(http)
     return { created, list }
@@ -127,8 +124,9 @@ export const materialController = {
 
 ```typescript
 import { httpClient } from '@/service/index.client'
+import type { CreateRequest, ListQuery } from './type'
 
-export function useMaterialList(query?: Material.ListQuery) {
+export function useMaterialList(query?: ListQuery) {
   return useQuery({
     queryKey: MATERIAL_QUERY_KEYS.list(query),
     queryFn: () => materialController.getList(httpClient, query),
@@ -138,7 +136,7 @@ export function useMaterialList(query?: Material.ListQuery) {
 export function useCreateMaterial() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (data: Material.CreateRequest) =>
+    mutationFn: (data: CreateRequest) =>
       materialController.create(httpClient, data),
     onSuccess: () => {
       toast.success('创建成功')
@@ -151,13 +149,11 @@ export function useCreateMaterial() {
 ### index.ts
 
 ```typescript
-// ⚠️ 注意：type.d.ts 使用 declare namespace，是全局声明，不需要导出
-// 直接使用 Material.xxx 即可，无需 import
-
 export { MATERIAL_API, MATERIAL_QUERY_KEYS } from './const/api'
 export { materialService } from './service'
 export { materialController } from './controller'
 export { useMaterialList, useCreateMaterial, ... } from './hooks'
+export type * from './type'
 ```
 
 ## 扩展决策树

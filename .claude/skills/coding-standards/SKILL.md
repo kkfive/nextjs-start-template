@@ -18,7 +18,7 @@ Topic | Description | `Reference`
 层级依赖 | Domain 层禁止导入规则 | `references/layer-dependency.md`
 UI 导入规范 | 统一通过 `@/components/ui/*` 导入 | `references/ui-import-rules.md`
 TypeScript 规范 | 类型定义文件选择 | `references/typescript-rules.md`
-Domain 类型 | `declare namespace` 规范 | `references/domain-types.md`
+Domain 类型 | `type.ts` + `export type` 规范 | `references/domain-types.md`
 React 组件 | 函数声明、客户端标记 | `references/react-patterns.md`
 错误处理 | 使用项目错误类 | `references/error-handling.md`
 图标使用 | Iconify + Tailwind 方案 | `references/icon-usage.md`
@@ -30,7 +30,7 @@ React 组件 | 函数声明、客户端标记 | `references/react-patterns.md`
    - Domain 层：只能导入 `@/lib/*` 和外部库
    - 应用层：通过 `@/components/ui/*` 使用 UI 组件
 3. **选择类型定义方式**：
-   - Domain 层业务类型 → `type.d.ts` + `declare namespace`
+   - Domain 层业务类型 → `type.ts` + `export type`
    - 工具类型 → `type.ts` + `export type`
 4. **编写组件**：使用 `export function` 而非箭头函数
 5. **处理错误**：使用项目定义的错误类（ApiError、AppError、ValidationError）
@@ -67,14 +67,12 @@ import { Button } from 'antd'
 ### Domain 类型定义
 
 ```typescript
-// domain/{module}/type.d.ts
-declare namespace Material {
-  interface ExtractionResult {
-    coreInfo: CoreInfo
-  }
+// domain/{module}/type.ts
+export type ExtractionResult = {
+  coreInfo: CoreInfo
 }
 
-// ❌ 禁止 import 和 export
+// ✅ 在 index.ts 中统一添加：export type * from './type'
 ```
 
 ### React 组件

@@ -11,6 +11,8 @@ user-invocable: true
 - Cover: 依赖注入、Service/Controller/Hooks 分层、类型定义、命名规范、文件组织
 - Avoid: UI 组件、路由、样式（这些属于其他层）
 
+先加载项目原则：`.rules/domain.rule.md`。本 skill 只提供执行流程和示例，不作为规则源。
+
 ### `Reference` 索引
 
 Topic | Description | `Reference`
@@ -25,7 +27,7 @@ Hooks 层 | React Query 封装规范 | `references/hooks-layer.md`
 1. **确定模块名称**：使用小写单数形式（如 `material`、`auth`）
 2. **创建文件结构**：
    - `const/api.ts` - API 常量和 Query Keys
-   - `type.d.ts` - 类型定义
+   - `type.ts` - 类型定义
    - `service.ts` - 纯数据获取
    - `controller.ts` - 数据转换 + 业务编排
    - `hooks.ts` - React Query 封装
@@ -64,25 +66,20 @@ export const service = {
 | 文件 | 职责 | 导出 |
 |------|------|------|
 | `const/api.ts` | API 端点 + Query Keys | `{MODULE}_API`, `{MODULE}_QUERY_KEYS` |
-| `type.d.ts` | 类型定义 | **不导出**（全局声明，直接使用 `{Module}.xxx`） |
-| `service.ts` | 纯数据获取 | `{module}Service` |
-| `controller.ts` | 数据转换 + 业务编排 | `{module}Controller` |
+| `type.ts` | 类型定义 | `export type` 导出模块类型 |
+| `service.ts` | 纯数据获取 | `service` |
+| `controller.ts` | 数据转换 + 业务编排 | 命名函数 |
 | `hooks.ts` | React Query 封装 | `use{Module}{Action}` |
-| `index.ts` | 统一导出 | 除 type.d.ts 外的所有公共 API |
+| `index.ts` | 统一导出 | `export * as Controller from './controller'` 和 `export type * from './type'` |
 
 ### 类型定义
 
 ```typescript
-// domain/{module}/type.d.ts
-declare namespace Material {
-  // 响应类型
-  type ListResponse = { items: Item[], total: number }
-  type Item = { id: string, name: string }
-
-  // 请求类型
-  type CreateRequest = { name: string }
-  type ListQuery = { page?: number, keyword?: string }
-}
+// domain/{module}/type.ts
+export type ListResponse = { items: Item[], total: number }
+export type Item = { id: string, name: string }
+export type CreateRequest = { name: string }
+export type ListQuery = { page?: number, keyword?: string }
 ```
 
 ### Hooks 层
@@ -105,7 +102,7 @@ export function useMaterialList(query?: Material.ListQuery) {
 |---------|---------|------|
 | `import { http } from '@/service'` | `(http: HttpService) => {}` | 依赖注入支持多环境 |
 | `interface Type {}` | `type Type = {}` | 项目规范优先 type |
-| `export class Controller` | `export const controller = {}` | 对象导出更简洁 |
+| `export class Controller` | `export async function getList(...)` | 命名函数更易测试和组合，入口统一导出命名空间 |
 | `http` 作为最后一个参数 | `http` 作为第一个参数 | 形成肌肉记忆 |
 
 ## 相关 Skills

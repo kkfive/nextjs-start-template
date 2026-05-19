@@ -239,7 +239,7 @@ import { motion } from 'motion/react'
 ## 相关 Skills
 
 - /coding-standards: React 组件模式（函数声明、客户端标记）
-- /nextjs-app-router-patterns: Next.js Client Components 和 'use client'
+- /nextjs-app-router: Next.js Client Components 和 'use client'
 - /project-architecture: UI 层组件组织
 
 ## 官方文档

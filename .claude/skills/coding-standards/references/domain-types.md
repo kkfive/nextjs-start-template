@@ -1,148 +1,88 @@
 # Domain 层类型定义规范
 
-**文件命名**：`domain/{module}/type.d.ts`（必须使用 `.d.ts` 后缀）
+**文件命名**：`domain/{module}/type.ts`
 
 ## 规范
 
-1. 使用 `declare namespace` 声明命名空间
-2. **优先使用 `type` 而非 `interface`**（项目规范）
-3. **禁止添加任何 export 语句**（保持全局可用）
-4. **禁止添加任何 import 语句**（import 会将文件变为模块声明，失去全局可用性）
-5. 命名空间名称使用 PascalCase，与模块名对应
-6. 类型定义必须手动编写，不能依赖 `z.infer` 等需要导入的工具类型
-
-## 为什么使用 .d.ts + declare namespace
-
-| 优势 | 说明 |
-|------|------|
-| **全局可用** | 无需 import，减少导入语句 |
-| **避免循环依赖** | 类型定义不参与运行时，不会引入模块依赖 |
-| **语义明确** | `.d.ts` 明确表示"纯类型定义，无运行时代码" |
-| **命名空间隔离** | 多个模块可以有同名类型，通过命名空间避免冲突 |
-| **符合架构理念** | Domain 层框架无关，类型是编译时概念 |
+1. 使用 `export type` 导出类型，禁止 `declare namespace`。
+2. 优先使用 `type`，不要使用 `interface`。
+3. `index.ts` 必须包含 `export type * from './type'`。
+4. 业务代码通过 `import type` 引入需要的类型。
+5. 只有第三方库扩展或全局类型扩展才使用 `.d.ts`。
 
 ## 示例
 
 ```typescript
-// domain/material/type.d.ts
-declare namespace Material {
-  // ========== 响应类型 ==========
-
-  /** 列表响应 */
-  type ListResponse = {
-    items: Item[]
-    total: number
-    page: number
-    pageSize: number
-  }
-
-  /** 列表项 */
-  type Item = {
-    id: string
-    name: string
-    createdAt: string
-  }
-
-  /** 创建响应 */
-  type CreateResponse = {
-    id: string
-  }
-
-  // ========== 请求类型 ==========
-
-  /** 创建请求 */
-  type CreateRequest = {
-    name: string
-    category?: string
-  }
-
-  /** 列表查询 */
-  type ListQuery = {
-    page?: number
-    pageSize?: number
-    keyword?: string
-  }
+// domain/material/type.ts
+export type ListResponse = {
+  items: Item[]
+  total: number
+  page: number
+  pageSize: number
 }
 
-// ❌ 错误：不要添加 import（会将文件变为模块声明）
-// import type { SomeType } from 'some-library'
-
-// ❌ 错误：不要添加 export
-// export type { Material }
-```
-
-## 类型命名规范
-
-### 简化方案（推荐，大部分场景）
-
-当 API 返回格式已符合前端需求时，不需要区分 API 类型和业务模型：
-
-| 场景 | 命名格式 | 示例 |
-|------|---------|------|
-| 响应类型 | `{操作}Response` | `ListResponse`, `DetailResponse` |
-| 实体类型 | `{实体}` | `Item`, `Detail` |
-| 请求类型 | `{操作}Request` | `CreateRequest`, `UpdateRequest` |
-| 查询类型 | `{操作}Query` | `ListQuery` |
-
-### 完整方案（需要数据转换时）
-
-当需要数据转换时，区分 API 类型和业务模型：
-
-| 场景 | 命名格式 | 示例 |
-|------|---------|------|
-| API 原始类型 | `Api{操作}Response` | `ApiListResponse` |
-| API 实体 | `Api{实体}` | `ApiItem` |
-| 业务模型 | `{操作}Result` | `ListResult`（转换后） |
-| 业务实体 | `{实体}` | `Item`（转换后） |
-
-## 为什么禁止 import
-
-这是 TypeScript 的基本机制，与使用什么库无关：
-
-```typescript
-// ❌ 错误示例：一旦有 import，文件变为模块声明
-import type { ExternalType } from 'some-library'
-
-declare namespace MyModule {
-  type MyType = {
-    field: ExternalType  // 需要 import
-  }
+export type Item = {
+  id: string
+  name: string
+  createdAt: string
 }
 
-// 结果：MyModule.MyType 不再全局可用，必须显式导入才能使用
+export type CreateRequest = {
+  name: string
+  category?: string
+}
+
+export type ListQuery = {
+  page?: number
+  pageSize?: number
+  keyword?: string
+}
 ```
 
 ```typescript
-// ✅ 正确示例：纯全局声明，无 import
-declare namespace MyModule {
-  type MyType = {
-    field: string  // 手动定义，不依赖外部类型
-  }
-}
+// domain/material/index.ts
+export { MATERIAL_API, MATERIAL_QUERY_KEYS } from './const/api'
+export { materialService } from './service'
+export { materialController } from './controller'
+export type * from './type'
+```
 
-// 结果：MyModule.MyType 在整个项目中全局可用，无需导入
+```typescript
+// domain/material/service.ts
+import type { CreateRequest, ListQuery, ListResponse } from './type'
+import type { HttpService } from '@/lib/request'
+
+export const materialService = {
+  getList: async (http: HttpService, query?: ListQuery): Promise<ListResponse> => {
+    return http.get('/api/materials', { params: query })
+  },
+
+  create: async (http: HttpService, data: CreateRequest) => {
+    return http.post('/api/materials', data)
+  },
+}
 ```
 
 ## 常见场景处理
 
-| 场景 | 错误做法 | 正确做法 |
-|------|----------|----------|
-| 使用第三方库类型 | `import type { LibType }` | 手动定义对应的 type |
-| 使用工具类型 | `import type { Utility }` | 在 `src/lib/types/` 中定义并导出 |
-| 引用其他模块类型 | `import type { OtherType }` | 通过命名空间引用：`OtherModule.Type` |
-| Schema 推导类型 | `import { z }; type T = z.infer<...>` | 手动定义 type，与 Schema 分离 |
+| 场景 | 做法 |
+|------|------|
+| 使用第三方库类型 | 在 `type.ts` 顶部 `import type` |
+| 引用同模块类型 | 直接使用当前文件中的类型名 |
+| 引用其他模块类型 | `import type { OtherType } from '@domain/other'` |
+| Schema 推导类型 | 可以在 `type.ts` 中 `import type { z } from 'zod'` 后使用 `z.infer` |
+| 全局类型扩展 | 放到 `typings/*.d.ts` |
 
-## 使用方式
+## 反模式
 
 ```typescript
-// 无需导入，直接使用
-const result: Material.ListResponse = { ... }
-
-// 在组件 Props 中使用
-type MyComponentProps = {
-  data: Material.Item
+// 错误：Domain 类型不再使用全局 namespace
+declare namespace Material {
+  type Item = { id: string }
 }
 
-// 在函数参数中使用
-function handleData(data: Material.CreateRequest) { ... }
+// 错误：项目规范优先 type
+export interface Item {
+  id: string
+}
 ```

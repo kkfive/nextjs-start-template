@@ -5,8 +5,8 @@
 ## 目录结构
 
 ```
-├── domain/           # 业务逻辑层 (框架无关，禁止 React)
-│   ├── {module}/     # 业务模块 (controller/service/type.d.ts)
+├── domain/           # 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
+│   ├── {module}/     # 业务模块 (controller/service/type.ts)
 │   └── _shared/      # 共享工具 (下划线前缀 = 内部模块)
 ├── src/              # 应用层 (Next.js)
 │   ├── app/          # 页面路由 (仅 page/layout/route)
@@ -23,24 +23,22 @@
 
 ### 领域层 (`domain/`)
 
-领域层包含**纯业务逻辑**，**框架无关**：
+领域层表达业务能力，核心逻辑保持框架无关：
 
 - **职责**: 业务逻辑编排、API 服务、数据 Schema、类型定义
 - **依赖**: 仅 `src/lib/*` 抽象层和外部库 (zod 等)
-- **限制**: 禁止 React、Next.js、UI 组件
+- **限制**: 禁止 React 组件、Next.js、UI 组件；`hooks.ts` 是运行环境适配层例外
 - **导出**: Controller、Service、Schema、Type
 
-**核心原则**: 领域层必须保持框架无关，确保可移植性和可测试性。
+**核心原则**: Domain 不拥有具体运行环境。HTTP 实例由调用方注入，Service 负责原始请求，Controller 负责业务编排和数据转换。
 
 ```typescript
 // domain/example/hitokoto/controller.ts
 import type { HttpService } from '@/lib/request'
+import { service } from './service'
 
-export class Controller {
-  static async getData(client: HttpService) {
-    const result = await service.getData(client)
-    return result
-  }
+export async function getData(client: HttpService) {
+  return service.getData(client)
 }
 ```
 
@@ -71,7 +69,7 @@ export function PdfViewer({ file }: PdfViewerProps) {
 }
 
 // src/components/domain/material/material-document-viewer.tsx - 领域 UI
-import { Controller } from '@domain/material/controller'
+import { Controller } from '@domain/material'
 import { PdfViewer } from '@/components/common/pdf-viewer'
 import { Button } from '@/components/ui/button'
 
@@ -122,7 +120,7 @@ domain/{module}/
 ├── index.ts          # 统一导出
 ├── controller.ts     # 业务逻辑编排
 ├── service.ts        # API 服务层
-├── type.d.ts         # TypeScript 类型
+├── type.ts           # TypeScript 类型
 └── schema.ts         # Zod schemas (可选)
 ```
 

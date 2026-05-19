@@ -32,7 +32,7 @@
 ### 三层架构
 
 ```
-domain/              → 业务逻辑层 (框架无关)
+domain/              → 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
 src/lib/             → 基础设施层
 src/components/ui/   → 基础 UI
 src/components/domain/ → 业务 UI

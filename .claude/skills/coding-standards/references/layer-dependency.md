@@ -20,6 +20,6 @@
 
 ## 核心原则
 
-- **Domain 层框架无关**：禁止导入任何 React、Next.js 相关代码
+- **Domain 核心逻辑框架无关**：禁止导入 React 组件、Next.js、UI、应用 hooks 和 stores；`domain/**/hooks.ts` 是 React Query 适配层例外
 - **单向依赖**：应用层可以导入 Domain 层，反之不行
 - **抽象层例外**：Domain 层可以导入 `@/lib/*` 抽象层（HTTP、工具函数）

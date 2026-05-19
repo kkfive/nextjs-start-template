@@ -7,24 +7,22 @@
 当 API 返回格式已符合前端需求时，不需要区分 API 类型和业务模型：
 
 ```typescript
-declare namespace Material {
-  // 响应类型：{操作}Response
-  type ListResponse = { items: Item[], total: number }
-  type DetailResponse = { id: string, name: string, content: string }
-  type CreateResponse = { id: string }
-  type UpdateResponse = { id: string, updatedAt: string }
-  type DeleteResponse = { success: boolean }
+// 响应类型：{操作}Response
+export type ListResponse = { items: Item[], total: number }
+export type DetailResponse = { id: string, name: string, content: string }
+export type CreateResponse = { id: string }
+export type UpdateResponse = { id: string, updatedAt: string }
+export type DeleteResponse = { success: boolean }
 
-  // 实体类型：{实体}
-  type Item = { id: string, name: string }
+// 实体类型：{实体}
+export type Item = { id: string, name: string }
 
-  // 请求类型：{操作}Request
-  type CreateRequest = { name: string }
-  type UpdateRequest = { name?: string }
+// 请求类型：{操作}Request
+export type CreateRequest = { name: string }
+export type UpdateRequest = { name?: string }
 
-  // 查询类型：{操作}Query
-  type ListQuery = { page?: number, keyword?: string }
-}
+// 查询类型：{操作}Query
+export type ListQuery = { page?: number, keyword?: string }
 ```
 
 ### 完整方案（需要数据转换时）
@@ -32,15 +30,13 @@ declare namespace Material {
 当需要数据转换时，区分 API 类型和业务模型：
 
 ```typescript
-declare namespace Material {
-  // API 原始类型：Api{操作}Response
-  type ApiListResponse = { items: ApiItem[], total: number, page_size: number }
-  type ApiItem = { id: string, file_name: string, created_at: string }
+// API 原始类型：Api{操作}Response
+export type ApiListResponse = { items: ApiItem[], total: number, page_size: number }
+export type ApiItem = { id: string, file_name: string, created_at: string }
 
-  // 业务模型类型：{操作}Result
-  type ListResult = { items: Item[], total: number, pageSize: number }
-  type Item = { id: string, fileName: string, createdAt: Date }
-}
+// 业务模型类型：{操作}Result
+export type ListResult = { items: Item[], total: number, pageSize: number }
+export type Item = { id: string, fileName: string, createdAt: Date }
 ```
 
 ## 方法命名

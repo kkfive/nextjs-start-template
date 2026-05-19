@@ -26,7 +26,7 @@ TypeScript 和 React 编码规范 Skill
 - **层级依赖规则**：Domain 层禁止导入规则
 - **UI 组件导入规范**：统一通过 `@/components/ui/*` 导入
 - **TypeScript 规范**：类型定义文件选择
-- **Domain 类型定义**：`declare namespace` 规范
+- **Domain 类型定义**：`type.ts` + `export type` 规范
 - **React 组件模式**：函数声明、客户端标记
 - **错误处理**：使用项目错误类
 - **图标使用**：Iconify + Tailwind 方案
@@ -57,14 +57,13 @@ import { Button } from '@/components/ui/button'
 ### Domain 类型定义
 
 ```typescript
-// domain/material/type.d.ts
-declare namespace Material {
-  interface ExtractionResult {
-    coreInfo: CoreInfo
-  }
+// domain/material/type.ts
+export type ExtractionResult = {
+  coreInfo: CoreInfo
 }
 
-// ❌ 禁止 import 和 export
+// domain/material/index.ts
+export type * from './type'
 ```
 
 ### React 组件

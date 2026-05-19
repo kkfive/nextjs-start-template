@@ -143,6 +143,27 @@ rule('D05', 'Controller / Service 第一个参数类型应为 HttpService', (ctx
   return issues
 })
 
+rule('D12', 'Domain 核心逻辑不应直接导入 src/service 实例', (ctx) => {
+  const issues = []
+  for (const file of ctx.domainFiles) {
+    if (file.endsWith('/hooks.ts'))
+      continue
+    const content = fs.readFileSync(file, 'utf-8')
+    const lines = content.split('\n')
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]
+      if (/from\s+['"]@\/service\//.test(line)) {
+        issues.push({
+          file,
+          line: i + 1,
+          message: 'Domain 核心逻辑应通过参数接收 HttpService，不应直接选择具体 service 实例',
+        })
+      }
+    }
+  }
+  return issues
+})
+
 // --------------------------------------------------
 // Domain 层：类型安全
 // --------------------------------------------------
@@ -256,7 +277,7 @@ rule('D10', 'api.ts 应使用命名导出（非 default export）', (ctx) => {
 // UI 层规范
 // --------------------------------------------------
 
-rule('U01', 'UI 组件不应直接导入 @domain/.../controller', (_ctx) => {
+rule('U01', 'UI/App 层不应深链导入 @domain/.../controller 或 service', (_ctx) => {
   const issues = []
   const uiFiles = globSync('src/components/**/*.ts*', ROOT)
   const appFiles = globSync('src/app/**/*.ts*', ROOT)
@@ -387,6 +408,93 @@ rule('D11', 'domain 模块文件结构应完整（type.ts, const/api.ts, service
   return issues
 })
 
+// --------------------------------------------------
+// 规则治理文档
+// --------------------------------------------------
+
+rule('G01', 'AGENTS.md 应引用核心规则源', (_ctx) => {
+  const file = path.join(ROOT, 'AGENTS.md')
+  if (!fs.existsSync(file))
+    return [{ file, line: 1, message: '缺少 AGENTS.md' }]
+  const content = fs.readFileSync(file, 'utf-8')
+  if (!content.includes('@.rules/core.rule.md')) {
+    return [{ file, line: 1, message: 'AGENTS.md 应引用 @.rules/core.rule.md，避免复制完整规则清单' }]
+  }
+  return []
+})
+
+rule('G02', 'Domain skill 应引用 Domain 规则源', (_ctx) => {
+  const file = path.join(ROOT, '.claude/skills/domain-layer/SKILL.md')
+  if (!fs.existsSync(file))
+    return []
+  const content = fs.readFileSync(file, 'utf-8')
+  if (!content.includes('.rules/domain.rule.md')) {
+    return [{ file, line: 1, message: 'domain-layer skill 应引用 .rules/domain.rule.md，避免成为重复规则源' }]
+  }
+  return []
+})
+
+rule('G03', '文档示例不应推荐 class Controller', (_ctx) => {
+  const issues = []
+  const markdownFiles = [
+    ...globSync('docs/**/*.md', ROOT),
+    ...globSync('.claude/skills/**/*.md', ROOT),
+    path.join(ROOT, 'readme.md'),
+    path.join(ROOT, 'AGENTS.md'),
+  ].filter(file => fs.existsSync(file))
+
+  for (const file of markdownFiles) {
+    const content = fs.readFileSync(file, 'utf-8')
+    const lines = content.split('\n')
+    for (let i = 0; i < lines.length; i++) {
+      if (!lines[i].includes('export class Controller'))
+        continue
+      const nearby = lines.slice(Math.max(0, i - 8), i + 1).join('\n')
+      const markedAsAntiPattern = /反模式|不要|错误|不推荐/.test(nearby)
+      if (!markedAsAntiPattern) {
+        issues.push({
+          file,
+          line: i + 1,
+          message: 'Controller 推荐命名函数导出；如需展示 class 写法，必须明确标记为反模式',
+        })
+      }
+    }
+  }
+  return issues
+})
+
+rule('G04', '文档不应使用过期的 Domain 绝对化描述', (_ctx) => {
+  const issues = []
+  const markdownFiles = [
+    ...globSync('docs/**/*.md', ROOT),
+    ...globSync('.claude/skills/**/*.md', ROOT),
+    path.join(ROOT, 'readme.md'),
+    path.join(ROOT, 'AGENTS.md'),
+  ].filter(file => fs.existsSync(file))
+
+  const stalePatterns = [
+    /业务逻辑层 \(框架无关\)/,
+    /框架无关，禁止 React/,
+    /Domain 层框架无关/,
+    /禁止导入任何 React/,
+  ]
+
+  for (const file of markdownFiles) {
+    const content = fs.readFileSync(file, 'utf-8')
+    const lines = content.split('\n')
+    for (let i = 0; i < lines.length; i++) {
+      if (stalePatterns.some(pattern => pattern.test(lines[i]))) {
+        issues.push({
+          file,
+          line: i + 1,
+          message: '请使用“Domain 核心逻辑框架无关，hooks.ts 为适配层例外”的表述',
+        })
+      }
+    }
+  }
+  return issues
+})
+
 // ============================================================
 // 工具函数
 // ============================================================
@@ -413,6 +521,9 @@ function globSync(pattern, cwd) {
       }
       else if (baseExt === '.tsx') {
         exts = ['.tsx']
+      }
+      else if (baseExt.startsWith('.')) {
+        exts = [baseExt]
       }
       else {
         exts = ['.ts', '.tsx']

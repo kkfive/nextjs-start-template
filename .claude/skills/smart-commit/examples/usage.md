@@ -37,7 +37,7 @@ Skill 会自动分析并生成 commit plan：
 **文件** (3):
 - domain/auth/index.ts
 - domain/auth/schema.ts
-- domain/auth/type.d.ts
+- domain/auth/type.ts
 
 **说明**: 实现用户认证的 Domain 层逻辑
 
@@ -88,7 +88,7 @@ Skill 会自动分析并生成 commit plan：
 ```
 domain/auth/index.ts
 domain/auth/schema.ts
-domain/auth/type.d.ts
+domain/auth/type.ts
 src/components/ui/form/index.tsx
 src/components/ui/input/index.tsx
 src/app/(auth)/login/page.tsx
