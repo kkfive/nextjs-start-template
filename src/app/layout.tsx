@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
+import { PageTransition } from '@/components/page-transition'
 import { Providers } from '@/components/providers'
+import { SiteFooter } from '@/components/site-footer'
+import { SiteHeader } from '@/components/site-header'
 import '@/styles/index.scss'
 
 const geistSans = localFont({
@@ -15,8 +18,8 @@ const geistMono = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Nextjs Start Template',
-  description: 'Nextjs Start Template',
+  title: 'Next.js Start Template',
+  description: '现代化 Next.js 启动模板，集成领域驱动架构',
 }
 
 export default function RootLayout({
@@ -25,11 +28,34 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh-CN" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const colorTheme = localStorage.getItem('color-theme') || 'warm'
+                const mode = localStorage.getItem('mode') || 'system'
+                const resolved = mode === 'system'
+                  ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                  : mode
+                document.documentElement.setAttribute('data-theme', colorTheme)
+                if (resolved === 'dark') document.documentElement.classList.add('dark')
+              })()
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} safe-area-inset-bottom antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <SiteHeader />
+          <PageTransition>
+            {children}
+          </PageTransition>
+          <SiteFooter />
+        </Providers>
       </body>
     </html>
   )

@@ -4,13 +4,13 @@ import type { ReactNode } from 'react'
 import { Button } from 'antd'
 import { Component } from 'react'
 
-interface ErrorBoundaryProps {
+type ErrorBoundaryProps = {
   children: ReactNode
   fallback?: (error: Error, reset: () => void) => ReactNode
   onError?: (error: Error, errorInfo: React.ErrorInfo) => void
 }
 
-interface ErrorBoundaryState {
+type ErrorBoundaryState = {
   hasError: boolean
   error: Error | null
 }

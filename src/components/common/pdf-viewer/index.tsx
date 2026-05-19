@@ -17,7 +17,7 @@ import '@/lib/pdf-worker' // 导入 worker 配置
 import 'react-pdf/dist/Page/TextLayer.css'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 
-export interface PdfViewerProps {
+export type PdfViewerProps = {
   /** 远程 URL 或本地 File 对象 */
   file: string | File | Blob | null
   /** 容器类名 */

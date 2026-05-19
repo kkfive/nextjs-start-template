@@ -1,96 +1,98 @@
 import Link from 'next/link'
-import { LucideArrowRight, LucideTrash2 } from '@/components/ui/icon'
+import {
+  LucideArrowUpRight,
+  LucideTrash2,
+} from '@/components/ui/icon'
 import { demoNavConfig } from '@/config/demo-nav'
 
 export default function DemoIndexPage() {
   return (
-    <div className="container mx-auto max-w-4xl space-y-12 px-4 py-8">
+    <div className="mx-auto max-w-6xl space-y-16 px-6 py-12 sm:py-16">
       {/* Hero Section */}
-      <div className="space-y-4">
-        <h1 className="text-4xl font-bold tracking-tight">Demo Examples</h1>
-        <p className="text-lg text-neutral-600">
-          Explore the features and capabilities of this Next.js template through interactive examples.
-          Each demo showcases a specific feature with minimal, focused code.
+      <div className="space-y-4 text-center">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          功能演示
+        </h1>
+        <p className="mx-auto max-w-2xl text-muted-foreground">
+          通过交互式示例探索模板的各种功能。每个演示都聚焦于特定特性，展示最佳实践。
         </p>
       </div>
 
       {/* How to Remove Demos */}
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-6">
+      <div className="rounded-xl border border-amber-200/60 bg-amber-50/50 p-5 dark:border-amber-900/40 dark:bg-amber-950/20">
         <div className="flex items-start gap-3">
-          <LucideTrash2 className="mt-1 size-5 text-amber-700" />
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+            <LucideTrash2 className="size-4" />
+          </div>
           <div className="space-y-2">
-            <h2 className="font-semibold text-amber-900">
-              How to Remove Demo Code
+            <h2 className="text-sm font-semibold text-amber-900 dark:text-amber-300">
+              如何移除演示代码
             </h2>
-            <p className="text-sm text-amber-800">
-              When starting your project, you can safely delete all demo code by removing these directories:
+            <p className="text-sm text-amber-800 dark:text-amber-400/80">
+              开始新项目时，可以安全地删除以下目录：
             </p>
-            <ul className="space-y-1 text-sm text-amber-800">
-              <li>
-                <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono">src/app/demo/</code>
-              </li>
-              <li>
-                <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono">src/app/api/demo/</code>
-              </li>
-              <li>
-                <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono">domain/demo/</code>
-              </li>
-            </ul>
-            <p className="text-sm text-amber-800">
-              The core template will continue to work without any demo code.
-            </p>
+            <div className="flex flex-wrap gap-2">
+              {['src/app/demo/', 'src/app/api/demo/', 'domain/demo/'].map(path => (
+                <code
+                  key={path}
+                  className="rounded-md bg-amber-100 px-2 py-0.5 font-mono text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+                >
+                  {path}
+                </code>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Demo Categories */}
-      <div className="space-y-8">
-        <h2 className="text-2xl font-bold">Browse by Category</h2>
+      <div className="space-y-12">
+        <h2 className="text-xl font-bold tracking-tight">按分类浏览</h2>
 
         {demoNavConfig.map(category => (
           <div key={category.category} className="space-y-4">
             {/* Category Header */}
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-md">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/8 text-primary">
                 {category.icon}
               </div>
-              <h3 className="text-xl font-semibold">{category.category}</h3>
+              <h3 className="text-lg font-semibold">{category.category}</h3>
+              <span className="ml-1 rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                {category.items.length}
+              </span>
             </div>
 
             {/* Category Items */}
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {category.items.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+                  className="group flex flex-col rounded-xl border border-border/50 bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-border hover:shadow-md"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <h4 className="font-semibold text-neutral-900 group-hover:text-blue-700">
+                  <div className="mb-3 flex items-start justify-between">
+                    <div className="space-y-1">
+                      <h4 className="font-semibold text-foreground">
                         {item.name}
                       </h4>
-                      <p className="text-sm text-neutral-600">
+                      <p className="text-sm leading-relaxed text-muted-foreground">
                         {item.description}
                       </p>
                     </div>
-                    <LucideArrowRight className="size-5 text-neutral-400 transition-transform group-hover:translate-x-1 group-hover:text-blue-700" />
+                    <LucideArrowUpRight className="size-4 shrink-0 text-muted-foreground/40 transition-all duration-200 group-hover:text-primary" />
+                  </div>
+
+                  <div className="mt-auto pt-2">
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-primary">
+                      打开演示
+                      <LucideArrowUpRight className="size-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </span>
                   </div>
                 </Link>
               ))}
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Back to Home */}
-      <div className="border-t border-neutral-200 pt-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-900"
-        >
-          ← Back to Homepage
-        </Link>
       </div>
     </div>
   )

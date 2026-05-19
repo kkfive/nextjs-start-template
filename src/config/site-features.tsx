@@ -11,7 +11,7 @@ import {
  * 功能卡片配置接口
  * 定义单个功能示例的完整信息
  */
-export interface FeatureCardConfig {
+export type FeatureCardConfig = {
   /** 示例名称 */
   name: string
   /** 示例路由路径 */
@@ -32,7 +32,7 @@ export interface FeatureCardConfig {
 /**
  * 功能分类
  */
-export interface FeatureCategory {
+export type FeatureCategory = {
   /** 分类名称 */
   category: string
   /** 分类图标（仅用于首页展示） */
