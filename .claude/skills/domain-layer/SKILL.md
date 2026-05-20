@@ -1,111 +1,51 @@
 ---
 name: domain-layer
-description: Domain 层架构规范 - 依赖注入、Service/Controller/Hooks 分层、类型定义、命名规范。用于创建新 Domain 模块、编写 Service/Controller/Hooks、理解数据流。
+description: Domain 层架构规范 - HttpService 依赖注入、Service/Controller/Hooks 分层、命名空间导出、React Query 适配。用于在 domain/ 下新建模块、编写 Service/Controller/hooks、解决跨层 import 和测试隔离问题。
 user-invocable: true
 ---
 
 # Domain Layer
 
-## S - Scope
-- Target: Domain 层代码（`domain/` 目录）
-- Cover: 依赖注入、Service/Controller/Hooks 分层、类型定义、命名规范、文件组织
-- Avoid: UI 组件、路由、样式（这些属于其他层）
+## Scope
+- Target: `domain/` 目录下的业务能力建模
+- Cover: HttpService 注入、Service/Controller/Hooks 分层、类型与命名、模块入口
+- Avoid: UI 组件、路由、样式（属于其他层，分别去 `/coding-standards`、`/nextjs-app-router`、`/styling-system`）
 
-先加载项目原则：`.rules/domain.rule.md`。本 skill 只提供执行流程和示例，不作为规则源。
+**先加载项目原则**：项目根 `.rules/domain.rule.md`。本 skill 只提供执行流程与示例，不重述规则。
 
-### `Reference` 索引
+## Common Tasks
 
-Topic | Description | `Reference`
---- | --- | ---
-依赖注入 | HttpService 参数传递规范 | `references/dependency-injection.md`
-文件结构 | 模块文件组织和渐进式扩展 | `references/file-structure.md`
-命名规范 | 类型、方法、常量命名规则 | `references/naming-conventions.md`
-Hooks 层 | React Query 封装规范 | `references/hooks-layer.md`
-完整示例 | Auth/Material 模块示例 | `references/examples.md`
+| 触发场景 | 路由 |
+|---|---|
+| 新建一个 Domain 模块 | `workflows/create-module.md` |
+| 写 / 改 Service（原始请求） | `workflows/write-service.md` |
+| 写 / 改 Controller（业务编排） | `workflows/write-controller.md` |
+| 写 / 改 hooks（React Query 封装） | `references/hooks-layer.md` |
+| HttpService 依赖注入规则 | `references/dependency-injection.md` |
+| 文件如何组织（const / type / service / controller / hooks / index） | `references/file-structure.md` |
+| 命名规范（模块名、文件名、Query Keys） | `references/naming-conventions.md` |
+| 完整示例（auth、material 模块） | `references/examples.md` |
+| 踩坑：循环依赖 / hooks 漏注入 / 类型导出 | `references/gotchas.md` |
 
-## P - Process
-1. **确定模块名称**：使用小写单数形式（如 `material`、`auth`）
-2. **创建文件结构**：
-   - `const/api.ts` - API 常量和 Query Keys
-   - `type.ts` - 类型定义
-   - `service.ts` - 纯数据获取
-   - `controller.ts` - 数据转换 + 业务编排
-   - `hooks.ts` - React Query 封装
-   - `index.ts` - 统一导出
-3. **实现依赖注入**：`http: HttpService` 始终作为第一个参数
-4. **编写 Hooks**：内部注入 `httpClient`，统一错误处理
+源头表见 `routing.yaml`。
 
-## O - Output
-- 符合依赖注入规范的 Service/Controller
-- 类型安全的 Hooks
-- 统一的导出接口
-- 验证清单：依赖注入、类型定义、命名规范
+## 反模式速查
 
-## 核心规范
+| ❌ 不要 | ✅ 应该 |
+|---|---|
+| `import { http } from '@/service'` 写在 Service 里 | `service.x(http: HttpService, ...)` 注入 |
+| `http` 不在第一个参数 | `http` 永远第一参 |
+| `export class Controller` | `export async function getList(...)` 命名函数 |
+| `interface Type {}` | `type Type = {}` |
+| 入口 `export * from './controller'` | `export * as Controller from './controller'` 命名空间 |
+| hooks 直接调 Service 跳过 Controller | hooks 调 Controller，Controller 调 Service |
 
-### 依赖注入（最重要）
+## Session Discipline
 
-```typescript
-// ✅ 正确：http 始终作为第一个参数
-getList: async (http: HttpService, query?: ListQuery) => { ... }
-getDetail: async (http: HttpService, id: string) => { ... }
-create: async (http: HttpService, data: CreateRequest) => { ... }
-
-// ❌ 错误：http 不是第一个参数
-getList: async (query?: ListQuery, http: HttpService) => { ... }
-
-// ❌ 错误：直接 import 全局实例
-import { http } from '@/service/index.base'
-export const service = {
-  getList: async () => http.get('/api/list') // 无法适配不同环境
-}
-```
-
-### 文件职责
-
-| 文件 | 职责 | 导出 |
-|------|------|------|
-| `const/api.ts` | API 端点 + Query Keys | `{MODULE}_API`, `{MODULE}_QUERY_KEYS` |
-| `type.ts` | 类型定义 | `export type` 导出模块类型 |
-| `service.ts` | 纯数据获取 | `service` |
-| `controller.ts` | 数据转换 + 业务编排 | 命名函数 |
-| `hooks.ts` | React Query 封装 | `use{Module}{Action}` |
-| `index.ts` | 统一导出 | `export * as Controller from './controller'` 和 `export type * from './type'` |
-
-### 类型定义
-
-```typescript
-// domain/{module}/type.ts
-export type ListResponse = { items: Item[], total: number }
-export type Item = { id: string, name: string }
-export type CreateRequest = { name: string }
-export type ListQuery = { page?: number, keyword?: string }
-```
-
-### Hooks 层
-
-```typescript
-// domain/{module}/hooks.ts
-import { httpClient } from '@/service/index.client' // Client 环境专用
-
-export function useMaterialList(query?: Material.ListQuery) {
-  return useQuery({
-    queryKey: MATERIAL_QUERY_KEYS.list(query),
-    queryFn: () => materialController.getList(httpClient, query), // 注入 httpClient
-  })
-}
-```
-
-## 反模式
-
-| ❌ 不要 | ✅ 应该 | 原因 |
-|---------|---------|------|
-| `import { http } from '@/service'` | `(http: HttpService) => {}` | 依赖注入支持多环境 |
-| `interface Type {}` | `type Type = {}` | 项目规范优先 type |
-| `export class Controller` | `export async function getList(...)` | 命名函数更易测试和组合，入口统一导出命名空间 |
-| `http` 作为最后一个参数 | `http` 作为第一个参数 | 形成肌肉记忆 |
+每次进入 `domain/` 任务时**重新阅读项目根 `.rules/domain.rule.md`** 与本 SKILL.md。规则与示例可能因新模块的真实需求演化。
 
 ## 相关 Skills
 
-- /coding-standards: TypeScript 和 React 编码规范
-- /project-architecture: 项目架构和目录规范
+- `/coding-standards`：TypeScript / React 编码规范
+- `/project-architecture`：三层架构与目录约定
+- `/nextjs-app-router`：在 Server Component / Server Action 中调用 Controller

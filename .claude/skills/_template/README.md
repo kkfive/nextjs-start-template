@@ -1,47 +1,51 @@
-# Skill 模板
+# Skill 模板（基于 skill-based-architecture）
 
-这是创建新 Claude Code skills 的模板。
+创建新 skill 时复制本目录到 `.claude/skills/<your-skill-name>/`，按 `SKILL.md` 顶部指引填写。
 
 ## 目录结构
 
 ```
-skill-name/
-├── SKILL.md           # 主文件（必需）
-├── README.md          # 概览文档（必需）
-├── references/        # 详细参考文档（可选）
-│   ├── topic1.md
-│   └── topic2.md
-└── examples/          # 代码示例（可选）
-    └── example1.tsx
+<skill-name>/
+├── SKILL.md              # 入口（≤ 90 行 body + ≤ 25 行 description）
+├── routing.yaml          # 任务路由的单一源
+├── README.md             # 人类可读概览（可选）
+├── rules/                # 长期硬约束（"什么是真的"）
+│   └── *.md
+├── workflows/            # 步骤化流程（"怎么做"）
+│   └── *.md
+└── references/           # 深度查询资料（按需打开）
+    ├── *.md
+    └── gotchas.md        # 推荐：高价值踩坑
 ```
 
-## SPOR 框架
+## 16 条原则（摘自 skill-based-architecture，用作自检）
 
-所有 skills 必须遵循 SPOR 结构：
+1. **SKILL.md 双预算**：description ≤ 25 行 + body ≤ 90 行
+2. **单一 skill 目录**：所有正式文档在 `skills/<name>/`，不在仓库根
+3. **Rules ≠ Flows**：约束放 `rules/`，步骤放 `workflows/`
+4. **routing.yaml 单一源**：SKILL.md 仅引用，不重复维护
+5. **Cursor 入口（如需）**：本项目不用 Cursor → 跳过
+6. **Progressive Rigor**：按真实压力升级，不预建脚手架
+7. **description = 粗活化**：描述领域 + 触发短语，不是关键词堆
+8. **Gotchas 高价值**：每个 skill 都有 `references/gotchas.md`
+9. **Progressive Disclosure**：SKILL.md 一层链接到具体文件
+10. **任务关闭协议**：改完代码做原始约束检查 + AAR
+11. **泛化规则**：写下的知识能离开本项目仍有意义
+12. **自维护**：行数超标先评估，再决定是否拆
+13. **激活而非储存**：踩坑必须在路由路径上，不只在 references 里
+14. **Token 效率**：always-load 控制在 2-3 条
+15. **辩词表**：记录失败的真实借口，不是想象的
+16. **响应纪律**：直接答，不流程旁白
 
-- **S - Scope（范围）**: 覆盖和不覆盖的内容
-- **P - Process（流程）**: 分步骤的工作流程
-- **O - Output（输出）**: 预期结果和质量标准
-- **R - References（参考）**: 详细文档链接
+## 双适配（Claude Code + Codex）
 
-## 使用方法
-
-1. 复制此模板到 `.claude/skills/your-skill-name/`
-2. 填写 SKILL.md 的内容
-3. 根据需要添加 references/ 目录
-4. 更新 CLAUDE.md 引用你的 skill
-
-## 最佳实践
-
-- 保持 SKILL.md 简洁（< 500 行）
-- 将详细内容移到 references/
-- 包含代码示例
-- 列出反模式
-- 引用相关 skills
+- **Claude Code**：自动扫描 `.claude/skills/*/SKILL.md` 的 frontmatter，可 `/skill-name` 调用
+- **Codex CLI**：读 `AGENTS.md`；在 AGENTS.md 的 "Skill Index" 段列出本 skill 的入口路径
+- **新增 skill 后**：必须同步更新 `AGENTS.md` 的 Skill Index
 
 ## 语言规范
 
-- **主要语言**: 中文
-- **技术术语**: 保留英文（如 React、TypeScript、API）
-- **代码注释**: 使用中文
-- **变量名**: 使用英文
+- 主要语言：简体中文
+- 技术术语：保留英文
+- 代码注释：中文
+- 变量名：英文

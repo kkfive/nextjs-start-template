@@ -1,255 +1,139 @@
-# Motion Common Patterns - Quick Reference
+# 常见模式速查
 
-Production-tested animation patterns with code examples. Copy-paste ready.
-
----
-
-## 1. Modal Dialog
+## 基础淡入
 
 ```tsx
-import { motion, AnimatePresence } from "motion/react"
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+/>
+```
 
+## 弹簧
+
+```tsx
+<motion.div
+  animate={{ scale: 1 }}
+  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+/>
+```
+
+## 编排（父子 stagger）
+
+```tsx
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+  },
+}
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 },
+}
+
+<motion.ul variants={container} initial="hidden" animate="show">
+  {items.map(i => (
+    <motion.li key={i.id} variants={item}>{i.name}</motion.li>
+  ))}
+</motion.ul>
+```
+
+## 模态框 / Drawer
+
+```tsx
 <AnimatePresence>
-  {isOpen && (
+  {open && (
     <>
       <motion.div
-        key="backdrop"
+        className="fixed inset-0 bg-black/50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        onClick={onClose}
-        className="fixed inset-0 bg-black/50 z-40"
+        onClick={close}
       />
-      <motion.dialog
-        key="dialog"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="fixed inset-0 m-auto w-96 bg-white rounded-lg shadow-xl z-50"
+      <motion.div
+        className="fixed inset-x-0 bottom-0"
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        exit={{ y: '100%' }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
       >
-        Content
-      </motion.dialog>
+        {children}
+      </motion.div>
     </>
   )}
 </AnimatePresence>
 ```
 
----
-
-## 2. Accordion
-
-```tsx
-<motion.div
-  animate={{ height: isOpen ? "auto" : 0 }}
-  style={{ overflow: "hidden" }}
-  transition={{ duration: 0.3 }}
->
-  <div className="p-4">Content</div>
-</motion.div>
-```
-
----
-
-## 3. Tabs with Shared Underline
-
-```tsx
-<div className="flex gap-4 border-b">
-  {tabs.map(tab => (
-    <button key={tab.id} onClick={() => setActive(tab.id)}>
-      {tab.label}
-      {active === tab.id && (
-        <motion.div
-          layoutId="underline"
-          className="absolute bottom-0 h-0.5 bg-blue-600"
-        />
-      )}
-    </button>
-  ))}
-</div>
-```
-
----
-
-## 4. Staggered List
-
-```tsx
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } }
-}
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
-}
-
-<motion.ul variants={container} initial="hidden" animate="show">
-  {items.map(item => (
-    <motion.li key={item.id} variants={item}>
-      {item.text}
-    </motion.li>
-  ))}
-</motion.ul>
-```
-
----
-
-## 5. Parallax Hero
-
-```tsx
-const { scrollY } = useScroll()
-const y = useTransform(scrollY, [0, 1000], [0, -300])
-
-<motion.div style={{ y }}>
-  <img src="/background.jpg" />
-</motion.div>
-```
-
----
-
-## 6. Scroll Progress Bar
-
-```tsx
-const { scrollYProgress } = useScroll()
-
-<motion.div
-  style={{ scaleX: scrollYProgress }}
-  className="fixed top-0 h-1 bg-blue-600 origin-left"
-/>
-```
-
----
-
-## 7. Fade In on Scroll
+## 滚动揭示
 
 ```tsx
 <motion.div
   initial={{ opacity: 0, y: 50 }}
   whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true, margin: "-100px" }}
->
-  Content
-</motion.div>
+  viewport={{ once: true, amount: 0.2 }}
+/>
 ```
 
----
-
-## 8. Drag to Reorder
+## 手势卡片
 
 ```tsx
 <motion.div
-  drag="y"
-  dragConstraints={{ top: 0, bottom: 0 }}
-  dragElastic={0.1}
-  whileDrag={{ scale: 1.05 }}
->
-  Drag me
-</motion.div>
+  whileHover={{ y: -4, scale: 1.02 }}
+  whileTap={{ scale: 0.98 }}
+  transition={{ type: 'spring', stiffness: 300 }}
+/>
 ```
 
----
-
-## 9. Card Expand
+## 拖拽排序（Reorder）
 
 ```tsx
-<motion.div layout onClick={toggle} className={isExpanded ? "w-full" : "w-64"}>
-  {isExpanded && <p>Extra content</p>}
-</motion.div>
+<Reorder.Group axis="y" values={items} onReorder={setItems}>
+  {items.map(item => (
+    <Reorder.Item key={item.id} value={item}>{item.name}</Reorder.Item>
+  ))}
+</Reorder.Group>
 ```
 
----
+`Reorder` 内置 drag + layout 动画。
 
-## 10. Shared Element Transition
+## SVG 路径绘制
 
 ```tsx
-// Grid view
-<motion.div layoutId={card.id} onClick={() => expand(card)}>
-  Preview
-</motion.div>
-
-// Detail view
-<motion.div layoutId={card.id}>
-  Full details
-</motion.div>
+<motion.svg viewBox="0 0 100 100">
+  <motion.path
+    d="M10 50 Q 50 10 90 50"
+    fill="none"
+    stroke="black"
+    initial={{ pathLength: 0 }}
+    animate={{ pathLength: 1 }}
+    transition={{ duration: 1.5 }}
+  />
+</motion.svg>
 ```
 
----
+LazyMotion 时 `features={domMax}`。
 
-## 11. Carousel
-
-```tsx
-<motion.div
-  drag="x"
-  dragConstraints={{ left: -width, right: 0 }}
-  className="flex"
->
-  {images.map(img => <img key={img.id} src={img.url} />)}
-</motion.div>
-```
-
----
-
-## 12. Hover & Tap Button
+## App Router 路由过渡
 
 ```tsx
-<motion.button
-  whileHover={{ scale: 1.1 }}
-  whileTap={{ scale: 0.95 }}
->
-  Click me
-</motion.button>
-```
+// app/template.tsx
+'use client'
+import { motion } from 'motion/react'
 
----
-
-## 13. Toast Notification
-
-```tsx
-<AnimatePresence>
-  {isVisible && (
+export default function Template({ children }: { children: React.ReactNode }) {
+  return (
     <motion.div
-      initial={{ opacity: 0, x: 300 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 300 }}
-      className="fixed top-4 right-4 bg-blue-600 text-white p-4 rounded"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
     >
-      Message
+      {children}
     </motion.div>
-  )}
-</AnimatePresence>
+  )
+}
 ```
-
----
-
-## 14. SVG Line Drawing
-
-```tsx
-<motion.path
-  d="M 0 50 Q 50 0 100 50"
-  initial={{ pathLength: 0 }}
-  animate={{ pathLength: 1 }}
-  transition={{ duration: 2 }}
-  stroke="black"
-  strokeWidth={2}
-  fill="none"
-/>
-```
-
----
-
-## 15. Spring Physics
-
-```tsx
-<motion.div
-  animate={{ x: 100 }}
-  transition={{
-    type: "spring",
-    stiffness: 300,
-    damping: 10
-  }}
-/>
-```
-
----
-
-See templates/ for full component examples.

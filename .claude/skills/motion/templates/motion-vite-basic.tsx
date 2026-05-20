@@ -344,7 +344,7 @@ export function AnimatedExamples() {
  * 3. For large lists (50+ items), use virtualization:
  *    pnpm add react-window
  *
- * See ../references/performance-optimization.md for full guide
+ * See ../references/bundle-optimization.md for full guide
  */
 
 /**

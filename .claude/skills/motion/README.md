@@ -359,19 +359,23 @@ Production-ready setup for Motion (formerly Framer Motion) - the industry-standa
 
 ```
 motion/
-├── SKILL.md                          # Complete documentation (~500 lines)
-├── README.md                         # This file (auto-trigger keywords)
+├── SKILL.md                          # Thin task router
+├── README.md                         # Human overview
+├── routing.yaml                      # Task routing source
+├── rules/                            # Stable constraints
+├── workflows/                        # Task procedures
 ├── templates/                        # 5 production-ready examples
 │   ├── motion-vite-basic.tsx        # Vite + React setup with 9 examples
 │   ├── motion-nextjs-client.tsx     # Next.js App Router patterns
 │   ├── scroll-parallax.tsx          # Scroll animations & parallax
 │   ├── ui-components.tsx            # Modal, accordion, carousel, tabs, dropdown, toast
 │   └── layout-transitions.tsx       # FLIP, shared elements, drag-to-reorder
-├── references/                       # 4 comprehensive guides
-│   ├── motion-vs-auto-animate.md    # Decision guide: when to use which
-│   ├── performance-optimization.md  # Bundle size, LazyMotion, virtualization
-│   ├── nextjs-integration.md        # App Router vs Pages Router patterns
-│   └── common-patterns.md           # Top 15 patterns with code
+├── references/                       # Task-routed guides
+│   ├── motion-vs-autoanimate.md     # Decision guide: when to use which
+│   ├── bundle-optimization.md       # LazyMotion bundle reduction
+│   ├── runtime-perf.md              # Runtime performance patterns
+│   ├── common-patterns.md           # Common patterns with code
+│   └── gotchas.md                   # High-value pitfalls
 └── scripts/                          # 2 automation scripts
     ├── init-motion.sh               # One-command setup (detects Vite/Next.js/Cloudflare)
     └── optimize-bundle.sh           # Convert to LazyMotion (34 KB → 4.6 KB)
@@ -413,7 +417,7 @@ motion/
 
 **Rule of Thumb**: Use AutoAnimate for 90% of cases (list animations), Motion for 10% (gestures, scroll, layout).
 
-See `references/motion-vs-auto-animate.md` for detailed comparison.
+See `references/motion-vs-autoanimate.md` for detailed comparison.
 
 ---
 

@@ -1,0 +1,26 @@
+# Single source of truth for project-architecture task routing.
+
+tasks:
+  - intent: 新代码放哪一层
+    triggers: ["放哪里", "哪一层", "新模块", "组件放哪"]
+    route:
+      - references/architecture-overview.md
+      - references/directory-structure.md
+
+  - intent: 跨层 import 合规性
+    triggers: ["能不能 import", "依赖规则", "跨层"]
+    route:
+      - references/architecture-overview.md
+      - references/gotchas.md
+
+  - intent: 目录结构
+    triggers: ["目录", "文件组织", "structure"]
+    route: [references/directory-structure.md]
+
+  - intent: 命名规范
+    triggers: ["命名", "kebab", "PascalCase", "命名约定"]
+    route: [references/naming-conventions.md]
+
+  - intent: 踩坑
+    triggers: ["循环依赖", "误用 @/app", "层级错乱"]
+    route: [references/gotchas.md]

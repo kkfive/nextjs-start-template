@@ -574,7 +574,7 @@ export function LayoutAnimationsDemo() {
  * 4. Use LayoutGroup to isolate layout calculations:
  *    - Prevents unnecessary recalculations across unrelated components
  *
- * See ../references/performance-optimization.md for full guide
+ * See ../references/runtime-perf.md for full guide
  */
 
 /**
@@ -604,5 +604,5 @@ export function LayoutAnimationsDemo() {
  *
  * import { motion, LayoutGroup } from "motion/react-client"
  *
- * See ../references/nextjs-integration.md for comprehensive guide
+ * See ../workflows/nextjs-setup.md for comprehensive guide
  */

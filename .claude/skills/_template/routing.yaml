@@ -1,0 +1,19 @@
+# Single source of truth for <skill-name> task routing.
+# SKILL.md Common Tasks 表必须与本文件保持一致。
+
+tasks:
+  - intent: 任务 A 的意图
+    triggers: ["触发短语 1", "触发短语 2"]
+    route:
+      - workflows/task-a.md
+      - references/topic-a.md
+
+  - intent: 任务 B 的意图
+    triggers: ["触发短语 3"]
+    route:
+      - rules/rule-b.md
+
+  - intent: 踩坑速查
+    triggers: ["奇怪", "卡住", "怎么会这样"]
+    route:
+      - references/gotchas.md

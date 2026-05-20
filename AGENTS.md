@@ -2,24 +2,39 @@
 
 Next.js 16 + React 19，采用 Domain / 应用基础设施 / UI / 路由分层。所有回复使用简体中文。
 
+本文件是 **Claude Code（通过 `CLAUDE.md`）与 Codex CLI** 的共同入口。Codex 用户读本文件即可获得完整规则索引。
+
 ## Always Load
 
 @.rules/core.rule.md
 
 ## Load When Editing
 
-- `domain/**` -> @.rules/domain.rule.md
-- `src/components/**` -> @.rules/ui.rule.md
-- `src/app/**` -> @.rules/next-app.rule.md
-- `**/*.test.*`、`src/__tests__/**` -> @.rules/testing.rule.md
+- `domain/**` → @.rules/domain.rule.md
+- `src/components/**` → @.rules/ui.rule.md
+- `src/app/**` → @.rules/next-app.rule.md
+- `**/*.test.*`、`src/__tests__/**` → @.rules/testing.rule.md
 
-## Architecture
+规则文件简短只表达稳定原则；具体流程、示例、踩坑见下方 Skill Index。
 
-业务能力先进入 `domain/`，运行环境适配放在 `src/lib/` 和 `src/service/`，呈现与交互放在 `src/components/`，路由入口放在 `src/app/`。
+## Skill Index
 
-组件使用 `export function Name() {}`。类型定义优先使用 `type`。UI 组件通过 `@/components/ui/*` 引入，`ConfigProvider` 可在 `src/app/layout.tsx` 作为应用入口例外。
+所有项目 skill 位于 `.claude/skills/<name>/`。Claude Code 通过 frontmatter 自动发现并可 `/skill-name` 调用；**Codex 用户按下表手动打开对应 `SKILL.md` 即可**。
 
-Domain Controller 采用命名函数导出，模块入口通过 `export * as Controller from './controller'` 暴露公共 API。`hooks.ts` 是运行环境适配层例外，可封装 React Query，但应注入 `httpClient` 并调用 Domain 公共入口。
+| Skill | 入口 | 何时使用 |
+|---|---|---|
+| project-architecture | `.claude/skills/project-architecture/SKILL.md` | 决定新代码放哪一层、检查跨层 import |
+| coding-standards | `.claude/skills/coding-standards/SKILL.md` | 写组件代码、解决 import 报错、类型/错误/图标/测试规范 |
+| domain-layer | `.claude/skills/domain-layer/SKILL.md` | 新建 Domain 模块、写 Service/Controller/Hooks |
+| nextjs-app-router | `.claude/skills/nextjs-app-router/SKILL.md` | `src/app/` 下新建页面/API/Server Action、缓存与 Metadata |
+| ant-design | `.claude/skills/ant-design/SKILL.md` | antd 组件 / ConfigProvider / SSR / 高级 Form/Table |
+| styling-system | `.claude/skills/styling-system/SKILL.md` | 调样式（5 级优先级）、主题切换、暗色 |
+| motion | `.claude/skills/motion/SKILL.md` | Motion 动画（手势、滚动、布局、退出） |
+| searches-iconify | `.claude/skills/searches-iconify/SKILL.md` | Iconify 图标搜索 |
+| smart-commit | `.claude/skills/smart-commit/SKILL.md` | 暂存区分组拆 commit |
+| _template | `.claude/skills/_template/` | 新建 skill 的起点 |
+
+每个 skill 内部结构：`SKILL.md`（入口 ≤ 90 行）+ `routing.yaml`（任务路由）+ `rules/` + `workflows/` + `references/`（含 `gotchas.md`）。
 
 ## Machine Guards
 
@@ -27,16 +42,9 @@ Domain Controller 采用命名函数导出，模块入口通过 `export * as Con
 - `pnpm test:run`
 - `pnpm run lint`
 
-Git hook 已在 `lefthook.yml` 接入 commit message 和 pre-commit 校验。多人协作时只暂存和提交当前任务直接产生的文件。
+Git hook 在 `lefthook.yml` 接入 commit message 与 pre-commit 校验。多人协作时只暂存和提交当前任务直接产生的文件。
 
-## Detailed Guidance
+## 参考
 
-- Domain 层：`.claude/skills/domain-layer/`
-- 样式系统：`.claude/skills/styling-system/`
-- 编码规范：`.claude/skills/coding-standards/`
-- 架构说明：`.claude/skills/project-architecture/`
-- Next.js App Router：`.claude/skills/nextjs-app-router/`
-- Ant Design：`.claude/skills/ant-design/`
-- Motion：`.claude/skills/motion/`
-
-规范治理原则见 `docs/decisions/rule-governance.md`。
+- 规范治理原则：`docs/decisions/rule-governance.md`
+- Skill 模板与 16 条原则：`.claude/skills/_template/`

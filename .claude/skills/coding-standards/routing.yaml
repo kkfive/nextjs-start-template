@@ -1,0 +1,38 @@
+# Single source of truth for coding-standards task routing.
+
+tasks:
+  - intent: 跨层 import 黑名单
+    triggers: ["import 报错", "不能导入", "层级依赖"]
+    route: [references/layer-dependency.md]
+
+  - intent: UI 组件导入路径
+    triggers: ["antd 导入", "@/components/ui", "UI import"]
+    route: [references/ui-import-rules.md]
+
+  - intent: TypeScript 类型选择
+    triggers: ["type 还是 interface", "type 别名"]
+    route: [references/typescript-rules.md]
+
+  - intent: Domain 类型定义
+    triggers: ["type.ts", "Domain 类型", "export type"]
+    route: [references/domain-types.md]
+
+  - intent: React 组件模式
+    triggers: ["函数式", "use client", "组件写法"]
+    route: [references/react-patterns.md]
+
+  - intent: 错误处理
+    triggers: ["ApiError", "AppError", "ValidationError", "throw"]
+    route: [references/error-handling.md]
+
+  - intent: 图标 Iconify
+    triggers: ["icon", "iconify", "图标"]
+    route: [references/icon-usage.md]
+
+  - intent: 测试
+    triggers: ["vitest", "MSW", "测试", "mock"]
+    route: [references/testing.md]
+
+  - intent: 踩坑
+    triggers: ["as any", "ts-ignore", "测试 mock 失败"]
+    route: [references/gotchas.md]

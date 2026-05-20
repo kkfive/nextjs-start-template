@@ -1,0 +1,40 @@
+# Single source of truth for styling-system task routing.
+
+tasks:
+  - intent: 不确定该用哪种方案
+    triggers: ["怎么调样式", "用哪个", "优先级", "决策"]
+    route:
+      - workflows/choose-level.md
+      - rules/priority-order.md
+
+  - intent: 5 级优先级硬约束
+    triggers: ["优先级", "覆盖顺序", "为什么不用 !important"]
+    route: [rules/priority-order.md]
+
+  - intent: ConfigProvider 全局主题
+    triggers: ["theme.token", "全局主题", "ConfigProvider"]
+    route: [references/level-1-config-provider.md]
+
+  - intent: CSS Variables 主题切换
+    triggers: ["主题切换", "data-theme", "暗色", "var(--"]
+    route: [references/level-2-css-variables.md]
+
+  - intent: 组件 API 单实例
+    triggers: ["styles prop", "classNames prop", "单实例样式"]
+    route: [references/level-3-component-api.md]
+
+  - intent: Tailwind 工具类
+    triggers: ["Tailwind", "className", "响应式"]
+    route: [references/level-4-tailwind.md]
+
+  - intent: SCSS 覆盖
+    triggers: ["SCSS", "覆盖 antd", ":global", "伪元素"]
+    route: [references/level-5-scss-fallback.md]
+
+  - intent: 案例参考
+    triggers: ["案例", "例子", "怎么写", "全局按钮", "主题色"]
+    route: [references/case-studies.md]
+
+  - intent: 踩坑 / 常见问题
+    triggers: ["样式没生效", "!important", "覆盖失效", "怎么办"]
+    route: [references/gotchas.md]

@@ -1,0 +1,50 @@
+# Single source of truth for domain-layer task routing.
+
+tasks:
+  - intent: 新建 Domain 模块
+    triggers: ["新建 domain", "添加模块", "新模块"]
+    route:
+      - workflows/create-module.md
+      - references/file-structure.md
+      - references/naming-conventions.md
+
+  - intent: 写 Service
+    triggers: ["service.ts", "请求方法", "原始请求"]
+    route:
+      - workflows/write-service.md
+      - references/dependency-injection.md
+
+  - intent: 写 Controller
+    triggers: ["controller", "业务编排", "数据转换"]
+    route:
+      - workflows/write-controller.md
+
+  - intent: 写 hooks
+    triggers: ["useXxx", "React Query", "hooks.ts"]
+    route:
+      - references/hooks-layer.md
+
+  - intent: 依赖注入规则
+    triggers: ["HttpService", "依赖注入", "为什么要注入"]
+    route:
+      - references/dependency-injection.md
+
+  - intent: 文件结构 / 入口导出
+    triggers: ["index.ts", "export * as", "文件组织"]
+    route:
+      - references/file-structure.md
+
+  - intent: 命名规范
+    triggers: ["命名", "Query Keys", "模块名"]
+    route:
+      - references/naming-conventions.md
+
+  - intent: 看完整示例
+    triggers: ["示例", "auth 例子", "material 例子"]
+    route:
+      - references/examples.md
+
+  - intent: 踩坑
+    triggers: ["报错", "循环依赖", "类型找不到"]
+    route:
+      - references/gotchas.md
