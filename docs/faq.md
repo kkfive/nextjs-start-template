@@ -80,11 +80,11 @@ import { http } from '@/service/index.base'
 
 ```typescript
 const http = new HttpService({
-  prefixUrl: getBaseUrl(),
+  prefix: getBaseUrl(),
   hooks: {
     // 请求前拦截器
     beforeRequest: [
-      async (request) => {
+      async ({ request }) => {
         // Token 注入
         const token = getToken()
         if (token) {
@@ -94,7 +94,7 @@ const http = new HttpService({
     ],
     // 响应后拦截器
     afterResponse: [
-      async (input, options, response) => {
+      async ({ response }) => {
         // 401 跳转登录
         if (response.status === 401) {
           window.location.href = '/login'
@@ -487,4 +487,4 @@ export const LucideSearch = CreateIcon('icon-[lucide--search]')
 
 **图标查询**：[Iconify 图标库](https://icon-sets.iconify.design/)
 
-详见 `docs/conventions/coding.md` 图标使用章节。
+详见 `.claude/skills/coding-standards/references/icon-usage.md` 图标使用章节。

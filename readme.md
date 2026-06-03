@@ -180,7 +180,8 @@ export function UserCard({ userId }: { userId: string }) {
 - [架构文档](docs/architecture.md)
 - [目录约定](docs/conventions/directory.md)
 - [命名规范](docs/conventions/naming.md)
-- [编码规范](docs/conventions/coding.md)
+- [项目协作准则](AGENTS.md)
+- [规则治理决策](docs/decisions/rule-governance.md)
 
 ## License
 

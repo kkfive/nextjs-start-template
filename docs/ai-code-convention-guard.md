@@ -94,7 +94,7 @@ node scripts/verify-conventions.mjs domain/example/user/controller.ts
 
   [PASS] D04  Controller 应使用命名导出函数（非 class）
 
-  发现 38 个问题  11 条规则未通过  5 条通过
+  发现 N 个问题  X 条规则未通过  Y 条通过
 ```
 
 ---
@@ -197,12 +197,12 @@ rule('D12', '新规则描述', (ctx) => {
 
 ---
 
-## 当前状态
+## 状态检查
 
-运行 `npm run verify:conventions` 当前检测结果：
+规范校验结果会随代码变化而变化，不在本文档中固化具体失败数量。需要查看当前状态时运行：
 
-```
-发现 38 个问题  11 条规则未通过  5 条通过
+```bash
+pnpm run verify:conventions
 ```
 
 全部修复后，此脚本将成为零成本的质量门禁——AI 生成的代码只要通过脚本，即可保证符合核心规范。
