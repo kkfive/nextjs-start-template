@@ -31,7 +31,11 @@ export async function create(http: HttpService, data: Material.CreateRequest) {
 }
 
 function normalizeItem(raw: Material.RawItem): Material.Item {
-  return { ...raw, createdAt: new Date(raw.created_at).toISOString() }
+  return {
+    id: raw?.id ?? '',
+    name: raw?.name ?? '未命名',
+    createdAt: raw?.created_at ? new Date(raw.created_at).toISOString() : '',
+  }
 }
 ```
 
@@ -58,9 +62,11 @@ const list = await Material.getList(http, { keyword })
 3. **不依赖具体环境实例**（不要 `import { httpClient } from '@/service/index.client'`）
 4. **错误用项目错误类**：`ApiError` / `AppError` / `ValidationError`
 5. **字段转换在 Controller**，Service 保持原始
+6. **外部响应在 Controller 归一化**：字段缺失或 `null` 时给业务默认值，关键字段不可恢复时抛项目错误类
 
 ## 何时跳过 Controller
 
 只有"一次调用、零转换"的场景才允许 hooks/页面直接调 Service —— 但通常仍走 Controller 以便未来扩展。
 
 完整示例见 `references/examples.md`。
+外部响应的空值处理见 `references/external-data.md`。

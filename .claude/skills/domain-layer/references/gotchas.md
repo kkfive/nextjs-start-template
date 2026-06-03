@@ -11,6 +11,8 @@
 - **`export type * from './type'` 不被 IDE 提示** → TS 5+ 才支持的语法；老 TS 用 `export type { ... }` 列举
 - **入口写成 `export * from './controller'`** → 调用方 `import { getList }` 与其他模块冲突；用 `export * as Controller`
 - **`interface` 与 `type` 混用** → 项目统一 `type`；`interface` 仅在需要声明合并时
+- **把接口响应字段批量改成 `?:`** → 会污染业务模型，且漏掉 `null`；原始响应用 `ExternalData<T>`，Controller 再归一化
+- **Service 直接相信接口必填字段** → 外部响应可能缺字段或为 `null`；不要让原始响应直接流入 UI
 
 ## 循环依赖
 

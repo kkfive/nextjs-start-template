@@ -20,6 +20,7 @@ user-invocable: true
 | 新建一个 Domain 模块 | `workflows/create-module.md` |
 | 写 / 改 Service（原始请求） | `workflows/write-service.md` |
 | 写 / 改 Controller（业务编排） | `workflows/write-controller.md` |
+| 处理外部接口字段缺失 / `null` | `references/external-data.md` |
 | 写 / 改 hooks（React Query 封装） | `references/hooks-layer.md` |
 | HttpService 依赖注入规则 | `references/dependency-injection.md` |
 | 文件如何组织（const / type / service / controller / hooks / index） | `references/file-structure.md` |
@@ -39,6 +40,7 @@ user-invocable: true
 | `interface Type {}` | `type Type = {}` |
 | 入口 `export * from './controller'` | `export * as Controller from './controller'` 命名空间 |
 | hooks 直接调 Service 跳过 Controller | hooks 调 Controller，Controller 调 Service |
+| 把业务模型字段批量改成 `?:` | 原始响应用 `ExternalData<T>`，Controller 归一化 |
 
 ## Session Discipline
 

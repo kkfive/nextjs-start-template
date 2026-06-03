@@ -10,7 +10,7 @@ import type * as Material from './type'
 
 export const service = {
   getList: async (http: HttpService, query?: Material.ListQuery) =>
-    http.get<Material.ListResponse>(MATERIAL_API.list, { params: query }),
+    http.get<Material.RawListResponse>(MATERIAL_API.list, { params: query }),
 
   getDetail: async (http: HttpService, id: string) =>
     http.get<Material.Item>(MATERIAL_API.detail(id)),
@@ -34,7 +34,8 @@ export const service = {
    - 错误语义翻译（去 Controller）
    - 重试 / 并发控制（去基础设施层）
 3. **方法名是动词**：`getList`、`getDetail`、`create`、`update`、`remove`、`batchUpdate`
-4. **返回类型显式标注**：`http.get<Material.Item>(...)`，避免推断成 `any`
+4. **返回类型显式标注**：`http.get<Material.RawItem>(...)`，避免推断成 `any`
+5. **外部响应保持可疑**：原始响应类型用 `ExternalData<T>`，不要把业务模型字段批量改成 `?:`
 
 ## 测试
 
@@ -53,3 +54,4 @@ test('getList passes query as params', async () => {
 由于 `http` 被注入，测试无需 mock 全局，直接传入 mock 实例。
 
 依赖注入背后的原因见 `references/dependency-injection.md`。
+外部响应的空值处理见 `references/external-data.md`。

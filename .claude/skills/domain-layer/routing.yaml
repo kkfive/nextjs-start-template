@@ -19,6 +19,13 @@ tasks:
     route:
       - workflows/write-controller.md
 
+  - intent: 外部响应字段缺失或为 null
+    triggers: ["接口 null", "字段可能为空", "外部数据", "ExternalData", "响应字段缺失"]
+    route:
+      - references/external-data.md
+      - workflows/write-service.md
+      - workflows/write-controller.md
+
   - intent: 写 hooks
     triggers: ["useXxx", "React Query", "hooks.ts"]
     route:
