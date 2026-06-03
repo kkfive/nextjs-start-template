@@ -12,12 +12,12 @@ export async function unifiedScenario(
   return service.unifiedScenario(client, scenario, config)
 }
 
-export async function rawScenario(
+export async function envelopeScenario(
   client: HttpService,
   scenario: ScenarioType,
   config?: RequestOptions & { method?: 'GET' | 'POST' | 'PUT' | 'DELETE' },
 ) {
-  return service.rawScenario(client, scenario, config)
+  return service.envelopeScenario(client, scenario, config)
 }
 
 // ===== 基础请求方法演示 =====

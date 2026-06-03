@@ -10,7 +10,7 @@ describe('controller', () => {
 
   beforeAll(() => {
     server.listen()
-    httpClient = new HttpService({ prefixUrl: TEST_BASE_URL })
+    httpClient = new HttpService({ prefix: TEST_BASE_URL })
   })
 
   afterEach(() => {

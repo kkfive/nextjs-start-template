@@ -16,17 +16,17 @@ function getBaseUrl() {
 }
 
 const http = new HttpService({
-  prefixUrl: getBaseUrl(),
+  prefix: getBaseUrl(),
   hooks: {
     beforeRequest: [
       // Cookie injection interceptor - injects customer ID from cookies
-      async (request) => {
+      async ({ request }) => {
         const cookieStore = await cookies()
         request.headers.set('x-customer-id', cookieStore.get('x-customer-id')?.value || '')
       },
 
       // Token injection interceptor - adds authorization token from environment or cookies
-      async (request) => {
+      async ({ request }) => {
         const cookieStore = await cookies()
         const token = cookieStore.get('auth-token')?.value || process.env.API_TOKEN
 
@@ -36,7 +36,7 @@ const http = new HttpService({
       },
 
       // Request logging interceptor - logs outgoing requests
-      async (request) => {
+      async ({ request }) => {
         const url = request.url
         const method = request.method || 'GET'
         const timestamp = new Date().toISOString()
@@ -50,7 +50,7 @@ const http = new HttpService({
     ],
     afterResponse: [
       // Response logging interceptor - logs response status and timing
-      async (request, options, response) => {
+      async ({ request, response }) => {
         const url = request.url
         const method = request.method || 'GET'
         const status = response.status
@@ -66,7 +66,7 @@ const http = new HttpService({
       },
 
       // Error handling interceptor - converts HTTP errors to structured BusinessError
-      async (request, options, response) => {
+      async ({ request, options, response }) => {
         if (!response.ok) {
           const url = request.url
           const method = request.method || 'GET'
@@ -87,7 +87,7 @@ const http = new HttpService({
       },
 
       // Performance monitoring interceptor - tracks slow requests
-      async (request, options, response) => {
+      async ({ request, response }) => {
         // Note: In a real implementation, you would track request start time
         // and calculate duration here. This is a simplified example.
         const url = request.url

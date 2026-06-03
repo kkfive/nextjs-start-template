@@ -117,7 +117,7 @@ export function ResponseViewer({
             )}
 
         {!isExpanded && data !== null && data !== undefined && (
-          <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-8 bg-gradient-to-t from-card/90 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-card/90 to-transparent" />
         )}
       </div>
     </div>

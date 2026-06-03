@@ -25,7 +25,7 @@ export default function InterceptorPage() {
               <p className="text-xs leading-relaxed text-muted-foreground">
                 演示完整的拦截器链路：beforeRequest（请求前）添加 Header、注入 Cookie/Token；
                 afterResponse（响应后）记录日志、处理错误、验证数据。
-                对比 unifiedScenario（拦截器处理）与 rawScenario（原始响应）的差异。
+                对比 unifiedScenario（提取业务数据）与 envelopeScenario（响应包络）的差异。
               </p>
             </div>
           </div>
@@ -110,7 +110,7 @@ export default function InterceptorPage() {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              rawScenario (原始包络)
+              envelopeScenario (响应包络)
             </button>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function InterceptorPage() {
             requestFn={() =>
               showUnified
                 ? Controller.unifiedScenario(httpClient, 'success')
-                : Controller.rawScenario(httpClient, 'success')}
+                : Controller.envelopeScenario(httpClient, 'success')}
           />
 
           <RequestPlayground
@@ -142,7 +142,7 @@ export default function InterceptorPage() {
             requestFn={() =>
               showUnified
                 ? Controller.unifiedScenario(httpClient, 'business-error')
-                : Controller.rawScenario(httpClient, 'business-error')}
+                : Controller.envelopeScenario(httpClient, 'business-error')}
           />
         </div>
 
@@ -156,15 +156,15 @@ export default function InterceptorPage() {
                 {`hooks: {
   beforeRequest: [
     // 注入 x-customer-id Cookie
-    async (request) => {
+    async ({ request }) => {
       request.headers.set('x-customer-id', cookieValue)
     },
     // 注入 Authorization Token
-    async (request) => {
+    async ({ request }) => {
       request.headers.set('Authorization', \`Bearer \${token}\`)
     },
     // 请求日志
-    async (request) => {
+    async ({ request }) => {
       console.log('[Request]', request.method, request.url)
     },
   ]
@@ -177,12 +177,12 @@ export default function InterceptorPage() {
                 {`hooks: {
   afterResponse: [
     // 响应日志
-    async (input, options, response) => {
+    async ({ response }) => {
       console.log('[Response]', response.status, response.statusText)
       return response
     },
     // 错误处理
-    async (input, options, response) => {
+    async ({ options, response }) => {
       if (!response.ok) {
         // 401 自动跳转（可通过 skipAuthRedirect 禁用）
         if (response.status === 401 && !options.context?.skipAuthRedirect) {

@@ -50,7 +50,7 @@ export function FeatureCard({
         className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card p-6 shadow-sm transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
       >
         {/* Top gradient bar */}
-        <div className={`absolute top-0 right-0 left-0 h-1 bg-gradient-to-r ${gradientClass} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+        <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${gradientClass} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
 
         {/* Icon */}
         {icon && (

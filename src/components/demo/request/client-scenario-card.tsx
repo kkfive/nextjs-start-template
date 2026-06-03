@@ -29,7 +29,7 @@ export function ClientScenarioCard({
 }: ClientScenarioCardProps) {
   const client = http ?? httpClient
   const requestAction = async () => {
-    return Controller.rawScenario(client, scenario)
+    return Controller.envelopeScenario(client, scenario)
   }
 
   return (

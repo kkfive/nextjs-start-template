@@ -74,7 +74,7 @@ export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
         </div>
 
         {/* Bottom gradient line */}
-        <div className="absolute right-0 bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary/40 via-accent/30 to-primary/40" />
+        <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-primary/40 via-accent/30 to-primary/40" />
       </motion.div>
 
       {/* Refresh Button */}

@@ -10,12 +10,12 @@ function getBaseUrl() {
 }
 
 const http = new HttpService({
-  prefixUrl: getBaseUrl(),
+  prefix: getBaseUrl(),
   hooks: {
     afterResponse: [
       // Response logging interceptor - logs request details and timing
-      async (input, options, response) => {
-        const url = typeof input === 'string' ? input : input.url
+      async ({ request, options, response }) => {
+        const url = request.url
         const method = options.method || 'GET'
         const status = response.status
         const statusText = response.statusText
@@ -29,9 +29,9 @@ const http = new HttpService({
       },
 
       // Error handling interceptor - converts HTTP errors to structured BusinessError
-      async (input, options, response) => {
+      async ({ request, options, response }) => {
         if (!response.ok) {
-          const url = typeof input === 'string' ? input : input.url
+          const url = request.url
           const method = options.method || 'GET'
 
           // 401 自动跳转登录页（可通过 context.skipAuthRedirect 禁用）
@@ -50,7 +50,7 @@ const http = new HttpService({
       },
 
       // Response data validation interceptor - checks response format
-      async (input, options, response) => {
+      async ({ response }) => {
         // Only validate JSON responses
         const contentType = response.headers.get('content-type')
         if (contentType?.includes('application/json') && response.ok) {

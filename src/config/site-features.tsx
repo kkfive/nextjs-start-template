@@ -104,14 +104,14 @@ export const siteFeatures: FeatureCategory[] = [
         priority: 4,
       },
       {
-        name: 'Raw Response Envelope',
-        href: '/demo/request/raw-envelope',
-        description: 'Raw response envelope without interceptor',
+        name: 'Response Envelope',
+        href: '/demo/request/interceptor',
+        description: 'Compare extracted business data with full response envelope',
         priority: 4,
       },
       {
         name: 'HTTP Error Handling',
-        href: '/demo/request/http-errors',
+        href: '/demo/request/errors',
         description: 'HTTP error status codes (404, 500, 503)',
         priority: 4,
       },

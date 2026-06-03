@@ -7,7 +7,7 @@ import { RequestPlayground } from '@/components/demo/request/request-playground'
 import { httpClient } from '@/service/index.client'
 
 export default function ErrorsPage() {
-  const [errorMode, setErrorMode] = useState<'unified' | 'raw'>('unified')
+  const [errorMode, setErrorMode] = useState<'unified' | 'envelope'>('unified')
 
   return (
     <DemoWrapper>
@@ -26,7 +26,7 @@ export default function ErrorsPage() {
               <h3 className="text-sm font-semibold">错误处理机制</h3>
               <p className="text-xs leading-relaxed text-muted-foreground">
                 演示 HTTP 错误（4xx/5xx）和业务错误的完整处理流程。
-                使用 RequestError 对象获取详细的错误信息：code、raw 响应、isNetworkError、isHttpError、is4xxError、is5xxError 等。
+                使用 HTTPError 对象获取详细的错误信息：response.status、data、NetworkError、TimeoutError 等。
               </p>
             </div>
           </div>
@@ -47,14 +47,14 @@ export default function ErrorsPage() {
               unifiedScenario (拦截后)
             </button>
             <button
-              onClick={() => setErrorMode('raw')}
+              onClick={() => setErrorMode('envelope')}
               className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                errorMode === 'raw'
+                errorMode === 'envelope'
                   ? 'bg-card text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              rawScenario (原始响应)
+              envelopeScenario (响应包络)
             </button>
           </div>
         </div>
@@ -71,7 +71,7 @@ export default function ErrorsPage() {
             requestFn={() =>
               errorMode === 'unified'
                 ? Controller.unifiedScenario(httpClient, 'error-400')
-                : Controller.rawScenario(httpClient, 'error-400')}
+                : Controller.envelopeScenario(httpClient, 'error-400')}
           />
 
           {/* 404 Not Found */}
@@ -84,7 +84,7 @@ export default function ErrorsPage() {
             requestFn={() =>
               errorMode === 'unified'
                 ? Controller.unifiedScenario(httpClient, 'error-404')
-                : Controller.rawScenario(httpClient, 'error-404')}
+                : Controller.envelopeScenario(httpClient, 'error-404')}
           />
 
           {/* 500 Server Error */}
@@ -97,7 +97,7 @@ export default function ErrorsPage() {
             requestFn={() =>
               errorMode === 'unified'
                 ? Controller.unifiedScenario(httpClient, 'error-500')
-                : Controller.rawScenario(httpClient, 'error-500')}
+                : Controller.envelopeScenario(httpClient, 'error-500')}
           />
 
           {/* 503 Service Unavailable */}
@@ -110,7 +110,7 @@ export default function ErrorsPage() {
             requestFn={() =>
               errorMode === 'unified'
                 ? Controller.unifiedScenario(httpClient, 'error-503')
-                : Controller.rawScenario(httpClient, 'error-503')}
+                : Controller.envelopeScenario(httpClient, 'error-503')}
           />
 
           {/* Business Error */}
@@ -123,7 +123,7 @@ export default function ErrorsPage() {
             requestFn={() =>
               errorMode === 'unified'
                 ? Controller.unifiedScenario(httpClient, 'business-error')
-                : Controller.rawScenario(httpClient, 'business-error')}
+                : Controller.envelopeScenario(httpClient, 'business-error')}
           />
 
           {/* Success for comparison */}
@@ -136,7 +136,7 @@ export default function ErrorsPage() {
             requestFn={() =>
               errorMode === 'unified'
                 ? Controller.unifiedScenario(httpClient, 'success')
-                : Controller.rawScenario(httpClient, 'success')}
+                : Controller.envelopeScenario(httpClient, 'success')}
           />
         </div>
       </div>

@@ -137,7 +137,7 @@ function StepCard({ step, index }: { step: typeof quickStartSteps[0], index: num
   const handleCopy = () => {
     navigator.clipboard.writeText(step.code)
     setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setTimeout(setCopied, 2000, false)
   }
 
   return (

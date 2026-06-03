@@ -3,7 +3,7 @@ import type { HttpService } from '@/lib/request'
 import type { RequestOptions } from '@/lib/request/type'
 import { BusinessError } from '@/lib/request/error'
 import { unifiedScenario as unifiedScenarioApi } from './const/api'
-import { isErrorEnvelope, isRequestError, isSuccessEnvelope, throwBusinessErrorFromRaw } from './utils'
+import { getHttpErrorData, isErrorEnvelope, isRequestHttpError, isSuccessEnvelope, throwBusinessErrorFromData } from './utils'
 
 type GetDataResponse = SuccessAPI['Response']
 type ScenarioType = 'success' | 'business-error' | 'error-400' | 'error-401' | 'error-404' | 'error-500' | 'error-503'
@@ -30,14 +30,17 @@ async function unifiedScenario(
     return envelope.data
   }
   catch (error) {
-    if (isRequestError(error) && error.raw) {
-      throwBusinessErrorFromRaw(error.raw, error.code ?? 0, config)
+    if (isRequestHttpError(error)) {
+      const data = getHttpErrorData(error)
+      if (data) {
+        throwBusinessErrorFromData(data, error.response.status, config)
+      }
     }
     throw error
   }
 }
 
-async function rawScenario(
+async function envelopeScenario(
   client: HttpService,
   scenario: ScenarioType,
   config?: RequestOptions & { method?: 'GET' | 'POST' | 'PUT' | 'DELETE' },
@@ -49,11 +52,14 @@ async function rawScenario(
     )
   }
   catch (error) {
-    if (isRequestError(error) && error.raw && isSuccessEnvelope<GetDataResponse>(error.raw)) {
-      return error.raw
-    }
-    if (isRequestError(error) && error.raw && isErrorEnvelope(error.raw)) {
-      return error.raw
+    if (isRequestHttpError(error)) {
+      const data = getHttpErrorData(error)
+      if (data && isSuccessEnvelope<GetDataResponse>(data)) {
+        return data
+      }
+      if (data && isErrorEnvelope(data)) {
+        return data
+      }
     }
     throw error
   }
@@ -147,7 +153,7 @@ async function authExample(
 
 export const service = {
   unifiedScenario,
-  rawScenario,
+  envelopeScenario,
   getExample,
   postExample,
   putExample,

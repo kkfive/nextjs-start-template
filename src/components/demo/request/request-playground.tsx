@@ -73,13 +73,14 @@ export function RequestPlayground({
     name?: string
     message: string
     code?: number | string
+    data?: unknown
     isBusinessError?: boolean
     isNetworkError?: boolean
-    isHttpError?: boolean
+    isHTTPError?: boolean
     is4xxError?: boolean
     is5xxError?: boolean
     isTimeout?: boolean
-    raw?: unknown
+    responseStatus?: number
     toJSON?: Record<string, unknown>
   } | null>(null)
 
@@ -106,32 +107,36 @@ export function RequestPlayground({
       // Extract error details
       const err = error as Error & {
         code?: number | string
+        data?: unknown
         isBusinessError?: boolean
-        isNetworkError?: () => boolean
-        isHttpError?: (status?: number) => boolean
-        is4xxError?: () => boolean
-        is5xxError?: () => boolean
-        isTimeout?: () => boolean
-        raw?: unknown
+        response?: { status?: number }
         toJSON?: () => Record<string, unknown>
         statusCode?: number
       }
+      const responseStatus = err.response?.status
+      const isHTTPError = err.name === 'HTTPError'
+      const isTimeout = err.name === 'TimeoutError'
+      const isNetworkError = err.name === 'NetworkError'
 
       setErrorDetails({
         name: err.name,
         message: err.message,
         code: err.code,
+        data: err.data,
         isBusinessError: err.isBusinessError,
-        isNetworkError: err.isNetworkError?.(),
-        isHttpError: err.isHttpError?.(),
-        is4xxError: err.is4xxError?.(),
-        is5xxError: err.is5xxError?.(),
-        isTimeout: err.isTimeout?.(),
-        raw: err.raw,
+        isNetworkError,
+        isHTTPError,
+        is4xxError: responseStatus !== undefined && responseStatus >= 400 && responseStatus < 500,
+        is5xxError: responseStatus !== undefined && responseStatus >= 500 && responseStatus < 600,
+        isTimeout,
+        responseStatus,
         toJSON: err.toJSON?.(),
       })
 
-      if (err.statusCode) {
+      if (responseStatus) {
+        setStatusCode(responseStatus)
+      }
+      else if (err.statusCode) {
         setStatusCode(err.statusCode)
       }
       else if (err.code && typeof err.code === 'number' && err.code >= 100 && err.code < 600) {
@@ -264,7 +269,7 @@ export function RequestPlayground({
                 {errorDetails.isNetworkError && (
                   <span className="rounded-md bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-600">网络错误</span>
                 )}
-                {errorDetails.isHttpError && (
+                {errorDetails.isHTTPError && (
                   <span className="rounded-md bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-600">HTTP 错误</span>
                 )}
                 {errorDetails.is4xxError && (
@@ -296,14 +301,20 @@ export function RequestPlayground({
                     <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-red-600">{String(errorDetails.code)}</code>
                   </div>
                 )}
-                {errorDetails.raw !== undefined && (
+                {errorDetails.responseStatus !== undefined && (
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="w-16 shrink-0 text-muted-foreground">status:</span>
+                    <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-red-600">{errorDetails.responseStatus}</code>
+                  </div>
+                )}
+                {errorDetails.data !== undefined && (
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-xs">
-                      <span className="w-16 shrink-0 text-muted-foreground">raw:</span>
-                      <span className="text-[10px] text-muted-foreground">原始响应数据</span>
+                      <span className="w-16 shrink-0 text-muted-foreground">data:</span>
+                      <span className="text-[10px] text-muted-foreground">HTTPError 预解析响应体</span>
                     </div>
                     <pre className="scrollbar-thin overflow-auto rounded-lg bg-black/[0.04] p-3 font-mono text-[10px] leading-relaxed dark:bg-white/[0.04]">
-                      {JSON.stringify(errorDetails.raw, null, 2)}
+                      {JSON.stringify(errorDetails.data, null, 2)}
                     </pre>
                   </div>
                 )}

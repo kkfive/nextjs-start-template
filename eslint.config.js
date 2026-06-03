@@ -41,14 +41,14 @@ export default antfu(
     ],
     formatters: true,
   },
-  ...tailwind.configs['flat/recommended'],
+  tailwind.configs.recommended,
   {
     settings: {
       tailwindcss: {
         // Tailwind CSS v4 的配置路径应指向 CSS 文件
-        config: path.join(__dirname, 'src/styles/tailwind.css'),
-        // 可选，默认值：["class", "className", "ngClass", "@apply"]
-        callees: ['classnames', 'clsx', 'ctl', 'cva', 'tv', 'tw', 'cn', 'className'],
+        cssConfigPath: path.join(__dirname, 'src/styles/tailwind.css'),
+        // 可选，默认值：["classnames", "clsx", "ctl", "cva", "tv", "tw"]
+        functions: ['classnames', 'clsx', 'ctl', 'cva', 'tv', 'tw', 'cn'],
       },
     },
   },

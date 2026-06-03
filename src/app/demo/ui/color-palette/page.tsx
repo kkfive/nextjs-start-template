@@ -255,7 +255,7 @@ function ColorSwatch({ color, groupName }: { color: ColorGroup['colors'][0], gro
       document.body.removeChild(textarea)
     }
     setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
+    setTimeout(setCopied, 1500, false)
   }
 
   return (
@@ -311,7 +311,7 @@ function ThemeTokenCard({ item }: { item: TokenItem }) {
       document.body.removeChild(textarea)
     }
     setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
+    setTimeout(setCopied, 1500, false)
   }
 
   return (

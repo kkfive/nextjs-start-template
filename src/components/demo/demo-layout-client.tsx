@@ -93,7 +93,7 @@ export function DemoLayoutClient({ children }: { children: React.ReactNode }) {
           {/* Desktop Sidebar */}
           <aside className="hidden shrink-0 lg:block lg:w-60">
             <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto border-r border-border/40 bg-background/50">
-              <div className="border-b border-border/40 px-4 py-4">
+              <div className="border-b border-border/40 p-4">
                 <h2 className="text-base font-semibold">功能演示</h2>
                 <p className="mt-1 text-xs text-muted-foreground">
                   探索模板功能示例

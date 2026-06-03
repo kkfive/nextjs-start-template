@@ -1,4 +1,5 @@
 import type { RequestOptions } from '@/lib/request/type'
+import { isHTTPError } from '@kkfive/request'
 import { BusinessError } from '@/lib/request/error'
 
 type SuccessEnvelope<T> = {
@@ -16,16 +17,17 @@ type ErrorEnvelope = {
   timestamp: string
 }
 
-// @kkfive/request 在 HTTP 错误时抛出的错误结构
-type RequestErrorShape = {
-  name: 'RequestError'
-  raw?: Record<string, unknown>
-  code?: number
-  message?: string
+type HttpErrorWithData = Error & {
+  data?: unknown
+  response: Response
 }
 
-export function isRequestError(error: unknown): error is Error & RequestErrorShape {
-  return error instanceof Error && error.name === 'RequestError'
+export function isRequestHttpError(error: unknown): error is HttpErrorWithData {
+  return isHTTPError(error)
+}
+
+export function getHttpErrorData(error: HttpErrorWithData) {
+  return error.data
 }
 
 export function isErrorEnvelope(value: unknown): value is ErrorEnvelope {
@@ -43,17 +45,17 @@ export function isSuccessEnvelope<T>(value: unknown): value is SuccessEnvelope<T
 }
 
 /**
- * 从 RequestError.raw 中提取业务错误并转换为 BusinessError
+ * 从 HTTPError.data 中提取业务错误并转换为 BusinessError
  */
-export function throwBusinessErrorFromRaw(
-  raw: Record<string, unknown>,
+export function throwBusinessErrorFromData(
+  data: unknown,
   fallbackCode: number,
   options?: RequestOptions,
 ): never {
-  if (isErrorEnvelope(raw)) {
-    throw new BusinessError(raw.message, {
-      code: raw.code,
-      response: raw,
+  if (isErrorEnvelope(data)) {
+    throw new BusinessError(data.message, {
+      code: data.code,
+      response: data,
       options,
     })
   }
