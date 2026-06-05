@@ -58,6 +58,7 @@ export default antfu(
   {
     rules: {
       'ts/consistent-type-definitions': ['error', 'type'],
+      'pnpm/yaml-enforce-settings': 'off',
     },
   },
   {
