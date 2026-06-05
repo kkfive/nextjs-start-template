@@ -1,3 +1,4 @@
+import type { RequestOptions } from '@/lib/request/type'
 import { env } from '@/config/env'
 import { HttpService } from '@/lib/request'
 import { createErrorResponse } from '@/lib/request/error-handler'
@@ -7,6 +8,37 @@ function getBaseUrl() {
     return env.NEXT_PUBLIC_API_URL
   }
   return '/'
+}
+
+function getRetryLimit(retry: RequestOptions['retry']) {
+  if (typeof retry === 'number') {
+    return retry
+  }
+
+  return retry?.limit ?? 0
+}
+
+function getRetryMethods(retry: RequestOptions['retry']) {
+  if (typeof retry === 'number') {
+    return ['get', 'put', 'head', 'delete', 'options', 'trace']
+  }
+
+  return retry?.methods ?? ['get', 'put', 'head', 'delete', 'options', 'trace']
+}
+
+function getRetryStatusCodes(retry: RequestOptions['retry']) {
+  if (typeof retry === 'number') {
+    return [408, 413, 429, 500, 502, 503, 504]
+  }
+
+  return retry?.statusCodes ?? [408, 413, 429, 500, 502, 503, 504]
+}
+
+function shouldWaitForRetry(method: string, status: number, retryCount: number, retry: RequestOptions['retry']) {
+  const retryableMethods = getRetryMethods(retry)
+  const retryableStatusCodes = getRetryStatusCodes(retry)
+
+  return retryableMethods.includes(method.toLowerCase()) && retryableStatusCodes.includes(status) && retryCount < getRetryLimit(retry)
 }
 
 const http = new HttpService({
@@ -29,10 +61,14 @@ const http = new HttpService({
       },
 
       // Error handling interceptor - converts HTTP errors to structured BusinessError
-      async ({ request, options, response }) => {
+      async ({ request, options, response, retryCount }) => {
         if (!response.ok) {
           const url = request.url
           const method = options.method || 'GET'
+
+          if (shouldWaitForRetry(method, response.status, retryCount, options.retry)) {
+            return response
+          }
 
           // 401 自动跳转登录页（可通过 context.skipAuthRedirect 禁用）
           if (response.status === 401 && !options.context?.skipAuthRedirect && typeof window !== 'undefined') {

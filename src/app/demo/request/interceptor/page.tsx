@@ -182,8 +182,12 @@ export default function InterceptorPage() {
       return response
     },
     // 错误处理
-    async ({ options, response }) => {
+    async ({ options, response, retryCount }) => {
       if (!response.ok) {
+        // retry 未耗尽时交回请求库继续重试
+        if (shouldWaitForRetry(options.method || 'GET', response.status, retryCount, options.retry)) {
+          return response
+        }
         // 401 自动跳转（可通过 skipAuthRedirect 禁用）
         if (response.status === 401 && !options.context?.skipAuthRedirect) {
           window.location.href = '/login'
