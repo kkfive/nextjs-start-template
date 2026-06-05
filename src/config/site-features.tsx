@@ -116,6 +116,12 @@ export const siteFeatures: FeatureCategory[] = [
         priority: 4,
       },
       {
+        name: 'SSE Stream',
+        href: '/demo/request/sse',
+        description: 'Server-sent events with async iteration and emitter modes',
+        priority: 4,
+      },
+      {
         name: 'Hitokoto API',
         href: '/demo/request/hitokoto',
         description: 'External API request with ky',

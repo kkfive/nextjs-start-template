@@ -89,6 +89,11 @@ export const demoNavConfig: DemoNavCategory[] = [
         description: '自动跳转 vs skipAuthRedirect 禁用跳转',
       },
       {
+        name: 'SSE 流式请求',
+        href: '/demo/request/sse',
+        description: 'async iteration / emitter 两种流消费模式',
+      },
+      {
         name: 'Hitokoto API',
         href: '/demo/request/hitokoto',
         description: 'External API request with ky',
