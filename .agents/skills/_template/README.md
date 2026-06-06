@@ -1,6 +1,6 @@
 # Skill 模板（基于 skill-based-architecture）
 
-创建新 skill 时复制本目录到 `.claude/skills/<your-skill-name>/`，按 `SKILL.md` 顶部指引填写。
+创建新 skill 时复制本目录到 `.agents/skills/<your-skill-name>/`，按 `SKILL.md` 顶部指引填写。
 
 ## 目录结构
 
@@ -39,8 +39,8 @@
 
 ## 双适配（Claude Code + Codex）
 
-- **Claude Code**：自动扫描 `.claude/skills/*/SKILL.md` 的 frontmatter，可 `/skill-name` 调用
-- **Codex CLI**：读 `AGENTS.md`；在 AGENTS.md 的 "Skill Index" 段列出本 skill 的入口路径
+- **项目规范目录**：正式 skill 放在 `.agents/skills/*/SKILL.md`
+- **Agent 入口**：读 `AGENTS.md`；在 AGENTS.md 的 "Skill Index" 段列出本 skill 的入口路径
 - **新增 skill 后**：必须同步更新 `AGENTS.md` 的 Skill Index
 
 ## 语言规范

@@ -86,7 +86,7 @@ git add -A
 - **页面路由**: `src/app/**/*`
 - **配置文件**: `*.config.*`, `.eslintrc.*`
 - **文档**: `docs/**/*`, `*.md`
-- **Skills**: `.claude/skills/**/*`
+- **Skills**: `.agents/skills/**/*`
 
 ### 2. 按功能内聚
 - 同一功能的 Domain + Controller + Page 合并

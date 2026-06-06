@@ -487,4 +487,4 @@ export const LucideSearch = CreateIcon('icon-[lucide--search]')
 
 **图标查询**：[Iconify 图标库](https://icon-sets.iconify.design/)
 
-详见 `.claude/skills/coding-standards/references/icon-usage.md` 图标使用章节。
+详见 `.agents/skills/coding-standards/references/icon-usage.md` 图标使用章节。

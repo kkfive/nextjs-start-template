@@ -11,7 +11,7 @@ user-invocable: true
 - Cover: HttpService 注入、Service/Controller/Hooks 分层、类型与命名、模块入口
 - Avoid: UI 组件、路由、样式（属于其他层，分别去 `/coding-standards`、`/nextjs-app-router`、`/styling-system`）
 
-**先加载项目原则**：项目根 `.rules/domain.rule.md`。本 skill 只提供执行流程与示例，不重述规则。
+**先加载项目原则**：项目根 `.agents/rules/domain.rule.md`。本 skill 只提供执行流程与示例，不重述规则。
 
 ## Common Tasks
 
@@ -44,7 +44,7 @@ user-invocable: true
 
 ## Session Discipline
 
-每次进入 `domain/` 任务时**重新阅读项目根 `.rules/domain.rule.md`** 与本 SKILL.md。规则与示例可能因新模块的真实需求演化。
+每次进入 `domain/` 任务时**重新阅读项目根 `.agents/rules/domain.rule.md`** 与本 SKILL.md。规则与示例可能因新模块的真实需求演化。
 
 ## 相关 Skills
 

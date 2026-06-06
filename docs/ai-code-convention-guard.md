@@ -26,7 +26,7 @@
 
 在 AI 的 system prompt 或工作流中嵌入规范检查清单，让 AI 在生成代码时自我约束。
 
-**推荐方式**：在 `.claude/` 或工作流模板中附加以下提示：
+**推荐方式**：在 `.agents/skills/` 的相关工作流中附加以下提示：
 
 ```
 【Domain 层编码规范 - 生成后自检清单】
@@ -47,7 +47,7 @@
 - [ ] src/service/ 中无 console.error / console.warn
 ```
 
-> 对于 Claude Code，可将此清单写入 `.claude/CLAUDE.md` 或工作流模板中。
+> 本文档是治理方案说明；可执行步骤应沉淀到 `.agents/skills/` 的 workflow 或 rule 中。
 
 ---
 

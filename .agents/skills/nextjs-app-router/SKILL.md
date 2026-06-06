@@ -11,7 +11,7 @@ user-invocable: true
 - Cover: Server/Client Components、数据获取、缓存、Server Actions、流式渲染、Metadata、性能优化、路由约定
 - Avoid: Pages Router；与 Domain 层耦合（业务逻辑放 `domain/`）
 
-先加载项目原则：项目根规则文件 `next-app.rule.md`（位于 `.rules` 目录）。本 skill 只提供执行流程、决策与示例，不作为规则源。
+先加载项目原则：项目根规则文件 `next-app.rule.md`（位于 `.agents/rules` 目录）。本 skill 只提供执行流程、决策与示例，不作为规则源。
 
 ## Common Tasks
 

@@ -417,19 +417,19 @@ rule('G01', 'AGENTS.md 应引用核心规则源', (_ctx) => {
   if (!fs.existsSync(file))
     return [{ file, line: 1, message: '缺少 AGENTS.md' }]
   const content = fs.readFileSync(file, 'utf-8')
-  if (!content.includes('@.rules/core.rule.md')) {
-    return [{ file, line: 1, message: 'AGENTS.md 应引用 @.rules/core.rule.md，避免复制完整规则清单' }]
+  if (!content.includes('@.agents/rules/core.rule.md')) {
+    return [{ file, line: 1, message: 'AGENTS.md 应引用 @.agents/rules/core.rule.md，避免复制完整规则清单' }]
   }
   return []
 })
 
 rule('G02', 'Domain skill 应引用 Domain 规则源', (_ctx) => {
-  const file = path.join(ROOT, '.claude/skills/domain-layer/SKILL.md')
+  const file = path.join(ROOT, '.agents/skills/domain-layer/SKILL.md')
   if (!fs.existsSync(file))
     return []
   const content = fs.readFileSync(file, 'utf-8')
-  if (!content.includes('.rules/domain.rule.md')) {
-    return [{ file, line: 1, message: 'domain-layer skill 应引用 .rules/domain.rule.md，避免成为重复规则源' }]
+  if (!content.includes('.agents/rules/domain.rule.md')) {
+    return [{ file, line: 1, message: 'domain-layer skill 应引用 .agents/rules/domain.rule.md，避免成为重复规则源' }]
   }
   return []
 })
@@ -438,7 +438,7 @@ rule('G03', '文档示例不应推荐 class Controller', (_ctx) => {
   const issues = []
   const markdownFiles = [
     ...globSync('docs/**/*.md', ROOT),
-    ...globSync('.claude/skills/**/*.md', ROOT),
+    ...globSync('.agents/skills/**/*.md', ROOT),
     path.join(ROOT, 'readme.md'),
     path.join(ROOT, 'AGENTS.md'),
   ].filter(file => fs.existsSync(file))
@@ -467,7 +467,7 @@ rule('G04', '文档不应使用过期的 Domain 绝对化描述', (_ctx) => {
   const issues = []
   const markdownFiles = [
     ...globSync('docs/**/*.md', ROOT),
-    ...globSync('.claude/skills/**/*.md', ROOT),
+    ...globSync('.agents/skills/**/*.md', ROOT),
     path.join(ROOT, 'readme.md'),
     path.join(ROOT, 'AGENTS.md'),
   ].filter(file => fs.existsSync(file))

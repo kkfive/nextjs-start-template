@@ -11,8 +11,8 @@
 | `docs/**` / `*.md` / `README*` | `docs` |
 | `*.test.*` / `*.spec.*` / `**/__tests__/**` | `test` |
 | `*.css/scss/sass/less` / `src/styles/**` / `tailwind.config.*` | `style` |
-| 仅 `*.md` 在 `.claude/skills/<skill>/`（人类文档） | `docs` |
-| `.claude/skills/**` 主要为 SKILL.md / routing.yaml / rules / workflows | `chore`（或单列 `skills`，若 `type-enum` 支持） |
+| 仅 `*.md` 在 `.agents/skills/<skill>/`（人类文档） | `docs` |
+| `.agents/skills/**` 主要为 SKILL.md / routing.yaml / rules / workflows | `chore`（或单列 `skills`，若 `type-enum` 支持） |
 | `domain/**` 新增 `index.ts` / `type.ts` / `service.ts` 整模块 | `feat` |
 | `src/app/**` 新增 `page.tsx` | `feat` |
 | `src/components/**` 新增并被使用 | `feat` |

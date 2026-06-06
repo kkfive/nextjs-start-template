@@ -6,7 +6,7 @@
 
 1. **配置文件独立**：`*.config.*`、`.gitignore`、`tsconfig.json`、`.eslintrc.*`、`commitlint.config.*` 单独 commit
 2. **文档独立**：`docs/**`、`README*`、根目录 `*.md`（除非与代码强相关）
-3. **Skills 独立**：`.claude/skills/**` 按 skill 分组
+3. **Skills 独立**：`.agents/skills/**` 按 skill 分组
 4. **样式独立**：仅 `*.css|scss|sass|less|tailwind.config.*` 的变更
 5. **测试与被测代码同 commit**：`*.test.*`、`*.spec.*` 与源代码合并
 6. **功能内聚合并**：同一业务能力的 Domain + UI + Page 合并
@@ -32,7 +32,7 @@
 | `src/components/<domain>/**` | 业务 UI |
 | `src/app/**` | 路由 / 页面 |
 | `src/lib/**`、`src/service/**` | 基础设施 |
-| `.claude/skills/<skill>/**` | Skill |
+| `.agents/skills/<skill>/**` | Skill |
 | `docs/**` | 文档 |
 
 ## 示例
