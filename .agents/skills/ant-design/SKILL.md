@@ -1,13 +1,13 @@
 ---
 name: ant-design
-description: Ant Design 6.x 组件选择、ConfigProvider/主题、CSS-in-JS、SSR、Form/Table/Select/Tree/Upload 高级用法。用于构建或审查 antd UI、配置主题、解决 Ant Design 在 Next.js/SSR/性能/无障碍方面的问题；强制使用前查最新官方 API。
+description: Ant Design 组件选择、ConfigProvider/主题、CSS-in-JS、SSR、Form/Table/Select/Tree/Upload 高级用法。用于构建或审查 antd UI、配置主题、解决 Ant Design 在 Next.js/SSR/性能/无障碍方面的问题；强制使用前查最新官方 API。
 user-invocable: true
 ---
 
 # Ant Design
 
 ## Scope
-- Target: antd@^6 + React 18-19（本项目为 React 19）
+- Target: Ant Design 组件与主题体系
 - Cover: 核心组件、Token/主题、CSS-in-JS、SSR、Form/Table/Select/Tree/Upload 高级模式
 - Avoid: Pro 路由/布局（去 `ant-design-pro`）；AI 聊天 UI（去 `ant-design-x`）
 

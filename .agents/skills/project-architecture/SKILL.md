@@ -7,7 +7,7 @@ user-invocable: true
 # Project Architecture
 
 ## Scope
-- Target: Next.js 16 + React 19 三层架构组织
+- Target: Next.js + React 三层架构组织
 - Cover: 层级分离、依赖规则、目录约定、命名规范
 - Avoid: 单文件级的 TypeScript / React 写法（去 `/coding-standards`）；Domain 模块内部细节（去 `/domain-layer`）
 

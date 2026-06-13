@@ -1,13 +1,13 @@
 ---
 name: nextjs-app-router
-description: Next.js 14+ App Router 路由、Server/Client Components、数据获取、缓存、Server Actions、流式渲染、Metadata、性能优化。用于在 src/app/ 下新建页面/布局/Route Handler/Server Action、判断是否需要 'use client'、配置缓存与重新验证、为页面写 SEO Metadata。
+description: Next.js App Router 路由、Server/Client Components、数据获取、缓存、Server Actions、流式渲染、Metadata、性能优化。用于在 src/app/ 下新建页面/布局/Route Handler/Server Action、判断是否需要 'use client'、配置缓存与重新验证、为页面写 SEO Metadata。
 user-invocable: true
 ---
 
 # Next.js App Router
 
 ## Scope
-- Target: Next.js 14+ App Router 架构（本项目为 Next.js 16 + React 19）
+- Target: Next.js App Router 架构
 - Cover: Server/Client Components、数据获取、缓存、Server Actions、流式渲染、Metadata、性能优化、路由约定
 - Avoid: Pages Router；与 Domain 层耦合（业务逻辑放 `domain/`）
 

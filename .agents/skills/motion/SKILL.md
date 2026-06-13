@@ -7,7 +7,7 @@ user-invocable: true
 # Motion
 
 ## Scope
-- Target: Motion (`motion/react`，2024 年从 `framer-motion` 改名) + React 19
+- Target: Motion（`motion/react`，从 `framer-motion` 改名）
 - Cover: 手势、滚动、布局、退出动画、SVG、Next.js 集成、LazyMotion 包大小优化
 - Avoid: 3D 动画（去 Three.js）；纯列表增删（用 `auto-animate`，包更小）
 

@@ -1,13 +1,13 @@
 # Next.js Start Template
 
-基于 Next.js 16 + React 19 的项目模板，采用领域驱动三层架构。
+基于 Next.js + React 的项目模板，采用领域驱动三层架构。
 
 ## 特性
 
-- **Next.js 16** + **React 19** - 最新框架版本
+- **Next.js** + **React** - App Router 与 Server Components
 - **领域驱动架构** - 业务能力与 UI 分离，核心逻辑框架无关
-- **TypeScript 5.9** - 完整类型支持
-- **Tailwind CSS 4** - 原子化 CSS
+- **TypeScript** - 完整类型支持
+- **Tailwind CSS** - 原子化 CSS
 - **TanStack Query** - 服务端状态管理
 - **Zustand** - 客户端状态管理
 - **Vitest + MSW** - 单元测试与 API Mock

@@ -1,6 +1,6 @@
 # 项目协作准则
 
-Next.js 16 + React 19，采用 Domain / 应用基础设施 / UI / 路由分层。所有回复使用简体中文。
+Next.js + React，采用 Domain / 应用基础设施 / UI / 路由分层。所有回复使用简体中文。
 
 本文件是 **Claude Code（通过 `CLAUDE.md`）与 Codex CLI** 的共同入口。Codex 用户读本文件即可获得完整规则索引；根目录不再保留 `CODEX.md`。
 

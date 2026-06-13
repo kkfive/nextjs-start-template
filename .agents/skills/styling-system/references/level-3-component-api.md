@@ -6,7 +6,7 @@
 - 组件提供 `style` / `styles` / `classNames` API
 - 不能（或不该）影响其他实例
 
-## antd 5.x+ 多部位 API
+## antd 多部位 API
 
 | API | 用途 | 例 |
 |---|---|---|

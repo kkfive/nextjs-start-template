@@ -1,6 +1,6 @@
 # Next.js App Router Skill
 
-Next.js 14+ App Router - Server Components、流式渲染、并行路由、数据获取、性能优化、Metadata。
+Next.js App Router - Server Components、流式渲染、并行路由、数据获取、性能优化、Metadata。
 
 ## 使用场景
 

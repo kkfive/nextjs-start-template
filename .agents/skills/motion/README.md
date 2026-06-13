@@ -4,7 +4,7 @@ Motion (Framer Motion) React 动画库指南
 
 **状态**: 生产就绪 ✅
 **最后更新**: 2025-11-09
-**生产测试**: React 19 + Next.js 16 + Vite 7 + Tailwind v4
+**生产测试**: Next.js + Tailwind
 
 ---
 
@@ -181,7 +181,6 @@ import { LazyMotion, domAnimation, m } from 'motion/react'
 - radix animation
 - next.js app router animation
 - server components animation
-- vite plugin animation
 - typescript animation
 
 ### Problem Keywords
@@ -331,21 +330,9 @@ Production-ready setup for Motion (formerly Framer Motion) - the industry-standa
 
 ---
 
-## Package Versions (Verified 2025-11-09)
-
-| Package | Version | Status |
-|---------|---------|--------|
-| motion | 12.23.24 | ✅ Latest stable |
-| framer-motion | 12.23.24 | ✅ Same version as motion |
-| react | 19.2.0 | ✅ Latest stable |
-| next | 16.0.1 | ✅ Latest stable |
-| vite | 7.2.2 | ✅ Latest stable |
-
----
-
 ## Dependencies
 
-**Prerequisites**: React 18+ or React 19+
+**Prerequisites**: React 19
 
 **Integrates With**:
 - tailwind-v4-shadcn (styling)
@@ -435,7 +422,7 @@ MIT License - See main repo LICENSE file
 
 ---
 
-**Production Tested**: ✅ React 19 + Next.js 16 + Vite 7 + Tailwind v4
+**Production Tested**: ✅ Next.js + Tailwind
 **Token Savings**: ~83%
 **Error Prevention**: 100% (29+ documented errors prevented)
 **Bundle Size**: 2.3 KB (mini) - 34 KB (full), optimizable to 4.6 KB

@@ -7,7 +7,7 @@ user-invocable: true
 # Styling System
 
 ## Scope
-- Target: Ant Design 5.x+ / Tailwind 在本项目的样式自定义
+- Target: Ant Design / Tailwind 在本项目的样式自定义
 - Cover: 5 级优先级体系、主题切换、暗色模式、决策流程
 - Avoid: 覆盖 `.ant-*` 全局类名、硬编码颜色、滥用 `!important`
 
