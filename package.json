@@ -3,6 +3,9 @@
   "type": "module",
   "private": true,
   "packageManager": "pnpm@11.5.3",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "next dev --port 5373",
     "build": "next build",
