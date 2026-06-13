@@ -1,0 +1,26 @@
+# Single source of truth for searches-iconify task routing.
+
+tasks:
+  - intent: 端到端搜索图标
+    triggers: ["搜图标", "找 icon", "iconify 搜索", "推荐图标"]
+    route:
+      - workflows/search-icons.md
+      - rules/keyword-expansion.md
+      - rules/parallel-execution.md
+      - references/output-template.md
+
+  - intent: 关键词生成
+    triggers: ["关键词", "同义词", "怎么搜", "搜不到"]
+    route: [rules/keyword-expansion.md]
+
+  - intent: 并行执行约束
+    triggers: ["并行", "为什么必须并行", "curl 多次"]
+    route: [rules/parallel-execution.md]
+
+  - intent: 输出模板
+    triggers: ["输出", "格式", "模板", "怎么写结果"]
+    route: [references/output-template.md]
+
+  - intent: 踩坑
+    triggers: ["没结果", "重复", "格式不对"]
+    route: [references/gotchas.md]

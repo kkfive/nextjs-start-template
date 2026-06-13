@@ -1,0 +1,50 @@
+# Single source of truth for nextjs-app-router task routing.
+# SKILL.md Common Tasks 表必须与本文件保持一致。
+
+tasks:
+  - intent: 新增页面 / 布局 / loading / error
+    triggers: ["新建页面", "添加 layout", "加 loading", "加 error 边界"]
+    route:
+      - workflows/new-page.md
+      - references/file-conventions.md
+
+  - intent: 新增 API Route Handler
+    triggers: ["加 api", "route handler", "REST", "POST 接口"]
+    route:
+      - workflows/add-api-route.md
+
+  - intent: 新增 Server Action
+    triggers: ["server action", "表单提交", "'use server'", "mutation"]
+    route:
+      - workflows/add-server-action.md
+      - references/caching-strategies.md
+
+  - intent: Server vs Client 决策
+    triggers: ["要加 'use client' 吗", "Server Component", "hooks 报错"]
+    route:
+      - rules/server-vs-client.md
+
+  - intent: Server→Client 边界序列化
+    triggers: ["传值报错", "不能 serialize", "Map / class 报错"]
+    route:
+      - rules/data-serialization.md
+
+  - intent: 缓存与重新验证
+    triggers: ["revalidate", "no-store", "force-cache", "tags 失效"]
+    route:
+      - references/caching-strategies.md
+
+  - intent: 写 SEO / Metadata
+    triggers: ["metadata", "generateMetadata", "OG 图", "title"]
+    route:
+      - references/metadata.md
+
+  - intent: 性能优化
+    triggers: ["next/image", "dynamic", "bundle 太大", "首屏慢"]
+    route:
+      - references/performance.md
+
+  - intent: 踩坑速查
+    triggers: ["怎么会这样", "诡异问题", "缓存没刷新", "嵌套过深"]
+    route:
+      - references/gotchas.md

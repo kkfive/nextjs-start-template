@@ -1,27 +1,32 @@
 import process from 'node:process'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { env } from '@/config/env'
 import { HttpService } from '@/lib/request'
+import { createErrorResponse } from '@/lib/request/error-handler'
 
 function getBaseUrl() {
   if (env.API_BASE_URL) {
     return env.API_BASE_URL
   }
+  if (env.NODE_ENV === 'production') {
+    throw new Error('API_BASE_URL environment variable is required in production')
+  }
   return 'http://localhost:5373'
 }
 
 const http = new HttpService({
-  prefixUrl: getBaseUrl(),
+  prefix: getBaseUrl(),
   hooks: {
     beforeRequest: [
       // Cookie injection interceptor - injects customer ID from cookies
-      async (request) => {
+      async ({ request }) => {
         const cookieStore = await cookies()
         request.headers.set('x-customer-id', cookieStore.get('x-customer-id')?.value || '')
       },
 
       // Token injection interceptor - adds authorization token from environment or cookies
-      async (request) => {
+      async ({ request }) => {
         const cookieStore = await cookies()
         const token = cookieStore.get('auth-token')?.value || process.env.API_TOKEN
 
@@ -31,7 +36,7 @@ const http = new HttpService({
       },
 
       // Request logging interceptor - logs outgoing requests
-      async (request) => {
+      async ({ request }) => {
         const url = request.url
         const method = request.method || 'GET'
         const timestamp = new Date().toISOString()
@@ -45,7 +50,7 @@ const http = new HttpService({
     ],
     afterResponse: [
       // Response logging interceptor - logs response status and timing
-      async (request, options, response) => {
+      async ({ request, response }) => {
         const url = request.url
         const method = request.method || 'GET'
         const status = response.status
@@ -60,39 +65,21 @@ const http = new HttpService({
         return response
       },
 
-      // Server-side error handling interceptor - handles authentication and server errors
-      async (request, options, response) => {
-        const url = request.url
+      // Error handling interceptor - converts HTTP errors to structured BusinessError
+      async ({ request, options, response }) => {
+        if (!response.ok) {
+          const url = request.url
+          const method = request.method || 'GET'
 
-        // Handle 401 Unauthorized - could trigger server-side redirect
-        if (response.status === 401) {
-          console.error(
-            `[Server Error] Unauthorized request to ${url}`,
-            'Consider redirecting to login page',
-          )
-          // In a real app, you might want to:
-          // - Clear invalid cookies
-          // - Redirect to login page
-          // - Return a specific error response
-        }
+          // 401 自动跳转登录页（可通过 context.skipAuthRedirect 禁用）
+          if (response.status === 401 && !options.context?.skipAuthRedirect) {
+            redirect('/login')
+          }
 
-        // Handle 5xx server errors
-        if (response.status >= 500) {
-          console.error(
-            `[Server Error] Server error ${response.status} for ${url}`,
-            'Upstream service may be down',
-          )
-          // In a real app, you might want to:
-          // - Trigger retry logic
-          // - Send error to monitoring service
-          // - Return fallback data
-        }
-
-        // Handle 403 Forbidden
-        if (response.status === 403) {
-          console.warn(
-            `[Server Error] Access forbidden to ${url}`,
-            'User may lack required permissions',
+          createErrorResponse(
+            { url, method, status: response.status, statusText: response.statusText },
+            null,
+            options,
           )
         }
 
@@ -100,7 +87,7 @@ const http = new HttpService({
       },
 
       // Performance monitoring interceptor - tracks slow requests
-      async (request, options, response) => {
+      async ({ request, response }) => {
         // Note: In a real implementation, you would track request start time
         // and calculate duration here. This is a simplified example.
         const url = request.url

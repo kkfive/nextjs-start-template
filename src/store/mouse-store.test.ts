@@ -15,30 +15,30 @@ describe('useMouseStore', () => {
     expect(state.y).toBe(0)
   })
 
-  it('should increment x and y when update is called', () => {
+  it('should set x and y when update is called with coordinates', () => {
     const { update } = useMouseStore.getState()
 
     act(() => {
-      update()
+      update(12, 24)
     })
 
     const state = useMouseStore.getState()
-    expect(state.x).toBe(1)
-    expect(state.y).toBe(1)
+    expect(state.x).toBe(12)
+    expect(state.y).toBe(24)
   })
 
-  it('should increment multiple times', () => {
+  it('should keep the latest coordinates after multiple updates', () => {
     const { update } = useMouseStore.getState()
 
     act(() => {
-      update()
-      update()
-      update()
+      update(1, 2)
+      update(3, 4)
+      update(5, 6)
     })
 
     const state = useMouseStore.getState()
-    expect(state.x).toBe(3)
-    expect(state.y).toBe(3)
+    expect(state.x).toBe(5)
+    expect(state.y).toBe(6)
   })
 
   it('should allow direct state updates via setState', () => {
@@ -59,11 +59,11 @@ describe('useMouseStore', () => {
     const { update } = useMouseStore.getState()
 
     act(() => {
-      update()
+      update(30, 40)
     })
 
     const state = useMouseStore.getState()
-    expect(state.x).toBe(11)
-    expect(state.y).toBe(21)
+    expect(state.x).toBe(30)
+    expect(state.y).toBe(40)
   })
 })

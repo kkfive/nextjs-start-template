@@ -10,6 +10,7 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
     API_BASE_URL: z.string().optional(),
+    API_TOKEN: z.string().optional(),
     // 在此添加更多服务端环境变量
     // JWT_SECRET: z.string().min(32),
     // DATABASE_URL: z.string().url(),
@@ -34,6 +35,7 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     API_BASE_URL: process.env.API_BASE_URL,
+    API_TOKEN: process.env.API_TOKEN,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_DEBUG: process.env.NEXT_PUBLIC_DEBUG,

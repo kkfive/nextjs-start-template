@@ -1,15 +1,15 @@
 import type { AppErrorOptions } from './app-error'
 import { AppError } from './app-error'
 
-export interface FieldError {
+export type FieldError = {
   field: string
   message: string
   code?: string
 }
 
-export interface ValidationErrorOptions extends AppErrorOptions {
+export type ValidationErrorOptions = {
   fields?: FieldError[]
-}
+} & AppErrorOptions
 
 export class ValidationError extends AppError {
   public readonly fields: FieldError[]

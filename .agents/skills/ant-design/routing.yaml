@@ -1,0 +1,46 @@
+# Single source of truth for ant-design task routing.
+
+tasks:
+  - intent: 使用组件前必查 API
+    triggers: ["antd", "ant-design", "用 Button", "用 Form", "用 Table"]
+    route: [rules/api-query-required.md]
+
+  - intent: 业务代码引入 antd 组件
+    triggers: ["import antd", "组件导入", "from 'antd'"]
+    route: [rules/ui-import.md]
+
+  - intent: ConfigProvider 配置
+    triggers: ["主题", "ConfigProvider", "token", "locale"]
+    route: [workflows/setup-config-provider.md]
+
+  - intent: Next.js SSR
+    triggers: ["SSR", "Next.js antd", "StyleProvider", "样式闪烁"]
+    route: [workflows/nextjs-ssr.md, references/gotchas.md]
+
+  - intent: v6 / v5 版本与迁移
+    triggers: ["v6", "v5 迁移", "新特性"]
+    route: [references/antd-v6.md, references/antd-v5.md]
+
+  - intent: Form 高级
+    triggers: ["Form 动态", "依赖字段", "验证性能", "FormList"]
+    route: [references/form-advanced.md]
+
+  - intent: Table 高级
+    triggers: ["Table 排序", "Table 过滤", "Table 虚拟化", "rowKey"]
+    route: [references/table-advanced.md]
+
+  - intent: Select 高级
+    triggers: ["远程搜索", "Select 标签", "Select 大数据"]
+    route: [references/select-advanced.md]
+
+  - intent: Tree 高级
+    triggers: ["Tree 异步", "checkStrictly", "Tree 虚拟化"]
+    route: [references/tree-advanced.md]
+
+  - intent: Upload 高级
+    triggers: ["customRequest", "受控上传", "进度"]
+    route: [references/upload-advanced.md]
+
+  - intent: 踩坑
+    triggers: ["奇怪", "样式没生效", "rowKey 警告"]
+    route: [references/gotchas.md]

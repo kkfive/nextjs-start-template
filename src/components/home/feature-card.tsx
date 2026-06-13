@@ -2,9 +2,9 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { LucideArrowRight } from '@/components/ui/icon'
+import { LucideArrowUpRight } from '@/components/ui/icon'
 
-export interface FeatureCardProps {
+export type FeatureCardProps = {
   title: string
   description: string
   icon?: React.ReactNode
@@ -23,65 +23,67 @@ export function FeatureCard({
   priority,
   delay = 0,
 }: FeatureCardProps) {
-  // 视觉权重映射：根据优先级设置卡片最小高度
-  const minHeight
-    = priority >= 5 ? 'min-h-[240px]' : priority >= 4 ? 'min-h-[200px]' : 'min-h-[160px]'
+  const categoryColors: Record<string, string> = {
+    'UI': 'from-violet-500 to-fuchsia-500',
+    'Forms': 'from-blue-500 to-cyan-500',
+    'Data Fetching': 'from-emerald-500 to-teal-500',
+    'Error Handling': 'from-amber-500 to-orange-500',
+    'State Management': 'from-rose-500 to-pink-500',
+  }
 
-  // 优先级徽章颜色
-  const priorityColor
-    = priority >= 5
-      ? 'bg-red-50 text-red-700 border-red-200'
-      : priority >= 4
-        ? 'bg-orange-50 text-orange-700 border-orange-200'
-        : 'bg-blue-50 text-blue-700 border-blue-200'
+  const gradientClass = categoryColors[category] || 'from-primary to-gradient-mid'
+  const isHighPriority = priority >= 4
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 1, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
       transition={{
         duration: 0.5,
         delay,
-        ease: 'easeOut',
+        ease: [0.22, 1, 0.36, 1],
       }}
-      whileHover={{
-        y: -4,
-        boxShadow: '0 10px 20px rgba(0,0,0,0.15)',
-        transition: { duration: 0.2 },
-      }}
-      whileTap={{ scale: 0.98 }}
     >
       <Link
         href={href}
-        className={`group relative flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm ${minHeight}`}
+        className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card p-6 shadow-sm transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
       >
-        {/* Category Badge with Priority Indicator */}
-        <div className="mb-4 flex items-center gap-2">
-          <div className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${priorityColor}`}>
-            {category}
-          </div>
-          {priority >= 4 && (
-            <div className="flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 text-xs font-bold text-white shadow-sm">
-              {priority}
-            </div>
-          )}
-        </div>
+        {/* Top gradient bar */}
+        <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${gradientClass} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
 
         {/* Icon */}
         {icon && (
-          <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
+          <div className={`mb-4 flex size-11 items-center justify-center rounded-xl bg-gradient-to-br ${gradientClass} text-white shadow-md transition-transform duration-300 group-hover:scale-110`}>
             {icon}
           </div>
         )}
 
-        {/* Content */}
-        <h3 className="mb-2 text-lg font-semibold text-neutral-900">{title}</h3>
-        <p className="mb-4 flex-1 text-sm text-neutral-600">{description}</p>
+        {/* Category Badge */}
+        <div className="mb-3 flex items-center gap-2">
+          <span className={`inline-flex rounded-full bg-gradient-to-r ${gradientClass} bg-clip-text px-2 py-0.5 text-xs font-semibold text-transparent`}>
+            {category}
+          </span>
+          {isHighPriority && (
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+              P
+              {priority}
+            </span>
+          )}
+        </div>
 
-        {/* Arrow indicator */}
-        <div className="flex items-center text-sm font-medium text-blue-600 transition-transform group-hover:translate-x-1">
+        {/* Content */}
+        <h3 className="mb-2 text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
+          {title}
+        </h3>
+        <p className="mb-4 flex-1 text-sm leading-relaxed text-muted-foreground">
+          {description}
+        </p>
+
+        {/* Arrow */}
+        <div className="flex items-center text-sm font-medium text-primary transition-all group-hover:gap-1">
           <span>查看示例</span>
-          <LucideArrowRight className="ml-1 size-4" />
+          <LucideArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </div>
       </Link>
     </motion.div>

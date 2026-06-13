@@ -37,17 +37,18 @@ export default antfu(
       '**/.pnpm-store',
       '**/pnpm-lock.yaml',
       '**/docs',
+      'AGENTS.md',
     ],
     formatters: true,
   },
-  ...tailwind.configs['flat/recommended'],
+  tailwind.configs.recommended,
   {
     settings: {
       tailwindcss: {
         // Tailwind CSS v4 的配置路径应指向 CSS 文件
-        config: path.join(__dirname, 'src/styles/tailwind.css'),
-        // 可选，默认值：["class", "className", "ngClass", "@apply"]
-        callees: ['classnames', 'clsx', 'ctl', 'cva', 'tv', 'tw', 'cn', 'className'],
+        cssConfigPath: path.join(__dirname, 'src/styles/tailwind.css'),
+        // 可选，默认值：["classnames", "clsx", "ctl", "cva", "tv", "tw"]
+        functions: ['classnames', 'clsx', 'ctl', 'cva', 'tv', 'tw', 'cn'],
       },
     },
   },
@@ -55,9 +56,15 @@ export default antfu(
   // 注意：domain/ 目前从 @/lib/request 导入是允许的
   // 此规则防止 domain 导入 React 组件
   {
+    rules: {
+      'ts/consistent-type-definitions': ['error', 'type'],
+      'pnpm/yaml-enforce-settings': 'off',
+    },
+  },
+  {
     files: ['domain/**/*.ts', 'domain/**/*.tsx'],
     rules: {
-      'no-restricted-imports': ['warn', {
+      'no-restricted-imports': ['error', {
         patterns: [{
           group: ['@/components/*', '@/app/*', '@/hooks/*', '@/store/*'],
           message: 'Domain layer should not import React components, hooks, or stores. Keep domain code framework-agnostic.',

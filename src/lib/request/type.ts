@@ -2,7 +2,7 @@ import type { Request, RequestOption } from '@kkfive/request'
 
 export type RequestInput = string
 
-export interface RequestOptions extends RequestOption {}
+export type RequestOptions = RequestOption
 
 export type RequestInstance = Request
 
@@ -19,7 +19,7 @@ enum ERROR_SHOW_TYPE {
   REDIRECT = 9,
 }
 
-export interface HttpResponseError<T = null> {
+export type HttpResponseError<T = null> = {
   code: number
   data: T
   errorShowType: ERROR_SHOW_TYPE
@@ -28,7 +28,8 @@ export interface HttpResponseError<T = null> {
   success: false
   timestamp: string
 }
-export interface HttpResponseSuccess<T = unknown> {
+
+export type HttpResponseSuccess<T = unknown> = {
   data: T
   code?: number
   message?: string

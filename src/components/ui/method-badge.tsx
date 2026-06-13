@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 
-interface MethodBadgeProps {
+type MethodBadgeProps = {
   method: HttpMethod
   className?: string
 }

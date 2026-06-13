@@ -8,4 +8,7 @@ pre-commit:
   commands:
     lint:
       glob: '*'
-      run: npm run lint:fix {staged_files}
+      run: pnpm lint:fix {staged_files}
+    verify:
+      glob: '*'
+      run: pnpm verify

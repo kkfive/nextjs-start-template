@@ -80,11 +80,11 @@ import { http } from '@/service/index.base'
 
 ```typescript
 const http = new HttpService({
-  prefixUrl: getBaseUrl(),
+  prefix: getBaseUrl(),
   hooks: {
     // 请求前拦截器
     beforeRequest: [
-      async (request) => {
+      async ({ request }) => {
         // Token 注入
         const token = getToken()
         if (token) {
@@ -94,7 +94,7 @@ const http = new HttpService({
     ],
     // 响应后拦截器
     afterResponse: [
-      async (input, options, response) => {
+      async ({ response }) => {
         // 401 跳转登录
         if (response.status === 401) {
           window.location.href = '/login'
@@ -168,14 +168,14 @@ if (error instanceof BusinessError) {
 
 ```typescript
 // domain/_shared/types/index.ts
-export interface Pagination {
+export type Pagination = {
   page: number
   pageSize: number
   total: number
   totalPages: number
 }
 
-export interface PaginatedResponse<T> {
+export type PaginatedResponse<T> = {
   data: T[]
   pagination: Pagination
 }
@@ -184,36 +184,40 @@ export interface PaginatedResponse<T> {
 **使用方式**：
 
 ```typescript
-// domain/user/type.d.ts
+// domain/user/type.ts
 import type { PaginatedResponse } from '@domain/_shared/types'
 
-declare namespace User {
-  type ListResponse = PaginatedResponse<User>
+export type User = {
+  id: string
+  name: string
 }
+
+export type ListResponse = PaginatedResponse<User>
 ```
 
 ---
 
-### 6. 后端接口类型定义应存放在 `domain/[module]/type.d.ts` 还是 `typings/`？
+### 6. 后端接口类型定义应存放在 `domain/[module]/type.ts` 还是 `typings/`？
 
 | 位置 | 用途 | 示例 |
 |------|------|------|
-| `domain/[module]/type.d.ts` | 模块专属类型（API 响应、业务实体） | `Hitokoto.Hitokoto` |
+| `domain/[module]/type.ts` | 模块专属类型（API 响应、业务实体） | `Hitokoto` |
 | `domain/_shared/types/` | 跨模块共享类型（分页、通用工具类型） | `PaginatedResponse<T>` |
 | `typings/global.d.ts` | 全局类型扩展（Window、第三方库） | `Window.gtag` |
 
 **推荐做法**：
 
 ```typescript
-// domain/user/type.d.ts - 模块专属
-declare namespace User {
-  interface User {
-    id: string
-    name: string
-  }
-  interface ListAPI {
-    Response: PaginatedResponse<User>
-  }
+// domain/user/type.ts - 模块专属
+import type { PaginatedResponse } from '@domain/_shared/types'
+
+export type User = {
+  id: string
+  name: string
+}
+
+export type ListAPI = {
+  Response: PaginatedResponse<User>
 }
 ```
 
@@ -225,15 +229,14 @@ declare namespace User {
 
 ```typescript
 // domain/user/controller.ts
+import type { HttpService } from '@/lib/request'
 import { toCamelCaseKeys } from 'es-toolkit/object'
+import { service } from './service'
 
-export class Controller {
-  static async getUser(client: HttpService) {
-    const response = await service.getUser(client)
-    const data = await response.json()
-    // 递归转换所有键为 camelCase
-    return toCamelCaseKeys(data.data)
-  }
+export async function getUser(client: HttpService) {
+  const response = await service.getUser(client)
+  // 递归转换所有键为 camelCase
+  return toCamelCaseKeys(response.data)
 }
 ```
 
@@ -272,18 +275,19 @@ const result = toCamelCaseKeys(apiResponse)
 
 | 层级 | 职责 | 内容 | 限制 |
 |------|------|------|------|
-| `domain/` | 纯业务逻辑 | Controller、Service、Type、Schema | **禁止 React/JSX** |
+| `domain/` | 业务能力和运行环境适配 | Controller、Service、Type、Schema、Hooks | 核心逻辑禁止 React/JSX；`hooks.ts` 是适配层例外 |
 | `components/domain/` | 业务 UI | 结合业务逻辑的 React 组件 | 可导入 `@domain/*` |
 
 **判断标准**：
 - 能否在 Node.js 环境运行？→ `domain/`
 - 需要 React 渲染？→ `components/domain/`
+- 需要 React Query 状态适配？→ `domain/{module}/hooks.ts`，但不要写 JSX
 
 ```
 domain/example/hitokoto/
 ├── controller.ts    # 业务逻辑：调用 service、数据转换
 ├── service.ts       # API 调用：纯 HTTP 请求
-└── type.d.ts        # 类型定义
+└── type.ts          # 类型定义
 
 src/components/domain/hitokoto/
 └── hitokoto-card.tsx  # UI 组件：使用 Controller + useQuery + UI 组件
@@ -357,12 +361,9 @@ const { sidebarOpen, toggleSidebar } = useSidebarStore()
 
 ```typescript
 // domain/example/request/controller.ts
-export class Controller {
-  static async unifiedScenario(client: HttpService, scenario: string) {
-    const response = await service.unifiedScenario(client, scenario)
-    const result = await response.json()
-    return transformData(result)  // 数据转换 + 错误处理
-  }
+export async function unifiedScenario(client: HttpService, scenario: string) {
+  const response = await service.unifiedScenario(client, scenario)
+  return transformData(response) // 数据转换 + 错误处理
 }
 ```
 
@@ -486,4 +487,4 @@ export const LucideSearch = CreateIcon('icon-[lucide--search]')
 
 **图标查询**：[Iconify 图标库](https://icon-sets.iconify.design/)
 
-详见 `docs/conventions/coding.md` 图标使用章节。
+详见 `.agents/skills/coding-standards/references/icon-usage.md` 图标使用章节。

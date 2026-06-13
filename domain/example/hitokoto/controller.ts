@@ -1,13 +1,11 @@
+import type { Hitokoto } from './type'
 import type { HttpService } from '@/lib/request'
-
 import type { RequestOptions } from '@/lib/request/type'
 import { service } from './service'
 
-export class Controller {
-  static async getData(client: HttpService, options?: RequestOptions) {
-    const result = await service.getData(client, options)
-    // @ts-expect-error - responseReturn: 'raw' returns Response, but type inference shows Hitokoto
-    const jsonData = await result.json()
-    return jsonData
-  }
+export async function getData(
+  client: HttpService,
+  options?: RequestOptions,
+): Promise<Hitokoto> {
+  return service.getData(client, options)
 }

@@ -11,7 +11,7 @@ import {
  * 功能卡片配置接口
  * 定义单个功能示例的完整信息
  */
-export interface FeatureCardConfig {
+export type FeatureCardConfig = {
   /** 示例名称 */
   name: string
   /** 示例路由路径 */
@@ -32,7 +32,7 @@ export interface FeatureCardConfig {
 /**
  * 功能分类
  */
-export interface FeatureCategory {
+export type FeatureCategory = {
   /** 分类名称 */
   category: string
   /** 分类图标（仅用于首页展示） */
@@ -104,15 +104,21 @@ export const siteFeatures: FeatureCategory[] = [
         priority: 4,
       },
       {
-        name: 'Raw Response Envelope',
-        href: '/demo/request/raw-envelope',
-        description: 'Raw response envelope without interceptor',
+        name: 'Response Envelope',
+        href: '/demo/request/interceptor',
+        description: 'Compare extracted business data with full response envelope',
         priority: 4,
       },
       {
         name: 'HTTP Error Handling',
-        href: '/demo/request/http-errors',
+        href: '/demo/request/errors',
         description: 'HTTP error status codes (404, 500, 503)',
+        priority: 4,
+      },
+      {
+        name: 'SSE Stream',
+        href: '/demo/request/sse',
+        description: 'Server-sent events with async iteration and emitter modes',
         priority: 4,
       },
       {

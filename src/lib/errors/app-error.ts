@@ -1,4 +1,4 @@
-export interface AppErrorOptions {
+export type AppErrorOptions = {
   cause?: Error
   context?: Record<string, unknown>
 }

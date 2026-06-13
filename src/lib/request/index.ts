@@ -1,40 +1,39 @@
 import type { RequestInput, RequestInstance, RequestOptions } from './type'
-import { Request } from '@kkfive/request'
+import { createClient } from '@kkfive/request'
 import defu from 'defu'
 
 export class HttpService {
   instance: RequestInstance
-  constructor(defaultOptions: RequestOptions = {}) {
-    const options: RequestOptions = {
-      retry: 0,
-      responseParser: { responseReturn: 'raw' },
+  constructor(options: RequestOptions = {}) {
+    const baseOptions: RequestOptions = {
+      retry: 1,
+      timeout: 30000,
+      responseParser: { responseReturn: 'body' },
     }
-    this.instance = Request.create(
-      defu(options, defaultOptions),
-    )
+    this.instance = createClient(defu(options, baseOptions))
   }
 
-  request<T = unknown>(input: RequestInput, options?: RequestOptions) {
-    return this.instance.request<T>(input, options)
+  request<T = unknown>(input: RequestInput, options?: RequestOptions): Promise<T> {
+    return this.instance.request<T>(input, options ?? {})
   }
 
-  get<T = unknown>(url: RequestInput, options?: RequestOptions) {
+  get<T = unknown>(url: RequestInput, options?: RequestOptions): Promise<T> {
     return this.instance.get<T>(url, options)
   }
 
-  post<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.instance.post<T>(url, options?.json, options)
+  post<T = unknown>(url: RequestInput, body?: unknown, options?: RequestOptions): Promise<T> {
+    return this.instance.post<T>(url, body, options)
   }
 
-  put<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.instance.put<T>(url, options?.json, options)
+  put<T = unknown>(url: RequestInput, body?: unknown, options?: RequestOptions): Promise<T> {
+    return this.instance.put<T>(url, body, options)
   }
 
-  delete<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.instance.delete<T>(url, options?.json, options)
+  delete<T = unknown>(url: RequestInput, options?: RequestOptions): Promise<T> {
+    return this.instance.delete<T>(url, options)
   }
 
-  patch<T = unknown>(url: RequestInput, options?: RequestOptions) {
-    return this.instance.patch<T>(url, options?.json, options)
+  patch<T = unknown>(url: RequestInput, body?: unknown, options?: RequestOptions): Promise<T> {
+    return this.instance.patch<T>(url, body, options)
   }
 }

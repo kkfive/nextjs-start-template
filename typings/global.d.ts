@@ -1,7 +1,7 @@
 import '@tanstack/react-query'
 
 declare module '@tanstack/react-query' {
-  interface Register {
+  type Register = {
     queryMeta: {
       /** 设置为 true 跳过全局错误处理 */
       skipGlobalErrorHandler?: boolean
@@ -11,10 +11,6 @@ declare module '@tanstack/react-query' {
       skipGlobalErrorHandler?: boolean
     }
   }
-}
-
-declare global {
-  interface Window {}
 }
 
 export {}

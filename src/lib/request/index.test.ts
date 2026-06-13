@@ -1,3 +1,4 @@
+import { delay, HttpResponse, http as mswHttp } from 'msw'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { TEST_BASE_URL } from '@/__tests__/mocks/handlers'
 import { server } from '@/__tests__/mocks/server'
@@ -16,20 +17,35 @@ describe('httpService', () => {
 
   it('should create an instance with custom options', () => {
     const http = new HttpService({
-      prefixUrl: 'https://api.example.com',
+      prefix: 'https://api.example.com',
       timeout: 5000,
     })
 
     expect(http.instance).toBeDefined()
   })
 
-  it('should make GET requests with prefixUrl', async () => {
+  it('should let custom options override service defaults', async () => {
+    server.use(
+      mswHttp.get(`${TEST_BASE_URL}/api/example/request/slow`, async () => {
+        await delay(50)
+        return HttpResponse.json({ success: true })
+      }),
+    )
+
     const http = new HttpService({
-      prefixUrl: TEST_BASE_URL,
+      prefix: TEST_BASE_URL,
+      timeout: 1,
     })
 
-    const response = await http.get<Response>('api/example/request/success')
-    const data = await response.json()
+    await expect(http.get('api/example/request/slow')).rejects.toThrow('Request timed out')
+  })
+
+  it('should make GET requests with prefix', async () => {
+    const http = new HttpService({
+      prefix: TEST_BASE_URL,
+    })
+
+    const data = await http.get<{ success: true, data: { message: string } }>('api/example/request/success')
 
     expect(data).toEqual({
       success: true,
@@ -39,7 +55,7 @@ describe('httpService', () => {
 
   it('should handle 400 errors', async () => {
     const http = new HttpService({
-      prefixUrl: TEST_BASE_URL,
+      prefix: TEST_BASE_URL,
     })
 
     await expect(http.get('api/example/request/error/400')).rejects.toThrow()
@@ -47,7 +63,7 @@ describe('httpService', () => {
 
   it('should handle 401 errors', async () => {
     const http = new HttpService({
-      prefixUrl: TEST_BASE_URL,
+      prefix: TEST_BASE_URL,
     })
 
     await expect(http.get('api/example/request/error/401')).rejects.toThrow()

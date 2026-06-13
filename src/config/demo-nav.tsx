@@ -9,7 +9,7 @@ import {
 /**
  * Demo 导航项配置接口
  */
-export interface DemoNavItem {
+export type DemoNavItem = {
   /** 示例名称 */
   name: string
   /** 示例路由路径 */
@@ -21,7 +21,7 @@ export interface DemoNavItem {
 /**
  * Demo 导航分类
  */
-export interface DemoNavCategory {
+export type DemoNavCategory = {
   /** 分类名称 */
   category: string
   /** 分类图标 */
@@ -64,19 +64,34 @@ export const demoNavConfig: DemoNavCategory[] = [
     icon: <LucideDatabase className="size-5" />,
     items: [
       {
-        name: 'HTTP Request - Interceptor',
+        name: '基础请求方法',
+        href: '/demo/request/basic',
+        description: 'GET/POST/PUT/DELETE/PATCH 方法演示',
+      },
+      {
+        name: '请求配置参数',
+        href: '/demo/request/config',
+        description: 'retry/timeout 配置参数影响演示',
+      },
+      {
+        name: '拦截器机制',
         href: '/demo/request/interceptor',
-        description: 'Request interceptor transforms response envelope',
+        description: 'beforeRequest/afterResponse 完整流程',
       },
       {
-        name: 'HTTP Request - Raw Envelope',
-        href: '/demo/request/raw-envelope',
-        description: 'Raw response envelope without interceptor',
+        name: '错误处理',
+        href: '/demo/request/errors',
+        description: 'HTTP 错误、业务错误、错误数据获取',
       },
       {
-        name: 'HTTP Request - Error Handling',
-        href: '/demo/request/http-errors',
-        description: 'HTTP error status codes (404, 500, 503)',
+        name: '401 认证处理',
+        href: '/demo/request/auth',
+        description: '自动跳转 vs skipAuthRedirect 禁用跳转',
+      },
+      {
+        name: 'SSE 流式请求',
+        href: '/demo/request/sse',
+        description: 'async iteration / emitter 两种流消费模式',
       },
       {
         name: 'Hitokoto API',

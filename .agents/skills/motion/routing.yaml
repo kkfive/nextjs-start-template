@@ -1,0 +1,50 @@
+# Single source of truth for motion task routing.
+
+tasks:
+  - intent: 包名/导入错误
+    triggers: ["framer-motion", "导入失败", "找不到 motion"]
+    route: [rules/motion.md]
+
+  - intent: Motion vs AutoAnimate 选型
+    triggers: ["用什么动画库", "AutoAnimate", "列表动画"]
+    route: [rules/when-to-use.md, references/motion-vs-autoanimate.md]
+
+  - intent: Next.js 必须 'use client'
+    triggers: ["use client", "Server Component", "Next.js 报错"]
+    route: [rules/nextjs-use-client.md, workflows/nextjs-setup.md]
+
+  - intent: 手势
+    triggers: ["drag", "拖拽", "hover", "tap", "whileHover"]
+    route: [workflows/gesture.md, references/common-patterns.md]
+
+  - intent: 滚动动画
+    triggers: ["scroll", "parallax", "useScroll", "useTransform", "视差"]
+    route: [workflows/scroll-animation.md]
+
+  - intent: 布局动画
+    triggers: ["layout", "layoutId", "shared element", "共享元素"]
+    route: [workflows/layout-animation.md]
+
+  - intent: 退出动画
+    triggers: ["AnimatePresence", "exit", "退出动画", "卸载动画"]
+    route: [workflows/exit-animation.md]
+
+  - intent: Next.js 集成
+    triggers: ["next 集成", "App Router", "motion/react-client"]
+    route: [workflows/nextjs-setup.md, references/runtime-perf.md]
+
+  - intent: 包大小优化
+    triggers: ["bundle 太大", "LazyMotion", "m 组件", "包大小"]
+    route: [references/bundle-optimization.md]
+
+  - intent: 运行时性能
+    triggers: ["卡顿", "性能差", "虚拟化", "硬件加速"]
+    route: [references/runtime-perf.md]
+
+  - intent: 常见模式速查
+    triggers: ["示例", "怎么写", "片段"]
+    route: [references/common-patterns.md]
+
+  - intent: 踩坑
+    triggers: ["Tailwind 冲突", "exit 不工作", "诡异"]
+    route: [references/gotchas.md]

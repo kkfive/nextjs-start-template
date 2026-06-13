@@ -1,23 +1,21 @@
-import type { HttpResponseError, RequestOptions } from '@/lib/request/type'
+import type { RequestOptions } from '@/lib/request/type'
 
-interface BusinessErrorOptions<T> {
-  code: number
+type BusinessErrorOptions = {
+  code?: number
   options?: RequestOptions
-  response: HttpResponseError<T>
+  response?: unknown
 }
-export class BusinessError<T> extends Error {
-  public readonly name = 'BusinessError'
-  public readonly code: number
-  public readonly response: HttpResponseError<T>
-  public readonly options?: RequestOptions | undefined
-  constructor(message: string, _options?: BusinessErrorOptions<T>) {
-    super(message)
-    this.code = _options?.code as number
-    this.response = _options?.response as HttpResponseError<T>
-    this.options = _options?.options as RequestOptions
-  }
 
-  get message() {
-    return super.message
+export class BusinessError extends Error {
+  public readonly name = 'BusinessError'
+  public readonly code?: number
+  public readonly response?: unknown
+  public readonly options?: RequestOptions
+
+  constructor(message: string, _options?: BusinessErrorOptions) {
+    super(message)
+    this.code = _options?.code
+    this.response = _options?.response
+    this.options = _options?.options
   }
 }

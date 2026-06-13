@@ -34,7 +34,7 @@ const SIDEBAR_WIDTH_ICON = '3rem'
 // 快捷键折叠
 const SIDEBAR_KEYBOARD_SHORTCUT = null
 
-interface SidebarContextType {
+type SidebarContextType = {
   state: 'expanded' | 'collapsed'
   open: boolean
   setOpen: (open: boolean) => void

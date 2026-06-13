@@ -1,0 +1,43 @@
+# Single source of truth for smart-commit task routing.
+# SKILL.md Common Tasks 表必须与本文件保持一致。
+
+tasks:
+  - intent: 端到端执行 smart-commit
+    triggers: ["执行 smart-commit", "智能提交", "分组提交"]
+    route:
+      - workflows/run-smart-commit.md
+      - workflows/safe-mode.md
+      - rules/grouping-strategy.md
+      - rules/commit-message.md
+
+  - intent: 仅了解 stash 安全机制
+    triggers: ["安全备份", "stash", "防止丢文件"]
+    route:
+      - workflows/safe-mode.md
+
+  - intent: commit message 规范
+    triggers: ["commit message", "type-enum", "subject 长度", "禁署名"]
+    route:
+      - rules/commit-message.md
+      - references/commitlint-config.md
+
+  - intent: 文件分组策略
+    triggers: ["怎么分组", "分组规则", "拆 commit"]
+    route:
+      - rules/grouping-strategy.md
+      - references/type-inference.md
+
+  - intent: commit type 推断
+    triggers: ["type 推断", "feat 还是 fix", "type 自动判断"]
+    route:
+      - references/type-inference.md
+
+  - intent: 失败恢复
+    triggers: ["回滚", "撤销 commit", "恢复原状", "失败了"]
+    route:
+      - references/recovery.md
+
+  - intent: 踩坑
+    triggers: ["奇怪", "卡住", "commit 没成功"]
+    route:
+      - references/gotchas.md
