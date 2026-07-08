@@ -2,22 +2,34 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import antfu from '@antfu/eslint-config'
-import tailwind from 'eslint-plugin-tailwindcss'
 
 /**
  * 创建 ESLint 配置。
  *
  * @param {object} options
+ * @param {boolean} [options.tailwind=true] - 是否加载 eslint-plugin-tailwindcss。
+ *   非 Tailwind 应用（如 Hono 后端、尚未接入 tailwindcss 的 app）传 false 跳过，
+ *   否则插件启动时会因找不到 tailwindcss 包而崩溃。
  * @param {string} [options.tailwindCssPath] - 该 app 的 tailwind.css 路径（用于 tailwind plugin 检测）
  * @param {string} [options.appDir] - 该 app 的根目录（用于解析 cssConfigPath 相对路径），默认为调用方目录
  * @param {Record<string, any>[]} [options.overrides] - 额外的 config 对象，追加在末尾
  * @returns {Promise<unknown[]>}
  */
 export async function createConfig(options = {}) {
-  const { tailwindCssPath = 'src/styles/tailwind.css', appDir = process.cwd(), overrides = [] } = options
+  const {
+    tailwind = true,
+    tailwindCssPath = 'src/styles/tailwind.css',
+    appDir = process.cwd(),
+    overrides = [],
+  } = options
   const cssConfigPath = path.isAbsolute(tailwindCssPath)
     ? tailwindCssPath
     : path.join(appDir, tailwindCssPath)
+
+  // 动态导入：非 tailwind 应用不加载该插件，避免 require('tailwindcss') 崩溃
+  const tailwindConfigs = tailwind
+    ? await import('eslint-plugin-tailwindcss').then(m => (m.default ?? m).configs.recommended)
+    : []
 
   return antfu(
     {
@@ -50,15 +62,17 @@ export async function createConfig(options = {}) {
       ],
       formatters: true,
     },
-    tailwind.configs.recommended,
-    {
-      settings: {
-        tailwindcss: {
-          cssConfigPath,
-          functions: ['classnames', 'clsx', 'ctl', 'cva', 'tv', 'tw', 'cn'],
-        },
-      },
-    },
+    tailwindConfigs,
+    tailwind
+      ? {
+          settings: {
+            tailwindcss: {
+              cssConfigPath,
+              functions: ['classnames', 'clsx', 'ctl', 'cva', 'tv', 'tw', 'cn'],
+            },
+          },
+        }
+      : {},
     {
       rules: {
         'ts/consistent-type-definitions': ['error', 'type'],
