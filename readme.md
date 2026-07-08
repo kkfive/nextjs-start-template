@@ -23,11 +23,11 @@ cd my-project
 # 安装依赖
 pnpm install
 
-# 启动 client 开发服务器（端口 5373）
+# 启动所有 app 开发服务器
 pnpm dev
 ```
 
-访问 http://localhost:5373
+各 app 端口：client `5373`、admin `5374`、api `8787`。单 app 启动用 `pnpm --filter client dev`。
 
 ## 项目结构
 

@@ -1,0 +1,35 @@
+{
+  "name": "admin",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 5374",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@kkfive/contracts": "workspace:*",
+    "@kkfive/domain-core": "workspace:*",
+    "@kkfive/http-client": "workspace:*",
+    "@kkfive/ui": "workspace:*",
+    "@kkfive/utils": "workspace:*",
+    "next": "16.2.10",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@kkfive/lint-config": "workspace:*",
+    "@kkfive/nextjs-config": "workspace:*",
+    "@kkfive/tailwind-config": "workspace:*",
+    "@kkfive/tsconfig": "workspace:*",
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^10.6.0",
+    "typescript": "^6.0.3"
+  }
+}
