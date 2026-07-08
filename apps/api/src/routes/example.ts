@@ -1,6 +1,6 @@
-import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { contactFormSchema } from '@kkfive/contracts'
+import { Hono } from 'hono'
 
 export const exampleRoutes = new Hono()
 

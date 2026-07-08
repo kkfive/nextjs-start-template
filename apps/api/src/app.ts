@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
-import { healthRoutes } from './routes/health'
-import { exampleRoutes } from './routes/example'
 import { errorHandler } from './middleware/error-handler'
+import { exampleRoutes } from './routes/example'
+import { healthRoutes } from './routes/health'
 
 const app = new Hono()
 
