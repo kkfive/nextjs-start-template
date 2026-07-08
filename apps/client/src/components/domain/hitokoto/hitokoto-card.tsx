@@ -1,7 +1,6 @@
 'use client'
 import type { Hitokoto } from '@domain/example/hitokoto'
-import { Controller } from '@domain/example/hitokoto'
-import { getData } from '@domain/example/hitokoto/const/api'
+import { Controller, getData } from '@domain/example/hitokoto'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { http } from '@/service/index.base'

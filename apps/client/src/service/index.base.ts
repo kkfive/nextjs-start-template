@@ -1,4 +1,4 @@
-import { HttpService } from '@/lib/request'
+import { HttpService } from '@kkfive/http-client'
 
 const http = new HttpService()
 

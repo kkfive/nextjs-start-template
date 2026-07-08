@@ -1,6 +1,11 @@
 {
   "files": [],
   "references": [
+    { "path": "packages/contracts" },
+    { "path": "packages/utils" },
+    { "path": "packages/http-client" },
+    { "path": "packages/domain-core" },
+    { "path": "packages/ui" },
     { "path": "apps/client" }
   ]
 }

@@ -1,7 +1,7 @@
 'use client'
 
+import type { HttpService } from '@kkfive/http-client'
 import type { HttpMethod } from '@/components/ui/method-badge'
-import type { HttpService } from '@/lib/request'
 import { Controller } from '@domain/example/request'
 import { ScenarioCard } from '@/components/domain/request/scenario-card'
 import { httpClient } from '@/service/index.client'

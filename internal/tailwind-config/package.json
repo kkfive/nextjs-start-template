@@ -1,16 +1,16 @@
 {
   "name": "@kkfive/tailwind-config",
   "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "exports": {
-    ".": "./preset.js"
-  },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.3.2",
     "@csstools/postcss-oklab-function": "^5.0.6",
+    "@tailwindcss/postcss": "^4.3.2",
     "autoprefixer": "^10.5.2",
     "postcss": "^8.5.16",
     "postcss-import": "^16.1.1"
-  }
+  },
+  "exports": {
+    ".": "./preset.js"
+  },
+  "private": true,
+  "type": "module"
 }

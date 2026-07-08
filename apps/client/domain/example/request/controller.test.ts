@@ -1,9 +1,8 @@
+import { Controller } from '@kkfive/domain-core/example/request'
+import { BusinessError, HttpService } from '@kkfive/http-client'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { TEST_BASE_URL } from '@/__tests__/mocks/handlers'
 import { server } from '@/__tests__/mocks/server'
-import { HttpService } from '@/lib/request'
-import { BusinessError } from '@/lib/request/error'
-import * as Controller from './controller'
 
 describe('controller', () => {
   let httpClient: HttpService

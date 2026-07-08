@@ -1,5 +1,6 @@
 'use client'
 
+import { BusinessError } from '@kkfive/http-client'
 import {
   isServer,
   MutationCache,
@@ -11,7 +12,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental'
 import * as React from 'react'
 import { ThemeProvider } from '@/components/theme-provider'
-import { BusinessError } from '@/lib/request/error'
 
 /**
  * 全局错误处理函数

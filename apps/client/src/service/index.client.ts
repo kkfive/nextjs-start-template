@@ -1,7 +1,6 @@
-import type { RequestOptions } from '@/lib/request/type'
+import type { RequestOptions } from '@kkfive/http-client'
+import { createErrorResponse, HttpService } from '@kkfive/http-client'
 import { env } from '@/config/env'
-import { HttpService } from '@/lib/request'
-import { createErrorResponse } from '@/lib/request/error-handler'
 
 function getBaseUrl() {
   if (env.NEXT_PUBLIC_API_URL) {

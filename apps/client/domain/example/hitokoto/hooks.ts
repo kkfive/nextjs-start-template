@@ -1,7 +1,7 @@
-import type { HttpService } from '@/lib/request'
+import type { HttpService } from '@kkfive/http-client'
+import { Controller } from '@kkfive/domain-core/example/hitokoto'
 import { useQuery } from '@tanstack/react-query'
 import { httpClient } from '@/service/index.client'
-import { getData } from './controller'
 
 const QUERY_KEYS = {
   getData: ['hitokoto'] as const,
@@ -13,7 +13,7 @@ export function useHitokotoData(http?: HttpService) {
   const client = http ?? httpClient
   return useQuery({
     queryKey: QUERY_KEYS.getData,
-    queryFn: ({ signal }) => getData(client, { signal }),
+    queryFn: ({ signal }) => Controller.getData(client, { signal }),
     staleTime: STALE_TIME,
   })
 }

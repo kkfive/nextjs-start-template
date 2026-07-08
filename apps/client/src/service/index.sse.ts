@@ -1,6 +1,6 @@
-import type { SSEConfig, SSEEvent } from '@kkfive/request'
+import type { SSEConfig, SSEEvent } from '@kkfive/http-client'
+import { HttpService } from '@kkfive/http-client'
 import { env } from '@/config/env'
-import { HttpService } from '@/lib/request'
 
 export type RequestSseConfig = SSEConfig
 export type RequestSseEvent<T = unknown> = SSEEvent<T>

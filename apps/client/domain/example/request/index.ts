@@ -1,4 +1,3 @@
-export * as Controller from './controller'
 export { useScenarioMutation } from './hooks'
-export * as service from './service'
-export type * from './type'
+// 适配层：re-export 共享包纯逻辑 + app 专属 hooks
+export * from '@kkfive/domain-core/example/request'

@@ -1,21 +1,4 @@
-import { cn } from '@esdora/biz/atom-css'
-import { isExternalLink, to } from '@esdora/kit'
-
-export * from './request'
-export { cn, isExternalLink, to }
-
-export async function httpTo<T, E = Error>(
-  promise: Promise<T>,
-  errorExt?: object,
-): Promise<[null, T] | [E, undefined]> {
-  try {
-    const data = await promise
-    return [null, data]
-  }
-  catch (err) {
-    if (errorExt && err !== null && typeof err === 'object') {
-      Object.assign(err as object, errorExt)
-    }
-    return [err as E, undefined]
-  }
-}
+export { isExternalLink, to } from '@esdora/kit'
+// app 专属工具入口：re-export 共享包 + 保留 app 专属
+export { cn } from '@kkfive/ui'
+export { assertNonNullable, httpTo, isNonNullable } from '@kkfive/utils'
