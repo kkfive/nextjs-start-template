@@ -1,16 +1,6 @@
 {
   "name": "api",
   "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "tsx watch src/app.ts",
-    "build": "tsup src/app.ts --format esm",
-    "start": "node dist/app.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit"
-  },
   "dependencies": {
     "@hono/zod-validator": "^0.7.0",
     "@kkfive/contracts": "workspace:*",
@@ -26,5 +16,15 @@
     "tsup": "^8.5.0",
     "tsx": "^4.19.0",
     "typescript": "^6.0.3"
-  }
+  },
+  "private": true,
+  "scripts": {
+    "build": "tsup src/app.ts --format esm",
+    "dev": "tsx watch src/app.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "start": "node dist/app.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module"
 }

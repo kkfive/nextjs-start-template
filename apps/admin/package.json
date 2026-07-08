@@ -1,16 +1,6 @@
 {
   "name": "admin",
   "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "next dev --port 5374",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit"
-  },
   "dependencies": {
     "@kkfive/contracts": "workspace:*",
     "@kkfive/domain-core": "workspace:*",
@@ -31,5 +21,15 @@
     "@types/react-dom": "^19.2.3",
     "eslint": "^10.6.0",
     "typescript": "^6.0.3"
-  }
+  },
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --port 5374",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module"
 }
