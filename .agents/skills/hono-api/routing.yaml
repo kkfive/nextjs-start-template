@@ -1,0 +1,29 @@
+# Single source of truth for hono-api task routing.
+# SKILL.md Common Tasks 表必须与本文件保持一致。
+
+tasks:
+  - intent: 新建 Hono 路由端点
+    triggers: ["新建路由", "新增端点", "Hono route", "API 接口"]
+    route:
+      - workflows/new-route.md
+      - references/schema-validation.md
+
+  - intent: 新增中间件
+    triggers: ["中间件", "middleware", "认证", "CORS", "日志"]
+    route:
+      - workflows/add-middleware.md
+
+  - intent: schema 校验请求
+    triggers: ["zod", "校验", "validate", "请求体", "@kkfive/contracts"]
+    route:
+      - references/schema-validation.md
+
+  - intent: 路由调用 domain-core
+    triggers: ["调用 controller", "同进程直调", "domain-core"]
+    route:
+      - references/domain-direct-call.md
+
+  - intent: 踩坑
+    triggers: ["报错", "路由不生效", "中间件顺序", "BFF 还是后端"]
+    route:
+      - references/gotchas.md

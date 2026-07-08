@@ -1,88 +1,125 @@
 # 目录约定
 
-## 根目录结构
+## 仓库根目录
 
 ```
-├── domain/           # 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
-├── src/              # 应用层 (Next.js)
-├── docs/             # 文档
-├── public/           # 静态资源
-├── typings/          # 全局类型定义
-└── data/             # 静态数据文件
+├── apps/                     # 独立应用
+│   ├── client/               # Next.js 客户端
+│   ├── admin/                # Next.js 管理后台
+│   └── api/                  # Hono API 服务
+├── packages/                 # 共享包（被 apps 消费）
+├── internal/                 # 工具链配置预设（不对外发布）
+├── scripts/                  # 可执行脚本入口（verify-conventions 等）
+├── docs/                     # 仓库级文档
+├── .agents/                  # AI 辅助开发规范（根级，全局生效）
+├── turbo.json                # Turborepo 任务编排
+├── pnpm-workspace.yaml       # pnpm workspace 定义
+└── mise.toml                 # 工具链版本管理
 ```
 
-## 领域层 (`domain/`)
+## 应用目录（Next.js apps：client / admin）
 
 ```
-domain/
-├── {module}/              # 业务模块
-│   ├── index.ts           # 统一导出
-│   ├── controller.ts      # 业务逻辑编排
-│   ├── service.ts         # API 服务层
-│   ├── hooks.ts           # React Query 适配层（禁止 JSX/UI 渲染）
-│   ├── type.ts            # 类型定义（export type）
-│   ├── schema.ts          # Zod schemas (可选)
-│   └── const/             # 常量 (如 api.ts)
-└── _shared/               # 共享工具 (下划线前缀表示内部模块)
-    ├── types/
-    └── utils/
-```
-
-**规则**:
-- 每个模块必须有 `index.ts` 作为唯一出口
-- `type.ts` 使用 `export type` 导出类型，`index.ts` 统一 `export type * from './type'`
-- `_shared/` 前缀表示跨模块共享的内部代码
-
-## 应用层 (`src/`)
-
-```
-src/
-├── app/                   # Next.js App Router
-│   ├── {route}/
-│   │   ├── page.tsx       # 页面组件
-│   │   └── layout.tsx     # 布局组件
-│   └── api/               # API 路由
-│       └── {endpoint}/
-│           └── route.ts
-├── components/
-│   ├── ui/                # 基础 UI (透传或封装 antd)
-│   ├── common/            # 通用功能组件 (可复用的功能性组件)
-│   ├── domain/            # 领域 UI (结合业务逻辑)
-│   │   └── {module}/
-│   ├── {feature}/         # 功能特定组件
-│   └── providers.tsx      # 全局 Providers
-├── hooks/                 # React Hooks
-├── lib/                   # 工具库
-│   ├── request/           # HTTP 客户端
-│   ├── errors/            # 错误处理
-│   └── utils.ts           # 通用工具
-├── store/                 # Zustand stores
-├── config/                # 应用配置
-├── service/               # HTTP 服务实例
-└── __tests__/             # 测试工具和 mocks
+apps/{app}/
+├── domain/                   # Domain 适配层
+│   └── {module}/             # re-export @kkfive/domain-core + 注入 HttpService + 可选 React Query hooks
+├── src/
+│   ├── app/                  # Next.js App Router
+│   │   ├── {route}/
+│   │   │   ├── page.tsx
+│   │   │   └── layout.tsx
+│   │   └── api/              # 轻量 BFF（Route Handlers）
+│   ├── components/
+│   │   ├── ui/               # 基础 UI 入口（来自 @kkfive/ui）
+│   │   ├── common/           # 通用功能组件
+│   │   ├── domain/           # 领域 UI 组件
+│   │   │   └── {module}/
+│   │   └── providers.tsx     # 全局 Providers
+│   ├── lib/                  # 工具库（request/、errors/、utils）
+│   ├── hooks/                # React Hooks
+│   ├── store/                # Zustand stores
+│   ├── config/               # 应用配置
+│   ├── service/              # HTTP 实例注入（index.client/server/sse）
+│   └── __tests__/            # 测试工具和 mocks
+├── public/                   # 静态资源
+├── next.config.ts            # extends @kkfive/nextjs-config + transpilePackages
+├── tsconfig.json             # extends @kkfive/tsconfig/nextjs.json
+├── eslint.config.js          # imports @kkfive/lint-config
+└── package.json
 ```
 
 **组件分类说明**：
 
 | 目录 | 用途 | 特点 | 示例 |
 |------|------|------|------|
-| `ui/` | 基础 UI 组件 | 纯 UI，无业务逻辑，透传或封装第三方 UI 库 | Button, Input, Modal |
-| `common/` | 通用功能组件 | 可复用的功能性组件，与业务场景相关但不依赖特定 domain | PdfViewer, ImageCropper, RichTextEditor |
-| `domain/` | 领域 UI 组件 | 结合特定业务逻辑，依赖 domain 层 | MaterialDocumentViewer, HitokotoCard |
+| `ui/` | 基础 UI 入口 | 底层来自 `@kkfive/ui`，按需扩展；无业务逻辑 | Button, Input, Modal |
+| `common/` | 通用功能组件 | 可复用的功能性组件，与业务相关但不依赖特定 domain | PdfViewer, ImageCropper |
+| `domain/` | 领域 UI 组件 | 结合特定业务逻辑，依赖该 app 的 domain 适配层 | MaterialDocumentViewer, HitokotoCard |
+
+## 应用目录（Hono app：api）
+
+```
+apps/api/
+├── domain/                   # Domain 适配层（re-export @kkfive/domain-core，无 hooks、无 HttpService）
+├── src/
+│   ├── routes/               # Hono 路由（HTTP 协议适配层）
+│   ├── middleware/           # Hono 中间件（认证、日志、错误处理、CORS）
+│   ├── lib/                  # 服务端基础设施（DB 客户端、缓存、第三方 SDK）
+│   └── app.ts                # Hono app 入口
+├── tsconfig.json             # extends @kkfive/tsconfig/hono.json
+├── eslint.config.js          # imports @kkfive/lint-config
+└── package.json              # dev: tsx watch；build: tsup
+```
+
+## 共享包目录（`packages/*`）
+
+```
+packages/{pkg}/
+├── src/
+│   └── ...                   # 源码（不预 build，exports 直接指向 src）
+├── tsconfig.json             # extends @kkfive/tsconfig/base.json，composite + references
+└── package.json              # exports 指向 src/index.ts
+```
+
+`packages/domain-core/` 内部按业务模块组织：
+
+```
+packages/domain-core/src/
+└── {module}/                 # 业务模块（框架无关纯逻辑）
+    ├── index.ts              # 模块公开入口
+    ├── service.ts            # 第一参数注入 HttpService
+    ├── controller.ts         # 业务编排
+    ├── type.ts               # 从 @kkfive/contracts 扩展的业务专属类型
+    └── const/
+        └── api.ts            # API 端点常量
+```
+
+## Domain 适配层（`apps/{app}/domain/{module}/`）
+
+```
+apps/{app}/domain/{module}/
+├── index.ts                  # re-export @kkfive/domain-core/{module} + app 专属导出
+└── hooks.ts                  # Next.js apps 专属：React Query 包装（api 无此文件）
+```
+
+**规则**：
+- 适配层文件精简，核心逻辑全在 `@kkfive/domain-core`
+- `_shared/` 前缀表示跨模块共享的内部代码
+- 每个模块的 `index.ts` 是唯一出口
 
 ## 文件放置规则
 
 | 文件类型 | 位置 | 示例 |
 |----------|------|------|
-| 页面组件 | `src/app/{route}/page.tsx` | `src/app/demo/page.tsx` |
-| API 路由 | `src/app/api/{endpoint}/route.ts` | `src/app/api/revalidate/route.ts` |
-| 基础 UI | `src/components/ui/{component}/` | `src/components/ui/button/` |
-| 通用功能组件 | `src/components/common/{component}/` | `src/components/common/pdf-viewer/` |
-| 领域 UI | `src/components/domain/{module}/` | `src/components/domain/material/` |
-| 业务逻辑 | `domain/{module}/` | `domain/material/` |
-| Domain 类型定义 | `domain/{module}/type.ts` | `domain/material/type.ts` |
-| 工具类型定义 | `src/lib/types/{name}.ts` | `src/lib/types/utility.ts` |
-| 全局类型扩展 | `typings/{library}.d.ts` | `typings/axios.d.ts` |
-| React Hook | `src/hooks/use-{name}.ts` | `src/hooks/use-mobile.ts` |
-| Zustand Store | `src/store/{name}-store.ts` | `src/store/mouse-store.ts` |
-| 测试文件 | 与源文件同目录 `{name}.test.ts` | `src/lib/utils.test.ts` |
+| 页面组件 | `apps/{app}/src/app/{route}/page.tsx` | `apps/client/src/app/demo/page.tsx` |
+| 轻量 BFF 路由 | `apps/{app}/src/app/api/{endpoint}/route.ts` | `apps/client/src/app/api/revalidate/route.ts` |
+| 基础 UI | `apps/{app}/src/components/ui/{component}/` | `apps/client/src/components/ui/button/` |
+| 通用功能组件 | `apps/{app}/src/components/common/{component}/` | `apps/client/src/components/common/pdf-viewer/` |
+| 领域 UI | `apps/{app}/src/components/domain/{module}/` | `apps/client/src/components/domain/material/` |
+| Domain 纯逻辑 | `packages/domain-core/src/{module}/` | `packages/domain-core/src/material/` |
+| Domain 适配层 | `apps/{app}/domain/{module}/` | `apps/client/domain/material/` |
+| 工具函数（通用） | `packages/utils/src/` | `packages/utils/src/string.ts` |
+| 工具函数（app 专属） | `apps/{app}/src/lib/` | `apps/client/src/lib/utils.ts` |
+| React Hook | `apps/{app}/src/hooks/use-{name}.ts` | `apps/client/src/hooks/use-mobile.ts` |
+| Zustand Store | `apps/{app}/src/store/{name}-store.ts` | `apps/client/src/store/mouse-store.ts` |
+| 测试文件 | 与源文件同目录 `{name}.test.ts` | `apps/client/src/lib/utils.test.ts` |

@@ -4,9 +4,11 @@
 
 | 场景 | 文件类型 | 原因 |
 |------|----------|------|
-| Domain 层业务类型 | `type.ts` + `export type` | 显式导入导出，避免全局污染 |
-| 工具类型 | `type.ts` + `export type` | 需要显式导入，避免全局污染 |
-| 第三方库扩展 | `.d.ts` + `declare module` | TypeScript 模块扩展机制 |
+| 共享包业务类型 | `packages/domain-core/src/{module}/type.ts` + `export type` | 显式导入导出，避免全局污染 |
+| 跨 app 共享契约 | `packages/contracts/`（schemas / types / errors） | 单一真源，客户端服务端共用 |
+| 通用工具类型 | `packages/utils/src/` 或 `@kkfive/contracts/types/` | 显式导入，避免全局污染 |
+| app 专属类型 | 各 app 的 `domain/{module}/type.ts` 或 `src/lib/` | 仅该 app 使用 |
+| 第三方库扩展 | 各 app 的 `typings/*.d.ts` + `declare module` | TypeScript 模块扩展机制 |
 
 ## 基本规则
 
@@ -24,16 +26,16 @@ type UserData = {
 
 ## 类型导出
 
-Domain 层和工具类型都使用 `type.ts` + `export type`：
+共享包类型使用 `type.ts` + `export type`：
 
 ```typescript
-// domain/user/type.ts
+// packages/domain-core/src/user/type.ts
 export type User = {
   id: string
   name: string
 }
 
-// src/lib/types/utility.ts - 工具类型
+// packages/contracts/types/common.ts - 跨 app 共享工具类型
 export type Nullable<T> = T | null
 export type AsyncReturnType<T> = T extends (...args: unknown[]) => Promise<infer R> ? R : never
 ```
@@ -41,8 +43,7 @@ export type AsyncReturnType<T> = T extends (...args: unknown[]) => Promise<infer
 仅第三方库扩展使用 `.d.ts`：
 
 ```typescript
-
-// typings/axios.d.ts - 第三方库扩展
+// apps/{app}/typings/axios.d.ts - 第三方库扩展
 import 'axios'
 declare module 'axios' {
   export interface AxiosRequestConfig {

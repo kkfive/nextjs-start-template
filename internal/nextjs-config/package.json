@@ -1,0 +1,12 @@
+{
+  "name": "@kkfive/nextjs-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./preset.js"
+  },
+  "peerDependencies": {
+    "next": "^16.0.0"
+  }
+}

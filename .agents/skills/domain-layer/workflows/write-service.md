@@ -3,8 +3,8 @@
 ## 模板
 
 ```ts
-// domain/material/service.ts
-import type { HttpService } from '@/lib/http'
+// packages/domain-core/src/material/service.ts
+import type { HttpService } from '@kkfive/http-client'
 import { MATERIAL_API } from './const/api'
 import type * as Material from './type'
 
@@ -40,9 +40,9 @@ export const service = {
 ## 测试
 
 ```ts
-// domain/material/service.test.ts
+// packages/domain-core/src/material/service.test.ts
 import { service } from './service'
-import { mockHttp } from '@/test/mock-http'
+import { mockHttp } from '@kkfive/test-utils'   // 共享测试工具（或本包内的 mock helper）
 
 test('getList passes query as params', async () => {
   const http = mockHttp({ get: vi.fn().mockResolvedValue({ items: [], total: 0 }) })

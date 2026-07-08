@@ -1,10 +1,17 @@
 # Gotchas
 
+## 共享包 vs 适配层
+
+- **在 `packages/domain-core` 里写 React Query hooks** → 共享包框架无关，禁依赖 React；hooks 写进各 Next.js app 的 `domain/{module}/hooks.ts`
+- **在 app 的 `domain/` 适配层重写 service/controller** → 核心逻辑应在共享包；适配层只 re-export + 注入实例
+- **共享包里 `import { httpClient } from '@/service/...'`** → 共享包不应感知任何 app 内部路径；Service/Controller 只接受注入的 HttpService
+- **共享包里 import React / Next / Hono** → 破坏框架无关性；运行环境适配留各 app
+
 ## 依赖注入
 
 - **`http` 漏在第一参** → 长期参数表混乱、与其他模块不一致。养成"先写 `http: HttpService,`"再写其他参
 - **hooks 忘记注入 `httpClient`** → 测试时拿不到 mock；改为在 hooks 内 `import { httpClient } from '@/service/index.client'` 并传入
-- **Service 内部 `import { http } from '@/service'`** → 锁死环境（Server vs Client），无法适配；用 DI
+- **共享包 Service 内部 `import { http } from '@/service'`** → 锁死某一 app 的环境，无法跨 app 复用；用 DI
 
 ## 类型与导出
 
@@ -16,8 +23,8 @@
 
 ## 循环依赖
 
-- **Controller 引用 hooks** → hooks 是 Client 适配层，不能被 Domain 核心引用；倒置依赖
-- **type 跨模块循环引用** → 把共享类型抽到 `domain/<shared>/type.ts` 或 `src/lib/types`
+- **共享包 Controller 引用 app 适配层 hooks** → hooks 是 app 适配层，不能被共享包引用；倒置依赖
+- **type 跨模块循环引用** → 把共享类型抽到 `@kkfive/contracts` 或共享包的 `_shared/`
 
 ## React Query
 

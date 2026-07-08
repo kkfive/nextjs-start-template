@@ -5,15 +5,16 @@
 ## 核心约定
 
 - 业务模型保持表达业务事实，不为了迎合外部响应批量改成 `?:`
-- 原始接口响应用 `ExternalData<T>` 表达“字段可能缺失或为 `null`”
+- 原始接口响应用 `ExternalData<T>` 表达"字段可能缺失或为 `null`"
 - Service 保持原始请求与原始响应类型，不做业务兜底
 - Controller 负责把原始响应归一化为业务模型，并在无法恢复时抛项目错误类
 
 ## 类型工具
 
-共享类型位于 `domain/_shared/types`：
+跨 app 共享的工具类型位于 `@kkfive/contracts`（`packages/contracts/types/`）：
 
 ```ts
+// packages/contracts/types/common.ts
 export type ExternalData<T> =
   T extends readonly (infer Item)[]
     ? ExternalData<Item>[] | null
@@ -25,7 +26,8 @@ export type ExternalData<T> =
 ## 使用方式
 
 ```ts
-import type { ExternalData } from '@domain/_shared'
+// packages/domain-core/src/material/type.ts
+import type { ExternalData } from '@kkfive/contracts'
 
 export type RawMaterialItem = ExternalData<MaterialItem>
 ```

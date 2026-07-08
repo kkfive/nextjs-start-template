@@ -23,10 +23,10 @@ TypeScript 和 React 编码规范 Skill
 
 ## 包含内容
 
-- **层级依赖规则**：Domain 层禁止导入规则
-- **UI 组件导入规范**：统一通过 `@/components/ui/*` 导入
+- **跨包与应用内依赖规则**：共享包不依赖应用、应用内分层边界
+- **UI 组件导入规范**：基础 UI 来自 `@kkfive/ui`，各 app 通过 `@/components/ui/*` 入口
 - **TypeScript 规范**：类型定义文件选择
-- **Domain 类型定义**：`type.ts` + `export type` 规范
+- **Domain 类型定义**：共享包 `type.ts` + `export type` 规范
 - **React 组件模式**：函数声明、客户端标记
 - **错误处理**：使用项目错误类
 - **图标使用**：Iconify + Tailwind 方案
@@ -34,14 +34,14 @@ TypeScript 和 React 编码规范 Skill
 
 ## 快速示例
 
-### 层级依赖
+### 跨包依赖
 
 ```typescript
-// ❌ 错误：Domain 层导入 React
-import { useState } from 'react'
+// ❌ 错误：共享包依赖应用
+import { something } from '../../../../apps/client/src/lib'
 
-// ✅ 正确：Domain 层导入抽象层
-import type { HttpService } from '@/lib/request'
+// ✅ 正确：共享包框架无关，只接受注入
+import type { HttpService } from '@kkfive/http-client'
 ```
 
 ### UI 组件导入
@@ -50,19 +50,19 @@ import type { HttpService } from '@/lib/request'
 // ❌ 错误：直接导入第三方库
 import { Button } from 'antd'
 
-// ✅ 正确：通过 ui/ 层导入
+// ✅ 正确：通过各 app 的 ui/ 入口（底层 @kkfive/ui）
 import { Button } from '@/components/ui/button'
 ```
 
 ### Domain 类型定义
 
 ```typescript
-// domain/material/type.ts
+// packages/domain-core/src/material/type.ts
 export type ExtractionResult = {
   coreInfo: CoreInfo
 }
 
-// domain/material/index.ts
+// packages/domain-core/src/material/index.ts
 export type * from './type'
 ```
 

@@ -23,6 +23,8 @@ fetch(url, { next: { tags: ['material:list'] } })
 ```ts
 'use server'
 import { revalidateTag, revalidatePath } from 'next/cache'
+import { httpClient } from '@/service/index.client'
+import { Controller as Material } from '@kkfive/domain-core/material'
 
 export async function updateMaterial(id: string, data: Patch) {
   await Material.update(httpClient, id, data)
@@ -37,7 +39,7 @@ export async function updateMaterial(id: string, data: Patch) {
 ## 路由段配置
 
 ```ts
-// app/material/page.tsx
+// apps/client/src/app/material/page.tsx
 export const dynamic = 'force-dynamic'   // 强制每次动态
 export const revalidate = 3600           // 整页 ISR 间隔
 export const fetchCache = 'force-no-store'

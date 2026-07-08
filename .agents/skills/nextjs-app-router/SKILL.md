@@ -1,15 +1,15 @@
 ---
 name: nextjs-app-router
-description: Next.js App Router 路由、Server/Client Components、数据获取、缓存、Server Actions、流式渲染、Metadata、性能优化。用于在 src/app/ 下新建页面/布局/Route Handler/Server Action、判断是否需要 'use client'、配置缓存与重新验证、为页面写 SEO Metadata。
+description: Next.js App Router 路由、Server/Client Components、数据获取、缓存、Server Actions、流式渲染、Metadata、性能优化。用于在 apps/{app}/src/app/ 下新建页面/布局/Route Handler/Server Action、判断是否需要 'use client'、配置缓存与重新验证、为页面写 SEO Metadata、在多 app 场景下工作。
 user-invocable: true
 ---
 
 # Next.js App Router
 
 ## Scope
-- Target: Next.js App Router 架构
-- Cover: Server/Client Components、数据获取、缓存、Server Actions、流式渲染、Metadata、性能优化、路由约定
-- Avoid: Pages Router；与 Domain 层耦合（业务逻辑放 `domain/`）
+- Target: Next.js App Router 架构（`apps/client`、`apps/admin` 等 Next.js app）
+- Cover: Server/Client Components、数据获取、缓存、Server Actions、流式渲染、Metadata、性能优化、路由约定、多 app 场景
+- Avoid: Pages Router；与 Domain 层耦合（业务逻辑放 `@kkfive/domain-core`，经各 app 的 domain 适配层调用）
 
 先加载项目原则：项目根规则文件 `next-app.rule.md`（位于 `.agents/rules` 目录）。本 skill 只提供执行流程、决策与示例，不作为规则源。
 
@@ -18,7 +18,7 @@ user-invocable: true
 | 触发场景 | 路由 |
 |---|---|
 | 新增页面 / 布局 / loading / error | `workflows/new-page.md` |
-| 新增 API Route Handler | `workflows/add-api-route.md` |
+| 新增 API Route Handler（轻量 BFF） | `workflows/add-api-route.md` |
 | 新增 Server Action | `workflows/add-server-action.md` |
 | 需要 `'use client'` 还是 Server？ | `rules/server-vs-client.md` |
 | Server → Client 边界传值报错 | `rules/data-serialization.md` |
@@ -26,9 +26,17 @@ user-invocable: true
 | layout/page/loading/error/route 等约定 | `references/file-conventions.md` |
 | 写页面 `metadata` / `generateMetadata` | `references/metadata.md` |
 | `next/image`、`dynamic()`、Bundle 优化 | `references/performance.md` |
-| 踩坑：序列化失败 / 缓存不刷新 / 嵌套过深 | `references/gotchas.md` |
+| 踩坑：序列化失败 / 缓存不刷新 / 嵌套过深 / 多 app 冲突 | `references/gotchas.md` |
 
 源头表见 `routing.yaml`。
+
+## 多 app 注意事项
+
+monorepo 下有多个 Next.js app（`apps/client`、`apps/admin`），各自独立构建部署：
+- 路由文件位于各自 `apps/{app}/src/app/`
+- 配置继承 `@kkfive/nextjs-config` 预设（含 `transpilePackages`）
+- 业务逻辑通过各自的 `domain/` 适配层调用 `@kkfive/domain-core`
+- `src/app/api/` 仅承担轻量 BFF，真正后端接口在 `apps/api`（Hono）
 
 ## 反模式速查
 
@@ -39,13 +47,15 @@ user-invocable: true
 | Server → Client 传 `Map` / `class` 实例 | 只传 JSON 可序列化数据 |
 | 忘记 `loading.tsx` / `Suspense` | 为慢数据加流式边界 |
 | 改完数据不 `revalidateTag` | Server Action 中显式失效缓存 |
+| 在 `src/app/api/` 写核心业务逻辑 | BFF 仅做聚合/转发，核心业务在 `apps/api` |
 
 ## Session Discipline
 
-每次新进入 `src/app/` 任务时**重新阅读本 SKILL.md**，不要凭"上一轮记得"作业 —— Common Tasks 路由可能已调整。
+每次新进入 `apps/*/src/app/` 任务时**重新阅读本 SKILL.md**，不要凭"上一轮记得"作业 —— Common Tasks 路由可能已调整。
 
 ## 相关 Skills
 
 - `/coding-standards`：React 组件模式（函数声明、`'use client'` 标记）
-- `/project-architecture`：路由层与组件层的边界
+- `/project-architecture`：路由层与组件层的边界、多 app 结构
 - `/ant-design`：SSR/StyleProvider 配置
+- `/hono-api`：真正的后端 API 服务（`apps/api`）

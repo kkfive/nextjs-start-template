@@ -16,11 +16,11 @@
 
 **UI 组件文件结构规范**：
 
-所有 `src/components/ui/` 下的组件必须使用目录形式：
+所有 `apps/{app}/src/components/ui/` 下的组件必须使用目录形式：
 
 ```
 ✅ 正确：
-src/components/ui/
+apps/{app}/src/components/ui/
 ├── button/
 │   └── index.tsx
 ├── modal/
@@ -29,7 +29,7 @@ src/components/ui/
     └── index.tsx
 
 ❌ 错误：
-src/components/ui/
+apps/{app}/src/components/ui/
 ├── button.tsx
 ├── modal.tsx
 └── sonner.tsx
@@ -58,17 +58,26 @@ src/components/ui/
 
 ## 领域模块导出
 
+共享包 `packages/domain-core/src/{module}/index.ts` 标准导出（核心逻辑层）：
+
 ```typescript
-// domain/{module}/index.ts - 标准导出模式
-export { Controller } from './controller'
+export * as Controller from './controller'
 export { service } from './service'
 export type * from './type'
 ```
 
+各 app 的 Domain 适配层 `apps/{app}/domain/{module}/index.ts` 标准 re-export 模式：
+
+```typescript
+// re-export 共享包 + 补充 app 专属（如 React Query hooks）
+export * from '@kkfive/domain-core/material'
+export { useMaterialList } from './hooks'   // Next.js apps 专属，api 无此行
+```
+
 **说明**：
-- `type.ts` 使用 `export type` 显式导出类型
-- `index.ts` 必须包含 `export type * from './type'`
-- 业务代码通过 `import type` 引用 Domain 类型，避免全局类型污染
+- 共享包 `type.ts` 使用 `export type` 显式导出类型
+- 业务代码通过 `import type` 引用类型，避免全局类型污染
+- 跨包引用走 `@kkfive/domain-core`，app 内部走 `@domain/*` 别名
 
 ## 组件 Props
 
@@ -79,7 +88,7 @@ type HitokotoCardProps = {
 }
 
 // 或使用 props.ts 文件
-// src/components/ui/button/props.ts
+// apps/{app}/src/components/ui/button/props.ts
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   primary?: boolean
 }

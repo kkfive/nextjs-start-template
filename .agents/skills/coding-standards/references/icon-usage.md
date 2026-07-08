@@ -7,7 +7,7 @@
 ## 使用方式
 
 ```typescript
-// 从统一入口导入图标组件
+// 从各 app 的统一入口导入图标组件
 import { LucideHome, LucideArrowRight } from '@/components/ui/icon'
 
 // 在 JSX 中使用，支持 className 自定义样式
@@ -16,7 +16,7 @@ import { LucideHome, LucideArrowRight } from '@/components/ui/icon'
 
 ## 添加新图标
 
-1. 在 `src/components/ui/icon/index.ts` 中添加导出：
+1. 在各 app 的 `src/components/ui/icon/index.ts` 中添加导出（底层可复用 `@kkfive/ui` 的 `createIcon`）：
 
 ```typescript
 import { CreateIcon } from './create-icon'

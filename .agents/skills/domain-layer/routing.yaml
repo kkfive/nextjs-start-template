@@ -52,6 +52,6 @@ tasks:
       - references/examples.md
 
   - intent: 踩坑
-    triggers: ["报错", "循环依赖", "类型找不到"]
+    triggers: ["报错", "循环依赖", "类型找不到", "跨包误引", "幽灵依赖"]
     route:
       - references/gotchas.md

@@ -5,8 +5,8 @@ Controller 把多个 Service 调用编排为业务能力，并完成字段转换
 ## 模板
 
 ```ts
-// domain/material/controller.ts
-import type { HttpService } from '@/lib/http'
+// packages/domain-core/src/material/controller.ts
+import type { HttpService } from '@kkfive/http-client'
 import { service } from './service'
 import type * as Material from './type'
 
@@ -42,24 +42,28 @@ function normalizeItem(raw: Material.RawItem): Material.Item {
 ## 入口导出（关键）
 
 ```ts
-// domain/material/index.ts
+// packages/domain-core/src/material/index.ts
 export * as Controller from './controller'
 export type * from './type'
 export * from './const/api'
 ```
 
-调用：
+调用（各 app 适配层或路由）：
 
 ```ts
-import { Controller as Material } from '@/domain/material'
-const list = await Material.getList(http, { keyword })
+// apps/client/domain/material/index.ts（适配层 re-export）
+export * from '@kkfive/domain-core/material'
+
+// apps/api/src/routes/material.ts（Hono 同进程直调）
+import { Controller as Material } from '@kkfive/domain-core/material'
+const list = await Material.getList(/* internal caller */, { keyword })
 ```
 
 ## 硬约束
 
 1. **命名函数导出**（不要 `export const`，不要 `class`）
 2. **`http: HttpService` 永远第一参**
-3. **不依赖具体环境实例**（不要 `import { httpClient } from '@/service/index.client'`）
+3. **不依赖具体环境实例**（共享包不 import 任何 `@/service/*`）
 4. **错误用项目错误类**：`ApiError` / `AppError` / `ValidationError`
 5. **字段转换在 Controller**，Service 保持原始
 6. **外部响应在 Controller 归一化**：字段缺失或 `null` 时给业务默认值，关键字段不可恢复时抛项目错误类

@@ -1,5 +1,9 @@
 # Hooks 层规范
 
+## 位置
+
+Hooks 层位于**各 Next.js app 的 Domain 适配层**（`apps/{app}/domain/{module}/hooks.ts`），不在 `@kkfive/domain-core` 共享包里。`apps/api` 无 hooks。
+
 ## 职责
 
 Hooks 层封装 React Query，提供：
@@ -10,22 +14,22 @@ Hooks 层封装 React Query，提供：
 
 ## 核心规则
 
-1. **内部注入 httpClient**：Hooks 只在 Client Components 中使用
-2. **统一错误处理**：使用 toast 提示
+1. **内部注入该 app 的 HttpService 实例**：Hooks 只在该 app 的 Client Components 中使用
+2. **统一错误处理**：使用该 app 的 toast 提示
 3. **统一缓存失效**：变更后刷新相关查询
 
 ## 查询 Hooks
 
 ```typescript
+// apps/client/domain/material/hooks.ts
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
 import { httpClient } from '@/service/index.client'
-import { materialController } from './controller'
-import { MATERIAL_QUERY_KEYS } from './const/api'
+import { materialController, MATERIAL_QUERY_KEYS } from '@kkfive/domain-core/material'
 
 /**
  * 获取材料列表
- * Hook 内部自动注入 httpClient
+ * Hook 内部自动注入该 app 的 httpClient
  */
 export function useMaterialList(
   query?: Material.ListQuery,
@@ -37,33 +41,17 @@ export function useMaterialList(
     ...options,
   })
 }
-
-/**
- * 获取材料详情
- * Hook 内部自动注入 httpClient
- */
-export function useMaterialDetail(
-  id: string,
-  options?: Omit<UseQueryOptions<Material.Item>, 'queryKey' | 'queryFn'>,
-) {
-  return useQuery({
-    queryKey: MATERIAL_QUERY_KEYS.detail(id),
-    queryFn: () => materialController.getDetail(httpClient, id),
-    enabled: !!id,
-    ...options,
-  })
-}
 ```
 
 ## 变更 Hooks
 
 ```typescript
+// apps/client/domain/material/hooks.ts（续）
 import type { UseMutationOptions } from '@tanstack/react-query'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { httpClient } from '@/service/index.client'
 import { toast } from '@/components/ui/sonner'
-import { materialController } from './controller'
-import { MATERIAL_QUERY_KEYS } from './const/api'
+import { materialController, MATERIAL_QUERY_KEYS } from '@kkfive/domain-core/material'
 
 /**
  * 创建材料
@@ -155,9 +143,10 @@ export function useDeleteMaterial(
 ### 在组件中使用 Hooks
 
 ```typescript
+// apps/client/src/app/(platform)/material/page.tsx
 'use client'
 
-import { useMaterialList, useCreateMaterial } from '@/domain/material'
+import { useMaterialList, useCreateMaterial } from '@domain/material'
 
 export default function MaterialPage() {
   const { data, isLoading } = useMaterialList()
@@ -204,17 +193,23 @@ const createMutation = useCreateMaterial({
 | 需要统一的错误处理 | ✅ 使用 Hooks |
 | 简单的一次性查询 | 直接使用 useQuery |
 | 需要高度自定义配置 | 直接使用 useQuery |
-| Server Component | 直接调用 Controller |
+| Server Component | 直接调用 Controller（手动注入实例） |
+| `apps/api`（Hono） | 无 hooks，路由同进程直调 Controller |
 
 ## 禁止的模式
 
 ```typescript
-// ❌ 错误：在 Hooks 中使用 httpServer
+// ❌ 错误：把 hooks 写进 @kkfive/domain-core 共享包
+// 共享包框架无关，不能依赖 React Query；hooks 留在各 Next.js app 适配层
+```
+
+```typescript
+// ❌ 错误：在该 app 的 Hooks 中使用服务端实例
 import { httpServer } from '@/service/index.server'
 
 export function useMaterialList() {
   return useQuery({
-    queryFn: () => materialController.getList(httpServer), // 错误！
+    queryFn: () => materialController.getList(httpServer), // Hooks 只在 Client 用
   })
 }
 ```
@@ -223,7 +218,7 @@ export function useMaterialList() {
 // ❌ 错误：在 Hooks 中接收 http 参数
 export function useMaterialList(http: HttpService) {
   return useQuery({
-    queryFn: () => materialController.getList(http), // 错误！
+    queryFn: () => materialController.getList(http), // 实例应由适配层内部注入
   })
 }
 ```

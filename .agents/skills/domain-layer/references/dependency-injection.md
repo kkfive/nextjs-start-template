@@ -2,15 +2,16 @@
 
 ## 核心原则
 
-Domain 层必须通过参数接收 `HttpService` 实例，禁止直接 import 全局 http 实例。
+`@kkfive/domain-core` 的 Service/Controller 必须通过参数接收 `HttpService` 实例，禁止直接 import 任何具体实例。具体实例由各 app 的 Domain 适配层注入。
 
 ## 为什么需要依赖注入
 
-Next.js App Router 存在两个运行时环境：
-- **Server Components**: 使用 `httpServer`（从 `@/service/index.server` 导入）
-- **Client Components**: 使用 `httpClient`（从 `@/service/index.client` 导入）
+同一份 `@kkfive/domain-core` 纯逻辑要被多个 app 消费：
+- **`apps/client`（浏览器）**：注入 `httpClient`（来自该 app 的 `src/service/index.client.ts`）
+- **`apps/admin`（SSR）**：注入服务端实例（来自该 app 的 `src/service/index.server.ts`）
+- **`apps/api`（Hono）**：同进程直调 Controller，不经过 HttpService
 
-Domain 层代码需要同时支持这两种环境，因此不能硬编码使用哪个实例。
+共享包代码需要支持多种环境，因此不能硬编码使用哪个实例。
 
 ## 参数顺序约定
 
@@ -21,18 +22,16 @@ Domain 层代码需要同时支持这两种环境，因此不能硬编码使用�
 getList: async (http: HttpService, query?: ListQuery) => { ... }
 getDetail: async (http: HttpService, id: string) => { ... }
 create: async (http: HttpService, data: CreateRequest) => { ... }
-update: async (http: HttpService, id: string, data: UpdateRequest) => { ... }
-delete: async (http: HttpService, id: string) => { ... }
 
 // ❌ 错误：http 不是第一个参数
 getList: async (query?: ListQuery, http: HttpService) => { ... }
 ```
 
-## Service 层示例
+## 共享包 Service 层示例
 
 ```typescript
-// domain/material/service.ts
-import type { HttpService } from '@/lib/request'
+// packages/domain-core/src/material/service.ts
+import type { HttpService } from '@kkfive/http-client'
 import { MATERIAL_API } from './const/api'
 
 export const materialService = {
@@ -49,25 +48,17 @@ export const materialService = {
   ): Promise<Material.Item> => {
     return http.get(MATERIAL_API.DETAIL(id))
   },
-
-  create: async (
-    http: HttpService,
-    data: Material.CreateRequest,
-  ): Promise<Material.CreateResponse> => {
-    return http.post(MATERIAL_API.CREATE, { json: data })
-  },
 }
 ```
 
-## Controller 层示例
+## 共享包 Controller 层示例
 
 ```typescript
-// domain/material/controller.ts
-import type { HttpService } from '@/lib/request'
+// packages/domain-core/src/material/controller.ts
+import type { HttpService } from '@kkfive/http-client'
 import { materialService } from './service'
 
 export const materialController = {
-  // 直接透传
   getList: async (
     http: HttpService,
     query?: Material.ListQuery,
@@ -75,11 +66,10 @@ export const materialController = {
     return materialService.getList(http, query)
   },
 
-  // 业务编排
   createAndRefresh: async (
     http: HttpService,
     data: Material.CreateRequest,
-  ): Promise<{ created: Material.CreateResponse, list: Material.ListResponse }> => {
+  ) => {
     const created = await materialController.create(http, data)
     const list = await materialController.getList(http)
     return { created, list }
@@ -87,30 +77,47 @@ export const materialController = {
 }
 ```
 
-## Hooks 层（内部注入）
+## 适配层注入实例（apps/client）
 
-Hooks 层是唯一可以硬编码 http 实例的地方，因为 Hooks 只在 Client Components 中使用。
+适配层负责把该 app 的 HttpService 实例绑定到共享包的 Controller：
 
 ```typescript
-// domain/material/hooks.ts
-import { httpClient } from '@/service/index.client' // Client 环境专用
+// apps/client/domain/material/index.ts
+import { materialController } from '@kkfive/domain-core/material'
+import { httpClient } from '@/service/index.client'
+
+// 注入浏览器实例，供 hooks 与页面使用
+export const Controller = {
+  getList: (query?: Material.ListQuery) => materialController.getList(httpClient, query),
+  getDetail: (id: string) => materialController.getDetail(httpClient, id),
+}
+```
+
+## Hooks 层（Next.js apps 专属，内部注入）
+
+Hooks 层是该 app 适配层里唯一可以引用具体实例的地方，因为 Hooks 只在 Client Components 中使用。
+
+```typescript
+// apps/client/domain/material/hooks.ts
+import { httpClient } from '@/service/index.client'
+import { materialController } from '@kkfive/domain-core/material'
 
 export function useMaterialList(query?: Material.ListQuery) {
   return useQuery({
     queryKey: MATERIAL_QUERY_KEYS.list(query),
-    queryFn: () => materialController.getList(httpClient, query), // 注入 httpClient
+    queryFn: () => materialController.getList(httpClient, query),
   })
 }
 ```
 
 ## 使用场景
 
-### Server Component
+### Server Component（手动注入服务端实例）
 
 ```typescript
-// src/app/(platform)/material/page.tsx
+// apps/client/src/app/(platform)/material/page.tsx
 import { httpServer } from '@/service/index.server'
-import { materialController } from '@/domain/material'
+import { materialController } from '@kkfive/domain-core/material'
 
 export default async function MaterialPage() {
   const data = await materialController.getList(httpServer)
@@ -121,54 +128,43 @@ export default async function MaterialPage() {
 ### Client Component（使用 Hooks）
 
 ```typescript
-// src/app/(platform)/material/page.tsx
+// apps/client/src/app/(platform)/material/page.tsx
 'use client'
-import { useMaterialList } from '@/domain/material'
+import { useMaterialList } from '@domain/material'
 
 export default function MaterialPage() {
-  const { data } = useMaterialList() // Hook 内部自动注入 httpClient
+  const { data } = useMaterialList()
   return <div>{data?.items.length}</div>
 }
 ```
 
-### Client Component（直接调用 Controller）
+### apps/api（Hono 同进程直调，无注入）
 
 ```typescript
-// src/app/(platform)/material/page.tsx
-'use client'
-import { useQuery } from '@tanstack/react-query'
-import { httpClient } from '@/service/index.client'
-import { materialController, MATERIAL_QUERY_KEYS } from '@/domain/material'
+// apps/api/src/routes/material.ts
+import { materialController } from '@kkfive/domain-core/material'
 
-export default function MaterialPage() {
-  const { data } = useQuery({
-    queryKey: MATERIAL_QUERY_KEYS.list(),
-    queryFn: () => materialController.getList(httpClient), // 手动注入 httpClient
-  })
-  return <div>{data?.items.length}</div>
-}
+app.get('/materials', async (c) => {
+  // 同进程直调，不经过 HttpService
+  const data = await materialController.getList(/* db client or internal caller */)
+  return c.json(data)
+})
 ```
 
 ## 禁止的模式
 
 ```typescript
-// ❌ 错误：直接 import 全局实例
-import { http } from '@/service/index.base'
+// ❌ 错误：在共享包 Service 中 import 任何具体实例
+import { httpClient } from '@/service/index.client'
 
 export const materialService = {
   getList: async () => {
-    return http.get('/api/materials') // 无法适配不同环境
+    return httpClient.get('/api/materials') // 锁死某一 app 的实例
   },
 }
 ```
 
 ```typescript
-// ❌ 错误：在 Service/Controller 中 import httpClient/httpServer
-import { httpClient } from '@/service/index.client'
-
-export const materialService = {
-  getList: async () => {
-    return httpClient.get('/api/materials') // 只能在 Client 环境使用
-  },
-}
+// ❌ 错误：在共享包里 import @/service 或 @/lib
+// 共享包不应感知任何 app 的内部路径，只接受注入
 ```

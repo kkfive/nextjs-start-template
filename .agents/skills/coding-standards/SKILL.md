@@ -12,23 +12,23 @@ user-invocable: true
 - Avoid: 三层架构整体决策（去 `/project-architecture`）；Domain 模块内部分层（去 `/domain-layer`）
 
 **边界声明**：本 skill 回答"具体一行代码该怎么写"；同主题更宏观的去：
-- 三层架构与目录分层 → `/project-architecture`
-- Domain 模块结构 → `/domain-layer`
+- monorepo 分层与目录决策 → `/project-architecture`
+- Domain 适配层与共享包结构 → `/domain-layer`
 - 样式 → `/styling-system`
 
 ## Common Tasks
 
 | 触发场景 | 路由 |
 |---|---|
-| 跨层 import 报错 / 黑名单 | `references/layer-dependency.md` |
-| antd 组件该从哪 import | `references/ui-import-rules.md` |
+| 跨层 / 跨包 import 报错 / 黑名单 | `references/layer-dependency.md` |
+| UI 组件该从哪 import（`@kkfive/ui` / 各 app `@/components/ui/*`） | `references/ui-import-rules.md` |
 | `type` 还是 `interface` | `references/typescript-rules.md` |
-| Domain 模块的 `type.ts` 怎么写 | `references/domain-types.md` |
+| 共享包与适配层的 `type.ts` 怎么写 | `references/domain-types.md` |
 | 函数式组件、`'use client'` | `references/react-patterns.md` |
 | 错误处理 / `ApiError` / `AppError` | `references/error-handling.md` |
 | 图标 Iconify + Tailwind | `references/icon-usage.md` |
 | 测试 vitest + MSW | `references/testing.md` |
-| 踩坑：类型导出 / `as any` / 测试 mock | `references/gotchas.md` |
+| 踩坑：类型导出 / `as any` / 测试 mock / 幽灵依赖 | `references/gotchas.md` |
 
 源头表见 `routing.yaml`。
 
@@ -36,11 +36,13 @@ user-invocable: true
 
 | ❌ 不要 | ✅ 应该 |
 |---|---|
-| `import { Button } from 'antd'`（业务代码） | `from '@/components/ui/button'` |
+| `packages/*` 里 import `apps/*` | 共享包不依赖应用 |
+| `packages/domain-core` 里 import React/Next/Hono | 共享包框架无关 |
+| `import { Button } from 'antd'`（业务代码） | `from '@/components/ui/button'`（底层 `@kkfive/ui`） |
 | `interface User {}` | `type User = {}` |
 | `export const Component = () => {}` | `export function Component() {}` |
 | `as any` / `@ts-ignore` | 改 type；如必须用 `as unknown as X` 并注释 |
-| Domain 里 import `@/components/*` | Domain 不依赖 UI |
+| 共享包 / 适配层里 import `@/components/*` | Domain 不依赖 UI |
 | 测试直接打真网络 | 用 MSW 拦截 |
 
 ## Session Discipline
@@ -49,6 +51,6 @@ user-invocable: true
 
 ## 相关 Skills
 
-- `/project-architecture`：三层架构与跨层依赖宏观规则
-- `/domain-layer`：Domain 模块内部分层
+- `/project-architecture`：monorepo 分层与跨包依赖宏观规则
+- `/domain-layer`：Domain 适配层与共享包结构
 - `/ant-design`：antd 组件 API 与查询要求

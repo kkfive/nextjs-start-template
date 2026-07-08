@@ -279,8 +279,9 @@ rule('D10', 'api.ts 应使用命名导出（非 default export）', (ctx) => {
 
 rule('U01', 'UI/App 层不应深链导入 @domain/.../controller 或 service', (_ctx) => {
   const issues = []
-  const uiFiles = globSync('src/components/**/*.ts*', ROOT)
-  const appFiles = globSync('src/app/**/*.ts*', ROOT)
+  // 兼容旧结构（src/）与新 monorepo 结构（apps/*/src/）
+  const uiFiles = [...globSync('src/components/**/*.ts*', ROOT), ...globSync('apps/*/src/components/**/*.ts*', ROOT)]
+  const appFiles = [...globSync('src/app/**/*.ts*', ROOT), ...globSync('apps/*/src/app/**/*.ts*', ROOT)]
   for (const file of [...uiFiles, ...appFiles]) {
     const content = fs.readFileSync(file, 'utf-8')
     const lines = content.split('\n')
@@ -302,7 +303,7 @@ rule('U01', 'UI/App 层不应深链导入 @domain/.../controller 或 service', (
 
 rule('U02', 'UI 组件（domain 相关）不应包含 any 类型', (_ctx) => {
   const issues = []
-  const domainUiFiles = globSync('src/components/domain/**/*.ts*', ROOT)
+  const domainUiFiles = [...globSync('src/components/domain/**/*.ts*', ROOT), ...globSync('apps/*/src/components/domain/**/*.ts*', ROOT)]
   for (const file of domainUiFiles) {
     const content = fs.readFileSync(file, 'utf-8')
     const lines = content.split('\n')
@@ -347,7 +348,7 @@ rule('L01', 'BusinessError 不应使用 as 类型断言', (_ctx) => {
 
 rule('L02', 'src/service/ 拦截器不应包含 console.error / console.warn', (_ctx) => {
   const issues = []
-  const serviceFiles = globSync('src/service/**/*.ts', ROOT)
+  const serviceFiles = [...globSync('src/service/**/*.ts', ROOT), ...globSync('apps/*/src/service/**/*.ts', ROOT)]
   for (const file of serviceFiles) {
     const content = fs.readFileSync(file, 'utf-8')
     const lines = content.split('\n')
@@ -366,8 +367,14 @@ rule('L02', 'src/service/ 拦截器不应包含 console.error / console.warn', (
 
 rule('L03', 'src/lib/request/type.ts 应优先使用 type（非 interface）', (_ctx) => {
   const issues = []
-  const file = path.join(ROOT, 'src/lib/request/type.ts')
-  if (fs.existsSync(file)) {
+  // 兼容旧结构（src/lib/request/type.ts）与新 monorepo 结构（apps/*/src/lib/request/type.ts）
+  const candidates = [
+    path.join(ROOT, 'src/lib/request/type.ts'),
+    ...globSync('apps/*/src/lib/request/type.ts', ROOT),
+  ]
+  for (const file of candidates) {
+    if (!fs.existsSync(file))
+      continue
     const content = fs.readFileSync(file, 'utf-8')
     const lines = content.split('\n')
     for (let i = 0; i < lines.length; i++) {
@@ -505,10 +512,8 @@ function globSync(pattern, cwd) {
   // 解析 pattern: "domain/**/*.ts" => base="domain", exts=[".ts"]
   // 或 "src/components/domain/**/*.ts*" => base="src/components/domain", exts=[".ts", ".tsx"]
   const starIdx = pattern.indexOf('**')
-  const baseDir = starIdx >= 0
-    ? path.join(cwd, pattern.slice(0, starIdx).replace(/\/$/, ''))
-    : path.join(cwd, path.dirname(pattern))
 
+  // 计算扩展名集合
   let exts = []
   if (starIdx >= 0) {
     const after = pattern.slice(starIdx + 2) // e.g. "/**/*.ts" -> "/*.ts" or "/**/*.ts*"
@@ -537,6 +542,42 @@ function globSync(pattern, cwd) {
     exts = [path.extname(pattern)]
   }
 
+  // 解析 base 前缀（** 之前的部分，可能含单层通配 *，如 "apps/*/domain"）
+  const basePartRaw = starIdx >= 0
+    ? pattern.slice(0, starIdx).replace(/\/$/, '')
+    : path.dirname(pattern)
+
+  // 展开单层通配 * 为多个真实目录
+  function expandBaseDirs(baseRel) {
+    const segments = baseRel.split('/')
+    const resolved = [path.join(cwd)]
+    for (const seg of segments) {
+      if (!seg)
+        continue
+      if (seg === '*') {
+        // 单层通配：列出每个已解析目录的子目录
+        const next = []
+        for (const parent of resolved) {
+          if (!fs.existsSync(parent) || !fs.statSync(parent).isDirectory())
+            continue
+          for (const entry of fs.readdirSync(parent, { withFileTypes: true })) {
+            if (entry.isDirectory())
+              next.push(path.join(parent, entry.name))
+          }
+        }
+        resolved.length = 0
+        resolved.push(...next)
+      }
+      else {
+        for (let i = 0; i < resolved.length; i++)
+          resolved[i] = path.join(resolved[i], seg)
+      }
+    }
+    return resolved.filter(d => fs.existsSync(d) && fs.statSync(d).isDirectory())
+  }
+
+  const baseDirs = starIdx >= 0 ? expandBaseDirs(basePartRaw) : [path.join(cwd, basePartRaw)].filter(d => fs.existsSync(d))
+
   function walk(dir) {
     if (!fs.existsSync(dir))
       return
@@ -551,15 +592,18 @@ function globSync(pattern, cwd) {
     }
   }
 
-  walk(baseDir)
+  for (const baseDir of baseDirs) walk(baseDir)
   return results
 }
 
 function getDomainModules() {
-  const domainDir = path.join(ROOT, 'domain')
-  if (!fs.existsSync(domainDir))
-    return []
   const modules = []
+  // 兼容旧结构（根 domain/）与新 monorepo 结构（apps/*/domain/）
+  const candidateRoots = [
+    path.join(ROOT, 'domain'),
+    ...globSync('apps/*/domain', ROOT).map(d => d),
+  ].filter(dir => fs.existsSync(dir))
+
   function walk(dir) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       const fullPath = path.join(dir, entry.name)
@@ -577,12 +621,15 @@ function getDomainModules() {
       }
     }
   }
-  walk(domainDir)
+  for (const root of candidateRoots) walk(root)
   return modules
 }
 
 function getDomainFiles() {
-  return globSync('domain/**/*.ts', ROOT).filter(f => !f.endsWith('.test.ts'))
+  // 兼容旧结构（domain/）与新结构（apps/*/domain/）
+  const patterns = ['domain/**/*.ts', 'apps/*/domain/**/*.ts']
+  const files = patterns.flatMap(p => globSync(p, ROOT))
+  return files.filter(f => !f.endsWith('.test.ts'))
 }
 
 // ============================================================

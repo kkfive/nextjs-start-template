@@ -1,30 +1,50 @@
 # UI 组件导入规范
 
-**核心原则**：所有层级必须通过 `@/components/ui/*` 使用 UI 组件，禁止直接导入第三方 UI 库（如 antd、sonner 等）
+**核心原则**：基础 UI 组件统一来自 `@kkfive/ui` 共享包；各 app 通过自己的 `src/components/ui/*` 作为项目 UI 入口（底层 re-export 或扩展 `@kkfive/ui`）。业务代码不直接绑定第三方 UI 库。
 
-## 导入规则
+## 包结构
+
+```
+packages/ui/                     基础 UI（shadcn 二次封装 + 自实现，不含 antd）
+  components/                     Button、Input、Dialog、Select 等
+  tokens/                         设计 token
+  utils/                          cn()、createIcon 等
+
+apps/{app}/src/components/ui/     各 app 的 UI 入口（re-export @kkfive/ui + 按需扩展）
+apps/{app}/src/components/common/ 通用功能组件（可复用，不依赖特定 domain）
+apps/{app}/src/components/domain/ 领域 UI（结合 Domain 适配层）
+```
+
+## 导入规则（Next.js apps）
 
 | 层级 | UI 组件导入规则 | 示例 |
 |------|----------------|------|
-| `src/app/` | ✅ 必须通过 `@/components/ui/*` | `import { Button } from '@/components/ui/button'` |
-| `src/components/domain/` | ✅ 必须通过 `@/components/ui/*` | `import { Modal } from '@/components/ui/modal'` |
-| `src/components/common/` | ✅ 必须通过 `@/components/ui/*` | `import { toast } from '@/components/ui/sonner'` |
-| `src/components/ui/` | ✅ 封装或透传第三方 UI 组件 | `export { Button } from 'antd'` |
+| `src/app/` | ✅ 通过 `@/components/ui/*`（底层 `@kkfive/ui`） | `import { Button } from '@/components/ui/button'` |
+| `src/components/domain/` | ✅ 通过 `@/components/ui/*` 或直接 `@kkfive/ui` | `import { Modal } from '@/components/ui/modal'` |
+| `src/components/common/` | ✅ 通过 `@/components/ui/*` 或 `@kkfive/ui` | `import { toast } from '@/components/ui/sonner'` |
+| `src/components/ui/` | ✅ re-export / 扩展 `@kkfive/ui` | `export { Button } from '@kkfive/ui'` |
+
+## antd 的特殊处理
+
+`@kkfive/ui` **不含 antd**。antd 由各 app 按需自行安装：
+- 各 app 的 `package.json` 自行声明 antd 依赖
+- ConfigProvider / 主题 token 各 app 自治
+- 业务代码用 antd 时，经该 app 的 `src/components/ui/*` 封装后再用，不直接在业务代码 `from 'antd'`
 
 ## 为什么这样设计
 
-- **统一入口**：所有 UI 组件通过 `ui/` 层统一管理
-- **易于替换**：更换 UI 库时只需修改 `ui/` 层
-- **可扩展**：需要自定义时直接在 `ui/` 层修改
-- **类型安全**：统一的类型导出
+- **共享基础**：多个 app 复用同一套基础控件（来自 `@kkfive/ui`），避免重复封装
+- **统一入口**：各 app 通过自己的 `ui/` 层统一管理，便于按 app 扩展
+- **易于替换**：更换底层 UI 库时只需修改 `@kkfive/ui` 或各 app 的 `ui/` 层
+- **antd 隔离**：antd 不进共享包，避免与 app 内 antd 体系冲突；各 app 自治
 
 ## 组件文件结构规范
 
-所有 UI 组件必须使用 `目录/index.tsx` 的形式，禁止直接在 `ui/` 目录下创建 `.tsx` 文件：
+各 app 下所有 UI 组件必须使用 `目录/index.tsx` 的形式：
 
 ```
 ✅ 正确：
-src/components/ui/
+apps/{app}/src/components/ui/
 ├── button/
 │   └── index.tsx
 ├── modal/
@@ -33,47 +53,28 @@ src/components/ui/
     └── index.tsx
 
 ❌ 错误：
-src/components/ui/
+apps/{app}/src/components/ui/
 ├── button.tsx
 ├── modal.tsx
 └── sonner.tsx
 ```
 
-## 透传封装示例
+## 各 app UI 入口封装示例
 
 ```typescript
-// src/components/ui/button/index.tsx - 透传 antd Button
-/**
- * Button 组件 - 透传 Ant Design Button
- *
- * 用于触发操作和提交表单
- */
-export { Button } from 'antd'
-export type { ButtonProps } from 'antd'
+// apps/client/src/components/ui/button/index.tsx - re-export @kkfive/ui
+export { Button } from '@kkfive/ui'
+export type { ButtonProps } from '@kkfive/ui'
 
-// src/components/ui/sonner/index.tsx - 透传 sonner
-/**
- * toast 函数 - 显示 Toast 通知
- *
- * 用于在应用中显示临时通知消息
- */
-export { toast, Toaster } from 'sonner'
-export type { ToasterProps } from 'sonner'
-```
+// apps/client/src/components/ui/custom-button/index.tsx - 自定义扩展
+import { Button as UiButton } from '@kkfive/ui'
+import type { ButtonProps as UiButtonProps } from '@kkfive/ui'
 
-## 自定义封装示例
-
-```typescript
-// src/components/ui/custom-button/index.tsx - 自定义样式
-import { Button as AntdButton } from 'antd'
-import type { ButtonProps as AntdButtonProps } from 'antd'
-
-export type CustomButtonProps = AntdButtonProps & {
+export type CustomButtonProps = UiButtonProps & {
   variant?: 'primary' | 'secondary'
 }
 
 export function CustomButton({ variant, ...props }: CustomButtonProps) {
-  // 自定义逻辑
-  return <AntdButton {...props} />
+  return <UiButton {...props} />
 }
 ```

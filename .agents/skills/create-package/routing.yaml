@@ -1,0 +1,24 @@
+# Single source of truth for create-package task routing.
+# SKILL.md Common Tasks 表必须与本文件保持一致。
+
+tasks:
+  - intent: 新建共享包
+    triggers: ["新建包", "新建 package", "提取共享包", "新模块抽包"]
+    route:
+      - workflows/new-package.md
+      - references/package-anatomy.md
+
+  - intent: 包结构与 exports
+    triggers: ["exports", "package.json", "目录结构", "tsconfig"]
+    route:
+      - references/package-anatomy.md
+
+  - intent: 依赖声明
+    triggers: ["dependencies", "peerDependencies", "依赖边界", "workspace:*"]
+    route:
+      - references/package-anatomy.md
+
+  - intent: 踩坑
+    triggers: ["幽灵依赖", "exports 解析失败", "references", "未声明依赖"]
+    route:
+      - references/gotchas.md

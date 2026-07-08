@@ -25,7 +25,8 @@ function parseMarkdownTable(lines: string[]): TechStackItem[] {
 }
 
 export async function getTechStackFromReadme(): Promise<TechStackItem[]> {
-  const readmePath = path.join(process.cwd(), 'readme.md')
+  // monorepo: readme.md 在仓库根（apps/client 的上两级）
+  const readmePath = path.join(process.cwd(), '..', '..', 'readme.md')
   const content = await fs.readFile(readmePath, 'utf-8')
   const lines = content.split('\n')
   const startIndex = lines.findIndex(line => line.includes(TABLE_HEADER))

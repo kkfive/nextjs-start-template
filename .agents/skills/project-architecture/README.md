@@ -22,21 +22,30 @@
 
 ## 包含内容
 
-- **三层架构**：Domain 层、应用层、UI 层
-- **依赖规则**：各层级的导入限制
+- **monorepo 三层**：apps（独立应用）/ packages（共享包）/ internal（工具链配置）
+- **应用内分层**：Domain 适配层、基础设施、UI、路由
+- **依赖规则**：跨包与应用内的导入限制
 - **目录约定**：文件和目录组织规范
 - **命名规范**：文件、目录、代码标识符命名
 
 ## 快速示例
 
-### 三层架构
+### monorepo 三层
 
 ```
-domain/              → 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
-src/lib/             → 基础设施层
-src/components/ui/   → 基础 UI
-src/components/domain/ → 业务 UI
-src/app/             → 页面路由层
+apps/                → 独立应用（client / admin / api，各自 build/deploy）
+packages/            → 共享包（contracts / domain-core / http-client / utils / ui）
+internal/            → 工具链配置预设
+```
+
+### 应用内分层（Next.js apps）
+
+```
+apps/{app}/domain/              → Domain 适配层 (re-export @kkfive/domain-core + 注入 HttpService)
+apps/{app}/src/lib/             → 基础设施层
+apps/{app}/src/components/ui/   → 基础 UI（来自 @kkfive/ui）
+apps/{app}/src/components/domain/ → 业务 UI
+apps/{app}/src/app/             → 页面路由层
 ```
 
 ### 命名规范

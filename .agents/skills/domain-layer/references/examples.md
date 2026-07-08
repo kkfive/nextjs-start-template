@@ -41,8 +41,9 @@ export type LoginRequest = {
 ### service.ts
 
 ```typescript
+// packages/domain-core/src/auth/service.ts
 import type { LoginRequest, LoginResponse, UserInfo } from './type'
-import type { HttpService } from '@/lib/request'
+import type { HttpService } from '@kkfive/http-client'
 import { AUTH_API } from './const/api'
 
 export const authService = {
@@ -63,8 +64,9 @@ export const authService = {
 ### controller.ts
 
 ```typescript
+// packages/domain-core/src/auth/controller.ts
 import type { LoginRequest, LoginResponse, UserInfo } from './type'
-import type { HttpService } from '@/lib/request'
+import type { HttpService } from '@kkfive/http-client'
 import { authService } from './service'
 
 export const authController = {
@@ -86,14 +88,16 @@ export const authController = {
 
 ### hooks.ts
 
+> 此文件位于各 Next.js app 的 Domain 适配层（`apps/client/domain/auth/hooks.ts`），不在共享包。
+
 ```typescript
-import type { LoginRequest, LoginResponse, UserInfo } from './type'
+// apps/client/domain/auth/hooks.ts
+import type { LoginRequest, LoginResponse, UserInfo } from '@kkfive/domain-core/auth'
 import type { UseMutationOptions, UseQueryOptions } from '@tanstack/react-query'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { httpClient } from '@/service/index.client'
 import { toast } from '@/components/ui/sonner'
-import { AUTH_QUERY_KEYS } from './const/api'
-import { authController } from './controller'
+import { AUTH_QUERY_KEYS, authController } from '@kkfive/domain-core/auth'
 
 export function useMe(options?: Omit<UseQueryOptions<UserInfo>, 'queryKey' | 'queryFn'>) {
   return useQuery({
@@ -118,12 +122,20 @@ export function useLogin(options?: Omit<UseMutationOptions<LoginResponse, Error,
 }
 ```
 
-### index.ts
+### index.ts（共享包）
 
 ```typescript
+// packages/domain-core/src/auth/index.ts
 export { AUTH_API, AUTH_QUERY_KEYS } from './const/api'
 export { authService } from './service'
 export { authController } from './controller'
-export { useLogin, useMe } from './hooks'
 export type * from './type'
+```
+
+### index.ts（适配层，apps/client）
+
+```typescript
+// apps/client/domain/auth/index.ts
+export * from '@kkfive/domain-core/auth'           // re-export 共享包
+export { useLogin, useMe } from './hooks'          // app 专属 hooks
 ```

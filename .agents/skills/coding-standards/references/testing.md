@@ -3,9 +3,11 @@
 ## 测试文件位置
 
 ```typescript
-// 测试文件与源文件同目录
-// src/lib/utils.ts → src/lib/utils.test.ts
-// src/components/ui/button/index.tsx → src/components/ui/button/button.test.tsx
+// 测试文件与源文件同目录（共享包与各 app 均如此）
+// packages/utils/src/string.ts → packages/utils/src/string.test.ts
+// packages/domain-core/src/material/service.ts → packages/domain-core/src/material/service.test.ts
+// apps/client/src/lib/utils.ts → apps/client/src/lib/utils.test.ts
+// apps/client/src/components/ui/button/index.tsx → apps/client/src/components/ui/button/button.test.tsx
 ```
 
 ## 测试框架
@@ -27,7 +29,7 @@ describe('ComponentName', () => {
 
 ```typescript
 // Mock 使用 MSW (Mock Service Worker)
-// src/__tests__/mocks/handlers.ts
+// 各 app 的测试 mock：apps/{app}/src/__tests__/mocks/handlers.ts
 
 import { http, HttpResponse } from 'msw'
 

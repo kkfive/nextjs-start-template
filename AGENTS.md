@@ -1,19 +1,22 @@
 # 项目协作准则
 
-Next.js + React，采用 Domain / 应用基础设施 / UI / 路由分层。所有回复使用简体中文。
+pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享包 / `internal/` 工具链配置），每个 Next.js app 内部采用 Domain 适配层 / 应用基础设施 / UI / 路由分层。所有回复使用简体中文。
 
 本文件是 **Claude Code（通过 `CLAUDE.md`）与 Codex CLI** 的共同入口。Codex 用户读本文件即可获得完整规则索引；根目录不再保留 `CODEX.md`。
 
 ## Always Load
 
 @.agents/rules/core.rule.md
+@.agents/rules/monorepo.rule.md
 
 ## Load When Editing
 
-- `domain/**` → @.agents/rules/domain.rule.md
-- `src/components/**` → @.agents/rules/ui.rule.md
-- `src/app/**` → @.agents/rules/next-app.rule.md
-- `**/*.test.*`、`src/__tests__/**` → @.agents/rules/testing.rule.md
+- `apps/*/domain/**` → @.agents/rules/domain.rule.md
+- `packages/**` → @.agents/rules/packages.rule.md
+- `apps/*/src/components/**` → @.agents/rules/ui.rule.md
+- `apps/client/src/app/**`、`apps/admin/src/app/**` → @.agents/rules/next-app.rule.md
+- `apps/api/**` → @.agents/rules/hono.rule.md
+- `**/*.test.*`、`**/__tests__/**` → @.agents/rules/testing.rule.md
 
 规则文件简短只表达稳定原则；具体流程、示例、踩坑见下方 Skill Index。
 
@@ -23,10 +26,13 @@ Next.js + React，采用 Domain / 应用基础设施 / UI / 路由分层。所�
 
 | Skill | 入口 | 何时使用 |
 |---|---|---|
-| project-architecture | `.agents/skills/project-architecture/SKILL.md` | 决定新代码放哪一层、检查跨层 import |
+| project-architecture | `.agents/skills/project-architecture/SKILL.md` | 决定新代码放哪一层、检查跨层 import、monorepo 分层 |
 | coding-standards | `.agents/skills/coding-standards/SKILL.md` | 写组件代码、解决 import 报错、类型/错误/图标/测试规范 |
-| domain-layer | `.agents/skills/domain-layer/SKILL.md` | 新建 Domain 模块、写 Service/Controller/Hooks |
-| nextjs-app-router | `.agents/skills/nextjs-app-router/SKILL.md` | `src/app/` 下新建页面/API/Server Action、缓存与 Metadata |
+| domain-layer | `.agents/skills/domain-layer/SKILL.md` | 新建 Domain 适配层、写 Service/Controller/Hooks、与 `@kkfive/domain-core` 关系 |
+| nextjs-app-router | `.agents/skills/nextjs-app-router/SKILL.md` | `apps/*/src/app/` 下新建页面/API/Server Action、缓存与 Metadata |
+| hono-api | `.agents/skills/hono-api/SKILL.md` | `apps/api` 新建 Hono 路由、schema 校验、同进程直调 domain-core |
+| create-package | `.agents/skills/create-package/SKILL.md` | 新建共享包（目录/exports/tsconfig/peer deps） |
+| create-app | `.agents/skills/create-app/SKILL.md` | 新建应用（workspace 注册、继承 internal 配置） |
 | ant-design | `.agents/skills/ant-design/SKILL.md` | antd 组件 / ConfigProvider / SSR / 高级 Form/Table |
 | styling-system | `.agents/skills/styling-system/SKILL.md` | 调样式（5 级优先级）、主题切换、暗色 |
 | motion | `.agents/skills/motion/SKILL.md` | Motion 动画（手势、滚动、布局、退出） |

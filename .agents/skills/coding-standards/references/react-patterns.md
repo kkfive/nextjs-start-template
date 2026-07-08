@@ -29,13 +29,13 @@ export function ClientComponent() {
 
 ```typescript
 // 组件 Props 命名: {ComponentName}Props
-interface HitokotoCardProps {
+type HitokotoCardProps = {
   initialData: Hitokoto.Hitokoto
 }
 
 // 或使用 props.ts 文件
-// src/components/ui/button/props.ts
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+// apps/{app}/src/components/ui/button/props.ts
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   primary?: boolean
 }
 ```

@@ -8,7 +8,7 @@ pre-commit:
   commands:
     lint:
       glob: '*'
-      run: pnpm lint:fix {staged_files}
+      run: pnpm exec turbo run lint
     verify:
       glob: '*'
-      run: pnpm verify
+      run: pnpm -w run verify

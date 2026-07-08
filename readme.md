@@ -1,66 +1,29 @@
 # Next.js Start Template
 
-基于 Next.js + React 的项目模板，采用领域驱动三层架构。
+基于 pnpm workspace + Turborepo 的 monorepo 项目模板，采用领域驱动分层架构，支持多应用（客户端 / 管理后台 / API 服务）共享业务逻辑与 UI。
 
 ## 特性
 
-- **Next.js** + **React** - App Router 与 Server Components
-- **领域驱动架构** - 业务能力与 UI 分离，核心逻辑框架无关
-- **TypeScript** - 完整类型支持
-- **Tailwind CSS** - 原子化 CSS
-- **TanStack Query** - 服务端状态管理
-- **Zustand** - 客户端状态管理
-- **Vitest + MSW** - 单元测试与 API Mock
-- **ESLint + commitlint** - 代码规范与提交规范
+- **Monorepo** — pnpm workspace + Turborepo，`apps/` 独立应用 + `packages/` 共享包 + `internal/` 工具链
+- **Next.js + React** — App Router 与 Server Components
+- **领域驱动分层** — 业务纯逻辑下沉到 `@kkfive/domain-core`，各 app 做 Domain 适配层
+- **TypeScript** — project references 跨包增量类型检查
+- **Tailwind CSS v4** — 原子化 CSS，主题 token 共享
+- **TanStack Query + Zustand** — 服务端与客户端状态管理
+- **Vitest + MSW** — 单元测试与 API Mock
+- **AI 辅助开发规范** — `.agents/` 提供跨 agent 的分层、编码、skill 规范
 
 ## 快速开始
 
-### 1. 克隆模板
-
 ```bash
+# 克隆
 git clone https://github.com/kkfive/nextjs-start-template.git my-project
 cd my-project
-```
 
-### 2. 安装依赖
-
-```bash
+# 安装依赖
 pnpm install
-```
 
-### 3. 清理示例代码
-
-运行以下命令删除示例代码，保留干净的项目骨架：
-
-```bash
-# 删除示例业务模块
-rm -rf domain/example
-
-# 删除示例 UI 组件
-rm -rf src/components/domain/hitokoto
-rm -rf src/components/domain/request
-rm -rf src/components/demo
-rm -rf src/components/home
-
-# 删除示例页面
-rm -rf src/app/demo
-
-# 清理首页（可选，保留则需修改）
-# rm src/app/page.tsx
-```
-
-### 4. 重置 Git 历史（可选）
-
-```bash
-rm -rf .git
-git init
-git add .
-git commit -m "feat: 初始化项目"
-```
-
-### 5. 启动开发
-
-```bash
+# 启动 client 开发服务器（端口 5373）
 pnpm dev
 ```
 
@@ -69,120 +32,47 @@ pnpm dev
 ## 项目结构
 
 ```
-├── domain/           # 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
-│   └── {module}/     # 业务模块 (controller/service/type.ts)
-├── src/
-│   ├── app/          # 页面路由 (仅 page/layout/route)
-│   ├── components/
-│   │   ├── ui/       # 基础 UI (shadcn)
-│   │   └── domain/   # 领域 UI (结合业务逻辑)
-│   ├── lib/          # 基础设施 (HTTP、工具函数)
-│   ├── hooks/        # React Hooks
-│   └── store/        # Zustand stores
-└── docs/             # 文档
+├── apps/                          # 独立应用
+│   ├── client/                    # Next.js 客户端
+│   ├── admin/                     # Next.js 管理后台（示例）
+│   └── api/                       # Hono API 服务（示例）
+├── packages/                      # 共享包
+│   ├── contracts/                 # API 契约（zod schema + 类型）
+│   ├── domain-core/               # 业务纯逻辑（框架无关）
+│   ├── http-client/               # HTTP 抽象（HttpService）
+│   ├── utils/                     # 纯工具函数
+│   └── ui/                        # 基础 UI 组件（shadcn）
+├── internal/                      # 工具链配置预设
+│   ├── tsconfig/                  # TypeScript 预设
+│   ├── lint-config/               # ESLint 预设
+│   ├── tailwind-config/           # Tailwind/PostCSS 预设
+│   ├── nextjs-config/             # Next.js 预设
+│   └── node-utils/                # Node 工具函数库
+├── docs/                          # 仓库级文档（ADR、FAQ）
+└── .agents/                       # AI 辅助开发规范
 ```
+
+各 app 内部采用 Domain 适配层 / 基础设施 / UI / 路由分层。详细架构与编码规范见 [AGENTS.md](AGENTS.md) 与 `.agents/`。
 
 ## 常用命令
 
-| 命令                 | 说明                       |
-| -------------------- | -------------------------- |
-| `pnpm dev`           | 启动开发服务器 (port 5373) |
-| `pnpm build`         | 构建生产版本               |
-| `pnpm lint:fix`      | ESLint 检查并修复          |
-| `pnpm test:run`      | 运行测试                   |
-| `pnpm test:coverage` | 运行测试并生成覆盖率报告   |
+| 命令 | 说明 |
+| --- | --- |
+| `pnpm dev` | 启动所有 app 开发服务器 |
+| `pnpm build` | 构建所有 app |
+| `pnpm lint` | ESLint 检查 |
+| `pnpm typecheck` | TypeScript 类型检查 |
+| `pnpm test:run` | 运行测试 |
+| `pnpm verify` | 规范校验 + 依赖一致性检查 |
 
-## 架构约定
-
-### 依赖规则
-
-| 层级                     | 可以导入                         | 禁止导入                                   |
-| ------------------------ | -------------------------------- | ------------------------------------------ |
-| `domain/`                | `@/lib/*`、外部库                | `@/components/*`、`@/hooks/*`、`@/store/*` |
-| `src/components/domain/` | `@domain/*`、`@/components/ui/*` | -                                          |
-| `src/components/ui/`     | 外部库                           | `@domain/*`、业务逻辑                      |
-
-### 数据流模式
-
-```
-组件 (useQuery) → Domain Controller → Service → HTTP
-```
-
-详细架构文档见 `docs/architecture.md`
-
-## 创建新模块
-
-### 1. 创建领域模块
-
-```bash
-mkdir -p domain/user
-```
-
-```typescript
-// domain/user/controller.ts
-import type { HttpService } from '@/lib/request'
-
-import { service } from './service'
-
-export async function getUser(http: HttpService, id: string) {
-  return service.getUser(http, id)
-}
-```
-
-```typescript
-// domain/user/service.ts
-import type { HttpService } from '@/lib/request'
-
-export const service = {
-  async getUser(http: HttpService, id: string) {
-    return http.get(`/api/users/${id}`)
-  }
-}
-```
-
-```typescript
-// domain/user/index.ts
-export * as Controller from './controller'
-export { service } from './service'
-export type * from './type'
-```
-
-### 2. 创建领域 UI 组件
-
-```tsx
-// src/components/domain/user/user-card.tsx
-'use client'
-
-import { Controller } from '@domain/user'
-import { useQuery } from '@tanstack/react-query'
-import { Card } from '@/components/ui/card'
-import { httpClient } from '@/service/index.client'
-
-export function UserCard({ userId }: { userId: string }) {
-  const { data, isLoading } = useQuery({
-    queryKey: ['user', userId],
-    queryFn: () => Controller.getUser(httpClient, userId),
-  })
-
-  if (isLoading)
-    return <div>Loading...</div>
-
-  return (
-    <Card>
-      <h2>{data?.name}</h2>
-    </Card>
-  )
-}
-```
+> 单 app 操作：`pnpm --filter client dev`、`pnpm --filter client build` 等。
 
 ## 文档
 
-- [架构文档](docs/architecture.md)
-- [目录约定](docs/conventions/directory.md)
-- [命名规范](docs/conventions/naming.md)
-- [项目协作准则](AGENTS.md)
-- [规则治理决策](docs/decisions/rule-governance.md)
+- [项目协作准则（AGENTS.md）](AGENTS.md) — AI 辅助开发的全局规范入口
+- [架构决策记录](docs/decisions/) — ADR（monorepo 重构、规则治理等）
+- [FAQ](docs/faq.md) — 常见问题
 
 ## License
 
-[MIT](https://github.com/kkfive/nextjs-start-template/blob/master/LICENSE)
+[MIT](./LICENSE)
