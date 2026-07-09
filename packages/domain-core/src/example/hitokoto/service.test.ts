@@ -1,7 +1,7 @@
-import { service } from '@kkfive/domain-core/example/hitokoto'
 import { HttpService } from '@kkfive/http-client'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
-import { server } from '@/__tests__/mocks/server'
+import { server } from '../../__tests__/mocks/server'
+import { service } from './service'
 
 describe('hitokoto service', () => {
   beforeAll(() => server.listen())

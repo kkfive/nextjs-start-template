@@ -1,8 +1,8 @@
-import { Controller } from '@kkfive/domain-core/example/request'
 import { BusinessError, HttpService } from '@kkfive/http-client'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
-import { TEST_BASE_URL } from '@/__tests__/mocks/handlers'
-import { server } from '@/__tests__/mocks/server'
+import { TEST_BASE_URL } from '../../__tests__/mocks/handlers'
+import { server } from '../../__tests__/mocks/server'
+import { Controller } from './index'
 
 describe('controller', () => {
   let httpClient: HttpService
@@ -112,27 +112,12 @@ describe('controller', () => {
 
   describe('transformData', () => {
     it('should return data for successful response', async () => {
-      // const successResponse: HttpResponseSuccess<{ message: string }> = {
-      //   success: true,
-      //   data: { message: 'Success' },
-      // }
-
       // Access transformData through Controller method behavior
       const result = Controller.unifiedScenario(httpClient, 'success')
       await expect(result).resolves.toBeDefined()
     })
 
     it('should throw BusinessError for error response', async () => {
-      // const errorResponse: HttpResponseError<null> = {
-      //   success: false,
-      //   code: 500,
-      //   message: 'Internal Server Error',
-      //   data: null,
-      //   errorShowType: 2,
-      //   requestId: 'req-500',
-      //   timestamp: '2026-01-21T10:00:00Z',
-      // }
-
       // Verify transformData behavior through Controller
       await expect(
         Controller.unifiedScenario(httpClient, 'business-error'),

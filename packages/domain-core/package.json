@@ -7,7 +7,9 @@
   },
   "devDependencies": {
     "@kkfive/http-client": "workspace:*",
-    "@kkfive/tsconfig": "workspace:*"
+    "@kkfive/tsconfig": "workspace:*",
+    "msw": "^2.15.0",
+    "vitest": "^4.1.10"
   },
   "exports": {
     ".": "./src/index.ts",
@@ -19,6 +21,8 @@
   },
   "private": true,
   "scripts": {
+    "test": "vitest run",
+    "test:run": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "type": "module"
