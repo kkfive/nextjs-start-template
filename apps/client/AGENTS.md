@@ -6,14 +6,6 @@
 
 <always-applicable>
 
-## Always Load（继承 + 补充）
-
-@.agents/rules/core.rule.md
-@.agents/rules/monorepo.rule.md
-@.agents/rules/domain.rule.md
-@.agents/rules/ui.rule.md
-@.agents/rules/next-app.rule.md
-
 ## 关键约束
 
 ### Domain 适配层（client 特有：含 React Query hooks）

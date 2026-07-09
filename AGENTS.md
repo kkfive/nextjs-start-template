@@ -31,7 +31,7 @@ pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享�
 - `apps/*/domain/**` → @.agents/rules/domain.rule.md
 - `packages/**` → @.agents/rules/packages.rule.md
 - `apps/*/src/components/**` → @.agents/rules/ui.rule.md
-- `apps/client/src/app/**`、`apps/admin/src/app/**` → @.agents/rules/next-app.rule.md
+- `apps/*/src/app/**` → @.agents/rules/next-app.rule.md
 - `apps/api/**` → @.agents/rules/hono.rule.md
 - `**/*.test.*`、`**/__tests__/**` → @.agents/rules/testing.rule.md
 

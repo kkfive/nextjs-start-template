@@ -6,14 +6,6 @@
 
 <always-applicable>
 
-## Always Load（继承 + 补充）
-
-@.agents/rules/core.rule.md
-@.agents/rules/monorepo.rule.md
-@.agents/rules/packages.rule.md
-@.agents/rules/domain.rule.md
-@.agents/rules/testing.rule.md
-
 ## 关键约束
 
 ### 框架无关（硬约束）

@@ -6,12 +6,6 @@
 
 <always-applicable>
 
-## Always Load（继承 + 补充）
-
-@.agents/rules/core.rule.md
-@.agents/rules/monorepo.rule.md
-@.agents/rules/hono.rule.md
-
 ## 关键约束
 
 ### 路由层只做 HTTP 适配
