@@ -1,6 +1,15 @@
 # Single source of truth for coding-standards task routing.
 
 tasks:
+  - intent: 先查后建（新建/对接前检索已有实现）
+    triggers: ["新建", "对接", "新接口", "新组件", "新类型", "新 schema", "封装"]
+    trigger_examples:
+      - "帮我对接 /api/xxx 接口"
+      - "新建一个订单列表组件"
+      - "定义用户数据类型"
+      - "封装一个判空工具函数"
+    route: [workflows/search-before-create.md]
+
   - intent: 跨层 import 黑名单
     triggers: ["import 报错", "不能导入", "层级依赖"]
     route: [references/layer-dependency.md]

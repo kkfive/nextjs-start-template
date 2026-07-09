@@ -419,18 +419,37 @@ rule('D11', 'domain 模块文件结构应完整（type.ts, const/api.ts, service
 // 规则治理文档
 // --------------------------------------------------
 
-rule('G01', 'AGENTS.md 应引用核心规则源', (_ctx) => {
+rule('G01', 'AGENTS.md 应含 always-applicable 标签并引用核心规则源', (_ctx) => {
   const file = path.join(ROOT, 'AGENTS.md')
   if (!fs.existsSync(file))
     return [{ file, line: 1, message: '缺少 AGENTS.md' }]
   const content = fs.readFileSync(file, 'utf-8')
-  if (!content.includes('@.agents/rules/core.rule.md')) {
-    return [{ file, line: 1, message: 'AGENTS.md 应引用 @.agents/rules/core.rule.md，避免复制完整规则清单' }]
+  const issues = []
+  if (!content.includes('<always-applicable>')) {
+    issues.push({ file, line: 1, message: 'AGENTS.md 应含 <always-applicable> XML 标签（抗上下文压缩）' })
   }
-  return []
+  if (!content.includes('@.agents/rules/core.rule.md')) {
+    issues.push({ file, line: 1, message: 'AGENTS.md 应引用 @.agents/rules/core.rule.md，避免复制完整规则清单' })
+  }
+  return issues
 })
 
-rule('G02', 'Domain skill 应引用 Domain 规则源', (_ctx) => {
+rule('G02', '包级 AGENTS.md 应含 always-applicable 标签', (_ctx) => {
+  const issues = []
+  const packageAgents = [
+    ...globSync('apps/**/AGENTS.md', ROOT),
+    ...globSync('packages/**/AGENTS.md', ROOT),
+  ]
+  for (const file of packageAgents) {
+    const content = fs.readFileSync(file, 'utf-8')
+    if (!content.includes('<always-applicable>')) {
+      issues.push({ file, line: 1, message: '包级 AGENTS.md 应含 <always-applicable> XML 标签（抗上下文压缩）' })
+    }
+  }
+  return issues
+})
+
+rule('G02b', 'Domain skill 应引用 Domain 规则源', (_ctx) => {
   const file = path.join(ROOT, '.agents/skills/domain-layer/SKILL.md')
   if (!fs.existsSync(file))
     return []
@@ -495,6 +514,108 @@ rule('G04', '文档不应使用过期的 Domain 绝对化描述', (_ctx) => {
           file,
           line: i + 1,
           message: '请使用“Domain 核心逻辑框架无关，hooks.ts 为适配层例外”的表述',
+        })
+      }
+    }
+  }
+  return issues
+})
+
+rule('G05', 'routing.yaml 应含 trigger_examples 字段', (_ctx) => {
+  const issues = []
+  const routingFiles = globSync('.agents/skills/**/routing.yaml', ROOT)
+  for (const file of routingFiles) {
+    const content = fs.readFileSync(file, 'utf-8')
+    if (!content.includes('trigger_examples')) {
+      issues.push({
+        file,
+        line: 1,
+        message: 'routing.yaml 应含 trigger_examples 字段（skill-based-arch 要求，提升 AI 匹配可靠性）',
+      })
+    }
+  }
+  return issues
+})
+
+rule('G06', 'project-architecture SKILL.md 应标记 primary: true', (_ctx) => {
+  const file = path.join(ROOT, '.agents/skills/project-architecture/SKILL.md')
+  if (!fs.existsSync(file))
+    return []
+  const content = fs.readFileSync(file, 'utf-8')
+  if (!content.includes('primary: true')) {
+    return [{ file, line: 1, message: 'project-architecture 应标记 primary: true（默认 fallback skill）' }]
+  }
+  return []
+})
+
+// --------------------------------------------------
+// 先查后建：重复定义碰撞检测
+// --------------------------------------------------
+
+rule('C01', 'contracts schema 不应有同名导出碰撞', (_ctx) => {
+  const issues = []
+  const schemaFiles = globSync('packages/contracts/src/**/*.ts', ROOT)
+  const exportNames = new Map() // exportName -> [files]
+  for (const file of schemaFiles) {
+    if (file.endsWith('.test.ts'))
+      continue
+    const content = fs.readFileSync(file, 'utf-8')
+    const lines = content.split('\n')
+    for (let i = 0; i < lines.length; i++) {
+      // 匹配 export const Xxx 或 export function xxx
+      const match = lines[i].match(/^\s*export\s+(?:const|function|class)\s+(\w+)/)
+      if (match) {
+        const name = match[1]
+        if (!exportNames.has(name))
+          exportNames.set(name, [])
+        exportNames.get(name).push({ file, line: i + 1 })
+      }
+    }
+  }
+  for (const [name, occurrences] of exportNames) {
+    if (occurrences.length > 1) {
+      for (const occ of occurrences) {
+        issues.push({
+          file: occ.file,
+          line: occ.line,
+          message: `导出名 '${name}' 与其他文件碰撞：${occurrences.filter(o => o.file !== occ.file).map(o => path.relative(ROOT, o.file)).join(', ')}。先检索已有定义，避免重复`,
+        })
+      }
+    }
+  }
+  return issues
+})
+
+rule('C02', 'domain-core 各模块不应有跨模块同名导出碰撞', (_ctx) => {
+  const issues = []
+  const moduleDirs = globSync('packages/domain-core/src/*', ROOT)
+  const exportNames = new Map() // exportName -> [files]
+  for (const moduleDir of moduleDirs) {
+    // 递归读模块下所有 ts 文件
+    const files = globSync(`${path.relative(ROOT, moduleDir)}/**/*.ts`.replace(/\\/g, '/'), ROOT)
+    for (const file of files) {
+      if (file.endsWith('.test.ts') || file.endsWith('index.ts') || file.endsWith('type.ts'))
+        continue
+      const content = fs.readFileSync(file, 'utf-8')
+      const lines = content.split('\n')
+      for (let i = 0; i < lines.length; i++) {
+        const match = lines[i].match(/^\s*export\s+(?:async\s+)?(?:function|const)\s+(\w+)/)
+        if (match) {
+          const name = match[1]
+          if (!exportNames.has(name))
+            exportNames.set(name, [])
+          exportNames.get(name).push({ file, line: i + 1 })
+        }
+      }
+    }
+  }
+  for (const [name, occurrences] of exportNames) {
+    if (occurrences.length > 1) {
+      for (const occ of occurrences) {
+        issues.push({
+          file: occ.file,
+          line: occ.line,
+          message: `导出名 '${name}' 与其他模块碰撞：${occurrences.filter(o => o.file !== occ.file).map(o => path.relative(ROOT, o.file)).join(', ')}。先检索已有定义，避免重复`,
         })
       }
     }

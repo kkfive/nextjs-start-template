@@ -20,6 +20,7 @@ user-invocable: true
 
 | 触发场景 | 路由 |
 |---|---|
+| 新建/对接前检索已有实现（先查后建） | `workflows/search-before-create.md` |
 | 跨层 / 跨包 import 报错 / 黑名单 | `references/layer-dependency.md` |
 | UI 组件该从哪 import（`@kkfive/ui` / 各 app `@/components/ui/*`） | `references/ui-import-rules.md` |
 | `type` 还是 `interface` | `references/typescript-rules.md` |
