@@ -523,7 +523,12 @@ rule('G04', '文档不应使用过期的 Domain 绝对化描述', (_ctx) => {
 
 rule('G05', 'routing.yaml 应含 trigger_examples 字段', (_ctx) => {
   const issues = []
-  const routingFiles = globSync('.agents/skills/**/routing.yaml', ROOT)
+  // 扫描根级 + 子包级 skill 的 routing.yaml
+  const routingFiles = [
+    ...globSync('.agents/skills/**/routing.yaml', ROOT),
+    ...globSync('apps/*/.agents/skills/**/routing.yaml', ROOT),
+    ...globSync('packages/*/.agents/skills/**/routing.yaml', ROOT),
+  ]
   for (const file of routingFiles) {
     const content = fs.readFileSync(file, 'utf-8')
     if (!content.includes('trigger_examples')) {

@@ -66,8 +66,9 @@ apps/client/
 ## 参考
 
 - 根级规范：`../../AGENTS.md`
-- App Router 任务引导：`.agents/skills/nextjs-app-router/SKILL.md`
-- Domain 适配层引导：`.agents/skills/domain-layer/SKILL.md`
+- 包级 skill：`.agents/skills/ant-design/SKILL.md`（antd 组件 / ConfigProvider / SSR）
+- 根级共享 skill：`../../.agents/skills/nextjs-app-router/SKILL.md`（App Router）
+- 根级共享 skill：`../../.agents/skills/domain-layer/SKILL.md`（Domain 适配层）
 - 重构决策：`docs/decisions/monorepo-restructuring.md`
 
 </task-routing>

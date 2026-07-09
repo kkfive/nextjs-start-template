@@ -50,7 +50,7 @@
 ## 参考
 
 - 根级规范：`../../AGENTS.md`
-- Hono 任务引导：`.agents/skills/hono-api/SKILL.md`
+- 包级 skill：`.agents/skills/hono-api/SKILL.md`（Hono 路由 / schema 校验 / 中间件）
 - 重构决策：`docs/decisions/monorepo-restructuring.md`
 
 </task-routing>

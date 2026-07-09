@@ -81,5 +81,6 @@ export const httpClient = new HttpService({ /* 浏览器配置 */ })
 - [ ] 根 `tsconfig.json` references 已追加
 - [ ] `pnpm install` 后 workspace 链接正常
 - [ ] 已生成 `apps/<name>/AGENTS.md`（thin-shell 格式，app 必定有专属约束）
+- [ ] 该 app 有独特技术栈专属 skill？（如 Hono → 建 `apps/<name>/.agents/skills/`，放该技术栈 skill。参考 `apps/api/.agents/skills/hono-api/`）
 
 详细结构与配置见 `references/app-anatomy.md`，常见错误见 `references/gotchas.md`。

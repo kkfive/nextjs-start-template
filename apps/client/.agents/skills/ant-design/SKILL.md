@@ -1,6 +1,6 @@
 ---
 name: ant-design
-description: Ant Design 组件选择、ConfigProvider/主题、CSS-in-JS、SSR、Form/Table/Select/Tree/Upload 高级用法。用于构建或审查 antd UI、配置主题、解决 Ant Design 在 Next.js/SSR/性能/无障碍方面的问题；强制使用前查最新官方 API。
+description: Ant Design 组件选择、ConfigProvider/主题、CSS-in-JS、SSR、Form/Table/Select/Tree/Upload 高级用法。仅在用 antd 的 app（当前仅 client）内使用。用于构建或审查 antd UI、配置主题、解决 Ant Design 在 Next.js/SSR/性能/无障碍方面的问题；强制使用前查最新官方 API。
 user-invocable: true
 ---
 

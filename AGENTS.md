@@ -47,15 +47,20 @@ pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享�
 | coding-standards | `.agents/skills/coding-standards/SKILL.md` | 写组件代码、解决 import 报错、类型/错误/图标/测试规范 |
 | domain-layer | `.agents/skills/domain-layer/SKILL.md` | 新建 Domain 适配层、写 Service/Controller/Hooks、与 `@kkfive/domain-core` 关系 |
 | nextjs-app-router | `.agents/skills/nextjs-app-router/SKILL.md` | `apps/*/src/app/` 下新建页面/API/Server Action、缓存与 Metadata |
-| hono-api | `.agents/skills/hono-api/SKILL.md` | `apps/api` 新建 Hono 路由、schema 校验、同进程直调 domain-core |
 | create-package | `.agents/skills/create-package/SKILL.md` | 新建共享包（目录/exports/tsconfig/peer deps） |
 | create-app | `.agents/skills/create-app/SKILL.md` | 新建应用（workspace 注册、继承 internal 配置） |
-| ant-design | `.agents/skills/ant-design/SKILL.md` | antd 组件 / ConfigProvider / SSR / 高级 Form/Table |
 | styling-system | `.agents/skills/styling-system/SKILL.md` | 调样式（5 级优先级）、主题切换、暗色 |
 | motion | `.agents/skills/motion/SKILL.md` | Motion 动画（手势、滚动、布局、退出） |
 | searches-iconify | `.agents/skills/searches-iconify/SKILL.md` | Iconify 图标搜索 |
 | smart-commit | `.agents/skills/smart-commit/SKILL.md` | 暂存区分组拆 commit |
 | _template | `.agents/skills/_template/` | 新建 skill 的起点 |
+
+**包级 skill**（已下沉到各自包，编辑对应包时自动发现）：
+
+| Skill | 位置 | 作用域 |
+|---|---|---|
+| hono-api | `apps/api/.agents/skills/hono-api/SKILL.md` | 仅 apps/api |
+| ant-design | `apps/client/.agents/skills/ant-design/SKILL.md` | 仅用 antd 的 app（当前 client） |
 
 每个 skill 内部结构：`SKILL.md`（入口 ≤ 90 行）+ `routing.yaml`（任务路由）+ `rules/` + `workflows/` + `references/`（含 `gotchas.md`）。
 

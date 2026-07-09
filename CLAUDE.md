@@ -45,14 +45,19 @@ pnpm workspace + Turborepo monorepo（`apps/` / `packages/` / `internal/`）。�
 | coding-standards | 写组件代码、解决 import 报错、类型/错误/图标/测试规范 |
 | domain-layer | 新建 Domain 适配层、写 Service/Controller/Hooks |
 | nextjs-app-router | `apps/*/src/app/` 下新建页面/API/Server Action |
-| hono-api | `apps/api` 新建 Hono 路由、schema 校验 |
 | create-package | 新建共享包（目录/exports/tsconfig/peer deps） |
 | create-app | 新建应用（workspace 注册、继承 internal 配置） |
-| ant-design | antd 组件 / ConfigProvider / SSR / 高级 Form/Table |
 | styling-system | 调样式（5 级优先级）、主题切换、暗色 |
 | motion | Motion 动画（手势、滚动、布局、退出） |
 | searches-iconify | Iconify 图标搜索 |
 | smart-commit | 暂存区分组拆 commit |
+
+**包级 skill**（已下沉到各自包，编辑对应包时读子包 AGENTS.md 发现）：
+
+| Skill | 位置 | 作用域 |
+|---|---|---|
+| hono-api | `apps/api/.agents/skills/hono-api/SKILL.md` | 仅 apps/api |
+| ant-design | `apps/client/.agents/skills/ant-design/SKILL.md` | 仅用 antd 的 app（当前 client） |
 
 </task-routing>
 

@@ -86,3 +86,7 @@ user-invocable: true
 - **thin-shell 格式**：根 AGENTS.md / CLAUDE.md 及包级 AGENTS.md 必须含 `<always-applicable>` + `<task-routing>` XML 标签（抗上下文压缩，G01/G02 校验）
 - **先查后建**：新建类任务前必须先检索已有实现（见 `coding-standards/workflows/search-before-create.md`）。新增 skill 或包时同样适用
 - **新增包规则判定**：新建 package/app 后，判断是否有"不同于根级通用规则的专属约束"。有 → 生成包级 AGENTS.md（thin-shell 格式）；无 → 不生成（progressive rigor）
+- **skill 放置位置**：
+  - **单包专属 skill**（仅服务一个包，如 hono-api 仅 apps/api 用）→ 放 `<包>/.agents/skills/<name>/`（ZCode/Codex 子包向上扫描自动发现；Claude Code 靠子包 AGENTS.md 路径引用）
+  - **多包共享 skill**（服务 2+ 包，如 nextjs-app-router 服务 client+admin）→ 放根 `.agents/skills/`
+  - description 必须写明作用域（如"仅在 apps/api 包内使用"），便于 AI 按需匹配不误触发

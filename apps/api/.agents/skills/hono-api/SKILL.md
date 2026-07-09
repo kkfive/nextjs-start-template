@@ -1,6 +1,6 @@
 ---
 name: hono-api
-description: apps/api Hono 后端服务规范 - 路由组织、schema 校验、同进程直调 domain-core、中间件链、错误处理。用于新建 Hono 路由、编写中间件、对接 @kkfive/contracts 校验、明确 BFF 与后端的边界。
+description: apps/api Hono 后端服务规范 - 路由组织、schema 校验、同进程直调 domain-core、中间件链、错误处理。仅在 apps/api 包内使用。用于新建 Hono 路由、编写中间件、对接 @kkfive/contracts 校验、明确 BFF 与后端的边界。
 user-invocable: true
 ---
 
