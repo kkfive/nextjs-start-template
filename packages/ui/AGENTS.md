@@ -1,6 +1,6 @@
 # packages/ui 协作准则（基础 UI 共享包）
 
-`@kkfive/ui` 是基础 UI 共享包，存放 **shadcn 二次封装**与**自实现基础组件**（Button、Input、Dialog、Select、DataTable 等），不含 antd。被各 Next.js app（client / admin）消费。
+`@kkfive/ui` 是基础 UI 共享包，存放 **shadcn 二次封装**与**自实现基础组件**（Button、Input、Dialog、Select 等），不含 antd。被各前端 app 消费。
 
 继承根 `AGENTS.md` 全部规则，补充本包专属约束。与根级冲突时以本文件为准（但不违反根级硬性约束）。
 

@@ -557,43 +557,61 @@ rule('G06', 'project-architecture SKILL.md 应标记 primary: true', (_ctx) => {
 // 先查后建：重复定义碰撞检测
 // --------------------------------------------------
 
-rule('C01', 'contracts schema 不应有同名导出碰撞', (_ctx) => {
+rule('C01', '同一 package 内不应有同名导出碰撞', (_ctx) => {
   const issues = []
-  const schemaFiles = globSync('packages/contracts/src/**/*.ts', ROOT)
-  const exportNames = new Map() // exportName -> [files]
-  for (const file of schemaFiles) {
-    if (file.endsWith('.test.ts'))
+  // 扫描所有 packages 下的源码，而非硬编码特定包名
+  const allFiles = globSync('packages/**/src/**/*.ts', ROOT)
+  // 按 package 分组检测碰撞（跨包同名导出不碰撞，因为 namespace 隔离）
+  const pkgExports = new Map() // packageName -> Map(exportName -> [files])
+  // 模块约定导出名（每个 domain 模块都有，是设计模式而非重复）
+  const conventionNames = new Set(['service', 'Controller'])
+  for (const file of allFiles) {
+    if (file.endsWith('.test.ts') || file.endsWith('index.ts'))
       continue
+    // 提取 package 名：packages/<pkg-name>/src/...
+    const match = file.match(/packages\/([^/]+)\/src\//)
+    if (!match)
+      continue
+    const pkgName = match[1]
+    if (!pkgExports.has(pkgName))
+      pkgExports.set(pkgName, new Map())
+    const exportMap = pkgExports.get(pkgName)
+
     const content = fs.readFileSync(file, 'utf-8')
     const lines = content.split('\n')
     for (let i = 0; i < lines.length; i++) {
       // 匹配 export const Xxx 或 export function xxx
-      const match = lines[i].match(/^\s*export\s+(?:const|function|class)\s+(\w+)/)
-      if (match) {
-        const name = match[1]
-        if (!exportNames.has(name))
-          exportNames.set(name, [])
-        exportNames.get(name).push({ file, line: i + 1 })
+      const exportMatch = lines[i].match(/^\s*export\s+(?:const|function|class)\s+(\w+)/)
+      if (exportMatch) {
+        const name = exportMatch[1]
+        if (conventionNames.has(name))
+          continue
+        if (!exportMap.has(name))
+          exportMap.set(name, [])
+        exportMap.get(name).push({ file, line: i + 1 })
       }
     }
   }
-  for (const [name, occurrences] of exportNames) {
-    if (occurrences.length > 1) {
-      for (const occ of occurrences) {
-        issues.push({
-          file: occ.file,
-          line: occ.line,
-          message: `导出名 '${name}' 与其他文件碰撞：${occurrences.filter(o => o.file !== occ.file).map(o => path.relative(ROOT, o.file)).join(', ')}。先检索已有定义，避免重复`,
-        })
+  for (const [, exportMap] of pkgExports) {
+    for (const [name, occurrences] of exportMap) {
+      if (occurrences.length > 1) {
+        for (const occ of occurrences) {
+          issues.push({
+            file: occ.file,
+            line: occ.line,
+            message: `导出名 '${name}' 在同一 package 内碰撞：${occurrences.filter(o => o.file !== occ.file).map(o => path.relative(ROOT, o.file)).join(', ')}。先检索已有定义，避免重复`,
+          })
+        }
       }
     }
   }
   return issues
 })
 
-rule('C02', 'domain-core 各模块不应有跨模块同名导出碰撞', (_ctx) => {
+rule('C02', 'packages 内不应有跨模块同名导出碰撞', (_ctx) => {
   const issues = []
-  const moduleDirs = globSync('packages/domain-core/src/*', ROOT)
+  // 扫描所有 packages 下的模块目录，而非硬编码 domain-core
+  const moduleDirs = globSync('packages/**/src/*', ROOT)
   const exportNames = new Map() // exportName -> [files]
   for (const moduleDir of moduleDirs) {
     // 递归读模块下所有 ts 文件

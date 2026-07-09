@@ -4,6 +4,6 @@
 
 每个 package 的 `tsconfig.json` 继承 `@kkfive/tsconfig/base.json`，启用 `composite: true` 并通过 `references` 声明依赖的 workspace 包，让根级 `tsc --build` 跨包增量检查。
 
-依赖必须完整且最小：`contracts` 和 `utils` 零运行时依赖；`domain-core` 仅依赖 `contracts` / `utils`，并把 `http-client` 声明为 peerDependency；`http-client` 把 `contracts` 声明为 peerDependency；`ui` 把 `react` / `react-dom` 声明为 peerDependency。任何未显式声明的 import 在 pnpm 严格模式下直接解析失败。
+依赖必须完整且最小。每个 package 只声明真正使用的依赖；运行时框架（React 等）走 peerDependencies 而非 dependencies。任何未显式声明的 import 在 pnpm 严格模式下直接解析失败。具体依赖约束见各包 `package.json` 和包级 `AGENTS.md`。
 
 包内路径别名（`@/*`）在各包自身 tsconfig 定义，不跨包；跨包引用统一走 `@kkfive/<pkg>` workspace 协议。新增 package 必须在根 `pnpm-workspace.yaml`、根 `tsconfig.json` 的 references 中注册。
