@@ -543,15 +543,42 @@ rule('G05', 'routing.yaml 应含 trigger_examples 字段', (_ctx) => {
   return issues
 })
 
-rule('G06', 'project-architecture SKILL.md 应标记 primary: true', (_ctx) => {
-  const file = path.join(ROOT, '.agents/skills/project-architecture/SKILL.md')
-  if (!fs.existsSync(file))
-    return []
-  const content = fs.readFileSync(file, 'utf-8')
-  if (!content.includes('primary: true')) {
-    return [{ file, line: 1, message: 'project-architecture 应标记 primary: true（默认 fallback skill）' }]
+rule('G06', '仅 project-architecture 应标记 primary: true', (_ctx) => {
+  const issues = []
+  // 提取 frontmatter 中的 primary 字段值（仅检查 frontmatter，不检查正文说明文字）
+  function getFrontmatterPrimary(content) {
+    const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
+    if (!fmMatch)
+      return null
+    const fm = fmMatch[1]
+    const primaryMatch = fm.match(/^primary:\s*(\S+)/m)
+    return primaryMatch ? primaryMatch[1] : null
   }
-  return []
+
+  // 正向：project-architecture 必须有 primary: true
+  const primaryFile = path.join(ROOT, '.agents/skills/project-architecture/SKILL.md')
+  if (fs.existsSync(primaryFile)) {
+    const content = fs.readFileSync(primaryFile, 'utf-8')
+    if (getFrontmatterPrimary(content) !== 'true') {
+      issues.push({ file: primaryFile, line: 1, message: 'project-architecture 应标记 primary: true（默认 fallback skill）' })
+    }
+  }
+  // 反向：其他 skill 不应有 primary: true
+  const allSkillFiles = [
+    ...globSync('.agents/skills/**/SKILL.md', ROOT),
+    ...globSync('.agents/meta/**/SKILL.md', ROOT),
+    ...globSync('apps/*/.agents/skills/**/SKILL.md', ROOT),
+    ...globSync('packages/*/.agents/skills/**/SKILL.md', ROOT),
+  ]
+  for (const file of allSkillFiles) {
+    if (file === primaryFile)
+      continue
+    const content = fs.readFileSync(file, 'utf-8')
+    if (getFrontmatterPrimary(content) === 'true') {
+      issues.push({ file, line: 1, message: '仅 project-architecture 可标记 primary: true，其他 skill 不应标记' })
+    }
+  }
+  return issues
 })
 
 // --------------------------------------------------
