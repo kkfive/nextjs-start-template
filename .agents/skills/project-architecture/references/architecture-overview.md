@@ -1,6 +1,6 @@
 # 架构文档
 
-本文档描述 monorepo 整体架构和模块组织。完整决策记录见 `docs/decisions/monorepo-restructuring.md`。
+本文档描述 monorepo 整体架构和模块组织。
 
 ## 仓库结构
 
@@ -25,8 +25,6 @@
 ├── docs/                     # 仓库级文档（ADR、架构说明、全局约定）
 └── .agents/                  # AI 辅助开发规范（根级，全局生效）
 ```
-
-> 详细的目录约定见 `docs/conventions/directory.md`（Phase 1 搬迁后更新）
 
 ## 三层维度：apps vs packages vs internal
 

@@ -6,7 +6,7 @@
 
 ### 如何适配后端特定的响应信封结构？
 
-项目默认响应格式（成功/错误 envelope）的类型定义在 `packages/http-client`（Phase 2 后）或 `apps/client/src/lib/request/type.ts`（Phase 1）。适配不同后端格式时，修改 envelope 类型与 Controller 中的转换逻辑，不要在 HttpService 层全局转换（会影响不需要转换的接口）。
+项目默认响应格式（成功/错误 envelope）的类型定义在 `packages/http-client`。适配不同后端格式时，修改 envelope 类型与 Controller 中的转换逻辑，不要在 HttpService 层全局转换（会影响不需要转换的接口）。
 
 ### `src/service/` 下的 `.base.ts` / `.client.ts` / `.server.ts` 该用哪个？
 

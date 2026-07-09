@@ -56,5 +56,4 @@ Git hook 在 `lefthook.yml` 接入 commit message 与 pre-commit 校验。多人
 
 ## 参考
 
-- 规范治理原则：`docs/decisions/rule-governance.md`
-- Skill 模板与 16 条原则：`.agents/skills/_template/`
+- Skill 模板与原则：`.agents/skills/_template/`

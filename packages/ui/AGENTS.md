@@ -61,6 +61,5 @@ Skill 的 meta 由工具自动注入。
 ## 参考
 
 - 根级规范：`../../AGENTS.md`
-- 重构决策：`docs/decisions/monorepo-restructuring.md`
 
 </task-routing>
