@@ -34,12 +34,13 @@ user-invocable: true
 
 | ❌ 不要 | ✅ 应该 |
 |---|---|
-| 直接覆盖 `.ant-btn` 类名 | 用 ConfigProvider `theme.components` |
 | `import { Button } from 'antd'`（业务代码） | `import { Button } from '@/components/ui/button'` |
 | Table 不设 `rowKey` | 稳定的 `rowKey="id"` |
 | Modal 不用 `destroyOnClose` | `<Modal destroyOnClose>` |
 | SSR 不加 StyleProvider | 加 StyleProvider 保证样式顺序 |
 | 假设 API 存在不查文档 | 先 WebFetch / WebSearch 官方 API |
+
+> 样式方案选择（覆盖 `.ant-*` 类名、ConfigProvider 主题、`!important` 等）见 `/styling-system` 5 级优先级，不在本 skill 重复。
 
 ## Session Discipline
 
