@@ -1,10 +1,9 @@
-import { Controller } from '@kkfive/domain-core/example/hitokoto'
-import { HttpService } from '@kkfive/http-client'
+import { Controller } from '@domain/example/hitokoto'
+import { serverClient } from '@/service/index.server'
 
-// admin 示例：SSR 直取，注入服务端 HttpService 实例
+// admin 示例：SSR 直取，使用已注入的服务端 HttpService 实例
 async function getHitokoto() {
   try {
-    const serverClient = new HttpService()
     return await Controller.getData(serverClient)
   }
   catch {
