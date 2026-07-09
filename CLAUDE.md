@@ -35,33 +35,11 @@ pnpm workspace + Turborepo monorepo（`apps/` / `packages/` / `internal/`）。�
 - `apps/api/**` → @.agents/rules/hono.rule.md
 - `**/*.test.*`、`**/__tests__/**` → @.agents/rules/testing.rule.md
 
-## Skill Index
-
-所有项目 skill 位于 `.agents/skills/<name>/`。按需打开对应 `SKILL.md`，默认从 `project-architecture` 开始。
-
-| Skill | 何时使用 |
-|---|---|
-| project-architecture | 决定新代码放哪一层、检查跨层 import、monorepo 分层 |
-| coding-standards | 写组件代码、解决 import 报错、类型/错误/图标/测试规范 |
-| domain-layer | 新建 Domain 适配层、写 Service/Controller/Hooks |
-| nextjs-app-router | `apps/*/src/app/` 下新建页面/API/Server Action |
-| create-package | 新建共享包（目录/exports/tsconfig/peer deps） |
-| create-app | 新建应用（workspace 注册、继承 internal 配置） |
-| styling-system | 调样式（5 级优先级）、主题切换、暗色 |
-| motion | Motion 动画（手势、滚动、布局、退出） |
-| searches-iconify | Iconify 图标搜索 |
-| smart-commit | 暂存区分组拆 commit |
-
-**包级 skill**（已下沉到各自包，编辑对应包时读子包 AGENTS.md 发现）：
-
-| Skill | 位置 | 作用域 |
-|---|---|---|
-| hono-api | `apps/api/.agents/skills/hono-api/SKILL.md` | 仅 apps/api |
-| ant-design | `apps/client/.agents/skills/ant-design/SKILL.md` | 仅用 antd 的 app（当前 client） |
+Skill 的 `name` / `description` / `file path` 由工具自动注入会话上下文，无需在此手动维护索引。默认从 `project-architecture`（`primary: true`）开始匹配。
 
 </task-routing>
 
 ## Auto-Triggers
 
-- **新任务（同一会话）** → 重读本文件 + 重新匹配 Skill Index 路由。"我之前读过"不成立。
+- **新任务（同一会话）** → 重读本文件。"我之前读过"不成立。
 - **非平凡任务完成前** → 运行 `pnpm run verify` + `pnpm test:run` + `pnpm run lint`。

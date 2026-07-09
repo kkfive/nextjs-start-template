@@ -63,23 +63,7 @@ apps/client/
 └── typings/             # 全局类型声明
 ```
 
-## 适用 Skill（client 是 Next.js 主应用，技术栈与 admin 相同 + 额外用 antd）
-
-### 包级专属（仅 client）
-
-| Skill | 位置 | 何时用 |
-|---|---|---|
-| ant-design | `.agents/skills/ant-design/SKILL.md` | antd 组件 / ConfigProvider / SSR / 高级 Form/Table |
-
-### 根级共享（client 与 admin 共用）
-
-| Skill | 位置 | 何时用 |
-|---|---|---|
-| nextjs-app-router | `../../.agents/skills/nextjs-app-router/SKILL.md` | 新建页面/API 路由/Server Action |
-| domain-layer | `../../.agents/skills/domain-layer/SKILL.md` | 新建 Domain 适配层 |
-| styling-system | `../../.agents/skills/styling-system/SKILL.md` | 调样式/主题/暗色 |
-| motion | `../../.agents/skills/motion/SKILL.md` | Motion 动画 |
-| coding-standards | `../../.agents/skills/coding-standards/SKILL.md` | 文件级编码规范 |
+Skill 的 meta 由工具自动注入，按 description 匹配按需打开。client 额外有包级专属 skill `ant-design`（`.agents/skills/ant-design/`）。
 
 ## 参考
 

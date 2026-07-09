@@ -35,40 +35,15 @@ pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享�
 - `apps/api/**` → @.agents/rules/hono.rule.md
 - `**/*.test.*`、`**/__tests__/**` → @.agents/rules/testing.rule.md
 
-规则文件简短只表达稳定原则；具体流程、示例、踩坑见下方 Skill Index。
+规则文件简短只表达稳定原则；具体流程、示例、踩坑在对应 skill 的 `SKILL.md` + `routing.yaml` 中。
 
-## Skill Index
-
-所有项目 skill 位于 `.agents/skills/<name>/`，这是跨 agent 的唯一规范目录。各 agent 通过本索引按需打开对应 `SKILL.md`。
-
-| Skill | 入口 | 何时使用 |
-|---|---|---|
-| project-architecture | `.agents/skills/project-architecture/SKILL.md` | 决定新代码放哪一层、检查跨层 import、monorepo 分层 |
-| coding-standards | `.agents/skills/coding-standards/SKILL.md` | 写组件代码、解决 import 报错、类型/错误/图标/测试规范 |
-| domain-layer | `.agents/skills/domain-layer/SKILL.md` | 新建 Domain 适配层、写 Service/Controller/Hooks、与 `@kkfive/domain-core` 关系 |
-| nextjs-app-router | `.agents/skills/nextjs-app-router/SKILL.md` | `apps/*/src/app/` 下新建页面/API/Server Action、缓存与 Metadata |
-| create-package | `.agents/skills/create-package/SKILL.md` | 新建共享包（目录/exports/tsconfig/peer deps） |
-| create-app | `.agents/skills/create-app/SKILL.md` | 新建应用（workspace 注册、继承 internal 配置） |
-| styling-system | `.agents/skills/styling-system/SKILL.md` | 调样式（5 级优先级）、主题切换、暗色 |
-| motion | `.agents/skills/motion/SKILL.md` | Motion 动画（手势、滚动、布局、退出） |
-| searches-iconify | `.agents/skills/searches-iconify/SKILL.md` | Iconify 图标搜索 |
-| smart-commit | `.agents/skills/smart-commit/SKILL.md` | 暂存区分组拆 commit |
-| _template | `.agents/skills/_template/` | 新建 skill 的起点 |
-
-**包级 skill**（已下沉到各自包，编辑对应包时自动发现）：
-
-| Skill | 位置 | 作用域 |
-|---|---|---|
-| hono-api | `apps/api/.agents/skills/hono-api/SKILL.md` | 仅 apps/api |
-| ant-design | `apps/client/.agents/skills/ant-design/SKILL.md` | 仅用 antd 的 app（当前 client） |
-
-每个 skill 内部结构：`SKILL.md`（入口 ≤ 90 行）+ `routing.yaml`（任务路由）+ `rules/` + `workflows/` + `references/`（含 `gotchas.md`）。
+Skill 的 `name` / `description` / `file path` 由各工具（ZCode / Codex / Claude Code）自动注入会话上下文，无需在此手动维护索引。单包专属 skill 放 `<包>/.agents/skills/`，多包共享 skill 放根 `.agents/skills/`。新建/上升/下沉 skill 见 `.agents/skills/_template/SKILL.md`。
 
 </task-routing>
 
 ## Auto-Triggers
 
-- **新任务（同一会话）** → 重读本文件 + 重新匹配 Skill Index 路由 + 按需重读 required rules。"我之前读过"不成立——上下文会压缩，路由可能变化。
+- **新任务（同一会话）** → 重读本文件 + 按需重读 required rules。"我之前读过"不成立——上下文会压缩，路由可能变化。
 - **非平凡任务完成前** → 运行 Machine Guards 校验。仅格式化、注释、依赖版本号、保持行为的重构可跳过。
 
 ## Machine Guards

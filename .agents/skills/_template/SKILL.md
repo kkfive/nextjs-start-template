@@ -92,8 +92,9 @@ user-invocable: true
   - description 必须写明作用域（如"仅在 apps/api 包内使用"），便于 AI 按需匹配不误触发
 - **技术栈重叠的包（如 client 与 admin 都是 Next.js）**：
   - 共享 skill 不复制，留根单一源
-  - 每个包的 AGENTS.md task-routing 段写"适用 Skill"表，分"包级专属"和"根级共享"两组，列出该包该用哪些 skill + 何时用。agent 进入包时按此表导航，不猜
-  - 差异 skill（如 client 用 antd 而 admin 不用）只列在有该技术栈的包的"包级专属"组里
+  - **不要在 AGENTS.md 手动维护 skill 索引表**——各工具（ZCode / Codex / Claude Code）自动注入 skill 的 `name` / `description` / `file path` 到会话上下文，手动写是冗余且易不一致
+  - skill 的 description 写清触发条件和作用域（如"仅在 apps/api 包内使用"），让 AI 按 description 自动匹配，不靠提示词列表
+  - 包级 AGENTS.md 只需一句话提及该包有专属 skill（如"client 有包级 skill ant-design"），不列完整表
 - **skill 上升（单包专属 → 多包共享）**：
   - 触发条件：第二个包开始使用同一 skill（如 admin 也接入 antd）
   - 步骤：①`git mv <包>/.agents/skills/<name> .agents/skills/<name>` 移到根 ②SKILL.md 的 description 移除"仅在 xxx 包内使用"的作用域限定 ③原包 AGENTS.md 把该 skill 从"包级专属"移到"根级共享"组 ④新包 AGENTS.md 的"根级共享"组加上该 skill ⑤根 AGENTS.md/CLAUDE.md Skill Index 表加回该 skill 行 ⑥跑 `pnpm run verify` 确认 G05 扫描到新位置

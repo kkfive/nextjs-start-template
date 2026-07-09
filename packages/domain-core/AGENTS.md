@@ -57,10 +57,10 @@ packages/domain-core/
 └── package.json            # peerDependencies: @kkfive/http-client
 ```
 
+Skill 的 meta 由工具自动注入。
+
 ## 参考
 
 - 根级规范：`../../AGENTS.md`
-- Domain 层引导：`.agents/skills/domain-layer/SKILL.md`
-- 新建共享包引导：`.agents/skills/create-package/SKILL.md`
 
 </task-routing>

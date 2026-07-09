@@ -47,10 +47,11 @@
 - `build`: `tsup`（打包整个 app，含 workspace 包源码）
 - tsconfig 继承 `@kkfive/tsconfig/hono.json`（无 DOM lib）
 
+Skill 的 meta 由工具自动注入。api 有包级专属 skill `hono-api`（`.agents/skills/hono-api/`）。
+
 ## 参考
 
 - 根级规范：`../../AGENTS.md`
-- 包级 skill：`.agents/skills/hono-api/SKILL.md`（Hono 路由 / schema 校验 / 中间件）
 - 重构决策：`docs/decisions/monorepo-restructuring.md`
 
 </task-routing>

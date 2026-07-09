@@ -63,10 +63,11 @@ packages/ui/
 | 图标系统、主题 token | 业务相关的颜色/样式覆盖 |
 | —— | 基于 antd 的业务封装（antd 各 app 自治） |
 
+Skill 的 meta 由工具自动注入。
+
 ## 参考
 
 - 根级规范：`../../AGENTS.md`
-- 新建共享包引导：`.agents/skills/create-package/SKILL.md`
 - 重构决策：`docs/decisions/monorepo-restructuring.md`
 
 </task-routing>
