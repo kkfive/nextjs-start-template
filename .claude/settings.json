@@ -1,0 +1,16 @@
+{
+  "_comment": "Claude Code settings. SessionStart hook 在 /clear 或 /compact 后重新注入根 AGENTS.md 路由薄壳，防止上下文丢失。SKILL_ROUTER_PATH 指向本项目规范入口。",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "SKILL_ROUTER_PATH=AGENTS.md bash .claude/hooks/session-start"
+          }
+        ]
+      }
+    ]
+  }
+}

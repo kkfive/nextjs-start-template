@@ -3,9 +3,10 @@
 ## 前置判断
 
 新建 package 前，确认：
-1. **通用性**："换一个新项目，这个包还能直接用吗？"——不能就留在 app 内部
-2. **多消费方**：是否已有或预期多个 app 消费？只有一个消费方时宁可晚抽离
-3. **命名**：`@kkfive/<pkg>`，kebab-case，语义清晰（如 `@kkfive/contracts`、`@kkfive/utils`）
+1. **先查后建**：检索 `packages/` 是否已有同类包或可改造的包。方法见 `../../coding-standards/workflows/search-before-create.md`
+2. **通用性**："换一个新项目，这个包还能直接用吗？"——不能就留在 app 内部
+3. **多消费方**：是否已有或预期多个 app 消费？只有一个消费方时宁可晚抽离
+4. **命名**：`@kkfive/<pkg>`，kebab-case，语义清晰（如 `@kkfive/contracts`、`@kkfive/utils`）
 
 ## 步骤
 
@@ -26,6 +27,9 @@
    - 在根 `tsconfig.json` 的 `references` 数组追加 `{ "path": "packages/<pkg>" }`
 6. **消费方接入**：各 app 的 `package.json` 加 `"@kkfive/<pkg>": "workspace:*"`，Next.js app 还需在 `transpilePackages` 加该包名
 7. **`pnpm install`** 让 workspace 链接生效
+8. **包级规则判定**：判断该包是否有"不同于根级 `packages.rule.md` 的专属约束"：
+   - **有专属约束** → 生成 `packages/<pkg>/AGENTS.md`（thin-shell 格式：继承根级 + `<always-applicable>` 追加专属约束 + `<task-routing>` 路由）。参考 `packages/domain-core/AGENTS.md` 或 `packages/ui/AGENTS.md`
+   - **无专属约束**（纯工具/schema/封装，无特殊规则）→ 不生成。在交付说明里记录"已评估，无需包级规则"
 
 ## 模板
 
@@ -74,5 +78,6 @@
 - [ ] 运行时框架（React 等）走 peerDependencies
 - [ ] packages 通用性满足（不绑定特定业务）
 - [ ] `pnpm install` 后 workspace 链接正常
+- [ ] 已评估是否需要包级 AGENTS.md（有专属约束才建，无则记录判定）
 
 详细字段说明见 `references/package-anatomy.md`，常见错误见 `references/gotchas.md`。

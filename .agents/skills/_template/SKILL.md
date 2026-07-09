@@ -1,6 +1,7 @@
 ---
 name: skill-name
 description: 一句话描述 - 覆盖的主题 + 触发场景。例如 "Domain 层架构规范 - HttpService 注入、Service/Controller/Hooks 分层。用于新建模块、解决跨层 import 问题。" 描述要包含真实触发短语（不超过 25 行）。
+primary: false
 user-invocable: true
 ---
 
@@ -49,7 +50,7 @@ user-invocable: true
 ### 必须包含
 
 - `SKILL.md`：≤ 90 行 body + ≤ 25 行 description
-- `routing.yaml`：任务路由的单一源（被 SKILL.md 引用）
+- `routing.yaml`：任务路由的单一源（被 SKILL.md 引用），每个 task 含 `trigger_examples`（用户实际会说的完整句子）
 - `references/gotchas.md`：高价值踩坑
 
 ### 按需创建
@@ -77,3 +78,11 @@ user-invocable: true
 - description 太宽泛或没有触发短语
 - 缺 `routing.yaml`
 - 缺 `references/gotchas.md`
+- `routing.yaml` 的 task 缺 `trigger_examples`（G05 校验会报错）
+
+### 规范对齐要点（skill-based-architecture）
+
+- **`primary: true`**：仅 project-architecture 标记，作为默认 fallback skill。其他 skill 不标（G06 校验）
+- **thin-shell 格式**：根 AGENTS.md / CLAUDE.md 及包级 AGENTS.md 必须含 `<always-applicable>` + `<task-routing>` XML 标签（抗上下文压缩，G01/G02 校验）
+- **先查后建**：新建类任务前必须先检索已有实现（见 `coding-standards/workflows/search-before-create.md`）。新增 skill 或包时同样适用
+- **新增包规则判定**：新建 package/app 后，判断是否有"不同于根级通用规则的专属约束"。有 → 生成包级 AGENTS.md（thin-shell 格式）；无 → 不生成（progressive rigor）

@@ -1,6 +1,7 @@
 ---
 name: project-architecture
 description: monorepo 架构组织规范 - apps/packages/internal 三层、应用内 Domain 适配层/基础设施/UI/路由分层、依赖规则、目录约定、命名规范。用于决定新代码该放哪一层、检查跨层/跨包 import 是否合规、初始化新模块的目录结构。
+primary: true
 user-invocable: true
 ---
 

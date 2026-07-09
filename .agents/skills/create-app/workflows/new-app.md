@@ -2,9 +2,10 @@
 
 ## 前置判断
 
-1. **app 类型**：Next.js 客户端（client）/ Next.js 管理后台（admin）/ Hono API（api）
-2. **命名**：`apps/<name>`，kebab-case，语义清晰
-3. **消费的 packages**：确定要依赖哪些 `@kkfive/*`
+1. **先查后建**：检索 `apps/` 是否已有同类 app 或可改造的 app。方法见 `../../coding-standards/workflows/search-before-create.md`
+2. **app 类型**：Next.js 客户端（client）/ Next.js 管理后台（admin）/ Hono API（api）
+3. **命名**：`apps/<name>`，kebab-case，语义清晰
+4. **消费的 packages**：确定要依赖哪些 `@kkfive/*`
 
 ## 步骤（Next.js app）
 
@@ -25,6 +26,7 @@
 8. **注册 workspace**：根 `tsconfig.json` references 追加；`pnpm-workspace.yaml` 通常已含 `'apps/*'`
 9. **`pnpm install`** 让 workspace 链接生效
 10. **建 `domain/` 适配层**：re-export `@kkfive/domain-core` 模块 + 注入 HttpService 实例 + 可选 React Query hooks
+11. **生成 `apps/<name>/AGENTS.md`**：app 必定有专属约束，生成 thin-shell 格式 AGENTS.md（继承根级 + `<always-applicable>` 追加该 app 专属约束 + `<task-routing>` 路由）。参考 `apps/client/AGENTS.md` 或 `apps/admin/AGENTS.md`
 
 ## 步骤（Hono app：`apps/api`）
 
@@ -35,6 +37,7 @@
 3. **写 `tsconfig.json`**：`extends: @kkfive/tsconfig/hono.json`（无 DOM lib）
 4. **建目录**：`domain/`（仅 re-export，无 hooks/无注入）、`src/{routes,middleware,lib}`、`src/app.ts`
 5. **注册 workspace** 同上
+6. **生成 `apps/api/AGENTS.md`**：thin-shell 格式，继承根级 + 追加 Hono 专属约束。参考现有 `apps/api/AGENTS.md`
 
 ## 模板：Next.js app next.config.ts
 
@@ -77,5 +80,6 @@ export const httpClient = new HttpService({ /* 浏览器配置 */ })
 - [ ] `apps/api` 不注入 HttpService（同进程直调）
 - [ ] 根 `tsconfig.json` references 已追加
 - [ ] `pnpm install` 后 workspace 链接正常
+- [ ] 已生成 `apps/<name>/AGENTS.md`（thin-shell 格式，app 必定有专属约束）
 
 详细结构与配置见 `references/app-anatomy.md`，常见错误见 `references/gotchas.md`。

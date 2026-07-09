@@ -3,44 +3,83 @@
 tasks:
   - intent: 使用组件前必查 API
     triggers: ["antd", "ant-design", "用 Button", "用 Form", "用 Table"]
+    trigger_examples:
+      - "帮我用 antd 的 Table 做一个列表页"
+      - "我要用 Form 写一个登录表单"
+      - "这个 Button 怎么用"
     route: [rules/api-query-required.md]
 
   - intent: 业务代码引入 antd 组件
     triggers: ["import antd", "组件导入", "from 'antd'"]
+    trigger_examples:
+      - "import Button 应该从哪个路径引"
+      - "业务代码里怎么引入 antd 组件"
     route: [rules/ui-import.md]
 
   - intent: ConfigProvider 配置
     triggers: ["主题", "ConfigProvider", "token", "locale"]
+    trigger_examples:
+      - "怎么配置全局主题色"
+      - "帮我设置 ConfigProvider 的 token"
+      - "中文 locale 怎么配"
     route: [workflows/setup-config-provider.md]
 
   - intent: Next.js SSR
     triggers: ["SSR", "Next.js antd", "StyleProvider", "样式闪烁"]
+    trigger_examples:
+      - "Next.js 里用 antd 样式会闪烁怎么办"
+      - "SSR 下 antd 样式没生效"
     route: [workflows/nextjs-ssr.md, references/gotchas.md]
 
   - intent: v6 / v5 版本与迁移
     triggers: ["v6", "v5 迁移", "新特性"]
+    trigger_examples:
+      - "项目要从 antd v5 迁移到 v6"
+      - "antd v6 有哪些新特性"
     route: [references/antd-v6.md, references/antd-v5.md]
 
   - intent: Form 高级
     triggers: ["Form 动态", "依赖字段", "验证性能", "FormList"]
+    trigger_examples:
+      - "Form 里怎么实现动态增删字段"
+      - "字段之间有联动依赖怎么写"
+      - "用 FormList 做一组表单项"
     route: [references/form-advanced.md]
 
   - intent: Table 高级
     triggers: ["Table 排序", "Table 过滤", "Table 虚拟化", "rowKey"]
+    trigger_examples:
+      - "Table 怎么实现服务端排序和过滤"
+      - "大数据量表格要虚拟化怎么做"
+      - "rowKey 警告怎么解决"
     route: [references/table-advanced.md]
 
   - intent: Select 高级
     triggers: ["远程搜索", "Select 标签", "Select 大数据"]
+    trigger_examples:
+      - "Select 怎么做远程搜索"
+      - "Select 选项太多卡顿怎么办"
     route: [references/select-advanced.md]
 
   - intent: Tree 高级
     triggers: ["Tree 异步", "checkStrictly", "Tree 虚拟化"]
+    trigger_examples:
+      - "Tree 怎么异步加载子节点"
+      - "父子节点不联动用 checkStrictly 怎么配"
     route: [references/tree-advanced.md]
 
   - intent: Upload 高级
     triggers: ["customRequest", "受控上传", "进度"]
+    trigger_examples:
+      - "Upload 怎么自定义上传逻辑"
+      - "上传进度条怎么显示"
+      - "实现受控的上传组件"
     route: [references/upload-advanced.md]
 
   - intent: 踩坑
     triggers: ["奇怪", "样式没生效", "rowKey 警告"]
+    trigger_examples:
+      - "antd 样式突然没生效了"
+      - "控制台一直报 rowKey 警告"
+      - "这个组件行为很奇怪"
     route: [references/gotchas.md]

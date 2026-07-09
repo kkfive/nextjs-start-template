@@ -3,6 +3,10 @@
 tasks:
   - intent: 新建 Domain 模块
     triggers: ["新建 domain", "添加模块", "新模块"]
+    trigger_examples:
+      - "帮我新建一个 order domain 模块"
+      - "要加一个新业务模块怎么搭"
+      - "新建 domain 的标准流程是什么"
     route:
       - workflows/create-module.md
       - references/file-structure.md
@@ -10,17 +14,29 @@ tasks:
 
   - intent: 写 Service
     triggers: ["service.ts", "请求方法", "原始请求"]
+    trigger_examples:
+      - "帮我写一个 getUser 的 service"
+      - "service.ts 里怎么封装请求方法"
+      - "原始接口请求要放哪一层"
     route:
       - workflows/write-service.md
       - references/dependency-injection.md
 
   - intent: 写 Controller
     triggers: ["controller", "业务编排", "数据转换"]
+    trigger_examples:
+      - "controller 怎么编排多个 service"
+      - "帮我在 controller 里做数据转换"
+      - "业务逻辑该写在 controller 还是 service"
     route:
       - workflows/write-controller.md
 
   - intent: 外部响应字段缺失或为 null
     triggers: ["接口 null", "字段可能为空", "外部数据", "ExternalData", "响应字段缺失"]
+    trigger_examples:
+      - "接口返回的字段可能是 null 怎么处理"
+      - "外部接口缺字段导致报错"
+      - "怎么用 ExternalData 包裹外部响应"
     route:
       - references/external-data.md
       - workflows/write-service.md
@@ -28,30 +44,54 @@ tasks:
 
   - intent: 写 hooks
     triggers: ["useXxx", "React Query", "hooks.ts"]
+    trigger_examples:
+      - "帮我写一个 useUser 的 hook"
+      - "React Query 的 useQuery 怎么封装"
+      - "hooks 放在哪个文件里"
     route:
       - references/hooks-layer.md
 
   - intent: 依赖注入规则
     triggers: ["HttpService", "依赖注入", "为什么要注入"]
+    trigger_examples:
+      - "为什么要做依赖注入 HttpService"
+      - "HttpService 怎么注入到 service 里"
+      - "依赖注入的具体规则是什么"
     route:
       - references/dependency-injection.md
 
   - intent: 文件结构 / 入口导出
     triggers: ["index.ts", "export * as", "文件组织"]
+    trigger_examples:
+      - "模块的 index.ts 怎么导出"
+      - "domain 里的文件应该怎么组织"
+      - "export * as 命名空间导出怎么写"
     route:
       - references/file-structure.md
 
   - intent: 命名规范
     triggers: ["命名", "Query Keys", "模块名"]
+    trigger_examples:
+      - "Query Keys 怎么命名"
+      - "domain 模块名有什么规范"
+      - "service 和 controller 怎么命名"
     route:
       - references/naming-conventions.md
 
   - intent: 看完整示例
     triggers: ["示例", "auth 例子", "material 例子"]
+    trigger_examples:
+      - "给我看一个 auth 模块的完整示例"
+      - "有没有 material 的完整例子"
+      - "想参考一个完整 domain 模块怎么写"
     route:
       - references/examples.md
 
   - intent: 踩坑
     triggers: ["报错", "循环依赖", "类型找不到", "跨包误引", "幽灵依赖"]
+    trigger_examples:
+      - "domain 之间循环依赖了"
+      - "类型找不到报错"
+      - "跨包误引了不该引的东西"
     route:
       - references/gotchas.md
