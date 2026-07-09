@@ -16,7 +16,7 @@ user-invocable: true
 - 文件级写法、import 规则 → `/coding-standards`
 - Domain 适配层与 `@kkfive/domain-core` 的关系 → `/domain-layer`
 - 路由 / 页面 → `/nextjs-app-router`
-- 新建共享包 / 新建应用 → `/create-package`、`/create-app`
+- 新建共享包 / 新建应用 → `.agents/meta/create-package/SKILL.md`、`.agents/meta/create-app/SKILL.md`
 
 ## Common Tasks
 
@@ -66,4 +66,4 @@ monorepo:
 - `/coding-standards`：层级内部的 TS / React 写法
 - `/domain-layer`：Domain 适配层与共享包的分层
 - `/nextjs-app-router`：`apps/*/src/app/` 的路由约定
-- `/create-package`、`/create-app`：新建共享包/新建应用
+- `.agents/meta/create-package/SKILL.md`、`.agents/meta/create-app/SKILL.md`：新建共享包/新建应用

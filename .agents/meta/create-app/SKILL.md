@@ -9,7 +9,7 @@ user-invocable: true
 ## Scope
 - Target: `apps/*` 下新建应用（Next.js client/admin 或 Hono api）
 - Cover: workspace 注册、继承 `internal/*` 配置、`transpilePackages`、app 内部分层、HttpService 注入
-- Avoid: 新建共享包（去 `/create-package`）；具体路由/页面写法（去 `/nextjs-app-router` 或 `/hono-api`）
+- Avoid: 新建共享包（去 `../create-package/SKILL.md`）；具体路由/页面写法（去 `/nextjs-app-router` 或 `/hono-api`）
 
 **先加载项目原则**：项目根 `.agents/rules/monorepo.rule.md`、`next-app.rule.md`（Next.js）或 `hono.rule.md`（Hono）。
 
@@ -49,7 +49,7 @@ user-invocable: true
 
 ## 相关 Skills
 
-- `/create-package`：新建共享包（app 消费的对象）
+- `../create-package/SKILL.md`：新建共享包（app 消费的对象）
 - `/nextjs-app-router`：Next.js app 的路由约定
 - `/hono-api`：Hono app 的路由约定
 - `/project-architecture`：monorepo 分层与 app 定位

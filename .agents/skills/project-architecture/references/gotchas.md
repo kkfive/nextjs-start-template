@@ -45,5 +45,5 @@
 - 文件级写法 / 函数式组件 / 错误处理 → `/coding-standards`
 - Domain 适配层与共享包的内部结构 → `/domain-layer`
 - `apps/*/src/app/` 的路由约定 → `/nextjs-app-router`
-- 新建共享包 / 新建应用 → `/create-package`、`/create-app`
+- 新建共享包 / 新建应用 → `.agents/meta/create-package/SKILL.md`、`.agents/meta/create-app/SKILL.md`
 - 样式调到哪一层 → `/styling-system`

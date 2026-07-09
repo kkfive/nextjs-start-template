@@ -82,6 +82,6 @@ export const httpClient = new HttpService({ /* 浏览器配置 */ })
 - [ ] `pnpm install` 后 workspace 链接正常
 - [ ] 已生成 `apps/<name>/AGENTS.md`（thin-shell 格式，app 必定有专属约束）
 - [ ] 该 app 有独特技术栈专属 skill？（如 Hono → 建 `apps/<name>/.agents/skills/`，放该技术栈 skill。参考 `apps/api/.agents/skills/hono-api/`）
-- [ ] **skill 上升检查**：新 app 是否使用了已下沉到其他包的包级专属 skill？（如新 app 也用 antd，而 ant-design 在 apps/client/.agents/skills/）→ 若是，按 `_template` 的"skill 上升"步骤把它移到根 `.agents/skills/`，让两个包共享
+- [ ] **skill 上升检查**：新 app 是否使用了已下沉到其他包的包级专属 skill？（如新 app 也用 antd，而 ant-design 在 apps/client/.agents/skills/）→ 若是，按 `../_template/SKILL.md` 的"skill 上升"步骤把它移到根 `.agents/skills/`，让两个包共享
 
 详细结构与配置见 `references/app-anatomy.md`，常见错误见 `references/gotchas.md`。

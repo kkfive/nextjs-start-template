@@ -37,7 +37,7 @@ pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享�
 
 规则文件简短只表达稳定原则；具体流程、示例、踩坑在对应 skill 的 `SKILL.md` + `routing.yaml` 中。
 
-Skill 的 `name` / `description` / `file path` 由各工具（ZCode / Codex / Claude Code）自动注入会话上下文，无需在此手动维护索引。单包专属 skill 放 `<包>/.agents/skills/`，多包共享 skill 放根 `.agents/skills/`。新建/上升/下沉 skill 见 `.agents/skills/_template/SKILL.md`。
+Skill 的 `name` / `description` / `file path` 由各工具（ZCode / Codex / Claude Code）自动注入会话上下文，无需在此手动维护索引。单包专属 skill 放 `<包>/.agents/skills/`，多包共享 skill 放根 `.agents/skills/`。新建/上升/下沉 skill 见 `.agents/meta/_template/SKILL.md`。
 
 </task-routing>
 
@@ -56,4 +56,4 @@ Git hook 在 `lefthook.yml` 接入 commit message 与 pre-commit 校验。多人
 
 ## 参考
 
-- Skill 模板与原则：`.agents/skills/_template/`
+- Skill 模板与原则：`.agents/meta/_template/`

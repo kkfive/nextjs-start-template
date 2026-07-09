@@ -523,9 +523,10 @@ rule('G04', '文档不应使用过期的 Domain 绝对化描述', (_ctx) => {
 
 rule('G05', 'routing.yaml 应含 trigger_examples 字段', (_ctx) => {
   const issues = []
-  // 扫描根级 + 子包级 skill 的 routing.yaml
+  // 扫描根级 + 子包级 + meta(脚手架) skill 的 routing.yaml
   const routingFiles = [
     ...globSync('.agents/skills/**/routing.yaml', ROOT),
+    ...globSync('.agents/meta/**/routing.yaml', ROOT),
     ...globSync('apps/*/.agents/skills/**/routing.yaml', ROOT),
     ...globSync('packages/*/.agents/skills/**/routing.yaml', ROOT),
   ]

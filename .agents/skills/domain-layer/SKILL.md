@@ -9,7 +9,7 @@ user-invocable: true
 ## Scope
 - Target: `@kkfive/domain-core` 共享包的业务纯逻辑 + 各 app 的 `domain/` 适配层
 - Cover: 共享包与适配层的分工、HttpService 注入、Service/Controller 分层、类型与命名、React Query hooks 适配
-- Avoid: UI 组件、路由、样式（分别去 `/coding-standards`、`/nextjs-app-router`、`/styling-system`）；新建共享包的脚手架（去 `/create-package`）
+- Avoid: UI 组件、路由、样式（分别去 `/coding-standards`、`/nextjs-app-router`、`/styling-system`）；新建共享包的脚手架（去 `.agents/meta/create-package/SKILL.md`）
 
 **先加载项目原则**：项目根 `.agents/rules/domain.rule.md`。本 skill 只提供执行流程与示例，不重述规则。
 
@@ -64,4 +64,4 @@ apps/{app}/domain/{module}/           Domain 适配层（运行环境包装）
 - `/coding-standards`：TypeScript / React 编码规范
 - `/project-architecture`：monorepo 分层与目录约定
 - `/nextjs-app-router`：在 Server Component / Server Action 中调用 Controller
-- `/create-package`：新建共享包（`@kkfive/domain-core` 本身的脚手架）
+- `.agents/meta/create-package/SKILL.md`：新建共享包（`@kkfive/domain-core` 本身的脚手架）
