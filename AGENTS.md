@@ -2,12 +2,29 @@
 
 pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享包 / `internal/` 工具链配置），每个 Next.js app 内部采用 Domain 适配层 / 应用基础设施 / UI / 路由分层。所有回复使用简体中文。
 
-本文件是 **Claude Code（通过 `CLAUDE.md`）与 Codex CLI** 的共同入口。Codex 用户读本文件即可获得完整规则索引；根目录不再保留 `CODEX.md`。
+规范源在 `.agents/`，本文件是 Claude Code（通过 `CLAUDE.md`）、Codex CLI、ZCode 三工具共用的路由薄壳。当本文件与 `.agents/rules/` 或 `.agents/skills/` 冲突时，以规范源为准。
+
+<!-- <always-applicable> 和 <task-routing> XML 标签是承重的：LLM 在上下文压缩后
+     仍能识别标签包裹的硬约束区块。详见 skill-based-architecture thin-shells 规范。 -->
+
+<always-applicable>
 
 ## Always Load
 
 @.agents/rules/core.rule.md
 @.agents/rules/monorepo.rule.md
+
+## 先查后建（通用门禁）
+
+接到任务后，按任务类型决定是否先检索已有实现：
+
+- **新建类任务**（新建组件、新对接接口、新定义类型/schema、新封装 service/util）：**必须**先检索项目是否已有同类实现。发现已有 → 优先复用或改造；未发现 → 才新建并在对应导出入口登记。
+- **改造/修复类任务**：**视情况**检索。但用户明确要求检索时，**必须**执行。
+- 检索方法见 `.agents/skills/coding-standards/workflows/search-before-create.md`。
+
+</always-applicable>
+
+<task-routing>
 
 ## Load When Editing
 
@@ -41,6 +58,13 @@ pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享�
 | _template | `.agents/skills/_template/` | 新建 skill 的起点 |
 
 每个 skill 内部结构：`SKILL.md`（入口 ≤ 90 行）+ `routing.yaml`（任务路由）+ `rules/` + `workflows/` + `references/`（含 `gotchas.md`）。
+
+</task-routing>
+
+## Auto-Triggers
+
+- **新任务（同一会话）** → 重读本文件 + 重新匹配 Skill Index 路由 + 按需重读 required rules。"我之前读过"不成立——上下文会压缩，路由可能变化。
+- **非平凡任务完成前** → 运行 Machine Guards 校验。仅格式化、注释、依赖版本号、保持行为的重构可跳过。
 
 ## Machine Guards
 

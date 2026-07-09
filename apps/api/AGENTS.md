@@ -1,10 +1,10 @@
 # apps/api 协作准则（Hono）
 
-本文件继承根 `AGENTS.md` 的全部规则，并补充 `apps/api`（Hono 后端服务）的专属约束。当本文件与根级冲突时，以本文件为准（但仍不可违反根级硬性约束，如 import 边界、packages 通用性）。
+`apps/api` 是独立后端服务进程（Hono），承担鉴权、数据持久化、业务编排。独立部署、独立扩缩容。它不是边缘函数或 BFF——BFF 由 Next.js apps 的 `src/app/api/` 承担。
 
-## 定位
+继承根 `AGENTS.md` 全部规则，补充本包专属约束。与根级冲突时以本文件为准（但不违反根级硬性约束）。
 
-`apps/api` 是真正的后端服务进程（Hono），承担鉴权、数据持久化、业务编排等后端职责，独立部署、独立扩缩容。它不是边缘函数或 BFF——BFF 由 Next.js apps 的 `src/app/api/` 承担，仅做聚合/转发。
+<always-applicable>
 
 ## Always Load（继承 + 补充）
 
@@ -31,11 +31,15 @@
 
 ### app 内依赖
 
-| 层                | 可以导入                                                      | 禁止导入                                                  |
-| ----------------- | ------------------------------------------------------------- | --------------------------------------------------------- |
-| `domain/`         | `@kkfive/domain-core`、`@kkfive/contracts`、`@/lib/*`、外部库 | `src/routes/*`、任何 HTTP 框架 API、`@kkfive/http-client` |
-| `src/routes/`     | `domain/*`、`@kkfive/contracts`、`@/lib/*`、`@/middleware/*`  | `domain/` 内部文件（通过入口导入）                        |
-| `src/middleware/` | `@/lib/*`、外部库                                             | `domain/*`、`src/routes/*`                                |
+| 层 | 可以导入 | 禁止导入 |
+|---|---|---|
+| `domain/` | `@kkfive/domain-core`、`@kkfive/contracts`、`@/lib/*`、外部库 | `src/routes/*`、任何 HTTP 框架 API、`@kkfive/http-client` |
+| `src/routes/` | `domain/*`、`@kkfive/contracts`、`@/lib/*`、`@/middleware/*` | `domain/` 内部文件（通过入口导入） |
+| `src/middleware/` | `@/lib/*`、外部库 | `domain/*`、`src/routes/*` |
+
+</always-applicable>
+
+<task-routing>
 
 ## 构建与运行
 
@@ -48,3 +52,5 @@
 - 根级规范：`../../AGENTS.md`
 - Hono 任务引导：`.agents/skills/hono-api/SKILL.md`
 - 重构决策：`docs/decisions/monorepo-restructuring.md`
+
+</task-routing>
