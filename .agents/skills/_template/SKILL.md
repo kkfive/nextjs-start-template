@@ -90,3 +90,7 @@ user-invocable: true
   - **单包专属 skill**（仅服务一个包，如 hono-api 仅 apps/api 用）→ 放 `<包>/.agents/skills/<name>/`（ZCode/Codex 子包向上扫描自动发现；Claude Code 靠子包 AGENTS.md 路径引用）
   - **多包共享 skill**（服务 2+ 包，如 nextjs-app-router 服务 client+admin）→ 放根 `.agents/skills/`
   - description 必须写明作用域（如"仅在 apps/api 包内使用"），便于 AI 按需匹配不误触发
+- **技术栈重叠的包（如 client 与 admin 都是 Next.js）**：
+  - 共享 skill 不复制，留根单一源
+  - 每个包的 AGENTS.md task-routing 段写"适用 Skill"表，分"包级专属"和"根级共享"两组，列出该包该用哪些 skill + 何时用。agent 进入包时按此表导航，不猜
+  - 差异 skill（如 client 用 antd 而 admin 不用）只列在有该技术栈的包的"包级专属"组里

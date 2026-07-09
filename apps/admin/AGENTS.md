@@ -50,10 +50,18 @@ apps/admin/
 └── tsconfig.json        # extends @kkfive/tsconfig/nextjs.json
 ```
 
+## 适用 Skill（admin 是 Next.js SSR app，技术栈与 client 相同）
+
+| Skill | 位置 | 何时用 |
+|---|---|---|
+| nextjs-app-router | `../../.agents/skills/nextjs-app-router/SKILL.md` | 新建页面/API 路由/Server Action |
+| domain-layer | `../../.agents/skills/domain-layer/SKILL.md` | 新建 Domain 适配层 |
+| styling-system | `../../.agents/skills/styling-system/SKILL.md` | 调样式/主题（admin 接入 tailwind 后） |
+| coding-standards | `../../.agents/skills/coding-standards/SKILL.md` | 文件级编码规范 |
+
 ## 参考
 
 - 根级规范：`../../AGENTS.md`
-- App Router 任务引导：`.agents/skills/nextjs-app-router/SKILL.md`
-- Domain 适配层引导：`.agents/skills/domain-layer/SKILL.md`
+- 重构决策：`docs/decisions/monorepo-restructuring.md`
 
 </task-routing>
