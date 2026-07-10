@@ -1,6 +1,6 @@
 'use client'
 
-import { callEnvelopeScenario, callScenario } from '@kkfive/biz'
+import { callEnvelopeScenario, callScenario } from '@kkfive/rpc'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'

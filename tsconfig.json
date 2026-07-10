@@ -5,7 +5,7 @@
     { "path": "packages/utils" },
     { "path": "packages/http-client" },
     { "path": "packages/ui" },
-    { "path": "packages/biz" },
+    { "path": "packages/rpc" },
     { "path": "apps/client" },
     { "path": "apps/admin" },
     { "path": "apps/api" }

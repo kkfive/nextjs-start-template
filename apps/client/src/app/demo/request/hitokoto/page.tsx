@@ -1,4 +1,4 @@
-import { fetchHitokoto } from '@kkfive/biz'
+import { fetchHitokoto } from '@kkfive/rpc'
 import { httpTo } from '@kkfive/utils'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { HitokotoCard } from '@/components/demo/domain/hitokoto/hitokoto-card'

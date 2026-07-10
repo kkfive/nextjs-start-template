@@ -1,6 +1,6 @@
 'use client'
 
-import { unwrapData } from '@kkfive/biz'
+import { unwrapData } from '@kkfive/rpc'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
 import { bizClient } from '@/service/rpc'

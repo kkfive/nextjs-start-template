@@ -22,7 +22,7 @@
       "isIgnored": true
     },
     {
-      "label": "biz type-only 引 api AppType（Hono RPC 端到端类型链例外，见 monorepo.rule）",
+      "label": "rpc type-only 引 api AppType（Hono RPC 端到端类型链例外，见 monorepo.rule）",
       "dependencies": ["api"],
       "isIgnored": true
     }

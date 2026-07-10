@@ -1,9 +1,9 @@
 // @vitest-environment node
-// 端到端验证 hc 注入：hc -> customFetch(ky responseReturn:raw + retry/hooks) -> 真实 HTTP server
-// 用 node http server mock api 响应，验证 hc 的 customFetch 真实消费 RequestInit 并返回 Response
+// 端到端验证 hc 注入：hc -> createRpcClient(http.instance) -> ky responseReturn:raw -> 真实 HTTP server
+// 用 node http server mock api 响应，验证注入的 HttpService 实例真实消费 RequestInit 并返回 Response
 import { createServer } from 'node:http'
-import { createBizClient, unwrapData } from '@kkfive/biz'
-import { BusinessError } from '@kkfive/http-client'
+import { BusinessError, HttpService } from '@kkfive/http-client'
+import { createRpcClient, unwrapData } from '@kkfive/rpc'
 import { afterAll, beforeAll, expect, it } from 'vitest'
 
 const BASE = 'http://localhost:8787'
@@ -36,20 +36,20 @@ beforeAll(async () => {
 afterAll(() => server.close())
 
 it('hc GET hitokoto: ky 消费 hc fetch + raw Response + unwrapData', async () => {
-  const client = createBizClient(BASE)
+  const client = createRpcClient(new HttpService(), BASE)
   const res = await client.hitokoto.$get()
   expect(res.status).toBe(200)
   expect(unwrapData(await res.json()).hitokoto).toBe('test quote')
 })
 
 it('hc POST scenario: json body 经 ky 透传 + 解包', async () => {
-  const client = createBizClient(BASE)
+  const client = createRpcClient(new HttpService(), BASE)
   const res = await client.example.request.scenario.$post({ json: { scenario: 'success' } })
   expect(unwrapData(await res.json())).toEqual({ a: 1, b: 2, token: '' })
 })
 
 it('hc business-error: envelope success:false 抛 BusinessError', async () => {
-  const client = createBizClient(BASE)
+  const client = createRpcClient(new HttpService(), BASE)
   const res = await client.example.request.scenario.$post({ json: { scenario: 'business-error' } })
   const envelope = await res.json()
   expect(() => unwrapData(envelope)).toThrow(BusinessError)

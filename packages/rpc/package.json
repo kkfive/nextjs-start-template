@@ -1,5 +1,5 @@
 {
-  "name": "@kkfive/biz",
+  "name": "@kkfive/rpc",
   "version": "0.0.0",
   "dependencies": {
     "@kkfive/contracts": "workspace:*",
@@ -10,14 +10,10 @@
     "@kkfive/tsconfig": "workspace:*"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./example-hitokoto": "./src/example-hitokoto/index.ts",
-    "./example-request": "./src/example-request/index.ts"
+    ".": "./src/index.ts"
   },
   "peerDependencies": {
-    "@kkfive/http-client": "workspace:*",
-    "@tanstack/react-query": "^5.101.2",
-    "react": "^19.2.7"
+    "@kkfive/http-client": "workspace:*"
   },
   "private": true,
   "scripts": {

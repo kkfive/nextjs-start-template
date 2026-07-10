@@ -12,7 +12,7 @@
 | `ui` | 基础 UI 控件（shadcn 二次封装 + 自实现） | 不含 antd；React 走 peer |
 | `utils` | 多端通用算法 | `common`（多端）/ `dom`（浏览器）物理隔离，服务端只引 common |
 | `http-client` | HttpService 抽象 + interceptor + BusinessError | 底层 fetch；不绑业务 |
-| `biz` | 前端业务（hc RPC hooks + 业务组件，垂直内聚） | 依赖 contracts/ui/http-client + api AppType（type-only）；含 React |
+| `rpc` | 类型化 RPC（hc<AppType> 工厂 + unwrapData + 自有 api 共享 calls）；不含 react-query/react | 依赖 contracts/http-client + api AppType（type-only）；实例由 app 注入 |
 
 ## README 强制
 

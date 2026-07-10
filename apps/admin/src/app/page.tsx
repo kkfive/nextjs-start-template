@@ -1,4 +1,4 @@
-import { fetchHitokoto } from '@kkfive/biz'
+import { fetchHitokoto } from '@kkfive/rpc'
 import { bizClient } from '@/service/rpc'
 
 // admin 示例：SSR 直取，使用已注入的服务端 HttpService 实例
@@ -21,7 +21,7 @@ export default async function HomePage() {
         这是 monorepo 中的
         <code>apps/admin</code>
         ，演示 Next.js SSR 消费
-        <code>@kkfive/biz</code>
+        <code>@kkfive/rpc</code>
         。
       </p>
 
@@ -48,7 +48,7 @@ export default async function HomePage() {
         <li>
           <code>domain/</code>
           {' '}
-          — Domain 适配层（re-export @kkfive/biz）
+          — Domain 适配层（re-export @kkfive/rpc）
         </li>
         <li>
           <code>src/service/</code>

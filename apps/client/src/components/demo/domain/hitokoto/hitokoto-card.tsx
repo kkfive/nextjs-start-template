@@ -1,6 +1,6 @@
 'use client'
 import type { Hitokoto } from '@kkfive/contracts'
-import { fetchHitokoto } from '@kkfive/biz'
+import { fetchHitokoto } from '@kkfive/rpc'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { bizClient } from '@/service/rpc'

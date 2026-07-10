@@ -41,15 +41,15 @@ importers:
 
   apps/admin:
     dependencies:
-      '@kkfive/biz':
-        specifier: workspace:*
-        version: link:../../packages/biz
       '@kkfive/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
       '@kkfive/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
+      '@kkfive/rpc':
+        specifier: workspace:*
+        version: link:../../packages/rpc
       '@kkfive/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -142,15 +142,15 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.81.0(react@19.2.7))
-      '@kkfive/biz':
-        specifier: workspace:*
-        version: link:../../packages/biz
       '@kkfive/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
       '@kkfive/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
+      '@kkfive/rpc':
+        specifier: workspace:*
+        version: link:../../packages/rpc
       '@kkfive/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -349,31 +349,6 @@ importers:
 
   internal/tsconfig: {}
 
-  packages/biz:
-    dependencies:
-      '@kkfive/contracts':
-        specifier: workspace:*
-        version: link:../contracts
-      '@kkfive/http-client':
-        specifier: workspace:*
-        version: link:../http-client
-      '@tanstack/react-query':
-        specifier: ^5.101.2
-        version: 5.101.2(react@19.2.7)
-      api:
-        specifier: workspace:*
-        version: link:../../apps/api
-      hono:
-        specifier: ^4.7.0
-        version: 4.12.28
-      react:
-        specifier: ^19.2.7
-        version: 19.2.7
-    devDependencies:
-      '@kkfive/tsconfig':
-        specifier: workspace:*
-        version: link:../../internal/tsconfig
-
   packages/contracts:
     dependencies:
       zod:
@@ -396,6 +371,25 @@ importers:
       '@kkfive/contracts':
         specifier: workspace:*
         version: link:../contracts
+      '@kkfive/tsconfig':
+        specifier: workspace:*
+        version: link:../../internal/tsconfig
+
+  packages/rpc:
+    dependencies:
+      '@kkfive/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@kkfive/http-client':
+        specifier: workspace:*
+        version: link:../http-client
+      api:
+        specifier: workspace:*
+        version: link:../../apps/api
+      hono:
+        specifier: ^4.7.0
+        version: 4.12.28
+    devDependencies:
       '@kkfive/tsconfig':
         specifier: workspace:*
         version: link:../../internal/tsconfig

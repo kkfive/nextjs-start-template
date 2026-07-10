@@ -2,9 +2,9 @@
   "name": "admin",
   "version": "0.0.0",
   "dependencies": {
-    "@kkfive/biz": "workspace:*",
     "@kkfive/contracts": "workspace:*",
     "@kkfive/http-client": "workspace:*",
+    "@kkfive/rpc": "workspace:*",
     "@kkfive/ui": "workspace:*",
     "@kkfive/utils": "workspace:*",
     "next": "16.2.10",
