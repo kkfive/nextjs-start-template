@@ -5,7 +5,9 @@
     "@kkfive/tsconfig": "workspace:*"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/common/index.ts",
+    "./common": "./src/common/index.ts",
+    "./dom": "./src/dom/index.ts"
   },
   "private": true,
   "scripts": {

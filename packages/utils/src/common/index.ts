@@ -1,6 +1,7 @@
 /**
- * @kkfive/utils —— 纯工具函数（零运行时依赖）。
- * 只放与业务无关的通用工具；业务相关工具留各 app 的 src/lib/。
+ * @kkfive/utils/common —— 多端通用纯算法（服务端 + 浏览器均可安全引用）。
+ * 零运行时依赖，不触碰 document / window 等浏览器全局变量。
+ * 浏览器交互工具请见 @kkfive/utils/dom。
  */
 
 /** 类型守卫：排除 null 与 undefined */
