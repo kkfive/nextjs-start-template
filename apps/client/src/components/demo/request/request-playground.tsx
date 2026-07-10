@@ -1,11 +1,11 @@
 'use client'
 
-import type { HttpMethod } from '@/components/ui/method-badge'
+import type { HttpMethod } from '@kkfive/ui/components/method-badge'
+import { cn } from '@kkfive/ui'
+import { MethodBadge } from '@kkfive/ui/components/method-badge'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { ResponseViewer } from '@/components/domain/request/response-viewer'
-import { MethodBadge } from '@/components/ui/method-badge'
-import { cn } from '@/lib/utils'
 
 type RequestPlaygroundProps = {
   title: string

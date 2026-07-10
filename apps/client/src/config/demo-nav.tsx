@@ -4,7 +4,7 @@ import {
   LucideFileText,
   LucidePalette,
   LucideStore,
-} from '@/components/ui/icon'
+} from '@kkfive/ui/components/icon'
 
 /**
  * Demo 导航项配置接口

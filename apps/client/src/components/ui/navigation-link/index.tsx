@@ -1,9 +1,9 @@
 'use client'
 import type { ReactNode } from 'react'
+import { cn } from '@kkfive/ui'
+import { SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem } from '@kkfive/ui/components/sidebar'
 import { usePathname } from 'next/navigation'
 import { Link } from '@/components/ui/link'
-import { SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
-import { cn } from '@/lib/utils'
 
 export function NavigationLink({ title, url, icon, badge, children }:
 {

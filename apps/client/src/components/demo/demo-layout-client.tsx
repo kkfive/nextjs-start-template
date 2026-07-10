@@ -1,9 +1,9 @@
 'use client'
 
+import { LucideMenu, LucideX } from '@kkfive/ui/components/icon'
 import { AnimatePresence, motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { createContext, useEffect, useState } from 'react'
-import { LucideMenu, LucideX } from '@/components/ui/icon'
 import { demoNavConfig } from '@/config/demo-nav'
 import { Sidebar } from './sidebar'
 

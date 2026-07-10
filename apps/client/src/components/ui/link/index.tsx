@@ -1,6 +1,6 @@
-import NextLink from 'next/link'
+import { isExternalLink } from '@esdora/kit'
 
-import { isExternalLink } from '@/lib/utils'
+import NextLink from 'next/link'
 
 export function Link({ href = '#', ...rest }) {
   const isExternal = isExternalLink(href)

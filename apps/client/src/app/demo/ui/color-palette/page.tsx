@@ -1,9 +1,9 @@
 'use client'
 
+import { cn } from '@kkfive/ui'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
-import { cn } from '@/lib/utils'
 
 // ── 颜色配置 ──
 type ColorGroup = {

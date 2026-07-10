@@ -1,8 +1,8 @@
-import Link from 'next/link'
 import {
   LucideArrowUpRight,
   LucideTrash2,
-} from '@/components/ui/icon'
+} from '@kkfive/ui/components/icon'
+import Link from 'next/link'
 import { demoNavConfig } from '@/config/demo-nav'
 
 export default function DemoIndexPage() {

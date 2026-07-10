@@ -1,8 +1,8 @@
 'use client'
 
+import { LucideArrowUpRight } from '@kkfive/ui/components/icon'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { LucideArrowUpRight } from '@/components/ui/icon'
 
 export type FeatureCardProps = {
   title: string

@@ -1,10 +1,7 @@
 'use client'
 
 import type { TechStackItem } from '@/lib/tech-stack'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@kkfive/ui/components/button'
 import {
   LucideArrowRight,
   LucideCheck,
@@ -17,7 +14,10 @@ import {
   LucideRocket,
   LucideTerminal,
   LucideZap,
-} from '@/components/ui/icon'
+} from '@kkfive/ui/components/icon'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { useState } from 'react'
 import { HeroSection } from './hero-section'
 
 type HomePageClientProps = {

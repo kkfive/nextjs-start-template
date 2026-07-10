@@ -1,10 +1,10 @@
 'use client'
 
-import Link from 'next/link'
 import {
   LucideGithub,
   LucideLayers,
-} from '@/components/ui/icon'
+} from '@kkfive/ui/components/icon'
+import Link from 'next/link'
 
 type FooterLink = {
   href: string

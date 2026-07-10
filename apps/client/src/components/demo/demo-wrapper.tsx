@@ -1,12 +1,12 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import {
   LucideChevronRight,
   LucideHome,
-} from '@/components/ui/icon'
+} from '@kkfive/ui/components/icon'
+import { AnimatePresence, motion } from 'framer-motion'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { demoNavConfig } from '@/config/demo-nav'
 
 type DemoWrapperProps = {

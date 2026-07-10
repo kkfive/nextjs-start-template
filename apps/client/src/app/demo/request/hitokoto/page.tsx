@@ -1,7 +1,7 @@
 import { fetchHitokoto } from '@kkfive/biz'
+import { httpTo } from '@kkfive/utils'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { HitokotoCard } from '@/components/domain/hitokoto/hitokoto-card'
-import { httpTo } from '@/lib/utils'
 import { bizClient } from '@/service/rpc'
 
 export default async function HitokotoPage() {

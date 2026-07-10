@@ -1,8 +1,8 @@
 'use client'
 
+import { cn } from '@kkfive/ui'
+import { LucideLoader2 } from '@kkfive/ui/components/icon'
 import { motion } from 'framer-motion'
-import { LucideLoader2 } from '@/components/ui/icon'
-import { cn } from '@/lib/utils'
 
 type ResponseViewerProps = {
   status: 'idle' | 'loading' | 'success' | 'error'

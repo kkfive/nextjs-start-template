@@ -5,7 +5,7 @@ import {
   LucideFileText,
   LucidePalette,
   LucideStore,
-} from '@/components/ui/icon'
+} from '@kkfive/ui/components/icon'
 
 /**
  * 功能卡片配置接口

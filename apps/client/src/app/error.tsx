@@ -1,8 +1,8 @@
 'use client'
 
+import { Button } from '@kkfive/ui/components/button'
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
 
 export default function Error({
   error,

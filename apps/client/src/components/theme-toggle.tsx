@@ -1,11 +1,11 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useTheme } from '@/components/theme-provider'
 import {
   LucideMoon,
   LucideSun,
-} from '@/components/ui/icon'
+} from '@kkfive/ui/components/icon'
+import { motion } from 'framer-motion'
+import { useTheme } from '@/components/theme-provider'
 
 export function ThemeToggle() {
   const { resolvedMode, toggleMode } = useTheme()

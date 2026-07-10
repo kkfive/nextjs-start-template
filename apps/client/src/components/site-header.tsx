@@ -1,13 +1,13 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { cn } from '@kkfive/ui'
 import {
   LucideGithub,
   LucideLayers,
-} from '@/components/ui/icon'
-import { cn } from '@/lib/utils'
+} from '@kkfive/ui/components/icon'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 const navLinks = [
   { href: '/', label: '首页' },

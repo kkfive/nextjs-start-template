@@ -1,12 +1,12 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from '@kkfive/ui/components/button'
 import {
   LucideGithub,
   LucideTerminal,
-} from '@/components/ui/icon'
+} from '@kkfive/ui/components/icon'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
 
 const codeContent = `├── domain/              # 业务逻辑层
 │   └── {module}/

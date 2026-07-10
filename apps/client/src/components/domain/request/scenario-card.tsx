@@ -1,11 +1,11 @@
 'use client'
 
-import type { HttpMethod } from '@/components/ui/method-badge'
+import type { HttpMethod } from '@kkfive/ui/components/method-badge'
+import { cn } from '@kkfive/ui'
+import { MethodBadge } from '@kkfive/ui/components/method-badge'
+import { StatusBadge } from '@kkfive/ui/components/status-badge'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
-import { MethodBadge } from '@/components/ui/method-badge'
-import { StatusBadge } from '@/components/ui/status-badge'
-import { cn } from '@/lib/utils'
 import { ResponseViewer } from './response-viewer'
 
 type ScenarioCardProps = {

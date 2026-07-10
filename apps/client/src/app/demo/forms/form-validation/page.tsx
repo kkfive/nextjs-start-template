@@ -3,11 +3,11 @@
 import type { ContactFormData } from '@kkfive/contracts'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { contactFormSchema } from '@kkfive/contracts'
+import { cn } from '@kkfive/ui'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
-import { cn } from '@/lib/utils'
 
 // ── 交互式输入框组件 ──
 function FormField({
