@@ -6,7 +6,7 @@ import defu from 'defu'
  * HttpService —— 框架无关、运行环境无关的 HTTP 抽象。
  *
  * 各 app 创建自己的实例（浏览器 fetch / 服务端 fetch / SSE），
- * 通过参数注入到 @kkfive/domain-core 的 Service/Controller。
+ * 通过参数注入到消费方（各 app 的 service 层 / biz hc wrapper）。
  */
 export class HttpService {
   instance: RequestInstance

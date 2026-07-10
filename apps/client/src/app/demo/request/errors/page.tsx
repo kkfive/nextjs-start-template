@@ -1,10 +1,10 @@
 'use client'
 
-import { Controller } from '@domain/example/request'
+import { callEnvelopeScenario, callScenario } from '@kkfive/biz'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { httpClient } from '@/service/index.client'
+import { bizClient } from '@/service/rpc'
 
 export default function ErrorsPage() {
   const [errorMode, setErrorMode] = useState<'unified' | 'envelope'>('unified')
@@ -70,8 +70,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? Controller.unifiedScenario(httpClient, 'error-400')
-                : Controller.envelopeScenario(httpClient, 'error-400')}
+                ? callScenario(bizClient, 'error-400')
+                : callEnvelopeScenario(bizClient, 'error-400')}
           />
 
           {/* 404 Not Found */}
@@ -83,8 +83,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? Controller.unifiedScenario(httpClient, 'error-404')
-                : Controller.envelopeScenario(httpClient, 'error-404')}
+                ? callScenario(bizClient, 'error-404')
+                : callEnvelopeScenario(bizClient, 'error-404')}
           />
 
           {/* 500 Server Error */}
@@ -96,8 +96,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? Controller.unifiedScenario(httpClient, 'error-500')
-                : Controller.envelopeScenario(httpClient, 'error-500')}
+                ? callScenario(bizClient, 'error-500')
+                : callEnvelopeScenario(bizClient, 'error-500')}
           />
 
           {/* 503 Service Unavailable */}
@@ -109,8 +109,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? Controller.unifiedScenario(httpClient, 'error-503')
-                : Controller.envelopeScenario(httpClient, 'error-503')}
+                ? callScenario(bizClient, 'error-503')
+                : callEnvelopeScenario(bizClient, 'error-503')}
           />
 
           {/* Business Error */}
@@ -122,8 +122,8 @@ export default function ErrorsPage() {
             expectedStatus="business-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? Controller.unifiedScenario(httpClient, 'business-error')
-                : Controller.envelopeScenario(httpClient, 'business-error')}
+                ? callScenario(bizClient, 'business-error')
+                : callEnvelopeScenario(bizClient, 'business-error')}
           />
 
           {/* Success for comparison */}
@@ -135,8 +135,8 @@ export default function ErrorsPage() {
             expectedStatus="success"
             requestFn={() =>
               errorMode === 'unified'
-                ? Controller.unifiedScenario(httpClient, 'success')
-                : Controller.envelopeScenario(httpClient, 'success')}
+                ? callScenario(bizClient, 'success')
+                : callEnvelopeScenario(bizClient, 'success')}
           />
         </div>
       </div>

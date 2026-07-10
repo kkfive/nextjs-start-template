@@ -1,16 +1,15 @@
 'use client'
-import type { Hitokoto } from '@domain/example/hitokoto'
-import { Controller, getData } from '@domain/example/hitokoto'
+import type { Hitokoto } from '@kkfive/contracts'
+import { fetchHitokoto } from '@kkfive/biz'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
-import { http } from '@/service/index.base'
+import { bizClient } from '@/service/rpc'
 
 export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
   const { data, refetch, isFetching } = useQuery<Hitokoto>({
     initialData,
-    queryKey: [getData.url],
-    queryFn: () =>
-      Controller.getData(http, { searchParams: { c: 'a' } }),
+    queryKey: ['hitokoto'],
+    queryFn: () => fetchHitokoto(bizClient),
     enabled: false,
   })
 

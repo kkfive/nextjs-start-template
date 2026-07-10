@@ -78,7 +78,7 @@ export default function SseRequestPage() {
 
   const createStream = (signal: AbortSignal) => {
     return createRequestSseStream<StreamChunk>(
-      '/api/example/request/sse',
+      '/example/request/sse',
       {
         count,
         interval,
@@ -160,7 +160,7 @@ export default function SseRequestPage() {
           <section className="space-y-5 rounded-2xl border border-border/50 bg-card p-5">
             <div className="space-y-1">
               <h3 className="text-sm font-semibold">流配置</h3>
-              <p className="text-xs text-muted-foreground">POST /api/example/request/sse</p>
+              <p className="text-xs text-muted-foreground">POST /example/request/sse</p>
             </div>
 
             <div className="grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">

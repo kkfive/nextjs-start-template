@@ -1,10 +1,10 @@
 'use client'
 
-import { Controller } from '@domain/example/request'
+import { callEnvelopeScenario, callScenario } from '@kkfive/biz'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { httpClient } from '@/service/index.client'
+import { bizClient } from '@/service/rpc'
 
 export default function InterceptorPage() {
   const [showUnified, setShowUnified] = useState(true)
@@ -127,8 +127,8 @@ export default function InterceptorPage() {
             expectedStatus="success"
             requestFn={() =>
               showUnified
-                ? Controller.unifiedScenario(httpClient, 'success')
-                : Controller.envelopeScenario(httpClient, 'success')}
+                ? callScenario(bizClient, 'success')
+                : callEnvelopeScenario(bizClient, 'success')}
           />
 
           <RequestPlayground
@@ -141,8 +141,8 @@ export default function InterceptorPage() {
             expectedStatus="business-error"
             requestFn={() =>
               showUnified
-                ? Controller.unifiedScenario(httpClient, 'business-error')
-                : Controller.envelopeScenario(httpClient, 'business-error')}
+                ? callScenario(bizClient, 'business-error')
+                : callEnvelopeScenario(bizClient, 'business-error')}
           />
         </div>
 

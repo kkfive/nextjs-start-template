@@ -22,7 +22,7 @@ function withRepoConfig(userConfig = {}) {
     // 消费的 workspace 包源码（Phase 2 后各 app 按需补全）
     transpilePackages: [
       '@kkfive/contracts',
-      '@kkfive/domain-core',
+      '@kkfive/biz',
       '@kkfive/http-client',
       '@kkfive/utils',
       '@kkfive/ui',

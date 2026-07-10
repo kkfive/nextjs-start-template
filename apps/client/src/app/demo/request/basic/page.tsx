@@ -1,9 +1,9 @@
 'use client'
 
-import { Controller } from '@domain/example/request'
+import { unwrapData } from '@kkfive/biz'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { httpClient } from '@/service/index.client'
+import { bizClient } from '@/service/rpc'
 
 export default function BasicRequestPage() {
   return (
@@ -21,7 +21,7 @@ export default function BasicRequestPage() {
             <div className="space-y-1">
               <h3 className="text-sm font-semibold">HTTP 请求方法</h3>
               <p className="text-xs leading-relaxed text-muted-foreground">
-                演示 HttpService 封装的全部 HTTP 方法：GET、POST、PUT、DELETE、PATCH。
+                演示 hc 类型化 RPC 的全部 HTTP 方法：GET、POST、PUT、DELETE、PATCH。
                 每个方法对应不同的 RESTful 语义，点击下方卡片发送请求查看响应结果。
               </p>
             </div>
@@ -35,7 +35,7 @@ export default function BasicRequestPage() {
             description="获取数据，参数通过 URL query 传递"
             method="GET"
             endpoint="/api/example/request/methods"
-            requestFn={() => Controller.getExample(httpClient, { page: '1', limit: '10' })}
+            requestFn={async () => unwrapData(await (await bizClient.example.request.methods.$get({ query: { page: '1', limit: '10' } })).json())}
           />
 
           <RequestPlayground
@@ -43,7 +43,7 @@ export default function BasicRequestPage() {
             description="创建数据，参数通过请求体传递"
             method="POST"
             endpoint="/api/example/request/methods"
-            requestFn={() => Controller.postExample(httpClient, { name: '示例数据', value: 42 })}
+            requestFn={async () => unwrapData(await (await bizClient.example.request.methods.$post({ json: { name: '示例数据', value: 42 } })).json())}
           />
 
           <RequestPlayground
@@ -51,7 +51,7 @@ export default function BasicRequestPage() {
             description="全量更新，替换整个资源"
             method="PUT"
             endpoint="/api/example/request/methods"
-            requestFn={() => Controller.putExample(httpClient, { id: '123', name: '更新后的数据', value: 100 })}
+            requestFn={async () => unwrapData(await (await bizClient.example.request.methods.$put({ json: { id: '123', name: '更新后的数据', value: 100 } })).json())}
           />
 
           <RequestPlayground
@@ -59,7 +59,7 @@ export default function BasicRequestPage() {
             description="删除数据，通过 query 参数指定资源 ID"
             method="DELETE"
             endpoint="/api/example/request/methods?id=123"
-            requestFn={() => Controller.deleteExample(httpClient, '123')}
+            requestFn={async () => unwrapData(await (await bizClient.example.request.methods.$delete({ query: { id: '123' } })).json())}
           />
 
           <RequestPlayground
@@ -67,7 +67,7 @@ export default function BasicRequestPage() {
             description="部分更新，只修改指定字段"
             method="PATCH"
             endpoint="/api/example/request/methods"
-            requestFn={() => Controller.patchExample(httpClient, { name: '仅更新名称' })}
+            requestFn={async () => unwrapData(await (await bizClient.example.request.methods.$patch({ json: { name: '仅更新名称' } })).json())}
           />
         </div>
       </div>

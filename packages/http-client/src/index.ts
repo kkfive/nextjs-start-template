@@ -4,7 +4,7 @@
  * 只定义抽象，不含具体运行环境实现。实例由各 app 注入：
  * - apps/client 注入浏览器 fetch 实例
  * - apps/admin 注入服务端实例
- * - apps/api（Hono）同进程直调 domain-core，不经 HttpService
+ * - apps/api（Hono）独立后端，不经 HttpService
  */
 
 export * from './type'

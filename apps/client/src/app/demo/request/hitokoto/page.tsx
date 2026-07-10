@@ -1,11 +1,11 @@
-import { Controller } from '@domain/example/hitokoto'
+import { fetchHitokoto } from '@kkfive/biz'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { HitokotoCard } from '@/components/domain/hitokoto/hitokoto-card'
 import { httpTo } from '@/lib/utils'
-import { http } from '@/service/index.base'
+import { bizClient } from '@/service/rpc'
 
 export default async function HitokotoPage() {
-  const [error, result] = await httpTo(Controller.getData(http))
+  const [error, result] = await httpTo(fetchHitokoto(bizClient))
 
   return (
     <DemoWrapper>

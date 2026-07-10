@@ -1,8 +1,8 @@
 'use client'
 
-import type { ContactFormData } from '@domain/example/forms/contact'
-import { contactFormSchema } from '@domain/example/forms/contact'
+import type { ContactFormData } from '@kkfive/contracts'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { contactFormSchema } from '@kkfive/contracts'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'

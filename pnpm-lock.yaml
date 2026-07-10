@@ -41,12 +41,12 @@ importers:
 
   apps/admin:
     dependencies:
+      '@kkfive/biz':
+        specifier: workspace:*
+        version: link:../../packages/biz
       '@kkfive/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@kkfive/domain-core':
-        specifier: workspace:*
-        version: link:../../packages/domain-core
       '@kkfive/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
@@ -102,9 +102,6 @@ importers:
       '@kkfive/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@kkfive/domain-core':
-        specifier: workspace:*
-        version: link:../../packages/domain-core
       '@kkfive/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -145,12 +142,12 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.81.0(react@19.2.7))
+      '@kkfive/biz':
+        specifier: workspace:*
+        version: link:../../packages/biz
       '@kkfive/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@kkfive/domain-core':
-        specifier: workspace:*
-        version: link:../../packages/domain-core
       '@kkfive/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
@@ -386,28 +383,6 @@ importers:
       '@kkfive/tsconfig':
         specifier: workspace:*
         version: link:../../internal/tsconfig
-
-  packages/domain-core:
-    dependencies:
-      '@kkfive/contracts':
-        specifier: workspace:*
-        version: link:../contracts
-      '@kkfive/utils':
-        specifier: workspace:*
-        version: link:../utils
-    devDependencies:
-      '@kkfive/http-client':
-        specifier: workspace:*
-        version: link:../http-client
-      '@kkfive/tsconfig':
-        specifier: workspace:*
-        version: link:../../internal/tsconfig
-      msw:
-        specifier: ^2.15.0
-        version: 2.15.0(@types/node@26.1.1)(typescript@6.0.3)
-      vitest:
-        specifier: ^4.1.10
-        version: 4.1.10(@types/node@26.1.1)(jsdom@29.1.1)(msw@2.15.0(@types/node@26.1.1)(typescript@6.0.3))(vite@8.1.3(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(tsx@4.23.0)(yaml@2.9.0))
 
   packages/http-client:
     dependencies:

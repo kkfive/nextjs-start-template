@@ -1,10 +1,10 @@
 'use client'
 
-import { Controller } from '@domain/example/request'
+import { unwrapData } from '@kkfive/biz'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { httpClient } from '@/service/index.client'
+import { bizClient } from '@/service/rpc'
 
 export default function AuthPage() {
   const [skipRedirect, setSkipRedirect] = useState(false)
@@ -24,10 +24,8 @@ export default function AuthPage() {
             <div className="space-y-1">
               <h3 className="text-sm font-semibold">401 认证处理</h3>
               <p className="text-xs leading-relaxed text-muted-foreground">
-                演示 401 未认证错误的两种处理方式：
-                1) 默认行为 — 自动跳转登录页；
-                2) 禁用跳转 — 通过 skipAuthRedirect 捕获错误手动处理。
-                客户端和服务端拦截器均支持此配置。
+                演示 401 未认证错误的处理：hc 模式下 401 响应经 unwrapData 抛出 BusinessError（code=401）。
+                retry / 401 跳转为客户端全局配置（见 service/rpc.ts），下方切换演示调用形态。
               </p>
             </div>
           </div>
@@ -91,9 +89,7 @@ export default function AuthPage() {
             endpoint="/api/example/request/auth"
             configDisplay={{ context: { skipAuthRedirect: skipRedirect } }}
             expectedStatus="http-error"
-            requestFn={() => Controller.authExample(httpClient, 'default', {
-              context: { skipAuthRedirect: skipRedirect } as Record<string, unknown>,
-            })}
+            requestFn={async () => unwrapData(await (await bizClient.example.request.auth.$get({ query: { mode: 'default' } })).json())}
           />
 
           {/* Success auth */}
@@ -104,7 +100,7 @@ export default function AuthPage() {
             endpoint="/api/example/request/auth?mode=success"
             configDisplay={{ params: { mode: 'success' } }}
             expectedStatus="success"
-            requestFn={() => Controller.authExample(httpClient, 'success')}
+            requestFn={async () => unwrapData(await (await bizClient.example.request.auth.$get({ query: { mode: 'success' } })).json())}
           />
         </div>
 

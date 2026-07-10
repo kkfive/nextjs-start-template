@@ -99,12 +99,7 @@ export const requestRoutes = new Hono()
       await new Promise(resolve => setTimeout(resolve, delay))
 
     if (failRate > 0 && Math.random() * 100 < failRate) {
-      return c.json({
-        success: false,
-        code: 500,
-        message: '模拟随机失败，用于测试重试机制',
-        data: null,
-      }, 500)
+      return c.json(fail(500, '模拟随机失败，用于测试重试机制'), 500)
     }
 
     return c.json(ok({ message: '配置测试响应', delay, failRate, timestamp: now() }))

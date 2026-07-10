@@ -2,8 +2,8 @@
   "name": "admin",
   "version": "0.0.0",
   "dependencies": {
+    "@kkfive/biz": "workspace:*",
     "@kkfive/contracts": "workspace:*",
-    "@kkfive/domain-core": "workspace:*",
     "@kkfive/http-client": "workspace:*",
     "@kkfive/ui": "workspace:*",
     "@kkfive/utils": "workspace:*",
