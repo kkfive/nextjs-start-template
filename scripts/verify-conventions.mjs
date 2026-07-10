@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Domain 层规范校验脚本
+ * 架构规范校验脚本
  *
- * 用于校验 AI 生成的代码是否符合项目规范。
+ * 校验 AI 生成的代码是否符合项目规范（monorepo 依赖方向、包红线、先查后建等）。
  * 可在 pre-commit hook 或 CI 中运行。
  *
  * Usage:
@@ -39,235 +39,35 @@ function rule(id, message, checkFn) {
 }
 
 // --------------------------------------------------
-// Domain 层：类型文件规范
+// 包红线（物理隔离 + README 锚点）
 // --------------------------------------------------
 
-rule('D01', 'Domain 类型文件后缀应为 .ts（非 .d.ts）', (ctx) => {
+rule('P01', '服务端（apps/api）不可 import @kkfive/utils/dom（common/dom 物理红线）', (_ctx) => {
   const issues = []
-  for (const file of ctx.domainFiles) {
-    if (file.endsWith('/type.d.ts')) {
-      issues.push({ file, line: 1, message: '类型文件应重命名为 type.ts，使用 export type 导出' })
-    }
-  }
-  return issues
-})
-
-rule('D02', 'Domain 类型文件不应使用 declare namespace', (ctx) => {
-  const issues = []
-  for (const file of ctx.domainFiles) {
-    if (!file.includes('/type'))
-      continue
-    const content = fs.readFileSync(file, 'utf-8')
-    if (content.includes('declare namespace')) {
-      const lines = content.split('\n')
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes('declare namespace')) {
-          issues.push({ file, line: i + 1, message: '应使用 export type 替代 declare namespace' })
-        }
-      }
-    }
-  }
-  return issues
-})
-
-rule('D03', 'Domain index.ts 应包含 export type * from "./type"', (ctx) => {
-  const issues = []
-  for (const moduleDir of ctx.domainModules) {
-    const indexFile = path.join(moduleDir, 'index.ts')
-    if (!fs.existsSync(indexFile))
-      continue
-    const content = fs.readFileSync(indexFile, 'utf-8')
-    if (!content.includes('export type * from \'./type\'') && !content.includes('export type * from "./type"')) {
-      // 如果 type.ts/type.d.ts 存在但未导出类型
-      const hasTypeFile = fs.existsSync(path.join(moduleDir, 'type.ts'))
-        || fs.existsSync(path.join(moduleDir, 'type.d.ts'))
-      if (hasTypeFile) {
-        issues.push({ file: indexFile, line: 1, message: 'index.ts 应包含 export type * from "./type"' })
-      }
-    }
-  }
-  return issues
-})
-
-// --------------------------------------------------
-// Domain 层：Controller 规范
-// --------------------------------------------------
-
-rule('D04', 'Controller 应使用命名导出函数（非 class）', (ctx) => {
-  const issues = []
-  for (const file of ctx.domainFiles) {
-    if (!file.endsWith('/controller.ts'))
-      continue
-    const content = fs.readFileSync(file, 'utf-8')
-    if (content.includes('export class Controller')) {
-      const lines = content.split('\n')
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes('export class Controller')) {
-          issues.push({
-            file,
-            line: i + 1,
-            message: 'Controller 应使用命名导出函数（export async function getData），而非 class',
-          })
-        }
-      }
-    }
-  }
-  return issues
-})
-
-rule('D05', 'Controller / Service 第一个参数类型应为 HttpService', (ctx) => {
-  const issues = []
-  for (const file of ctx.domainFiles) {
-    if (!file.endsWith('/controller.ts') && !file.endsWith('/service.ts'))
-      continue
+  const apiFiles = globSync('apps/api/src/**/*.ts', ROOT)
+  for (const file of apiFiles) {
     const content = fs.readFileSync(file, 'utf-8')
     const lines = content.split('\n')
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]
-      // 匹配 async function xxx(client: HttpService ...)
-      // 或 async function xxx(http: HttpService ...)
-      const match = line.match(/(?:export\s+)?(?:async\s+)?function\s+\w+\s*\(\s*(\w+)\s*:/)
-      if (match) {
-        const firstParam = match[1]
-        const afterColon = line.slice(line.indexOf(':') + 1).trim()
-        if (!afterColon.startsWith('HttpService')) {
-          issues.push({
-            file,
-            line: i + 1,
-            message: `第一个参数 '${firstParam}' 类型应为 HttpService（依赖注入规范）`,
-          })
-        }
+      if (/@kkfive\/utils\/dom/.test(lines[i])) {
+        issues.push({ file, line: i + 1, message: 'apps/api 是服务端，不可 import @kkfive/utils/dom（dom 仅浏览器；服务端用 @kkfive/utils/common）' })
       }
     }
   }
   return issues
 })
 
-rule('D12', 'Domain 核心逻辑不应直接导入 src/service 实例', (ctx) => {
+rule('P02', '每个 package 必须有 README.md（防架构偏移锚点）', (_ctx) => {
   const issues = []
-  for (const file of ctx.domainFiles) {
-    if (file.endsWith('/hooks.ts'))
+  const packagesDir = path.join(ROOT, 'packages')
+  if (!fs.existsSync(packagesDir))
+    return issues
+  for (const entry of fs.readdirSync(packagesDir, { withFileTypes: true })) {
+    if (!entry.isDirectory())
       continue
-    const content = fs.readFileSync(file, 'utf-8')
-    const lines = content.split('\n')
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]
-      if (/from\s+['"]@\/service\//.test(line)) {
-        issues.push({
-          file,
-          line: i + 1,
-          message: 'Domain 核心逻辑应通过参数接收 HttpService，不应直接选择具体 service 实例',
-        })
-      }
-    }
-  }
-  return issues
-})
-
-// --------------------------------------------------
-// Domain 层：类型安全
-// --------------------------------------------------
-
-rule('D06', 'Domain 层不应包含 @ts-expect-error', (ctx) => {
-  const issues = []
-  for (const file of ctx.domainFiles) {
-    const content = fs.readFileSync(file, 'utf-8')
-    const lines = content.split('\n')
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes('@ts-expect-error')) {
-        issues.push({ file, line: i + 1, message: 'Domain 层不应使用 @ts-expect-error 绕过类型检查' })
-      }
-    }
-  }
-  return issues
-})
-
-rule('D07', 'Domain 层不应包含 any 类型', (ctx) => {
-  const issues = []
-  for (const file of ctx.domainFiles) {
-    if (file.endsWith('.test.ts'))
-      continue // 测试文件允许
-    const content = fs.readFileSync(file, 'utf-8')
-    const lines = content.split('\n')
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]
-      // 排除注释行和 import 行中的 any（如 Promise<any> 来自外部库）
-      if (line.trim().startsWith('//') || line.trim().startsWith('*'))
-        continue
-      if (line.includes('import '))
-        continue
-      // 匹配 : any, | any, as any 等模式
-      if (/:\s*any\b/.test(line) || /\|\s*any\b/.test(line) || /as\s+any\b/.test(line)) {
-        issues.push({ file, line: i + 1, message: `包含 any 类型: ${line.trim()}` })
-      }
-    }
-  }
-  return issues
-})
-
-// --------------------------------------------------
-// Domain 层：hooks.ts 规范
-// --------------------------------------------------
-
-rule('D08', '有数据获取需求的模块应包含 hooks.ts', (ctx) => {
-  const issues = []
-  for (const moduleDir of ctx.domainModules) {
-    const hasController = fs.existsSync(path.join(moduleDir, 'controller.ts'))
-    const hasService = fs.existsSync(path.join(moduleDir, 'service.ts'))
-    const hasHooks = fs.existsSync(path.join(moduleDir, 'hooks.ts'))
-    if ((hasController || hasService) && !hasHooks) {
-      // forms/contact 等纯表单模块不需要 hooks
-      const moduleName = path.basename(moduleDir)
-      if (moduleName === 'contact' || moduleName === 'schema')
-        continue
-      issues.push({
-        file: path.join(moduleDir, 'hooks.ts'),
-        line: 1,
-        message: '该模块包含 Controller/Service，建议添加 hooks.ts 封装 React Query',
-      })
-    }
-  }
-  return issues
-})
-
-rule('D09', 'hooks.ts 应从 @/service/index.client 导入 httpClient', (ctx) => {
-  const issues = []
-  for (const file of ctx.domainFiles) {
-    if (!file.endsWith('/hooks.ts'))
-      continue
-    const content = fs.readFileSync(file, 'utf-8')
-    if (!content.includes('@/service/index.client')) {
-      issues.push({
-        file,
-        line: 1,
-        message: 'hooks.ts 应从 @/service/index.client 导入 httpClient（而非创建新实例）',
-      })
-    }
-  }
-  return issues
-})
-
-// --------------------------------------------------
-// Domain 层：api.ts 规范
-// --------------------------------------------------
-
-rule('D10', 'api.ts 应使用命名导出（非 default export）', (ctx) => {
-  const issues = []
-  for (const file of ctx.domainFiles) {
-    if (!file.endsWith('/api.ts') && !file.includes('/const/api.ts'))
-      continue
-    const content = fs.readFileSync(file, 'utf-8')
-    if (content.includes('export default')) {
-      const lines = content.split('\n')
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes('export default')) {
-          issues.push({
-            file,
-            line: i + 1,
-            message: 'api.ts 应使用命名导出（export const getData = { ... }），便于 tree-shaking 和类型推导',
-          })
-        }
-      }
+    const readme = path.join(packagesDir, entry.name, 'README.md')
+    if (!fs.existsSync(readme)) {
+      issues.push({ file: readme, line: 1, message: `packages/${entry.name} 缺少 README.md（作用 + 依赖红线 + 消费方式）` })
     }
   }
   return issues
@@ -276,30 +76,6 @@ rule('D10', 'api.ts 应使用命名导出（非 default export）', (ctx) => {
 // --------------------------------------------------
 // UI 层规范
 // --------------------------------------------------
-
-rule('U01', 'UI/App 层不应深链导入 @domain/.../controller 或 service', (_ctx) => {
-  const issues = []
-  // 兼容旧结构（src/）与新 monorepo 结构（apps/*/src/）
-  const uiFiles = [...globSync('src/components/**/*.ts*', ROOT), ...globSync('apps/*/src/components/**/*.ts*', ROOT)]
-  const appFiles = [...globSync('src/app/**/*.ts*', ROOT), ...globSync('apps/*/src/app/**/*.ts*', ROOT)]
-  for (const file of [...uiFiles, ...appFiles]) {
-    const content = fs.readFileSync(file, 'utf-8')
-    const lines = content.split('\n')
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]
-      // 匹配 import { Controller } from '@domain/xxx/controller' 或 '@domain/xxx/service'
-      const match = line.match(/from\s+['"]@domain\/[^'"]+\/(controller|service)['"]/)
-      if (match) {
-        issues.push({
-          file,
-          line: i + 1,
-          message: `应通过 index.ts 导入（import { Controller } from '@domain/xxx'），而非直接导入 /${match[1]}`,
-        })
-      }
-    }
-  }
-  return issues
-})
 
 rule('U02', 'UI 组件（domain 相关）不应包含 any 类型', (_ctx) => {
   const issues = []
@@ -322,7 +98,7 @@ rule('U02', 'UI 组件（domain 相关）不应包含 any 类型', (_ctx) => {
 })
 
 // --------------------------------------------------
-// src/lib/request/ 规范
+// service / lib 规范
 // --------------------------------------------------
 
 rule('L01', 'BusinessError 不应使用 as 类型断言', (_ctx) => {
@@ -367,7 +143,6 @@ rule('L02', 'src/service/ 拦截器不应包含 console.error / console.warn', (
 
 rule('L03', 'src/lib/request/type.ts 应优先使用 type（非 interface）', (_ctx) => {
   const issues = []
-  // 兼容旧结构（src/lib/request/type.ts）与新 monorepo 结构（apps/*/src/lib/request/type.ts）
   const candidates = [
     path.join(ROOT, 'src/lib/request/type.ts'),
     ...globSync('apps/*/src/lib/request/type.ts', ROOT),
@@ -383,31 +158,6 @@ rule('L03', 'src/lib/request/type.ts 应优先使用 type（非 interface）', (
           file,
           line: i + 1,
           message: '项目规范优先使用 type（非 interface）',
-        })
-      }
-    }
-  }
-  return issues
-})
-
-// --------------------------------------------------
-// Domain 层：文件结构完整性
-// --------------------------------------------------
-
-rule('D11', 'domain 模块文件结构应完整（type.ts, const/api.ts, service.ts, controller.ts, index.ts）', (ctx) => {
-  const issues = []
-  const requiredFiles = ['index.ts']
-  for (const moduleDir of ctx.domainModules) {
-    const moduleName = path.basename(moduleDir)
-    // 跳过特殊目录
-    if (moduleName.startsWith('_'))
-      continue
-    for (const req of requiredFiles) {
-      if (!fs.existsSync(path.join(moduleDir, req))) {
-        issues.push({
-          file: path.join(moduleDir, req),
-          line: 1,
-          message: `缺少必需文件 ${req}`,
         })
       }
     }
@@ -523,7 +273,6 @@ rule('G04', '文档不应使用过期的 Domain 绝对化描述', (_ctx) => {
 
 rule('G05', 'routing.yaml 应含 trigger_examples 字段', (_ctx) => {
   const issues = []
-  // 扫描根级 + 子包级 + meta(脚手架) skill 的 routing.yaml
   const routingFiles = [
     ...globSync('.agents/skills/**/routing.yaml', ROOT),
     ...globSync('.agents/meta/**/routing.yaml', ROOT),
@@ -545,7 +294,6 @@ rule('G05', 'routing.yaml 应含 trigger_examples 字段', (_ctx) => {
 
 rule('G06', '仅 project-architecture 应标记 primary: true', (_ctx) => {
   const issues = []
-  // 提取 frontmatter 中的 primary 字段值（仅检查 frontmatter，不检查正文说明文字）
   function getFrontmatterPrimary(content) {
     const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
     if (!fmMatch)
@@ -555,7 +303,6 @@ rule('G06', '仅 project-architecture 应标记 primary: true', (_ctx) => {
     return primaryMatch ? primaryMatch[1] : null
   }
 
-  // 正向：project-architecture 必须有 primary: true
   const primaryFile = path.join(ROOT, '.agents/skills/project-architecture/SKILL.md')
   if (fs.existsSync(primaryFile)) {
     const content = fs.readFileSync(primaryFile, 'utf-8')
@@ -563,7 +310,6 @@ rule('G06', '仅 project-architecture 应标记 primary: true', (_ctx) => {
       issues.push({ file: primaryFile, line: 1, message: 'project-architecture 应标记 primary: true（默认 fallback skill）' })
     }
   }
-  // 反向：其他 skill 不应有 primary: true
   const allSkillFiles = [
     ...globSync('.agents/skills/**/SKILL.md', ROOT),
     ...globSync('.agents/meta/**/SKILL.md', ROOT),
@@ -588,7 +334,6 @@ rule('G06', '仅 project-architecture 应标记 primary: true', (_ctx) => {
 rule('G07', '跨包依赖方向单向：packages/internal 不可依赖 apps，apps 间不可互相 import 源码', (_ctx) => {
   const issues = []
 
-  // 判定相对路径所属层（仅看前缀，不依赖文件扩展名）
   function layerOf(rel) {
     const norm = rel.replace(/\\/g, '/')
     if (norm.startsWith('packages/'))
@@ -600,7 +345,6 @@ rule('G07', '跨包依赖方向单向：packages/internal 不可依赖 apps，ap
     return null
   }
 
-  // 校验 srcRel → targetRel 方向：违规返回 message，否则 null
   function checkDirection(srcRel, targetRel) {
     const src = layerOf(srcRel)
     const tgt = layerOf(targetRel)
@@ -615,17 +359,13 @@ rule('G07', '跨包依赖方向单向：packages/internal 不可依赖 apps，ap
     return null
   }
 
-  // 单层 * 展开，避免进入 node_modules / .next
   const sourceFiles = [
     ...globSync('packages/*/src/**/*.ts', ROOT),
     ...globSync('packages/*/src/**/*.tsx', ROOT),
     ...globSync('apps/*/src/**/*.ts', ROOT),
     ...globSync('apps/*/src/**/*.tsx', ROOT),
-    ...globSync('apps/*/domain/**/*.ts', ROOT),
-    ...globSync('apps/*/domain/**/*.tsx', ROOT),
   ]
 
-  // 仅检测相对路径 import：跨层违规几乎只能通过相对路径绕过 workspace 协议
   const importRe = /import\s+(?:type\s+)?(?:[\w*$\s{},]+?\s+from\s+)?['"]([.][^'"]+)['"]/g
 
   for (const file of sourceFiles) {
@@ -651,16 +391,12 @@ rule('G07', '跨包依赖方向单向：packages/internal 不可依赖 apps，ap
 
 rule('C01', '同一 package 内不应有同名导出碰撞', (_ctx) => {
   const issues = []
-  // 扫描所有 packages 下的源码，而非硬编码特定包名
   const allFiles = globSync('packages/**/src/**/*.ts', ROOT)
-  // 按 package 分组检测碰撞（跨包同名导出不碰撞，因为 namespace 隔离）
-  const pkgExports = new Map() // packageName -> Map(exportName -> [files])
-  // 模块约定导出名（每个 domain 模块都有，是设计模式而非重复）
+  const pkgExports = new Map()
   const conventionNames = new Set(['service', 'Controller'])
   for (const file of allFiles) {
     if (file.endsWith('.test.ts') || file.endsWith('index.ts'))
       continue
-    // 提取 package 名：packages/<pkg-name>/src/...
     const match = file.match(/packages\/([^/]+)\/src\//)
     if (!match)
       continue
@@ -672,7 +408,6 @@ rule('C01', '同一 package 内不应有同名导出碰撞', (_ctx) => {
     const content = fs.readFileSync(file, 'utf-8')
     const lines = content.split('\n')
     for (let i = 0; i < lines.length; i++) {
-      // 匹配 export const Xxx 或 export function xxx
       const exportMatch = lines[i].match(/^\s*export\s+(?:const|function|class)\s+(\w+)/)
       if (exportMatch) {
         const name = exportMatch[1]
@@ -702,11 +437,9 @@ rule('C01', '同一 package 内不应有同名导出碰撞', (_ctx) => {
 
 rule('C02', 'packages 内不应有跨模块同名导出碰撞', (_ctx) => {
   const issues = []
-  // 扫描所有 packages 下的模块目录，而非硬编码 domain-core
   const moduleDirs = globSync('packages/**/src/*', ROOT)
-  const exportNames = new Map() // exportName -> [files]
+  const exportNames = new Map()
   for (const moduleDir of moduleDirs) {
-    // 递归读模块下所有 ts 文件
     const files = globSync(`${path.relative(ROOT, moduleDir)}/**/*.ts`.replace(/\\/g, '/'), ROOT)
     for (const file of files) {
       if (file.endsWith('.test.ts') || file.endsWith('index.ts') || file.endsWith('type.ts'))
@@ -745,17 +478,13 @@ rule('C02', 'packages 内不应有跨模块同名导出碰撞', (_ctx) => {
 function globSync(pattern, cwd) {
   const results = []
 
-  // 解析 pattern: "domain/**/*.ts" => base="domain", exts=[".ts"]
-  // 或 "src/components/domain/**/*.ts*" => base="src/components/domain", exts=[".ts", ".tsx"]
   const starIdx = pattern.indexOf('**')
 
-  // 计算扩展名集合
   let exts = []
   if (starIdx >= 0) {
-    const after = pattern.slice(starIdx + 2) // e.g. "/**/*.ts" -> "/*.ts" or "/**/*.ts*"
+    const after = pattern.slice(starIdx + 2)
     const extPart = after.replace(/^\//, '')
     if (extPart.includes('*')) {
-      // e.g. "*.ts*" => .ts, .tsx
       const baseExt = extPart.replace(/\*/g, '')
       if (baseExt === '.ts') {
         exts = ['.ts']
@@ -778,12 +507,10 @@ function globSync(pattern, cwd) {
     exts = [path.extname(pattern)]
   }
 
-  // 解析 base 前缀（** 之前的部分，可能含单层通配 *，如 "apps/*/domain"）
   const basePartRaw = starIdx >= 0
     ? pattern.slice(0, starIdx).replace(/\/$/, '')
     : path.dirname(pattern)
 
-  // 展开单层通配 * 为多个真实目录
   function expandBaseDirs(baseRel) {
     const segments = baseRel.split('/')
     const resolved = [path.join(cwd)]
@@ -791,7 +518,6 @@ function globSync(pattern, cwd) {
       if (!seg)
         continue
       if (seg === '*') {
-        // 单层通配：列出每个已解析目录的子目录
         const next = []
         for (const parent of resolved) {
           if (!fs.existsSync(parent) || !fs.statSync(parent).isDirectory())
@@ -832,42 +558,6 @@ function globSync(pattern, cwd) {
   return results
 }
 
-function getDomainModules() {
-  const modules = []
-  // 兼容旧结构（根 domain/）与新 monorepo 结构（apps/*/domain/）
-  const candidateRoots = [
-    path.join(ROOT, 'domain'),
-    ...globSync('apps/*/domain', ROOT).map(d => d),
-  ].filter(dir => fs.existsSync(dir))
-
-  function walk(dir) {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const fullPath = path.join(dir, entry.name)
-      if (entry.isDirectory()) {
-        // 如果目录下包含 service.ts 或 controller.ts，认为是一个模块
-        const hasCode = fs.existsSync(path.join(fullPath, 'service.ts'))
-          || fs.existsSync(path.join(fullPath, 'controller.ts'))
-          || fs.existsSync(path.join(fullPath, 'schema.ts'))
-        if (hasCode) {
-          modules.push(fullPath)
-        }
-        else {
-          walk(fullPath)
-        }
-      }
-    }
-  }
-  for (const root of candidateRoots) walk(root)
-  return modules
-}
-
-function getDomainFiles() {
-  // 兼容旧结构（domain/）与新结构（apps/*/domain/）
-  const patterns = ['domain/**/*.ts', 'apps/*/domain/**/*.ts']
-  const files = patterns.flatMap(p => globSync(p, ROOT))
-  return files.filter(f => !f.endsWith('.test.ts'))
-}
-
 // ============================================================
 // 主逻辑
 // ============================================================
@@ -875,17 +565,11 @@ function getDomainFiles() {
 function run() {
   const singleFile = process.argv[2]
 
-  const ctx = {
-    domainModules: getDomainModules(),
-    domainFiles: getDomainFiles(),
-  }
+  const ctx = {}
 
   console.log(c.bold('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'))
-  console.log(c.bold('  Domain 规范校验'))
+  console.log(c.bold('  架构规范校验'))
   console.log(c.bold('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'))
-  console.log()
-  console.log(`${c.gray('Domain 模块:')} ${ctx.domainModules.length} 个`)
-  console.log(`${c.gray('Domain 文件:')} ${ctx.domainFiles.length} 个`)
   console.log()
 
   let totalIssues = 0
