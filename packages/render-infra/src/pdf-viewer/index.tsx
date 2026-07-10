@@ -1,17 +1,16 @@
 'use client'
 
-import { Button } from 'antd'
 import { useState } from 'react'
-import { Document, Page } from 'react-pdf'
+import { Document, Page, pdfjs } from 'react-pdf'
+import { Button } from '@kkfive/ui/components/button'
 import {
   LucideChevronLeft,
   LucideChevronRight,
   LucideRotateCw,
   LucideZoomIn,
   LucideZoomOut,
-} from '@/components/ui/icon'
-import { cn } from '@/lib/utils'
-import '@/lib/pdf-worker' // 导入 worker 配置
+} from '@kkfive/ui/components/icon'
+import { cn } from '@kkfive/ui/utils/cn'
 
 // 导入 react-pdf 样式
 import 'react-pdf/dist/Page/TextLayer.css'
@@ -20,6 +19,12 @@ import 'react-pdf/dist/Page/AnnotationLayer.css'
 export type PdfViewerProps = {
   /** 远程 URL 或本地 File 对象 */
   file: string | File | Blob | null
+  /**
+   * pdfjs worker 路径，由宿主注入。
+   * 宿主端构造示例：`new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).href`
+   * 跨包内建 worker 路径会触发打包/解析问题，故不在此硬编码。
+   */
+  workerUrl: string
   /** 容器类名 */
   className?: string
   /** 文档加载成功回调 */
@@ -28,11 +33,15 @@ export type PdfViewerProps = {
   onError?: (error: Error) => void
 }
 
-export function PdfViewer({ file, className, onLoadSuccess, onError }: PdfViewerProps) {
+export function PdfViewer({ file, workerUrl, className, onLoadSuccess, onError }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number>(0)
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [scale, setScale] = useState<number>(1.0)
   const [rotation, setRotation] = useState<number>(0)
+
+  // 同步设置 worker（幂等赋值），确保 Document 加载前 workerSrc 已就绪。
+  // react-pdf 默认 workerSrc 为相对路径 'pdf.worker.mjs'，浏览器无法解析，必须覆盖。
+  pdfjs.GlobalWorkerOptions.workerSrc = workerUrl
 
   function handleDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages)
@@ -71,12 +80,14 @@ export function PdfViewer({ file, className, onLoadSuccess, onError }: PdfViewer
       <div className="flex items-center gap-2 rounded-lg bg-secondary p-2">
         {/* 翻页控制 */}
         <Button
-          variant="text"
-          icon={<LucideChevronLeft className="size-4" />}
+          variant="ghost"
+          size="icon"
           onClick={handlePreviousPage}
           disabled={pageNumber <= 1}
           aria-label="上一页"
-        />
+        >
+          <LucideChevronLeft className="size-4" />
+        </Button>
 
         <span className="min-w-20 text-center text-sm font-medium">
           {pageNumber}
@@ -86,22 +97,26 @@ export function PdfViewer({ file, className, onLoadSuccess, onError }: PdfViewer
         </span>
 
         <Button
-          variant="text"
-          icon={<LucideChevronRight className="size-4" />}
+          variant="ghost"
+          size="icon"
           onClick={handleNextPage}
           disabled={pageNumber >= numPages}
           aria-label="下一页"
-        />
+        >
+          <LucideChevronRight className="size-4" />
+        </Button>
 
         <div className="mx-2 h-4 w-px bg-border" />
 
         {/* 缩放控制 */}
         <Button
-          variant="text"
-          icon={<LucideZoomOut className="size-4" />}
+          variant="ghost"
+          size="icon"
           onClick={handleZoomOut}
           aria-label="缩小"
-        />
+        >
+          <LucideZoomOut className="size-4" />
+        </Button>
 
         <span className="w-12 text-center text-sm">
           {Math.round(scale * 100)}
@@ -109,21 +124,25 @@ export function PdfViewer({ file, className, onLoadSuccess, onError }: PdfViewer
         </span>
 
         <Button
-          variant="text"
-          icon={<LucideZoomIn className="size-4" />}
+          variant="ghost"
+          size="icon"
           onClick={handleZoomIn}
           aria-label="放大"
-        />
+        >
+          <LucideZoomIn className="size-4" />
+        </Button>
 
         <div className="mx-2 h-4 w-px bg-border" />
 
         {/* 旋转控制 */}
         <Button
-          variant="text"
-          icon={<LucideRotateCw className="size-4" />}
+          variant="ghost"
+          size="icon"
           onClick={handleRotate}
           aria-label="旋转"
-        />
+        >
+          <LucideRotateCw className="size-4" />
+        </Button>
       </div>
 
       {/* PDF 渲染区域 */}

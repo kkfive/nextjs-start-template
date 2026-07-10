@@ -26,6 +26,7 @@ function withRepoConfig(userConfig = {}) {
       '@kkfive/http-client',
       '@kkfive/utils',
       '@kkfive/ui',
+      '@kkfive/render-infra',
       ...userTranspile,
     ],
     sassOptions: {

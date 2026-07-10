@@ -151,6 +151,9 @@ importers:
       '@kkfive/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
+      '@kkfive/render-infra':
+        specifier: workspace:*
+        version: link:../../packages/render-infra
       '@kkfive/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -184,6 +187,9 @@ importers:
       next:
         specifier: 16.2.10
         version: 16.2.10(@babel/core@7.29.7)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.101.0)
+      pdfjs-dist:
+        specifier: 5.4.296
+        version: 5.4.296
       react:
         specifier: 19.2.7
         version: 19.2.7
@@ -399,6 +405,28 @@ importers:
       '@kkfive/tsconfig':
         specifier: workspace:*
         version: link:../../internal/tsconfig
+
+  packages/render-infra:
+    dependencies:
+      '@kkfive/ui':
+        specifier: workspace:*
+        version: link:../ui
+      react:
+        specifier: ^19.2.7
+        version: 19.2.7
+      react-pdf:
+        specifier: ^10.4.1
+        version: 10.4.1(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+    devDependencies:
+      '@kkfive/tsconfig':
+        specifier: workspace:*
+        version: link:../../internal/tsconfig
+      '@types/react':
+        specifier: ^19.2.17
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.17)
 
   packages/ui:
     dependencies:

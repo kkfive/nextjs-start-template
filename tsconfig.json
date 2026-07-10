@@ -6,6 +6,7 @@
     { "path": "packages/http-client" },
     { "path": "packages/ui" },
     { "path": "packages/biz" },
+    { "path": "packages/render-infra" },
     { "path": "apps/client" },
     { "path": "apps/admin" },
     { "path": "apps/api" }

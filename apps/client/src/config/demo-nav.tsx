@@ -46,6 +46,11 @@ export const demoNavConfig: DemoNavCategory[] = [
         href: '/demo/ui/color-palette',
         description: 'Tailwind CSS color system demonstration',
       },
+      {
+        name: 'PDF Viewer',
+        href: '/demo/pdf-viewer',
+        description: '@kkfive/render-infra PDF preview (worker host-injected)',
+      },
     ],
   },
   {
