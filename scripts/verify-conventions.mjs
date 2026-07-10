@@ -582,6 +582,70 @@ rule('G06', '仅 project-architecture 应标记 primary: true', (_ctx) => {
 })
 
 // --------------------------------------------------
+// 跨包依赖方向（单向依赖机器校验）
+// --------------------------------------------------
+
+rule('G07', '跨包依赖方向单向：packages/internal 不可依赖 apps，apps 间不可互相 import 源码', (_ctx) => {
+  const issues = []
+
+  // 判定相对路径所属层（仅看前缀，不依赖文件扩展名）
+  function layerOf(rel) {
+    const norm = rel.replace(/\\/g, '/')
+    if (norm.startsWith('packages/'))
+      return { kind: 'packages' }
+    if (norm.startsWith('internal/'))
+      return { kind: 'internal' }
+    if (norm.startsWith('apps/'))
+      return { kind: 'apps', app: norm.split('/')[1] }
+    return null
+  }
+
+  // 校验 srcRel → targetRel 方向：违规返回 message，否则 null
+  function checkDirection(srcRel, targetRel) {
+    const src = layerOf(srcRel)
+    const tgt = layerOf(targetRel)
+    if (!src || !tgt)
+      return null
+    if (src.kind === 'packages' && tgt.kind === 'apps')
+      return '共享包不可依赖应用源码（packages → apps 违反单向依赖）'
+    if (src.kind === 'internal' && (tgt.kind === 'apps' || tgt.kind === 'packages'))
+      return 'internal 工具链配置不可依赖 apps/packages 源码'
+    if (src.kind === 'apps' && tgt.kind === 'apps' && src.app !== tgt.app)
+      return `应用之间不可互相依赖源码（${src.app} → ${tgt.app}）`
+    return null
+  }
+
+  // 单层 * 展开，避免进入 node_modules / .next
+  const sourceFiles = [
+    ...globSync('packages/*/src/**/*.ts', ROOT),
+    ...globSync('packages/*/src/**/*.tsx', ROOT),
+    ...globSync('apps/*/src/**/*.ts', ROOT),
+    ...globSync('apps/*/src/**/*.tsx', ROOT),
+    ...globSync('apps/*/domain/**/*.ts', ROOT),
+    ...globSync('apps/*/domain/**/*.tsx', ROOT),
+  ]
+
+  // 仅检测相对路径 import：跨层违规几乎只能通过相对路径绕过 workspace 协议
+  const importRe = /import\s+(?:type\s+)?(?:[\w*$\s{},]+?\s+from\s+)?['"]([.][^'"]+)['"]/g
+
+  for (const file of sourceFiles) {
+    const srcRel = path.relative(ROOT, file)
+    const content = fs.readFileSync(file, 'utf-8')
+    let m
+    while ((m = importRe.exec(content)) !== null) {
+      const resolved = path.resolve(path.dirname(file), m[1])
+      const targetRel = path.relative(ROOT, resolved)
+      const msg = checkDirection(srcRel, targetRel)
+      if (msg) {
+        const line = content.slice(0, m.index).split('\n').length
+        issues.push({ file, line, message: msg })
+      }
+    }
+  }
+  return issues
+})
+
+// --------------------------------------------------
 // 先查后建：重复定义碰撞检测
 // --------------------------------------------------
 
