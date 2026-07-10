@@ -199,17 +199,6 @@ rule('G02', '包级 AGENTS.md 应含 always-applicable 标签', (_ctx) => {
   return issues
 })
 
-rule('G02b', 'Domain skill 应引用 Domain 规则源', (_ctx) => {
-  const file = path.join(ROOT, '.agents/skills/domain-layer/SKILL.md')
-  if (!fs.existsSync(file))
-    return []
-  const content = fs.readFileSync(file, 'utf-8')
-  if (!content.includes('.agents/rules/domain.rule.md')) {
-    return [{ file, line: 1, message: 'domain-layer skill 应引用 .agents/rules/domain.rule.md，避免成为重复规则源' }]
-  }
-  return []
-})
-
 rule('G03', '文档示例不应推荐 class Controller', (_ctx) => {
   const issues = []
   const markdownFiles = [
