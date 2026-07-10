@@ -3,13 +3,8 @@ import { Hono } from 'hono'
 
 const HITOKOTO_URL = 'https://international.v1.hitokoto.cn'
 
-export const hitokotoRoutes = new Hono()
-
-/**
- * 代理外部一言 API。
- * 服务端聚合（而非前端直连），便于未来加缓存、鉴权、错误归一化、隐藏上游细节。
- */
-hitokotoRoutes.get('/', async (c) => {
+// 链式 .get()：让 typeof hitokotoRoutes 含路由 Schema，hc 才能推导 client.hitokoto
+export const hitokotoRoutes = new Hono().get('/', async (c) => {
   const res = await fetch(`${HITOKOTO_URL}/?c=a`)
   if (!res.ok) {
     return c.json({

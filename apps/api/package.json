@@ -17,13 +17,19 @@
     "tsx": "^4.19.0",
     "typescript": "^6.0.3"
   },
+  "exports": {
+    ".": {
+      "types": "./src/app.ts",
+      "default": "./src/app.ts"
+    }
+  },
   "private": true,
   "scripts": {
-    "build": "tsup src/app.ts --format esm",
-    "dev": "tsx watch src/app.ts",
+    "build": "tsup src/server.ts --format esm",
+    "dev": "tsx watch src/server.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "start": "node dist/app.js",
+    "start": "node dist/server.js",
     "typecheck": "tsc --noEmit"
   },
   "type": "module"

@@ -1,0 +1,27 @@
+{
+  "name": "@kkfive/biz",
+  "version": "0.0.0",
+  "dependencies": {
+    "@kkfive/contracts": "workspace:*",
+    "api": "workspace:*",
+    "hono": "^4.7.0"
+  },
+  "devDependencies": {
+    "@kkfive/tsconfig": "workspace:*"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./example-hitokoto": "./src/example-hitokoto/index.ts",
+    "./example-request": "./src/example-request/index.ts"
+  },
+  "peerDependencies": {
+    "@kkfive/http-client": "workspace:*",
+    "@tanstack/react-query": "^5.101.2",
+    "react": "^19.2.7"
+  },
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module"
+}

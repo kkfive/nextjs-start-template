@@ -15,7 +15,7 @@ export default createConfig({
     },
     {
       // 服务端入口：读环境变量用 process 全局、启动日志用 console 均属合理
-      files: ['src/app.ts'],
+      files: ['src/server.ts'],
       rules: {
         'node/prefer-global/process': 'off',
         'no-console': 'off',
