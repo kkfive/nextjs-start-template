@@ -1,9 +1,9 @@
 # UI Rule
 
-UI 层负责呈现、交互和组合，不重新实现业务规则。
+UI 层负责呈现、交互与组合，不重新实现业务规则。
 
-基础 UI 组件（shadcn 二次封装、自实现控件）放在 `@kkfive/ui` 共享包；各 app 的 `src/components/ui/*` 作为项目 UI 入口。领域 UI 组件留在各 app 内，可连接 Domain 公共入口和基础 UI 组件，但应避免深链依赖 Controller 或 Service 的内部文件。通用组件不绑定具体业务模块。
+基础 UI 控件统一来自 `@kkfive/ui`（shadcn 二次封装 + 自实现）。**业务代码直接消费 `@kkfive/ui/components/*`**，不在 app 内做零价值的 re-export 透传层（`export * from '@kkfive/ui/...'` 即 anti-pattern）。仅当存在真实加工（改默认 props、限制 API、注入主题、组合多控件）时才在 app 内封装，且封装必须含实现，不做纯 re-export。
 
-`@kkfive/ui` 不含 antd；antd 由各 app 按需自行安装，ConfigProvider 与主题 token 各 app 自治。业务代码依赖项目 UI 入口，而不是直接依赖第三方组件 API。
+`@kkfive/ui` 不含 antd；antd 由各 app 按需安装，ConfigProvider 与主题 token 各 app 自治。业务代码可直接使用 antd（antd 是 app 的合法 UI 依赖）；用 antd 独有能力（Form/Table/Upload 等）时直接 import，基础控件优先 `@kkfive/ui` 减少重复。
 
-交互组件显式声明客户端边界；没有交互、浏览器 API 或客户端状态需求时，优先保持 Server Component。
+领域 UI 组件留各 app 或 `packages/biz`（耦合业务的），可连接 biz 公共入口与基础 UI，避免深链内部实现文件。交互组件显式声明客户端边界；无交互、浏览器 API 或客户端状态需求时，优先 Server Component。

@@ -1,11 +1,11 @@
 # Domain Rule
 
-各 app 的 `domain/` 是运行环境适配层，核心业务逻辑下沉到 `@kkfive/domain-core` 共享包。适配层负责 re-export 共享包的 Service/Controller/Type、注入该 app 的运行环境（浏览器或服务端 HttpService 实例），并按需补充环境专属能力（如 Next.js apps 的 React Query hooks）。
+业务逻辑闭环在 `apps/api`（Hono）：路由层用 `@kkfive/contracts` 的 zod schema 校验入参、承担业务编排与外部 API 代理，并在入口导出 `export type AppType = typeof app` 作为前端类型链的源头。
 
-HTTP 实例由调用方注入，Domain 不直接选择具体实例。共享包的 Service 负责原始请求，Controller 负责业务编排、数据转换和错误语义；调用方通过模块入口使用公共 API。后端 app 同进程直调 Controller，不经过 HttpService。
+`packages/biz` 是前端业务包，用 `hono/client` 的 `hc<AppType>` 做端到端类型安全调用，按垂直业务组织——每个业务目录内聚 React Query hooks 与业务 UI 组件。HTTP 实例由各 app 注入（biz 的 hc client 经 wrapper 复用 app 的 HttpService interceptor），biz 不硬编码实例或 baseUrl。纯展示、零业务依赖的 dumb 组件留在各 app。
 
-外部请求返回的数据不可信。接口响应的任意字段都可能缺失或为 `null`；原始响应类型应使用共享工具类型表达这一点，Controller 再将其归一化为业务可用类型。不要为了适配外部响应把业务模型字段批量改成 `?:`。
+各 app 的 `domain/` 适配层负责注入运行时（baseUrl、HttpService）并 re-export biz 的公共 API，不承载业务逻辑。
 
-共享包核心逻辑必须框架无关，禁止依赖任何运行环境框架（React、Next.js、Hono 等）或 HTTP 客户端实例。环境专属能力（如 React Query hooks）是各 app 适配层的职责，不进共享包。后端 app（如 Hono）的适配层无 hooks、无 HttpService 注入，同进程直调 Controller。
+类型来自 `@kkfive/contracts`（zod + infer）与 api 的 `AppType`（type-only 跨包导入，不把 Hono 运行时打进浏览器）。外部响应不可信，路由层归一化为业务类型；不为适配外部响应把业务模型字段批量改成 `?:`。
 
-类型、常量、Service、Controller 的组织方式服务于模块边界，而不是为了填满模板。新增文件应来自真实职责，重复出现的结构再沉淀为约定。
+SSE 等流式不走 hc（无流式语义）：客户端直连 api 的 SSE 路由，服务端用 `hono/streaming`。框架无关的纯计算下沉 `@kkfive/utils`（common/dom 物理隔离）。
