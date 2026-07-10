@@ -54,6 +54,8 @@ Skill 的 `name` / `description` / `file path` 由各工具（ZCode / Codex / Cl
 
 Git hook 在 `lefthook.yml` 接入 commit message 与 pre-commit 校验。多人协作时只暂存和提交当前任务直接产生的文件。
 
+核验规范/配置/自动触发机制是否「真的生效」时，用端到端真实验证（`.agents/skills/coding-standards/workflows/verify-end-to-end.md`），警惕自带脚本的循环论证。
+
 ## 参考
 
 - Skill 模板与原则：`.agents/meta/_template/`

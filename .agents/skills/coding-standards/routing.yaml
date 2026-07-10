@@ -45,3 +45,12 @@ tasks:
   - intent: 踩坑
     triggers: ["as any", "ts-ignore", "测试 mock 失败"]
     route: [references/gotchas.md]
+
+  - intent: 端到端验证（核验规范/配置/自动触发是否生效）
+    triggers: ["验证", "核验", "是否生效", "是否按预期", "自动触发", "检查规范"]
+    trigger_examples:
+      - "核验 AI 优化是否真的生效"
+      - "检查规范是否被遵循"
+      - "验证 skill 是否自动触发"
+      - "这个重构是否达到预期"
+    route: [workflows/verify-end-to-end.md]

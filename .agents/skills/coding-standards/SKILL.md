@@ -30,6 +30,7 @@ user-invocable: true
 | 图标 Iconify + Tailwind | `references/icon-usage.md` |
 | 测试 vitest + MSW | `references/testing.md` |
 | 踩坑：类型导出 / `as any` / 测试 mock / 幽灵依赖 | `references/gotchas.md` |
+| 核验规范/配置/自动触发是否生效（端到端验证） | `workflows/verify-end-to-end.md` |
 
 源头表见 `routing.yaml`。
 
