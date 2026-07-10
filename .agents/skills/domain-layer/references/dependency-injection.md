@@ -2,7 +2,7 @@
 
 ## 核心原则
 
-`@kkfive/domain-core` 的 Service/Controller 必须通过参数接收 `HttpService` 实例，禁止直接 import 任何具体实例。具体实例由各 app 的 Domain 适配层注入。
+`@kkfive/domain-core` 的 Service/Controller 必须通过参数接收 `HttpService` 实例，禁止直接 import 任何具体实例。具体实例由各 app 的 Domain 适配层在调用点注入。
 
 ## 为什么需要依赖注入
 
@@ -19,12 +19,12 @@
 
 ```typescript
 // ✅ 正确：http 始终作为第一个参数
-getList: async (http: HttpService, query?: ListQuery) => { ... }
-getDetail: async (http: HttpService, id: string) => { ... }
-create: async (http: HttpService, data: CreateRequest) => { ... }
+async function getList(http: HttpService, query?: ListQuery) { ... }
+async function getDetail(http: HttpService, id: string) { ... }
+async function create(http: HttpService, data: CreateRequest) { ... }
 
 // ❌ 错误：http 不是第一个参数
-getList: async (query?: ListQuery, http: HttpService) => { ... }
+async function getList(query?: ListQuery, http: HttpService) { ... }
 ```
 
 ## 共享包 Service 层示例
@@ -32,23 +32,25 @@ getList: async (query?: ListQuery, http: HttpService) => { ... }
 ```typescript
 // packages/domain-core/src/material/service.ts
 import type { HttpService } from '@kkfive/http-client'
-import { MATERIAL_API } from './const/api'
+import { getList as getListApi, getDetail as getDetailApi } from './const/api'
 
-export const materialService = {
-  getList: async (
-    http: HttpService,
-    query?: Material.ListQuery,
-  ): Promise<Material.ListResponse> => {
-    return http.get(MATERIAL_API.LIST, { searchParams: query })
-  },
-
-  getDetail: async (
-    http: HttpService,
-    id: string,
-  ): Promise<Material.Item> => {
-    return http.get(MATERIAL_API.DETAIL(id))
-  },
+async function getList(
+  http: HttpService,
+  query?: Material.ListQuery,
+): Promise<Material.ListResponse> {
+  const { url, method } = getListApi
+  return http.request<Material.ListResponse>(url, { method, params: query })
 }
+
+async function getDetail(
+  http: HttpService,
+  id: string,
+): Promise<Material.Item> {
+  const { url, method } = getDetailApi
+  return http.request<Material.Item>(url(id), { method })
+}
+
+export const service = { getList, getDetail }
 ```
 
 ## 共享包 Controller 层示例
@@ -56,56 +58,54 @@ export const materialService = {
 ```typescript
 // packages/domain-core/src/material/controller.ts
 import type { HttpService } from '@kkfive/http-client'
-import { materialService } from './service'
+import { service } from './service'
 
-export const materialController = {
-  getList: async (
-    http: HttpService,
-    query?: Material.ListQuery,
-  ): Promise<Material.ListResponse> => {
-    return materialService.getList(http, query)
-  },
+export async function getList(
+  http: HttpService,
+  query?: Material.ListQuery,
+): Promise<Material.ListResponse> {
+  return service.getList(http, query)
+}
 
-  createAndRefresh: async (
-    http: HttpService,
-    data: Material.CreateRequest,
-  ) => {
-    const created = await materialController.create(http, data)
-    const list = await materialController.getList(http)
-    return { created, list }
-  },
+export async function createAndRefresh(
+  http: HttpService,
+  data: Material.CreateRequest,
+) {
+  const created = await service.create(http, data)
+  const list = await service.getList(http)
+  return { created, list }
 }
 ```
 
 ## 适配层注入实例（apps/client）
 
-适配层负责把该 app 的 HttpService 实例绑定到共享包的 Controller：
+适配层只 re-export 共享包 + 暴露 app 专属 hooks；实例在调用点（hooks / Server Component）注入，不在适配层预绑定：
 
 ```typescript
 // apps/client/domain/material/index.ts
-import { materialController } from '@kkfive/domain-core/material'
-import { httpClient } from '@/service/index.client'
-
-// 注入浏览器实例，供 hooks 与页面使用
-export const Controller = {
-  getList: (query?: Material.ListQuery) => materialController.getList(httpClient, query),
-  getDetail: (id: string) => materialController.getDetail(httpClient, id),
-}
+export * from '@kkfive/domain-core/material'                       // re-export 共享包
+export { useMaterialList, useMaterialDetail } from './hooks'       // app 专属 hooks
 ```
 
 ## Hooks 层（Next.js apps 专属，内部注入）
 
-Hooks 层是该 app 适配层里唯一可以引用具体实例的地方，因为 Hooks 只在 Client Components 中使用。
+Hooks 层是该 app 适配层里唯一可以引用具体实例的地方，因为 Hooks 只在 Client Components 中使用。通过 `Controller` 命名空间调用，Query Keys 内联：
 
 ```typescript
 // apps/client/domain/material/hooks.ts
+import { useQuery } from '@tanstack/react-query'
 import { httpClient } from '@/service/index.client'
-import { materialController } from '@kkfive/domain-core/material'
+import { Controller } from '@kkfive/domain-core/material'
+
+const QUERY_KEYS = {
+  all: ['material'] as const,
+  list: (query?: Material.ListQuery) => [...QUERY_KEYS.all, 'list', query] as const,
+}
 
 export function useMaterialList(query?: Material.ListQuery) {
   return useQuery({
-    queryKey: MATERIAL_QUERY_KEYS.list(query),
-    queryFn: () => materialController.getList(httpClient, query),
+    queryKey: QUERY_KEYS.list(query),
+    queryFn: () => Controller.getList(httpClient, query),
   })
 }
 ```
@@ -117,10 +117,10 @@ export function useMaterialList(query?: Material.ListQuery) {
 ```typescript
 // apps/client/src/app/(platform)/material/page.tsx
 import { httpServer } from '@/service/index.server'
-import { materialController } from '@kkfive/domain-core/material'
+import { Controller } from '@kkfive/domain-core/material'
 
 export default async function MaterialPage() {
-  const data = await materialController.getList(httpServer)
+  const data = await Controller.getList(httpServer)
   return <div>{data.items.length}</div>
 }
 ```
@@ -142,11 +142,11 @@ export default function MaterialPage() {
 
 ```typescript
 // apps/api/src/routes/material.ts
-import { materialController } from '@kkfive/domain-core/material'
+import { Controller } from '@kkfive/domain-core/material'
 
 app.get('/materials', async (c) => {
   // 同进程直调，不经过 HttpService
-  const data = await materialController.getList(/* db client or internal caller */)
+  const data = await Controller.getList(/* internal caller */)
   return c.json(data)
 })
 ```
@@ -157,7 +157,7 @@ app.get('/materials', async (c) => {
 // ❌ 错误：在共享包 Service 中 import 任何具体实例
 import { httpClient } from '@/service/index.client'
 
-export const materialService = {
+export const service = {
   getList: async () => {
     return httpClient.get('/api/materials') // 锁死某一 app 的实例
   },

@@ -3,6 +3,7 @@
 ## 共享包 vs 适配层
 
 - **在 `packages/domain-core` 里写 React Query hooks** → 共享包框架无关，禁依赖 React；hooks 写进各 Next.js app 的 `domain/{module}/hooks.ts`
+- **在共享包 `const/api.ts` 里定义 `QUERY_KEYS`** → 共享包禁含 react-query；Query Keys 内联在各 app 适配层的 `hooks.ts`（`const QUERY_KEYS`）
 - **在 app 的 `domain/` 适配层重写 service/controller** → 核心逻辑应在共享包；适配层只 re-export + 注入实例
 - **共享包里 `import { httpClient } from '@/service/...'`** → 共享包不应感知任何 app 内部路径；Service/Controller 只接受注入的 HttpService
 - **共享包里 import React / Next / Hono** → 破坏框架无关性；运行环境适配留各 app
@@ -28,9 +29,9 @@
 
 ## React Query
 
-- **`queryKey` 漏 query** → `MATERIAL_QUERY_KEYS.list(query)` 必须把 query 序列化进 key，否则换关键词不刷新
+- **`queryKey` 漏 query** → `QUERY_KEYS.list(query)` 必须把 query 序列化进 key，否则换关键词不刷新
 - **`mutationFn` 直接调 `service.create`** → 应调 Controller，否则失去字段转换/校验
-- **失效缓存写错 key** → 用 `MATERIAL_QUERY_KEYS.list()` 而非裸字符串
+- **失效缓存写错 key** → 失效整个列表族用 `[...QUERY_KEYS.all, 'list']` 前缀，而非裸字符串
 
 ## 测试
 

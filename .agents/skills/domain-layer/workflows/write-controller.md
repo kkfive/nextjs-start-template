@@ -44,8 +44,8 @@ function normalizeItem(raw: Material.RawItem): Material.Item {
 ```ts
 // packages/domain-core/src/material/index.ts
 export * as Controller from './controller'
+export { service } from './service'
 export type * from './type'
-export * from './const/api'
 ```
 
 调用（各 app 适配层或路由）：

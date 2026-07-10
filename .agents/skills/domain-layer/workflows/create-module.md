@@ -9,7 +9,7 @@ Domain 模块分两层：核心逻辑在 `@kkfive/domain-core` 共享包，运�
 1. **选模块名**：小写单数（`material`、`auth`、`user`）
 2. **创建目录** `packages/domain-core/src/<module>/`
 3. **按需新增文件**（不是所有文件都要立刻有，按真实职责出现再加，见 `references/file-structure.md`）：
-   - `const/api.ts` — API 端点与 Query Keys
+   - `const/api.ts` — API 端点配置（每操作一个 `{ url, method }` 对象）
    - `type.ts` — 业务类型（从 `@kkfive/contracts` 扩展）
    - `service.ts` — 原始请求（注入 `http: HttpService`）
    - `controller.ts` — 业务编排（命名函数导出）
@@ -17,9 +17,8 @@ Domain 模块分两层：核心逻辑在 `@kkfive/domain-core` 共享包，运�
 4. **写最小可用切片**：通常先 `getList` + `getDetail`，验证全链路通畅再扩展
 5. **统一入口导出**：
    ```ts
-   export * from './const/api'
-   export { materialService } from './service'
-   export { materialController } from './controller'
+   export * as Controller from './controller'
+   export { service } from './service'
    export type * from './type'
    ```
 
@@ -37,9 +36,9 @@ Domain 模块分两层：核心逻辑在 `@kkfive/domain-core` 共享包，运�
 
 ## 调用方
 
-- Next.js Server Component / Server Action：`import { materialController } from '@kkfive/domain-core/material'` + 注入该 app 的服务端实例
+- Next.js Server Component / Server Action：`import { Controller } from '@kkfive/domain-core/material'` + 注入该 app 的服务端实例
 - Next.js Client Component：通过该 app 适配层的 `useMaterialList()`
-- `apps/api` 路由：`import { materialController } from '@kkfive/domain-core/material'`，同进程直调
+- `apps/api` 路由：`import { Controller } from '@kkfive/domain-core/material'`，同进程直调
 
 ## 检查
 

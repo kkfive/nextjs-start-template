@@ -5,25 +5,41 @@
 ```ts
 // packages/domain-core/src/material/service.ts
 import type { HttpService } from '@kkfive/http-client'
-import { MATERIAL_API } from './const/api'
+import {
+  getList as getListApi,
+  getDetail as getDetailApi,
+  create as createApi,
+  update as updateApi,
+  remove as removeApi,
+} from './const/api'
 import type * as Material from './type'
 
-export const service = {
-  getList: async (http: HttpService, query?: Material.ListQuery) =>
-    http.get<Material.RawListResponse>(MATERIAL_API.list, { params: query }),
-
-  getDetail: async (http: HttpService, id: string) =>
-    http.get<Material.Item>(MATERIAL_API.detail(id)),
-
-  create: async (http: HttpService, data: Material.CreateRequest) =>
-    http.post<Material.Item>(MATERIAL_API.list, data),
-
-  update: async (http: HttpService, id: string, data: Material.UpdateRequest) =>
-    http.patch<Material.Item>(MATERIAL_API.detail(id), data),
-
-  remove: async (http: HttpService, id: string) =>
-    http.delete<void>(MATERIAL_API.detail(id)),
+async function getList(http: HttpService, query?: Material.ListQuery) {
+  const { url, method } = getListApi
+  return http.request<Material.RawListResponse>(url, { method, params: query })
 }
+
+async function getDetail(http: HttpService, id: string) {
+  const { url, method } = getDetailApi
+  return http.request<Material.Item>(url(id), { method })
+}
+
+async function create(http: HttpService, data: Material.CreateRequest) {
+  const { url, method } = createApi
+  return http.request<Material.Item>(url, { method, json: data })
+}
+
+async function update(http: HttpService, id: string, data: Material.UpdateRequest) {
+  const { url, method } = updateApi
+  return http.request<Material.Item>(url(id), { method, json: data })
+}
+
+async function remove(http: HttpService, id: string) {
+  const { url, method } = removeApi
+  return http.request<void>(url(id), { method })
+}
+
+export const service = { getList, getDetail, create, update, remove }
 ```
 
 ## 硬约束
@@ -33,21 +49,26 @@ export const service = {
    - 业务字段转换（去 Controller）
    - 错误语义翻译（去 Controller）
    - 重试 / 并发控制（去基础设施层）
-3. **方法名是动词**：`getList`、`getDetail`、`create`、`update`、`remove`、`batchUpdate`
-4. **返回类型显式标注**：`http.get<Material.RawItem>(...)`，避免推断成 `any`
-5. **外部响应保持可疑**：原始响应类型用 `ExternalData<T>`，不要把业务模型字段批量改成 `?:`
+3. **方法名是动词**：`getList`、`getDetail`、`create`、`update`、`remove`、`batchUpdate`（`delete` 是保留字，命名函数位置用 `remove`）
+4. **`service` 对象聚合命名函数**（`export const service = { getList, ... }`），无模块前缀
+5. **返回类型显式标注**：`http.request<Material.RawItem>(...)`，避免推断成 `any`
+6. **外部响应保持可疑**：原始响应类型用 `ExternalData<T>`，不要把业务模型字段批量改成 `?:`
 
 ## 测试
 
 ```ts
 // packages/domain-core/src/material/service.test.ts
+import { getList as getListApi } from './const/api'
 import { service } from './service'
 import { mockHttp } from '@kkfive/test-utils'   // 共享测试工具（或本包内的 mock helper）
 
 test('getList passes query as params', async () => {
-  const http = mockHttp({ get: vi.fn().mockResolvedValue({ items: [], total: 0 }) })
+  const http = mockHttp({ request: vi.fn().mockResolvedValue({ items: [], total: 0 }) })
   await service.getList(http, { keyword: 'logo' })
-  expect(http.get).toHaveBeenCalledWith(MATERIAL_API.list, { params: { keyword: 'logo' } })
+  expect(http.request).toHaveBeenCalledWith(
+    getListApi.url,
+    expect.objectContaining({ method: 'GET', params: { keyword: 'logo' } }),
+  )
 })
 ```
 

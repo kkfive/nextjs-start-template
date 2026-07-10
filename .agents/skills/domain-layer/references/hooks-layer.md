@@ -11,12 +11,26 @@ Hooks 层封装 React Query，提供：
 - 统一的错误处理和成功提示
 - 统一的缓存失效策略
 - 类型安全的 options 参数
+- 内联 Query Keys（共享包框架无关，Query Keys 不进共享包）
 
 ## 核心规则
 
 1. **内部注入该 app 的 HttpService 实例**：Hooks 只在该 app 的 Client Components 中使用
-2. **统一错误处理**：使用该 app 的 toast 提示
-3. **统一缓存失效**：变更后刷新相关查询
+2. **通过 `Controller` 命名空间调用**：不直接依赖 Controller/service 的内部文件
+3. **Query Keys 内联**：在 hooks.ts 顶部定义 `const QUERY_KEYS`，不 import 自共享包
+4. **统一错误处理**：使用该 app 的 toast 提示
+5. **统一缓存失效**：变更后用 `[...QUERY_KEYS.all, 'list']` 前缀刷新相关查询
+
+## Query Keys 内联
+
+```typescript
+// apps/client/domain/material/hooks.ts 顶部
+const QUERY_KEYS = {
+  all: ['material'] as const,
+  list: (query?: Material.ListQuery) => [...QUERY_KEYS.all, 'list', query] as const,
+  detail: (id: string) => [...QUERY_KEYS.all, 'detail', id] as const,
+}
+```
 
 ## 查询 Hooks
 
@@ -25,7 +39,7 @@ Hooks 层封装 React Query，提供：
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
 import { httpClient } from '@/service/index.client'
-import { materialController, MATERIAL_QUERY_KEYS } from '@kkfive/domain-core/material'
+import { Controller } from '@kkfive/domain-core/material'
 
 /**
  * 获取材料列表
@@ -36,8 +50,8 @@ export function useMaterialList(
   options?: Omit<UseQueryOptions<Material.ListResponse>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
-    queryKey: MATERIAL_QUERY_KEYS.list(query),
-    queryFn: () => materialController.getList(httpClient, query),
+    queryKey: QUERY_KEYS.list(query),
+    queryFn: () => Controller.getList(httpClient, query),
     ...options,
   })
 }
@@ -49,9 +63,7 @@ export function useMaterialList(
 // apps/client/domain/material/hooks.ts（续）
 import type { UseMutationOptions } from '@tanstack/react-query'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { httpClient } from '@/service/index.client'
 import { toast } from '@/components/ui/sonner'
-import { materialController, MATERIAL_QUERY_KEYS } from '@kkfive/domain-core/material'
 
 /**
  * 创建材料
@@ -64,11 +76,11 @@ export function useCreateMaterial(
 
   return useMutation({
     mutationFn: (data: Material.CreateRequest) =>
-      materialController.create(httpClient, data),
+      Controller.create(httpClient, data),
     onSuccess: (data, variables, context) => {
       toast.success('创建成功')
       queryClient.invalidateQueries({
-        queryKey: MATERIAL_QUERY_KEYS.lists(),
+        queryKey: [...QUERY_KEYS.all, 'list'],
       })
       options?.onSuccess?.(data, variables, context)
     },
@@ -91,14 +103,14 @@ export function useUpdateMaterial(
 
   return useMutation({
     mutationFn: ({ id, data }) =>
-      materialController.update(httpClient, id, data),
+      Controller.update(httpClient, id, data),
     onSuccess: (data, variables, context) => {
       toast.success('更新成功')
       queryClient.invalidateQueries({
-        queryKey: MATERIAL_QUERY_KEYS.lists(),
+        queryKey: [...QUERY_KEYS.all, 'list'],
       })
       queryClient.invalidateQueries({
-        queryKey: MATERIAL_QUERY_KEYS.detail(variables.id),
+        queryKey: QUERY_KEYS.detail(variables.id),
       })
       options?.onSuccess?.(data, variables, context)
     },
@@ -121,11 +133,11 @@ export function useDeleteMaterial(
 
   return useMutation({
     mutationFn: (id: string) =>
-      materialController.delete(httpClient, id),
+      Controller.remove(httpClient, id),
     onSuccess: (data, variables, context) => {
       toast.success('删除成功')
       queryClient.invalidateQueries({
-        queryKey: MATERIAL_QUERY_KEYS.lists(),
+        queryKey: [...QUERY_KEYS.all, 'list'],
       })
       options?.onSuccess?.(data, variables, context)
     },
@@ -204,12 +216,18 @@ const createMutation = useCreateMaterial({
 ```
 
 ```typescript
+// ❌ 错误：从共享包 import Query Keys 常量
+// 共享包禁含 react-query；Query Keys 内联在该 app 适配层的 hooks.ts（const QUERY_KEYS）
+import { QUERY_KEYS } from '@kkfive/domain-core/material'
+```
+
+```typescript
 // ❌ 错误：在该 app 的 Hooks 中使用服务端实例
 import { httpServer } from '@/service/index.server'
 
 export function useMaterialList() {
   return useQuery({
-    queryFn: () => materialController.getList(httpServer), // Hooks 只在 Client 用
+    queryFn: () => Controller.getList(httpServer), // Hooks 只在 Client 用
   })
 }
 ```
@@ -218,7 +236,7 @@ export function useMaterialList() {
 // ❌ 错误：在 Hooks 中接收 http 参数
 export function useMaterialList(http: HttpService) {
   return useQuery({
-    queryFn: () => materialController.getList(http), // 实例应由适配层内部注入
+    queryFn: () => Controller.getList(http), // 实例应由适配层内部注入
   })
 }
 ```
