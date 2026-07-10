@@ -5,7 +5,7 @@ import { cn } from '@kkfive/ui'
 import { MethodBadge } from '@kkfive/ui/components/method-badge'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
-import { ResponseViewer } from '@/components/domain/request/response-viewer'
+import { ResponseViewer } from '@/components/demo/domain/request/response-viewer'
 
 type RequestPlaygroundProps = {
   title: string
