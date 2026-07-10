@@ -151,9 +151,6 @@ importers:
       '@kkfive/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
-      '@kkfive/render-infra':
-        specifier: workspace:*
-        version: link:../../packages/render-infra
       '@kkfive/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -199,9 +196,6 @@ importers:
       react-hook-form:
         specifier: ^7.81.0
         version: 7.81.0(react@19.2.7)
-      react-pdf:
-        specifier: ^10.4.1
-        version: 10.4.1(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-wrap-balancer:
         specifier: ^1.1.1
         version: 1.1.1(react@19.2.7)
@@ -406,28 +400,6 @@ importers:
         specifier: workspace:*
         version: link:../../internal/tsconfig
 
-  packages/render-infra:
-    dependencies:
-      '@kkfive/ui':
-        specifier: workspace:*
-        version: link:../ui
-      react:
-        specifier: ^19.2.7
-        version: 19.2.7
-      react-pdf:
-        specifier: ^10.4.1
-        version: 10.4.1(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-    devDependencies:
-      '@kkfive/tsconfig':
-        specifier: workspace:*
-        version: link:../../internal/tsconfig
-      '@types/react':
-        specifier: ^19.2.17
-        version: 19.2.17
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.17)
-
   packages/ui:
     dependencies:
       '@esdora/biz':
@@ -457,6 +429,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.7(react@19.2.7)
+      react-pdf:
+        specifier: ^10.4.1
+        version: 10.4.1(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.3.2)

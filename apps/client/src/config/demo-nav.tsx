@@ -49,7 +49,7 @@ export const demoNavConfig: DemoNavCategory[] = [
       {
         name: 'PDF Viewer',
         href: '/demo/pdf-viewer',
-        description: '@kkfive/render-infra PDF preview (worker host-injected)',
+        description: '@kkfive/ui/widgets PDF preview (worker host-injected)',
       },
     ],
   },

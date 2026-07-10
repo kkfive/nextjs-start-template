@@ -39,12 +39,31 @@
 
 ```
 packages/ui/
-├── components/          # shadcn 二次封装 + 自实现基础组件
+├── components/          # shadcn 二次封装 + 自实现基础组件（轻量，默认入口 re-export）
+├── widgets/             # 重型渲染组件（PDF/图表等，默认入口不 re-export，需 dynamic + ssr:false）
 ├── tokens/              # 设计 token（颜色、间距、圆角）
 ├── utils/               # UI 工具函数（cn()、createIcon 等）
 ├── styles/              # 全局样式变量
 └── package.json         # peerDependencies: { react, react-dom }
 ```
+
+## widgets/（重型渲染组件）
+
+`widgets/` 存放引入重型运行时依赖（如 `react-pdf`/`pdfjs`）的渲染组件。与 `components/`（轻量基础控件）分离，避免重型依赖污染所有消费 `@kkfive/ui` 的页面。
+
+### 轻/重判断标准
+
+| 归属 | 判断依据 |
+|---|---|
+| `components/`（轻量） | 依赖体积小（shadcn/Radix/Tailwind 级别），tree-shaking 后对消费方无负担；默认入口 re-export |
+| `widgets/`（重型） | 引入 pdfjs、图表库、富文本等大体积运行时；或依赖浏览器 API（DOMMatrix 等）SSR 必须禁用 |
+
+### 消费方式
+
+- widgets 经独立子入口导出：`@kkfive/ui/widgets/<name>`（`package.json` 的 `exports` 显式声明）
+- **默认入口（`src/index.ts`）不 re-export widgets**——消费方必须从子入口引入，隔离重型依赖
+- 宿主端必须用 `dynamic(() => import('@kkfive/ui/widgets/...'), { ssr: false })` 懒加载
+- worker / asset 路径由宿主注入，不在 widget 内硬编码
 
 ## 判断标准
 

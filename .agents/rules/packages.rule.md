@@ -13,7 +13,6 @@
 | `utils` | 多端通用算法 | `common`（多端）/ `dom`（浏览器）物理隔离，服务端只引 common |
 | `http-client` | HttpService 抽象 + interceptor + BusinessError | 底层 fetch；不绑业务 |
 | `biz` | 前端业务（hc RPC hooks + 业务组件，垂直内聚） | 依赖 contracts/ui/http-client + api AppType（type-only）；含 React |
-| `render-infra` | 重型渲染能力（PDF/图表/富文本） | 纯渲染，禁引 contracts/biz/业务请求；worker 路径由宿主注入 |
 
 ## README 强制
 

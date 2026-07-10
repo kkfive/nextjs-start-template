@@ -2,15 +2,15 @@
 
 import { useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
-import { Button } from '@kkfive/ui/components/button'
+import { Button } from '../components/button'
 import {
   LucideChevronLeft,
   LucideChevronRight,
   LucideRotateCw,
   LucideZoomIn,
   LucideZoomOut,
-} from '@kkfive/ui/components/icon'
-import { cn } from '@kkfive/ui/utils/cn'
+} from '../components/icon'
+import { cn } from '../utils/cn'
 
 // 导入 react-pdf 样式
 import 'react-pdf/dist/Page/TextLayer.css'
