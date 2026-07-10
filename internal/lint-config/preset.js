@@ -41,7 +41,6 @@ export async function createConfig(options = {}) {
       ignores: [
         '**/.next',
         '**/.claude',
-        '**/components/ui',
         '**/node_modules',
         '**/.pnpm-store',
         '**/pnpm-lock.yaml',

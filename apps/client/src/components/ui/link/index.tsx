@@ -1,6 +1,6 @@
-import { isExternalLink } from '@/lib/utils'
-
 import NextLink from 'next/link'
+
+import { isExternalLink } from '@/lib/utils'
 
 export function Link({ href = '#', ...rest }) {
   const isExternal = isExternalLink(href)

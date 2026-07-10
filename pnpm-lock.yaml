@@ -352,6 +352,31 @@ importers:
 
   internal/tsconfig: {}
 
+  packages/biz:
+    dependencies:
+      '@kkfive/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@kkfive/http-client':
+        specifier: workspace:*
+        version: link:../http-client
+      '@tanstack/react-query':
+        specifier: ^5.101.2
+        version: 5.101.2(react@19.2.7)
+      api:
+        specifier: workspace:*
+        version: link:../../apps/api
+      hono:
+        specifier: ^4.7.0
+        version: 4.12.28
+      react:
+        specifier: ^19.2.7
+        version: 19.2.7
+    devDependencies:
+      '@kkfive/tsconfig':
+        specifier: workspace:*
+        version: link:../../internal/tsconfig
+
   packages/contracts:
     dependencies:
       zod:

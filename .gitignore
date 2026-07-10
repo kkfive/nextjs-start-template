@@ -53,3 +53,5 @@ data/WebGUI.md
 
 # tool session history（工具本地状态，不纳入版本控制）
 .zcode/
+
+temp

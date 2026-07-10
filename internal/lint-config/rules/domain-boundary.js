@@ -14,8 +14,8 @@ export function domainBoundaryRules(options = {}) {
     rules: {
       'no-restricted-imports': ['error', {
         patterns: [{
-          group: ['@/components/*', '@/app/*', '@/hooks/*', '@/store/*'],
-          message: 'Domain layer should not import React components, hooks, or stores. Keep domain code framework-agnostic.',
+          group: ['@/components/*', '@/app/*', '@/hooks/*', '@/store/*', '@/lib/*'],
+          message: 'Domain layer should not import React components, hooks, stores, or app infra (@/lib). Keep domain code framework-agnostic.',
         }],
       }],
     },

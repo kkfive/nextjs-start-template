@@ -1,9 +1,9 @@
 'use client'
 import type { ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 import { Link } from '@/components/ui/link'
 import { SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
-import { usePathname } from 'next/navigation'
 
 export function NavigationLink({ title, url, icon, badge, children }:
 {
@@ -18,7 +18,7 @@ export function NavigationLink({ title, url, icon, badge, children }:
   const isActive = pathname === url
 
   const themeClass = cn(
-    'flex justify-between items-center',
+    'flex items-center justify-between',
     isActive ? '[--sidebar-accent-foreground:white] [--sidebar-accent:#3b3b3b]' : '',
   )
 
