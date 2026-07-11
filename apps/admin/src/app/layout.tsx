@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import '@/styles/index.scss'
 
 export const metadata = {
   title: 'Admin - Next.js Start Template',

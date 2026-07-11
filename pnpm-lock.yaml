@@ -72,6 +72,15 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
     devDependencies:
+      '@csstools/postcss-oklab-function':
+        specifier: ^5.0.6
+        version: 5.0.6(postcss@8.5.16)
+      '@iconify/json':
+        specifier: ^2.2.497
+        version: 2.2.497
+      '@iconify/tailwind4':
+        specifier: ^1.2.3
+        version: 1.2.3(tailwindcss@4.3.2)
       '@kkfive/lint-config':
         specifier: workspace:*
         version: link:../../internal/lint-config
@@ -84,6 +93,9 @@ importers:
       '@kkfive/tsconfig':
         specifier: workspace:*
         version: link:../../internal/tsconfig
+      '@tailwindcss/postcss':
+        specifier: ^4.3.2
+        version: 4.3.2
       '@types/node':
         specifier: ^26.1.1
         version: 26.1.1
@@ -96,6 +108,27 @@ importers:
       eslint:
         specifier: ^10.6.0
         version: 10.6.0(jiti@2.7.0)
+      postcss:
+        specifier: ^8.5.16
+        version: 8.5.16
+      postcss-import:
+        specifier: ^16.1.1
+        version: 16.1.1(postcss@8.5.16)
+      postcss-load-config:
+        specifier: ^6.0.1
+        version: 6.0.1(jiti@2.7.0)(postcss@8.5.16)(tsx@4.23.0)(yaml@2.9.0)
+      postcss-scss:
+        specifier: ^4.0.9
+        version: 4.0.9(postcss@8.5.16)
+      sass:
+        specifier: ^1.101.0
+        version: 1.101.0
+      tailwindcss:
+        specifier: 4.3.2
+        version: 4.3.2
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@4.3.2)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
