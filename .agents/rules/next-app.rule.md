@@ -8,4 +8,4 @@
 
 `src/service` 按运行环境物理隔离为双实例：浏览器侧（`http-client.ts` / `rpc-client.ts`，`import 'client-only'`）与服务端侧（`http-server.ts` / `rpc-server.ts`，`import 'server-only'`）。环境边界由 `server-only` / `client-only` 包在文件级强制——禁止靠 `typeof window` 运行时判断替代；server component 只 import `*-server`，client component 只 import `*-client`。
 
-Server Component 是默认选择；只有交互、浏览器 API、客户端状态或 React Query hooks 需要时，才引入 `'use client'`。各 app 的配置（Next.js / Tailwind / tsconfig）通过继承 `internal/*` 预设保持一致。
+Server Component 是默认选择；只有交互、浏览器 API、客户端状态或 React Query hooks 需要时，才引入 `'use client'`。Server Component 直接 `await` 该 domain 的 call 获取首屏数据（不走 react-query），结果可作 `initialData` 透传给 client 组件；Client Component 经 `src/service/{domain}/hooks.ts` 的 react-query hooks 调用，不在组件内直接写请求。各 app 的配置（Next.js / Tailwind / tsconfig）通过继承 `internal/*` 预设保持一致。

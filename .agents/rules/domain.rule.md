@@ -10,4 +10,6 @@
 
 call 归位：调 client Route Handler 用 HttpService（`httpClient` / `httpServer`，主通道）；调 apps/api(Hono) 用 rpc（`createRpcClient` + calls，扩展通道）；第三方外部 API 经 apps/api 代理，前端不直连（避免泄露 key / 绕过 CORS）。envelope 解析统一经 `unwrapData`（成功返回 data，`success:false` 抛 `BusinessError`）。
 
+app 专属 calls 按 domain 子目录组织（`src/service/<domain>/calls.ts`），签名以 HttpService/RpcClient 参数注入、端无关（server 传 `httpServer` / client 传 `httpClient`，对齐 rpc 包 `fetchHitokoto(client)` 范式，不写两份重复逻辑）；同目录 `hooks.ts` 放 react-query 适配（`'use client'`，固定 queryKey）。Server Component 直接 `await calls(httpServer)` 不走 react-query，结果作 `initialData` 透传 client 组件；Client Component 经 hooks。命名按通道区分：主通道（HttpService）calls 用 `get*/post*`，扩展通道（RpcClient）calls 用 `fetch*`。
+
 SSE 是 Hono 扩展能力，不走 hc（无流式语义）也不走 Route Handler：客户端经 `NEXT_PUBLIC_API_URL` 直连 apps/api 的 SSE 路由，服务端用 `hono/streaming`。框架无关的纯计算下沉 `@kkfive/utils`（common/dom 物理隔离）。

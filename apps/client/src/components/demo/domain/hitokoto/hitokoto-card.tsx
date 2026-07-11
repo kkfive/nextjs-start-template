@@ -1,15 +1,11 @@
 'use client'
 import type { Hitokoto } from '@kkfive/contracts'
-import { fetchHitokoto } from '@kkfive/rpc'
-import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
-import { rpcClient } from '@/service/rpc-client'
+import { useHitokoto } from '@/service/hitokoto/hooks'
 
 export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
-  const { data, refetch, isFetching } = useQuery<Hitokoto>({
+  const { data, refetch, isFetching } = useHitokoto({
     initialData,
-    queryKey: ['hitokoto'],
-    queryFn: () => fetchHitokoto(rpcClient),
     enabled: false,
   })
 
@@ -110,7 +106,7 @@ export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
             数据来源: hitokoto.cn
           </span>
           <span className="rounded-full bg-primary/8 px-2 py-0.5 font-mono text-[10px] text-primary">
-            GET /api/example/hitokoto
+            GET /api/hitokoto
           </span>
         </div>
       </div>

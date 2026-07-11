@@ -1,13 +1,12 @@
-import type { Hitokoto, HttpResponse } from '@kkfive/contracts'
-import { unwrapData } from '@kkfive/rpc'
 import { httpTo } from '@kkfive/utils'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { HitokotoCard } from '@/components/demo/domain/hitokoto/hitokoto-card'
+import { getHitokoto } from '@/service/hitokoto/calls'
 import { httpServer } from '@/service/http-server'
 
 export default async function HitokotoPage() {
   const [error, result] = await httpTo(
-    httpServer.get<HttpResponse<Hitokoto>>('/api/hitokoto').then(unwrapData),
+    getHitokoto(httpServer),
   )
 
   return (
