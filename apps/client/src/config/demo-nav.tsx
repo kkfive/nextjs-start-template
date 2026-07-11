@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import {
   LucideDatabase,
   LucideFileText,
+  LucideGitBranch,
   LucidePalette,
   LucideStore,
 } from '@kkfive/ui/components/icon'
@@ -102,6 +103,17 @@ export const demoNavConfig: DemoNavCategory[] = [
         name: 'Hitokoto API',
         href: '/demo/request/hitokoto',
         description: 'External API request with ky',
+      },
+    ],
+  },
+  {
+    category: 'RPC',
+    icon: <LucideGitBranch className="size-5" />,
+    items: [
+      {
+        name: 'Hono RPC',
+        href: '/demo/rpc',
+        description: 'hc<AppType> → apps/api Hono RPC 扩展通道',
       },
     ],
   },
