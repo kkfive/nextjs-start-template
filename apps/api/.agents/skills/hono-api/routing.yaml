@@ -30,20 +30,11 @@ tasks:
     route:
       - references/schema-validation.md
 
-  - intent: 路由调用 domain-core
-    triggers: ["调用 controller", "同进程直调", "domain-core"]
-    trigger_examples:
-      - "路由里怎么调用 domain-core 的 controller"
-      - "同进程直调 controller 怎么写"
-      - "Hono 路由要直接调业务逻辑"
-    route:
-      - references/domain-direct-call.md
-
   - intent: 踩坑
-    triggers: ["报错", "路由不生效", "中间件顺序", "BFF 还是后端"]
+    triggers: ["报错", "路由不生效", "中间件顺序", "扩展后端还是主后端"]
     trigger_examples:
       - "路由配了但是不生效"
       - "中间件执行顺序不对"
-      - "这个该算 BFF 还是后端"
+      - "这个该走扩展后端还是主后端"
     route:
       - references/gotchas.md
