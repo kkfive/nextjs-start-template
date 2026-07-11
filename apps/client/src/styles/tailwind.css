@@ -3,6 +3,8 @@
 @plugin "tailwindcss-animate";
 @plugin "@iconify/tailwind4";
 
+@source "../../../../packages/ui/src";
+
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
