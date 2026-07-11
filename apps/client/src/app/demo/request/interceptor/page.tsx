@@ -4,7 +4,7 @@ import { callEnvelopeScenario, callScenario } from '@kkfive/rpc'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { bizClient } from '@/service/rpc'
+import { rpcClient } from '@/service/rpc-client'
 
 export default function InterceptorPage() {
   const [showUnified, setShowUnified] = useState(true)
@@ -127,8 +127,8 @@ export default function InterceptorPage() {
             expectedStatus="success"
             requestFn={() =>
               showUnified
-                ? callScenario(bizClient, 'success')
-                : callEnvelopeScenario(bizClient, 'success')}
+                ? callScenario(rpcClient, 'success')
+                : callEnvelopeScenario(rpcClient, 'success')}
           />
 
           <RequestPlayground
@@ -141,8 +141,8 @@ export default function InterceptorPage() {
             expectedStatus="business-error"
             requestFn={() =>
               showUnified
-                ? callScenario(bizClient, 'business-error')
-                : callEnvelopeScenario(bizClient, 'business-error')}
+                ? callScenario(rpcClient, 'business-error')
+                : callEnvelopeScenario(rpcClient, 'business-error')}
           />
         </div>
 

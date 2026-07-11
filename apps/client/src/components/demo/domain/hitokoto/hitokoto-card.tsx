@@ -3,13 +3,13 @@ import type { Hitokoto } from '@kkfive/contracts'
 import { fetchHitokoto } from '@kkfive/rpc'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
-import { bizClient } from '@/service/rpc'
+import { rpcClient } from '@/service/rpc-client'
 
 export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
   const { data, refetch, isFetching } = useQuery<Hitokoto>({
     initialData,
     queryKey: ['hitokoto'],
-    queryFn: () => fetchHitokoto(bizClient),
+    queryFn: () => fetchHitokoto(rpcClient),
     enabled: false,
   })
 

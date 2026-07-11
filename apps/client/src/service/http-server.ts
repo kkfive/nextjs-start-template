@@ -3,6 +3,7 @@ import { createErrorResponse, HttpService } from '@kkfive/http-client'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { env } from '@/config/env'
+import 'server-only'
 
 function getBaseUrl() {
   if (env.API_BASE_URL) {

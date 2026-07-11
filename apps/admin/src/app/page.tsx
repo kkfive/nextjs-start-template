@@ -1,10 +1,10 @@
 import { fetchHitokoto } from '@kkfive/rpc'
-import { bizClient } from '@/service/rpc'
+import { rpcServer } from '@/service/rpc-server'
 
 // admin 示例：SSR 直取，使用已注入的服务端 HttpService 实例
 async function getHitokoto() {
   try {
-    return await fetchHitokoto(bizClient)
+    return await fetchHitokoto(rpcServer)
   }
   catch {
     return null

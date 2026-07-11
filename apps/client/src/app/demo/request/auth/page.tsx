@@ -4,7 +4,7 @@ import { unwrapData } from '@kkfive/rpc'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { bizClient } from '@/service/rpc'
+import { rpcClient } from '@/service/rpc-client'
 
 export default function AuthPage() {
   const [skipRedirect, setSkipRedirect] = useState(false)
@@ -89,7 +89,7 @@ export default function AuthPage() {
             endpoint="/api/example/request/auth"
             configDisplay={{ context: { skipAuthRedirect: skipRedirect } }}
             expectedStatus="http-error"
-            requestFn={async () => unwrapData(await (await bizClient.example.request.auth.$get({ query: { mode: 'default' } })).json())}
+            requestFn={async () => unwrapData(await (await rpcClient.example.request.auth.$get({ query: { mode: 'default' } })).json())}
           />
 
           {/* Success auth */}
@@ -100,7 +100,7 @@ export default function AuthPage() {
             endpoint="/api/example/request/auth?mode=success"
             configDisplay={{ params: { mode: 'success' } }}
             expectedStatus="success"
-            requestFn={async () => unwrapData(await (await bizClient.example.request.auth.$get({ query: { mode: 'success' } })).json())}
+            requestFn={async () => unwrapData(await (await rpcClient.example.request.auth.$get({ query: { mode: 'success' } })).json())}
           />
         </div>
 

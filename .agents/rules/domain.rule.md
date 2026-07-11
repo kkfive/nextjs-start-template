@@ -4,7 +4,7 @@
 
 `packages/biz` 是前端业务包，用 `hono/client` 的 `hc<AppType>` 做端到端类型安全调用，按垂直业务组织——每个业务目录内聚 React Query hooks 与业务 UI 组件。HTTP 实例由各 app 注入（biz 的 hc client 经 wrapper 复用 app 的 HttpService interceptor），biz 不硬编码实例或 baseUrl。纯展示、零业务依赖的 dumb 组件留在各 app。
 
-各 app 的 `domain/` 适配层负责注入运行时（baseUrl、HttpService）并 re-export biz 的公共 API，不承载业务逻辑。
+各 app 的 `src/service` 注入 HttpService 实例（浏览器/服务端双实例，由 `server-only`/`client-only` 物理隔离）与 app 专属 calls；hc 经 `createRpcClient` 复用实例拦截器（retry / hooks / 401 / 错误归一化），不承载业务逻辑。
 
 类型来自 `@kkfive/contracts`（zod + infer）与 api 的 `AppType`（type-only 跨包导入，不把 Hono 运行时打进浏览器）。外部响应不可信，路由层归一化为业务类型；不为适配外部响应把业务模型字段批量改成 `?:`。
 

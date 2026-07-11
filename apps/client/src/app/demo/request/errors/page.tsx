@@ -4,7 +4,7 @@ import { callEnvelopeScenario, callScenario } from '@kkfive/rpc'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { bizClient } from '@/service/rpc'
+import { rpcClient } from '@/service/rpc-client'
 
 export default function ErrorsPage() {
   const [errorMode, setErrorMode] = useState<'unified' | 'envelope'>('unified')
@@ -70,8 +70,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(bizClient, 'error-400')
-                : callEnvelopeScenario(bizClient, 'error-400')}
+                ? callScenario(rpcClient, 'error-400')
+                : callEnvelopeScenario(rpcClient, 'error-400')}
           />
 
           {/* 404 Not Found */}
@@ -83,8 +83,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(bizClient, 'error-404')
-                : callEnvelopeScenario(bizClient, 'error-404')}
+                ? callScenario(rpcClient, 'error-404')
+                : callEnvelopeScenario(rpcClient, 'error-404')}
           />
 
           {/* 500 Server Error */}
@@ -96,8 +96,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(bizClient, 'error-500')
-                : callEnvelopeScenario(bizClient, 'error-500')}
+                ? callScenario(rpcClient, 'error-500')
+                : callEnvelopeScenario(rpcClient, 'error-500')}
           />
 
           {/* 503 Service Unavailable */}
@@ -109,8 +109,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(bizClient, 'error-503')
-                : callEnvelopeScenario(bizClient, 'error-503')}
+                ? callScenario(rpcClient, 'error-503')
+                : callEnvelopeScenario(rpcClient, 'error-503')}
           />
 
           {/* Business Error */}
@@ -122,8 +122,8 @@ export default function ErrorsPage() {
             expectedStatus="business-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(bizClient, 'business-error')
-                : callEnvelopeScenario(bizClient, 'business-error')}
+                ? callScenario(rpcClient, 'business-error')
+                : callEnvelopeScenario(rpcClient, 'business-error')}
           />
 
           {/* Success for comparison */}
@@ -135,8 +135,8 @@ export default function ErrorsPage() {
             expectedStatus="success"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(bizClient, 'success')
-                : callEnvelopeScenario(bizClient, 'success')}
+                ? callScenario(rpcClient, 'success')
+                : callEnvelopeScenario(rpcClient, 'success')}
           />
         </div>
       </div>

@@ -4,7 +4,7 @@ import { unwrapData } from '@kkfive/rpc'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { bizClient } from '@/service/rpc'
+import { rpcClient } from '@/service/rpc-client'
 
 export default function ConfigPage() {
   const [retryCount, setRetryCount] = useState(2)
@@ -44,7 +44,7 @@ export default function ConfigPage() {
             endpoint="/api/example/request/config"
             configDisplay={{ timeout: timeoutMs, delay: delayMs }}
             expectedStatus={delayMs > timeoutMs ? 'http-error' : 'success'}
-            requestFn={async () => unwrapData(await (await bizClient.example.request.config.$get({ query: { delay: delayMs, failRate: 0 } })).json())}
+            requestFn={async () => unwrapData(await (await rpcClient.example.request.config.$get({ query: { delay: delayMs, failRate: 0 } })).json())}
           >
             <div className="space-y-3 rounded-lg bg-muted/30 p-3">
               <div>
@@ -114,7 +114,7 @@ export default function ConfigPage() {
             endpoint="/api/example/request/config"
             configDisplay={{ retry: retryCount, failRate: `${failRate}%` }}
             expectedStatus={failRate > 0 ? 'http-error' : 'success'}
-            requestFn={async () => unwrapData(await (await bizClient.example.request.config.$get({ query: { delay: 0, failRate } })).json())}
+            requestFn={async () => unwrapData(await (await rpcClient.example.request.config.$get({ query: { delay: 0, failRate } })).json())}
           >
             <div className="space-y-3 rounded-lg bg-muted/30 p-3">
               <div>

@@ -2,10 +2,10 @@ import { fetchHitokoto } from '@kkfive/rpc'
 import { httpTo } from '@kkfive/utils'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { HitokotoCard } from '@/components/demo/domain/hitokoto/hitokoto-card'
-import { bizClient } from '@/service/rpc'
+import { rpcServer } from '@/service/rpc-server'
 
 export default async function HitokotoPage() {
-  const [error, result] = await httpTo(fetchHitokoto(bizClient))
+  const [error, result] = await httpTo(fetchHitokoto(rpcServer))
 
   return (
     <DemoWrapper>

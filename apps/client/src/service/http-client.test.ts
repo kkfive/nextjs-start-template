@@ -36,7 +36,7 @@ describe('client http service', () => {
     vi.stubEnv('NEXT_PUBLIC_API_URL', TEST_BASE_URL)
     vi.stubEnv('SKIP_ENV_VALIDATION', 'true')
 
-    const { httpClient } = await import('./index.client')
+    const { httpClient } = await import('./http-client')
     const result = await httpClient.get('/api/example/request/config', { retry: 1 })
 
     expect(requestCount).toBe(2)

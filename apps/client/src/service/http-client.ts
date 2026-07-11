@@ -1,43 +1,12 @@
-import type { RequestOptions } from '@kkfive/http-client'
 import { createErrorResponse, HttpService } from '@kkfive/http-client'
 import { env } from '@/config/env'
+import 'client-only'
 
 function getBaseUrl() {
   if (env.NEXT_PUBLIC_API_URL) {
     return env.NEXT_PUBLIC_API_URL
   }
   return '/'
-}
-
-function getRetryLimit(retry: RequestOptions['retry']) {
-  if (typeof retry === 'number') {
-    return retry
-  }
-
-  return retry?.limit ?? 0
-}
-
-function getRetryMethods(retry: RequestOptions['retry']) {
-  if (typeof retry === 'number') {
-    return ['get', 'put', 'head', 'delete', 'options', 'trace']
-  }
-
-  return retry?.methods ?? ['get', 'put', 'head', 'delete', 'options', 'trace']
-}
-
-function getRetryStatusCodes(retry: RequestOptions['retry']) {
-  if (typeof retry === 'number') {
-    return [408, 413, 429, 500, 502, 503, 504]
-  }
-
-  return retry?.statusCodes ?? [408, 413, 429, 500, 502, 503, 504]
-}
-
-function shouldWaitForRetry(method: string, status: number, retryCount: number, retry: RequestOptions['retry']) {
-  const retryableMethods = getRetryMethods(retry)
-  const retryableStatusCodes = getRetryStatusCodes(retry)
-
-  return retryableMethods.includes(method.toLowerCase()) && retryableStatusCodes.includes(status) && retryCount < getRetryLimit(retry)
 }
 
 const http = new HttpService({
@@ -65,7 +34,15 @@ const http = new HttpService({
           const url = request.url
           const method = options.method || 'GET'
 
-          if (shouldWaitForRetry(method, response.status, retryCount, options.retry)) {
+          // ky 已将 retry 归一化为 { limit, methods, statusCodes }；当本次失败仍可重试时放行，
+          // 交由 ky 原生重试机制处理，避免在此提前抛出 BusinessError 扼杀重试。
+          const { retry } = options
+          if (
+            retry.limit
+            && retryCount < retry.limit
+            && retry.methods?.includes(method.toLowerCase())
+            && retry.statusCodes?.includes(response.status)
+          ) {
             return response
           }
 
