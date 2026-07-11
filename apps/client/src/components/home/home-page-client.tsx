@@ -9,11 +9,11 @@ import {
   LucideCopy,
   LucideCpu,
   LucideGitBranch,
+  LucideGithub,
   LucideLayers,
   LucideRocket,
   LucideTerminal,
   LucideZap,
-  SimpleIconsGithub,
 } from '@kkfive/ui/components/icon'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -371,7 +371,7 @@ export function HomePageClient({ techStack }: HomePageClientProps) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <SimpleIconsGithub className="size-4" />
+                <LucideGithub className="size-4" />
                 GitHub
               </Link>
             </Button>

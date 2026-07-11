@@ -1,8 +1,8 @@
 'use client'
 
 import {
+  LucideGithub,
   LucideLayers,
-  SimpleIconsGithub,
 } from '@kkfive/ui/components/icon'
 import Link from 'next/link'
 
@@ -100,7 +100,7 @@ export function SiteFooter() {
             rel="noopener noreferrer"
             className="text-muted-foreground/60 transition-colors hover:text-muted-foreground"
           >
-            <SimpleIconsGithub className="size-4" />
+            <LucideGithub className="size-4" />
           </Link>
         </div>
       </div>
