@@ -38,3 +38,31 @@ export type HttpResponseSuccess<T = unknown> = {
 
 /** 统一响应 envelope（成功或失败） */
 export type HttpResponse<T = unknown> = HttpResponseSuccess<T> | HttpResponseError<T>
+
+/**
+ * 构造成功响应 envelope。
+ *
+ * 主后端（client Route Handler）与扩展后端（apps/api Hono）共用，
+ * 保证两端返回的 envelope 形状一致。
+ */
+export function ok<T>(data: T, message = 'OK'): HttpResponseSuccess<T> {
+  return { success: true, data, code: 200, message }
+}
+
+/**
+ * 构造失败响应 envelope。
+ *
+ * 主后端（client Route Handler）与扩展后端（apps/api Hono）共用。
+ * errorShowType 固定为 ERROR_MESSAGE；requestId 默认占位值，调用方可按需覆盖。
+ */
+export function fail(code: number, message: string, requestId = 'requestId'): HttpResponseError {
+  return {
+    success: false,
+    code,
+    data: null,
+    message,
+    errorShowType: ErrorShowType.ERROR_MESSAGE,
+    requestId,
+    timestamp: new Date().toISOString(),
+  }
+}

@@ -1,25 +1,9 @@
 import { zValidator } from '@hono/zod-validator'
-import { ErrorShowType, scenarioSchema } from '@kkfive/contracts'
+import { ErrorShowType, fail, ok, scenarioSchema } from '@kkfive/contracts'
 import { Hono } from 'hono'
 import { handleSseStream } from './sse'
 
 const now = () => new Date().toISOString()
-
-function ok<T>(data: T, message = 'OK') {
-  return { success: true as const, data, code: 200, message }
-}
-
-function fail(code: number, message: string) {
-  return {
-    success: false as const,
-    data: null,
-    code,
-    message,
-    errorShowType: ErrorShowType.ERROR_MESSAGE,
-    requestId: 'requestId',
-    timestamp: now(),
-  }
-}
 
 // 链式：typeof 累积所有路由 Schema，hc<AppType> 才能推导 client.example.request.*
 export const requestRoutes = new Hono()
@@ -111,6 +95,8 @@ export const requestRoutes = new Hono()
     if (mode === 'success')
       return c.json(ok({ message: '认证成功', user: { id: 1, name: 'Demo User' } }))
 
+    // 内联构造错误 envelope，不复用 fail()：此处的 requestId 使用动态时间戳
+    // （`req-${Date.now()}`），与 fail() 的固定占位 'requestId' 不同，保持原有行为。
     return c.json({
       success: false,
       code: 401,
