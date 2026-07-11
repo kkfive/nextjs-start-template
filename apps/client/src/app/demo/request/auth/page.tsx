@@ -1,10 +1,11 @@
 'use client'
 
+import type { HttpResponse } from '@kkfive/contracts'
 import { unwrapData } from '@kkfive/rpc'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { rpcClient } from '@/service/rpc-client'
+import { httpClient } from '@/service/http-client'
 
 export default function AuthPage() {
   const [skipRedirect, setSkipRedirect] = useState(false)
@@ -89,7 +90,7 @@ export default function AuthPage() {
             endpoint="/api/example/request/auth"
             configDisplay={{ context: { skipAuthRedirect: skipRedirect } }}
             expectedStatus="http-error"
-            requestFn={async () => unwrapData(await (await rpcClient.example.request.auth.$get({ query: { mode: 'default' } })).json())}
+            requestFn={async () => unwrapData(await httpClient.get<HttpResponse>('/api/example/request/auth', { params: { mode: 'default' } }))}
           />
 
           {/* Success auth */}
@@ -100,7 +101,7 @@ export default function AuthPage() {
             endpoint="/api/example/request/auth?mode=success"
             configDisplay={{ params: { mode: 'success' } }}
             expectedStatus="success"
-            requestFn={async () => unwrapData(await (await rpcClient.example.request.auth.$get({ query: { mode: 'success' } })).json())}
+            requestFn={async () => unwrapData(await httpClient.get<HttpResponse>('/api/example/request/auth', { params: { mode: 'success' } }))}
           />
         </div>
 

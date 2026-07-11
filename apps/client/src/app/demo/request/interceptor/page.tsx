@@ -1,13 +1,21 @@
 'use client'
 
-import { callEnvelopeScenario, callScenario } from '@kkfive/rpc'
+import type { HttpResponse, ScenarioType } from '@kkfive/contracts'
+import { unwrapData } from '@kkfive/rpc'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { rpcClient } from '@/service/rpc-client'
+import { httpClient } from '@/service/http-client'
 
 export default function InterceptorPage() {
   const [showUnified, setShowUnified] = useState(true)
+
+  // unified：解包 envelope，业务失败（success:false）/ HTTP 错误均抛 BusinessError。
+  const callScenario = async (s: ScenarioType) =>
+    unwrapData(await httpClient.post<HttpResponse>('/api/example/request/scenario', { scenario: s }))
+  // envelope：返回原始响应包络（HTTP 错误由拦截器抛出，仅 200 响应到达此处）。
+  const callEnvelopeScenario = async (s: ScenarioType) =>
+    httpClient.post('/api/example/request/scenario', { scenario: s })
 
   return (
     <DemoWrapper>
@@ -127,8 +135,8 @@ export default function InterceptorPage() {
             expectedStatus="success"
             requestFn={() =>
               showUnified
-                ? callScenario(rpcClient, 'success')
-                : callEnvelopeScenario(rpcClient, 'success')}
+                ? callScenario('success')
+                : callEnvelopeScenario('success')}
           />
 
           <RequestPlayground
@@ -141,8 +149,8 @@ export default function InterceptorPage() {
             expectedStatus="business-error"
             requestFn={() =>
               showUnified
-                ? callScenario(rpcClient, 'business-error')
-                : callEnvelopeScenario(rpcClient, 'business-error')}
+                ? callScenario('business-error')
+                : callEnvelopeScenario('business-error')}
           />
         </div>
 

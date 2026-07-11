@@ -1,9 +1,10 @@
 'use client'
 
+import type { HttpResponse } from '@kkfive/contracts'
 import { unwrapData } from '@kkfive/rpc'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { rpcClient } from '@/service/rpc-client'
+import { httpClient } from '@/service/http-client'
 
 export default function BasicRequestPage() {
   return (
@@ -35,7 +36,7 @@ export default function BasicRequestPage() {
             description="获取数据，参数通过 URL query 传递"
             method="GET"
             endpoint="/api/example/request/methods"
-            requestFn={async () => unwrapData(await (await rpcClient.example.request.methods.$get({ query: { page: '1', limit: '10' } })).json())}
+            requestFn={async () => unwrapData(await httpClient.get<HttpResponse>('/api/example/request/methods', { params: { page: '1', limit: '10' } }))}
           />
 
           <RequestPlayground
@@ -43,7 +44,7 @@ export default function BasicRequestPage() {
             description="创建数据，参数通过请求体传递"
             method="POST"
             endpoint="/api/example/request/methods"
-            requestFn={async () => unwrapData(await (await rpcClient.example.request.methods.$post({ json: { name: '示例数据', value: 42 } })).json())}
+            requestFn={async () => unwrapData(await httpClient.post<HttpResponse>('/api/example/request/methods', { name: '示例数据', value: 42 }))}
           />
 
           <RequestPlayground
@@ -51,7 +52,7 @@ export default function BasicRequestPage() {
             description="全量更新，替换整个资源"
             method="PUT"
             endpoint="/api/example/request/methods"
-            requestFn={async () => unwrapData(await (await rpcClient.example.request.methods.$put({ json: { id: '123', name: '更新后的数据', value: 100 } })).json())}
+            requestFn={async () => unwrapData(await httpClient.put<HttpResponse>('/api/example/request/methods', { id: '123', name: '更新后的数据', value: 100 }))}
           />
 
           <RequestPlayground
@@ -59,7 +60,7 @@ export default function BasicRequestPage() {
             description="删除数据，通过 query 参数指定资源 ID"
             method="DELETE"
             endpoint="/api/example/request/methods?id=123"
-            requestFn={async () => unwrapData(await (await rpcClient.example.request.methods.$delete({ query: { id: '123' } })).json())}
+            requestFn={async () => unwrapData(await httpClient.delete<HttpResponse>('/api/example/request/methods', { params: { id: '123' } }))}
           />
 
           <RequestPlayground
@@ -67,7 +68,7 @@ export default function BasicRequestPage() {
             description="部分更新，只修改指定字段"
             method="PATCH"
             endpoint="/api/example/request/methods"
-            requestFn={async () => unwrapData(await (await rpcClient.example.request.methods.$patch({ json: { name: '仅更新名称' } })).json())}
+            requestFn={async () => unwrapData(await httpClient.patch<HttpResponse>('/api/example/request/methods', { name: '仅更新名称' }))}
           />
         </div>
       </div>

@@ -1,13 +1,21 @@
 'use client'
 
-import { callEnvelopeScenario, callScenario } from '@kkfive/rpc'
+import type { HttpResponse, ScenarioType } from '@kkfive/contracts'
+import { unwrapData } from '@kkfive/rpc'
 import { useState } from 'react'
 import { DemoWrapper } from '@/components/demo/demo-wrapper'
 import { RequestPlayground } from '@/components/demo/request/request-playground'
-import { rpcClient } from '@/service/rpc-client'
+import { httpClient } from '@/service/http-client'
 
 export default function ErrorsPage() {
   const [errorMode, setErrorMode] = useState<'unified' | 'envelope'>('unified')
+
+  // unified：解包 envelope，业务失败（success:false）/ HTTP 错误均抛 BusinessError。
+  const callScenario = async (s: ScenarioType) =>
+    unwrapData(await httpClient.post<HttpResponse>('/api/example/request/scenario', { scenario: s }))
+  // envelope：返回原始响应包络（HTTP 错误由拦截器抛出，仅 200 响应到达此处）。
+  const callEnvelopeScenario = async (s: ScenarioType) =>
+    httpClient.post('/api/example/request/scenario', { scenario: s })
 
   return (
     <DemoWrapper>
@@ -70,8 +78,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(rpcClient, 'error-400')
-                : callEnvelopeScenario(rpcClient, 'error-400')}
+                ? callScenario('error-400')
+                : callEnvelopeScenario('error-400')}
           />
 
           {/* 404 Not Found */}
@@ -83,8 +91,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(rpcClient, 'error-404')
-                : callEnvelopeScenario(rpcClient, 'error-404')}
+                ? callScenario('error-404')
+                : callEnvelopeScenario('error-404')}
           />
 
           {/* 500 Server Error */}
@@ -96,8 +104,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(rpcClient, 'error-500')
-                : callEnvelopeScenario(rpcClient, 'error-500')}
+                ? callScenario('error-500')
+                : callEnvelopeScenario('error-500')}
           />
 
           {/* 503 Service Unavailable */}
@@ -109,8 +117,8 @@ export default function ErrorsPage() {
             expectedStatus="http-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(rpcClient, 'error-503')
-                : callEnvelopeScenario(rpcClient, 'error-503')}
+                ? callScenario('error-503')
+                : callEnvelopeScenario('error-503')}
           />
 
           {/* Business Error */}
@@ -122,8 +130,8 @@ export default function ErrorsPage() {
             expectedStatus="business-error"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(rpcClient, 'business-error')
-                : callEnvelopeScenario(rpcClient, 'business-error')}
+                ? callScenario('business-error')
+                : callEnvelopeScenario('business-error')}
           />
 
           {/* Success for comparison */}
@@ -135,8 +143,8 @@ export default function ErrorsPage() {
             expectedStatus="success"
             requestFn={() =>
               errorMode === 'unified'
-                ? callScenario(rpcClient, 'success')
-                : callEnvelopeScenario(rpcClient, 'success')}
+                ? callScenario('success')
+                : callEnvelopeScenario('success')}
           />
         </div>
       </div>
