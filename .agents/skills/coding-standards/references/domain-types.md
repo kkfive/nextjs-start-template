@@ -1,6 +1,6 @@
 # Domain 层类型定义规范
 
-**文件命名**：共享包 `packages/domain-core/src/{module}/type.ts`；跨 app 共享的契约类型在 `packages/contracts/`。
+**文件命名**：共享包类型定义在 `packages/contracts/src/{module}/`（zod schema + z.infer）；rpc 调用函数在 `packages/rpc/src/{module}/calls.ts`。
 
 ## 规范
 
@@ -14,57 +14,51 @@
 ## 示例（共享包）
 
 ```typescript
-// packages/domain-core/src/material/type.ts
-import type { ExternalData } from '@kkfive/contracts'
+// packages/contracts/src/schemas/material.ts
+import { z } from 'zod'
 
-export type ListResponse = {
-  items: Item[]
-  total: number
-  page: number
-  pageSize: number
-}
+export const materialItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  createdAt: z.string(),
+})
 
-export type Item = {
-  id: string
-  name: string
-  createdAt: string
-}
+export const materialListResponseSchema = z.object({
+  items: z.array(materialItemSchema),
+  total: z.number(),
+  page: z.number(),
+  pageSize: z.number(),
+})
 
-export type CreateRequest = {
-  name: string
-  category?: string
-}
+export const createMaterialRequestSchema = z.object({
+  name: z.string(),
+  category: z.string().optional(),
+})
 
-// 原始响应类型用 ExternalData<T> 表达空值可能
-export type RawItem = ExternalData<Item>
+// z.infer 推导类型，单一真源
+export type MaterialItem = z.infer<typeof materialItemSchema>
+export type MaterialListResponse = z.infer<typeof materialListResponseSchema>
+export type CreateMaterialRequest = z.infer<typeof createMaterialRequestSchema>
 ```
 
 ```typescript
-// packages/domain-core/src/material/index.ts
-export { MATERIAL_API, MATERIAL_QUERY_KEYS } from './const/api'
-export { materialService } from './service'
-export { materialController } from './controller'
-export type * from './type'
-```
+// packages/rpc/src/material/calls.ts
+import type { RpcClient } from '../rpc/client'
+import { unwrapData } from '../rpc/envelope'
+import type { MaterialListResponse } from '@kkfive/contracts'
 
-```typescript
-// packages/domain-core/src/material/service.ts
-import type { CreateRequest, ListQuery, ListResponse } from './type'
-import type { HttpService } from '@kkfive/http-client'
-
-export const materialService = {
-  getList: async (http: HttpService, query?: ListQuery): Promise<ListResponse> => {
-    return http.get('/api/materials', { params: query })
-  },
+export async function fetchMaterialList(client: RpcClient) {
+  const res = await client.api.materials.$get()
+  return unwrapData<MaterialListResponse>(await res.json())
 }
 ```
 
 ## 示例（app 专属类型扩展）
 
 ```typescript
-// apps/client/domain/material/type.ts - 扩展业务专属类型
-import type { Item } from '@kkfive/domain-core/material'
-export type ItemWithPosts = Item & { posts: Post[] }
+// apps/client/src/lib/types/material.ts - 扩展业务专属类型
+import type { MaterialItem } from '@kkfive/contracts'
+export type MaterialItemWithPosts = MaterialItem & { posts: Post[] }
 ```
 
 ## 常见场景处理
@@ -73,7 +67,7 @@ export type ItemWithPosts = Item & { posts: Post[] }
 |------|------|
 | 使用第三方库类型 | 在 `type.ts` 顶部 `import type` |
 | 引用同模块类型 | 直接使用当前文件中的类型名 |
-| 引用其他模块类型 | `import type { OtherType } from '@kkfive/domain-core/other'` |
+| 引用其他模块类型 | `import type { OtherType } from '@kkfive/contracts'` |
 | 跨 app 共享契约 | 放 `@kkfive/contracts/schemas/` 或 `@kkfive/contracts/types/` |
 | Schema 推导类型 | 在 `@kkfive/contracts` 中 `z.infer` 推导，单一真源 |
 | 全局类型扩展 | 放到各 app 的 `typings/*.d.ts` |

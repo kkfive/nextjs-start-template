@@ -8,7 +8,7 @@
 | React 组件文件 | kebab-case | `hitokoto-card.tsx`, `scenario-card.tsx` |
 | UI 组件目录 | kebab-case + `/index.tsx` | `button/index.tsx`, `modal/index.tsx` |
 | 工具/服务文件 | kebab-case | `app-error.ts`, `index.base.ts` |
-| Domain 类型定义 | `type.ts` (固定名称) | `domain/material/type.ts` |
+| Contracts 类型定义 | `type.ts` (固定名称) | `contracts/src/{module}/type.ts` |
 | 工具类型定义 | kebab-case + `.ts` | `utility-types.ts`, `request-types.ts` |
 | 全局类型扩展 | kebab-case + `.d.ts` | `axios.d.ts`, `window.d.ts` |
 | 测试文件 | `{name}.test.ts(x)` | `utils.test.ts`, `button.test.tsx` |
@@ -56,28 +56,42 @@ apps/{app}/src/components/ui/
 | `index.` | 入口文件 | `index.ts`, `index.base.ts` |
 | `use` | React Hook | `useMobile`, `useMouseStore` |
 
-## 领域模块导出
+## 共享包模块导出
 
-共享包 `packages/domain-core/src/{module}/index.ts` 标准导出（核心逻辑层）：
+`packages/contracts/src/{module}/` 标准导出（zod-first 契约源）：
 
 ```typescript
-export * as Controller from './controller'
-export { service } from './service'
-export type * from './type'
+// schema.ts — zod schema 定义
+import { z } from 'zod'
+export const materialSchema = z.object({ /* ... */ })
+export type Material = z.infer<typeof materialSchema>
 ```
 
-各 app 的 Domain 适配层 `apps/{app}/domain/{module}/index.ts` 标准 re-export 模式：
+`packages/rpc/src/{module}/calls.ts` 标准导出（纯调用函数）：
 
 ```typescript
-// re-export 共享包 + 补充 app 专属（如 React Query hooks）
-export * from '@kkfive/domain-core/material'
-export { useMaterialList } from './hooks'   // Next.js apps 专属，api 无此行
+import type { RpcClient } from '@kkfive/rpc'
+export async function fetchMaterial(client: RpcClient, id: string) {
+  // 调用 hc RPC，返回 unwrapData 后的结果
+}
+```
+
+各 app 的 React Query hooks `apps/{app}/src/hooks/use-{module}.ts` 标准模式：
+
+```typescript
+// 组合 rpc calls + app 专属 rpc 实例
+import { useQuery } from '@tanstack/react-query'
+import { fetchMaterial } from '@kkfive/rpc'
+import { rpcClient } from '@/service/rpc-client'
+export function useMaterial(id: string) {
+  return useQuery({ queryKey: ['material', id], queryFn: () => fetchMaterial(rpcClient, id) })
+}
 ```
 
 **说明**：
-- 共享包 `type.ts` 使用 `export type` 显式导出类型
+- 共享包类型在 `@kkfive/contracts` 用 `export type` 显式导出（zod-first）
 - 业务代码通过 `import type` 引用类型，避免全局类型污染
-- 跨包引用走 `@kkfive/domain-core`，app 内部走 `@domain/*` 别名
+- 跨包引用走 `@kkfive/rpc`（calls）/ `@kkfive/contracts`（schema + 类型），app 内部走 `@/*` 别名
 
 ## 组件 Props
 

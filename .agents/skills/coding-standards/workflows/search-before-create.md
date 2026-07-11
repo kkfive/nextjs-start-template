@@ -14,7 +14,7 @@
 | App 业务组件 | "新建订单列表/用户卡片" |
 | API schema | "对接 /api/xxx 接口""定义用户数据结构" |
 | HTTP 封装 | "封装请求拦截器""加 SSE 支持" |
-| Domain service/controller | "写 hitokoto 的数据获取""封装请求编排" |
+| RPC calls | "写 hitokoto 的数据获取""封装请求调用" |
 | 工具函数 | "写个判空函数""加个日期格式化" |
 | 类型定义 | "定义用户类型""定义响应结构" |
 
@@ -28,7 +28,7 @@
 | App 业务组件 | `apps/<app>/src/components/` | 业务名词（订单/用户） |
 | API schema | `packages/contracts/src/schemas/` + `index.ts` | 接口路径 / 数据实体名 |
 | HTTP 封装 | `packages/http-client/src/` | 请求方法 / 拦截器类型 |
-| Domain service/controller | `packages/domain-core/src/<module>/` | 模块名 / 业务能力 |
+| RPC calls / Contracts schema | `packages/rpc/src/<module>/` + `packages/contracts/src/{module}/` | 模块名 / 业务能力 |
 | 工具函数 | `packages/utils/src/` | 函数行为（isXxx / assertXxx / format） |
 | 类型定义 | 对应包的 `type.ts` + `packages/contracts/src/types/` | 类型名 |
 

@@ -1,6 +1,6 @@
 ---
 name: skill-name
-description: 一句话描述 - 覆盖的主题 + 触发场景。例如 "Domain 层架构规范 - HttpService 注入、Service/Controller/Hooks 分层。用于新建模块、解决跨层 import 问题。" 描述要包含真实触发短语（不超过 25 行）。
+description: 一句话描述 - 覆盖的主题 + 触发场景。例如 "适配层架构规范 - HttpService 注入、hc RPC 调用、Hooks 分层。用于新建模块、解决跨层 import 问题。" 描述要包含真实触发短语（不超过 25 行）。
 primary: false
 user-invocable: true
 ---
@@ -87,7 +87,7 @@ user-invocable: true
 - **包级 AGENTS.md 不枚举 rule 文件**：rule 的加载由根 AGENTS.md 的 Load When Editing 表按 glob 路由统一管理（如 `apps/*/domain/**` → domain.rule.md）。包级 AGENTS.md 只写该包特有的硬约束，不重复列 `@.agents/rules/xxx.rule.md`。新增 rule 文件只需在根表加一行 glob 映射，不改任何包级 AGENTS.md
 - **先查后建**：新建类任务前必须先检索已有实现（见 `coding-standards/workflows/search-before-create.md`）。新增 skill 或包时同样适用
 - **新增包规则判定**：新建 package/app 后，判断是否有"不同于根级通用规则的专属约束"。有 → 生成包级 AGENTS.md（thin-shell 格式）；无 → 不生成（progressive rigor）
-- **禁止枚举式描述**：规范中不要枚举具体的包名/app 名/组件名/规则名清单（如"contracts 零依赖、domain-core 禁 React、http-client 禁…"）。这种枚举导致每新增一个同类项就要改两处（规范 + 实际），必然漂移。正确做法：①描述通用原则（"packages 保持通用，框架无关"）②指向目录（"各 package 的约束见对应包级 AGENTS.md"）③只在特定场景的特定规则中提及具体名（如 hono.rule.md 描述 apps/api 定位）。举例说明概念（"如 Button、Input 等基础组件"）不算枚举
+- **禁止枚举式描述**：规范中不要枚举具体的包名/app 名/组件名/规则名清单（如"contracts 零依赖、rpc 禁 React、http-client 禁…"）。这种枚举导致每新增一个同类项就要改两处（规范 + 实际），必然漂移。正确做法：①描述通用原则（"packages 保持通用，框架无关"）②指向目录（"各 package 的约束见对应包级 AGENTS.md"）③只在特定场景的特定规则中提及具体名（如 hono.rule.md 描述 apps/api 定位）。举例说明概念（"如 Button、Input 等基础组件"）不算枚举
 - **skill 放置位置**：
   - **单包专属 skill**（仅服务一个包，如 hono-api 仅 apps/api 用）→ 放 `<包>/.agents/skills/<name>/`（ZCode/Codex 子包向上扫描自动发现；Claude Code 靠子包 AGENTS.md 路径引用）
   - **多包共享 skill**（服务 2+ 包，如 nextjs-app-router 服务 client+admin）→ 放根 `.agents/skills/`

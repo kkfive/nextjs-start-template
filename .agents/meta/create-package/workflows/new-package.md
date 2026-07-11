@@ -28,7 +28,7 @@
 6. **消费方接入**：各 app 的 `package.json` 加 `"@kkfive/<pkg>": "workspace:*"`，Next.js app 还需在 `transpilePackages` 加该包名
 7. **`pnpm install`** 让 workspace 链接生效
 8. **包级规则判定**：判断该包是否有"不同于根级 `packages.rule.md` 的专属约束"：
-   - **有专属约束** → 生成 `packages/<pkg>/AGENTS.md`（thin-shell 格式：继承根级 + `<always-applicable>` 追加专属约束 + `<task-routing>` 路由）。参考 `packages/domain-core/AGENTS.md` 或 `packages/ui/AGENTS.md`
+   - **有专属约束** → 生成 `packages/<pkg>/AGENTS.md`（thin-shell 格式：继承根级 + `<always-applicable>` 追加专属约束 + `<task-routing>` 路由）。参考 `packages/rpc/AGENTS.md` 或 `packages/ui/AGENTS.md`
    - **无专属约束**（纯工具/schema/封装，无特殊规则）→ 不生成。在交付说明里记录"已评估，无需包级规则"
 
 ## 模板

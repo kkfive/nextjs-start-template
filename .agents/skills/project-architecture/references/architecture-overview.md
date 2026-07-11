@@ -11,10 +11,10 @@
 │   └── api/                  # Hono API 服务（后端）
 ├── packages/                 # 共享包（被 apps 消费，不独立部署）
 │   ├── contracts/            # API 契约（zod-first schema + 类型 + http/error 契约）
-│   ├── domain-core/          # 业务纯逻辑（Service/Controller/Type/Const，框架无关）
-│   ├── http-client/          # HTTP 抽象（HttpService 接口/基础类）
-│   ├── utils/                # 纯工具函数（零运行时依赖）
-│   └── ui/                   # shadcn 二次封装 + 基础组件（不含 antd）
+│   ├── http-client/          # HTTP 抽象（HttpService + interceptor + BusinessError + SSE）
+│   ├── rpc/                  # 类型化 RPC（hc 工厂 + unwrapData + 自有 api 共享 calls）
+│   ├── utils/                # 纯工具函数（common/dom 物理隔离，零运行时依赖）
+│   └── ui/                   # shadcn 二次封装 + 基础控件（./components）+ 重型渲染（./widgets）
 ├── internal/                 # 工具链配置预设（不对外发布）
 │   ├── tsconfig/             # TypeScript 预设
 │   ├── lint-config/          # ESLint 预设
@@ -26,61 +26,70 @@
 └── .agents/                  # AI 辅助开发规范（根级，全局生效）
 ```
 
+> 已废弃包：`domain-core`（不存在）、`render-infra`（并入 `ui/widgets`）、`biz`（业务包模式撤销，前端业务在 app 内）。已废弃模式：Controller 模式、同进程直调。
+
 ## 三层维度：apps vs packages vs internal
 
 - **`apps/`**：独立应用，各自拥有完整生命周期（dev/build/deploy），app 之间禁止互相依赖
-- **`packages/`**：共享能力，被 apps 消费，保持通用性；禁止依赖任何 `apps/`
+- **`packages/`**：共享能力，被 apps 消费，保持通用性；禁止依赖任何 `apps/`（唯一例外：`rpc` 经 type-only import 引 `apps/api` 的 `AppType`）
 - **`internal/`**：项目内部工具链配置，不对外发布，不被 `packages/` 依赖；仅装构建工具链
 
 ## 共享包职责
 
 | 包 | 职责 | 依赖约束 |
 |---|---|---|
-| `@kkfive/contracts` | zod-first schema + 共享类型 + http/error 契约 | 仅依赖 zod，零运行时框架依赖 |
-| `@kkfive/domain-core` | 业务纯逻辑（Service/Controller/Type/Const） | 禁依赖 React/Next/Hono；依赖 contracts/utils，peer http-client |
-| `@kkfive/http-client` | HttpService 接口/基础类 | peer contracts；禁依赖运行环境 |
-| `@kkfive/utils` | 纯工具函数 | 零运行时依赖 |
-| `@kkfive/ui` | shadcn 二次封装 + 基础组件 | peer react/react-dom；不含 antd |
+| `@kkfive/contracts` | zod-first schema + 共享类型 + http/error 契约，全栈契约源 | 仅依赖 zod，零运行时框架依赖 |
+| `@kkfive/http-client` | HttpService 接口/基础类 + interceptor 机制 + BusinessError + SSE | peer contracts；底层 fetch；不绑业务；不知 envelope |
+| `@kkfive/rpc` | 类型化 RPC（`createRpcClient` 工厂 + `unwrapData` + 自有 api 共享 calls） | 依赖 contracts + hono；peer http-client；type-only 引 api 的 `AppType`；**不含 react-query/react** |
+| `@kkfive/utils` | 纯工具函数 | 零运行时依赖；`common`（多端）/ `dom`（浏览器）物理隔离 |
+| `@kkfive/ui` | 基础 UI 控件（`./components`）+ 重型渲染（`./widgets` 子入口） | peer react/react-dom；不含 antd；默认入口不 re-export widgets |
 
 ## 应用内分层（Next.js apps：client / admin）
 
 每个 Next.js app 内部维持四层：
 
-### Domain 适配层（`apps/{app}/domain/`）
+### 适配层（`apps/{app}/src/service/`）
 
-各 app 的 `domain/` 是**薄适配层**，不是业务核心：
+各 app 的 `src/service/` 是**运行环境适配层**，创建 HTTP 实例和 hc RPC 客户端，不承载业务逻辑：
 
-- **re-export** `@kkfive/domain-core` 的 service/controller/type
-- **注入** 该 app 的运行环境（client 注入浏览器 HttpService，admin 注入服务端 HttpService）
-- **补充** 运行环境专属能力（Next.js apps 的 React Query hooks；admin 可能 SSR 直取不需要 hooks）
+- **双实例物理隔离**：浏览器侧（`http-client.ts` + `rpc-client.ts`，`import 'client-only'`）与服务端侧（`http-server.ts` + `rpc-server.ts`，`import 'server-only'`），由 `server-only`/`client-only` 包在文件级强制
+- **hc 注入实例**：`createRpcClient(httpClient, baseUrl)` 复用 HttpService 实例的拦截器链（retry / hooks / 401 / 错误归一化），hc 不再造实例
+- **app 专属 calls**：第三方 API 调用（非自有 api）放此层；自有 api 共享 calls 进 `@kkfive/rpc`
+- **SSE 实例**（可选）：`index.sse.ts`，流式不走 hc（无流式语义）
 
 ```typescript
-// apps/client/domain/example/index.ts — 注入浏览器实例 + React Query 适配
-export * from '@kkfive/domain-core/example'   // re-export 共享包
-export { useExample } from './hooks'          // app 专属：useQuery 包装
+// apps/client/src/service/rpc-client.ts — 浏览器 hc RPC 客户端
+import 'client-only'
+import { createRpcClient } from '@kkfive/rpc'
+import { httpClient } from './http-client'
+export const rpcClient = createRpcClient(httpClient, '/api')
+
+// apps/client/src/service/rpc-server.ts — 服务端 hc RPC 客户端（SSR）
+import 'server-only'
+import { createRpcClient } from '@kkfive/rpc'
+import { httpServer } from './http-server'
+export const rpcServer = createRpcClient(httpServer, process.env.API_BASE_URL)
 ```
 
-### 基础设施（`apps/{app}/src/lib/`、`apps/{app}/src/service/`）
+### Hooks 与缓存（`apps/{app}/src/hooks/`）
 
-- `src/service/`：HTTP 实例注入（`index.client.ts` / `index.server.ts` / `index.sse.ts`），实例由该 app 专属，不进共享包
-- `src/lib/`：工具函数、错误处理
-
-### UI（`apps/{app}/src/components/`）
-
-- `ui/`：基础 UI 入口，底层来自 `@kkfive/ui`，按需扩展
-- `common/`：通用功能组件，与业务相关但不依赖特定 domain
-- `domain/`：领域 UI 组件，结合 Domain 适配层与 UI
+各 app 自写 React Query hooks（缓存策略自治），调用 `@kkfive/rpc` 的纯调用函数：
 
 ```typescript
-// apps/client/src/components/domain/material/material-document-viewer.tsx - 领域 UI
-import { Controller } from '@domain/material'                // 该 app 的 Domain 适配层
-import { PdfViewer } from '@/components/common/pdf-viewer'
-import { Button } from '@/components/ui/button'
-
-export function MaterialDocumentViewer() {
-  // 结合 Material 领域逻辑与通用组件
+// apps/client/src/hooks/use-example.ts — React Query 包装
+import { useQuery } from '@tanstack/react-query'
+import { fetchExample } from '@kkfive/rpc'
+import { rpcClient } from '@/service/rpc-client'
+export function useExample() {
+  return useQuery({ queryKey: ['example'], queryFn: () => fetchExample(rpcClient) })
 }
 ```
+
+### 业务组件（`apps/{app}/src/components/`）
+
+- `ui/`：基础 UI 入口，底层来自 `@kkfive/ui`
+- `common/`：通用功能组件，与业务相关但不依赖特定领域
+- 业务组件直接使用 antd 独有能力（Form/Table/Upload 等），基础控件优先 `@kkfive/ui`
 
 ### 路由（`apps/{app}/src/app/`）
 
@@ -92,28 +101,33 @@ export function MaterialDocumentViewer() {
 
 | 层级 | 可以导入 | 禁止导入 |
 |------|----------|----------|
-| `domain/` | `@kkfive/domain-core`、`@kkfive/contracts`、`@kkfive/http-client`、`@/service/*`（注入实例）、`@tanstack/react-query`（仅 hooks） | `@/components/*`、`@/app/*`、`@/hooks/*`、`@/store/*` |
-| `src/components/domain/` | `@domain/*`、`@kkfive/ui`、`@/components/ui/*`、`@/components/common/*`、`@/lib/*` | 第三方 UI 库直接导入（antd 除外，app 内自治） |
-| `src/components/common/` | `@kkfive/ui`、`@/components/ui/*`、`@/lib/*`、外部库 | `@domain/*`、业务逻辑 |
-| `src/components/ui/` | `@kkfive/ui`、第三方 UI 库（shadcn 体系） | `@domain/*`、`@/components/common/*`、业务逻辑 |
-| `src/app/` | `@domain/*`、`@kkfive/*`、`@/components/*`、`@/lib/*`、`@/hooks/*`、`@/store/*` | 第三方 UI 库直接导入 |
+| `src/service/` | `@kkfive/http-client`、`@kkfive/rpc`、`@kkfive/contracts`、`@kkfive/utils`、`server-only`/`client-only` | `@/components/*`、`@/app/*`、`@/hooks/*` |
+| `src/hooks/` | `@kkfive/rpc`（calls）、`@/service/*`（rpc 客户端实例）、`@tanstack/react-query` | `@/components/*`（避免循环）、`@/app/*` |
+| `src/components/` | `@kkfive/ui`、`@kkfive/rpc`（calls）、`@/hooks/*`、`@kkfive/ui/components/*`、antd、`@/lib/*` | `@/service/rpc-server`（client 组件禁引服务端实例） |
+| `src/app/` | `@kkfive/*`、`@/components/*`、`@/hooks/*`、`@/lib/*`、`@/service/*`（按 server/client 边界） | 第三方 UI 库直接导入（antd 除外，app 内自治） |
 
-> `@/*`、`@domain/*` 别名在各 app 的 `tsconfig.json` 内定义（`@/* → ./src/*`、`@domain/* → ./domain/*`）。跨包引用统一走 `@kkfive/<pkg>` workspace 协议。
+> `@/*` 别名在各 app 的 `tsconfig.json` 内定义（`@/* → ./src/*`）。跨包引用统一走 `@kkfive/<pkg>` workspace 协议。
 
 **依赖流向**：
 
 ```
 apps/client, apps/admin (Next.js):
-  页面 → 领域 UI 组件 → domain 适配层 → @kkfive/domain-core → @kkfive/contracts + @kkfive/utils
-    ↓         ↓              ↓（注入）
-  通用组件 ←─────┘      @kkfive/http-client（实例由 app 注入）
+  页面 → src/components（业务组件）
+    ↓                        ↓
+  src/hooks（RQ 缓存）    @kkfive/ui ← @kkfive/ui/widgets（重型渲染）
     ↓
-  @kkfive/ui ←───────────┘
+  src/service（适配层：rpc-client / rpc-server，双实例 server-only/client-only 隔离）
+    ↓                        ↓
+  @kkfive/rpc（calls）    @kkfive/http-client（HttpService + interceptor + SSE）
+    ↓                        ↓（hc 注入 HttpService 实例，复用拦截器链）
+  apps/api（Hono，AppType type-only）    @kkfive/contracts（zod + 类型 + 错误码）
+```
 
-apps/api (Hono, 同进程直调):
-  路由 → domain 适配层 → @kkfive/domain-core → @kkfive/contracts + @kkfive/utils
-    ↓                       （无 HttpService 注入）
-  中间件 → lib
+```
+apps/api (Hono，真实后端):
+  路由（zod 校验 + 业务编排）→ src/lib（DB/缓存/第三方 SDK）
+    ↓
+  中间件（认证/日志/CORS/错误）→ src/app.ts（导出 export type AppType）
 ```
 
 ## 跨包依赖规则
@@ -122,11 +136,13 @@ apps/api (Hono, 同进程直调):
 |---|---|---|
 | `apps/*` | `packages/*`、`internal/*`、外部 npm 包 | 其他 `apps/*` |
 | `packages/contracts` | zod | React、Hono、Next.js、任何 `apps/*` |
-| `packages/domain-core` | `@kkfive/contracts`、`@kkfive/utils`、`@kkfive/http-client`(peer) | React、Hono、Next.js、任何 `apps/*`、`@kkfive/ui` |
-| `packages/http-client` | `@kkfive/contracts`(peer) | React、Hono、Next.js、任何 `apps/*`、`@kkfive/ui`、`@kkfive/domain-core` |
+| `packages/rpc` | `@kkfive/contracts`、`@kkfive/http-client`(peer)、`hono`、`apps/api` 的 `AppType`(type-only) | React、Next.js、`@kkfive/ui`、`@kkfive/utils`、react-query、任何运行时 `apps/*` |
+| `packages/http-client` | `@kkfive/contracts`(peer) | React、Hono、Next.js、任何 `apps/*`、`@kkfive/ui`、`@kkfive/rpc` |
 | `packages/utils` | 零运行时依赖 | 任何框架、任何 `apps/*`、`@kkfive/contracts` |
-| `packages/ui` | React(peer)、shadcn/Radix、Tailwind | 任何 `apps/*`、antd |
+| `packages/ui` | React(peer)、shadcn/Radix、Tailwind | 任何 `apps/*`、antd、`@kkfive/contracts`/`@kkfive/rpc` |
 | `internal/*` | 构建工具链 | `apps/*`、`packages/*`、运行时框架 |
+
+> **第三方类型 zod-first**：第三方 API 的类型在 `@kkfive/contracts` 定义 zod schema → `z.infer` 推导类型 → 调用方 `.parse()` 校验外部响应（响应不可信）。
 
 ## 路径别名
 
@@ -137,8 +153,7 @@ apps/api (Hono, 同进程直调):
   "extends": "@kkfive/tsconfig/nextjs.json",
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*"],
-      "@domain/*": ["./domain/*"]
+      "@/*": ["./src/*"]
     }
   }
 }

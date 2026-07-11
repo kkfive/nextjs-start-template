@@ -11,7 +11,7 @@ packages/<pkg>/
 └── package.json          # name/exports/依赖声明
 ```
 
-> 按需在 `src/` 下分子目录（如 `contracts` 的 `schemas/` / `types/` / `errors/`；`domain-core` 的 `{module}/`）。
+> 按需在 `src/` 下分子目录（如 `contracts` 的 `schemas/` / `types/` / `errors/`；`rpc` 的 `{module}/calls.ts`）。
 
 ## package.json 关键字段
 
@@ -38,13 +38,13 @@ packages/<pkg>/
 }
 ```
 
-如需子路径（如 `@kkfive/domain-core/material`）：
+如需子路径（如 `@kkfive/ui/components/button`）：
 
 ```json
 {
   "exports": {
     ".": { "types": "./src/index.ts", "default": "./src/index.ts" },
-    "./material": { "types": "./src/material/index.ts", "default": "./src/material/index.ts" }
+    "./components/button": { "types": "./src/components/button/index.ts", "default": "./src/components/button/index.ts" }
   }
 }
 ```
@@ -80,8 +80,8 @@ workspace 内部引用统一用 `workspace:*`：
 |---|---|---|---|
 | `@kkfive/contracts` | `zod` | —— | 任何运行时框架 |
 | `@kkfive/utils` | （零） | —— | 任何框架、`@kkfive/contracts` |
-| `@kkfive/http-client` | —— | `@kkfive/contracts` | React/Hono/Next、`@kkfive/domain-core` |
-| `@kkfive/domain-core` | `@kkfive/contracts`、`@kkfive/utils` | `@kkfive/http-client` | React/Hono/Next、`@kkfive/ui` |
+| `@kkfive/http-client` | —— | `@kkfive/contracts` | React/Hono/Next、`@kkfive/rpc` |
+| `@kkfive/rpc` | `@kkfive/contracts`、`hono` | `@kkfive/http-client` | React/Next、`@kkfive/ui`、运行时引 `apps/api`（仅 type-only 引 `AppType`） |
 | `@kkfive/ui` | shadcn/Radix | `react`、`react-dom` | antd、业务代码、`@kkfive/contracts`（除非纯类型） |
 
 ## tsconfig.json 关键字段

@@ -54,16 +54,16 @@ import { Button } from 'antd'
 import { Button } from '@/components/ui/button'
 ```
 
-### Domain 类型定义
+### 类型定义
 
 ```typescript
-// packages/domain-core/src/material/type.ts
+// packages/contracts/src/schemas/material.ts
 export type ExtractionResult = {
   coreInfo: CoreInfo
 }
 
-// packages/domain-core/src/material/index.ts
-export type * from './type'
+// packages/contracts/src/index.ts
+export type * from './schemas/material'
 ```
 
 ### React 组件

@@ -21,11 +21,11 @@ tasks:
     route:
       - references/app-anatomy.md
 
-  - intent: 注入 HttpService / 接入 domain-core
-    triggers: ["HttpService", "注入实例", "domain-core", "service 实例"]
+  - intent: 注入 HttpService / hc 实例（src/service 适配层）
+    triggers: ["HttpService", "注入实例", "rpc-client", "rpc-server", "service 实例", "createRpcClient"]
     trigger_examples:
       - "怎么在 app 里注入 HttpService"
-      - "新 app 要接入 domain-core"
+      - "新 app 怎么建 src/service 双实例"
       - "service 实例怎么注册"
     route:
       - references/app-anatomy.md

@@ -5,7 +5,7 @@
 ```typescript
 // 测试文件与源文件同目录（共享包与各 app 均如此）
 // packages/utils/src/string.ts → packages/utils/src/string.test.ts
-// packages/domain-core/src/material/service.ts → packages/domain-core/src/material/service.test.ts
+// packages/rpc/src/material/calls.ts → packages/rpc/src/material/calls.test.ts
 // apps/client/src/lib/utils.ts → apps/client/src/lib/utils.test.ts
 // apps/client/src/components/ui/button/index.tsx → apps/client/src/components/ui/button/button.test.tsx
 ```

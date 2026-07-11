@@ -8,7 +8,7 @@
 ## exports 解析失败
 
 - **exports 指向 dist 但没 build** → 本模板走源码消费，exports 指向 `src/index.ts`
-- **子路径未在 exports 声明** → `@kkfive/domain-core/material` 这种需要在 exports 加 `"./material"` 入口
+- **子路径未在 exports 声明** → `@kkfive/ui/components/button` 这种需要在 exports 加 `"./components/button"` 入口
 - **`types` 与 `default` 指向不同文件** → 源码消费时两者都指向 `src/index.ts`，保持一致
 
 ## project references
@@ -20,7 +20,7 @@
 ## 依赖边界
 
 - **`@kkfive/contracts` 或 `@kkfive/utils` 引入运行时框架** → 污染所有消费方 bundle；这两个包零运行时依赖
-- **`@kkfive/domain-core` 写 React/Next/Hono** → 破坏框架无关性；hooks/路由留各 app
+- **`@kkfive/rpc` 写 react-query/React** → 破坏框架无关性；rpc 只做 hc RPC，react-query hooks 留消费方
 - **`@kkfive/ui` 含 antd** → antd 由各 app 自治，不进共享包
 - **运行时框架写进 dependencies 而非 peer** → 消费方重复安装、实例不一致；React/Hono 等走 peerDependencies
 

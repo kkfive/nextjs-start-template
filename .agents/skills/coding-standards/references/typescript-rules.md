@@ -4,7 +4,7 @@
 
 | 场景 | 文件类型 | 原因 |
 |------|----------|------|
-| 共享包业务类型 | `packages/domain-core/src/{module}/type.ts` + `export type` | 显式导入导出，避免全局污染 |
+| 共享包类型定义 | `packages/contracts/src/{module}/`（zod schema + z.infer） | 显式导入导出，避免全局污染 |
 | 跨 app 共享契约 | `packages/contracts/`（schemas / types / errors） | 单一真源，客户端服务端共用 |
 | 通用工具类型 | `packages/utils/src/` 或 `@kkfive/contracts/types/` | 显式导入，避免全局污染 |
 | app 专属类型 | 各 app 的 `domain/{module}/type.ts` 或 `src/lib/` | 仅该 app 使用 |
@@ -29,7 +29,7 @@ type UserData = {
 共享包类型使用 `type.ts` + `export type`：
 
 ```typescript
-// packages/domain-core/src/user/type.ts
+// packages/contracts/src/schemas/user.ts
 export type User = {
   id: string
   name: string

@@ -16,26 +16,31 @@
    - `dependencies` 声明消费的 `@kkfive/*`（`workspace:*`）+ Next/React 等
 3. **写 `tsconfig.json`**：
    - `extends: @kkfive/tsconfig/nextjs.json`
-   - 定义 `@/* → ./src/*`、`@domain/* → ./domain/*` 别名
+   - 定义 `@/* → ./src/*` 别名
 4. **写 `next.config.ts`**：
    - 用 `withRepoConfig`（来自 `@kkfive/nextjs-config`）合并预设
    - 加 `transpilePackages`（消费的每个 `@kkfive/*`）
 5. **写 `eslint.config.js`**：import `@kkfive/lint-config` 预设
-6. **建 app 内目录**（见 `references/app-anatomy.md`）：`domain/`、`src/{app,components,lib,service,hooks,store}`
-7. **建 `src/service/`** HTTP 实例：`index.client.ts`（浏览器）/ `index.server.ts`（SSR）/ `index.sse.ts`
+6. **建 app 内目录**（见 `references/app-anatomy.md`）：`src/{app,components,hooks,lib,service,store}`
+7. **建 `src/service/` 适配层**（双实例）：
+   - `http-client.ts`（浏览器 HttpService，`import 'client-only'`）
+   - `http-server.ts`（服务端 HttpService，`import 'server-only'`）
+   - `rpc-client.ts`（`createRpcClient(httpClient, baseUrl)`，`import 'client-only'`）
+   - `rpc-server.ts`（`createRpcClient(httpServer, baseUrl)`，`import 'server-only'`）
+   - `index.sse.ts`（SSE 实例，可选）
 8. **注册 workspace**：根 `tsconfig.json` references 追加；`pnpm-workspace.yaml` 通常已含 `'apps/*'`
 9. **`pnpm install`** 让 workspace 链接生效
-10. **建 `domain/` 适配层**：re-export `@kkfive/domain-core` 模块 + 注入 HttpService 实例 + 可选 React Query hooks
+10. **建 `src/hooks/`**：调用 `@kkfive/rpc` calls + `@/service/*` 客户端实例的 React Query hooks
 11. **生成 `apps/<name>/AGENTS.md`**：app 必定有专属约束，生成 thin-shell 格式 AGENTS.md（继承根级 + `<always-applicable>` 追加该 app 专属约束 + `<task-routing>` 路由）。参考 `apps/client/AGENTS.md` 或 `apps/admin/AGENTS.md`
 
 ## 步骤（Hono app：`apps/api`）
 
 1. **创建目录** `apps/api/`
 2. **写 `package.json`**：
-   - `dependencies` 声明 `@kkfive/contracts`、`@kkfive/domain-core`、`@kkfive/utils`、`hono`
+   - `dependencies` 声明 `@kkfive/contracts`、`@kkfive/utils`、`hono`
    - `scripts.dev`: `tsx watch src/app.ts`；`scripts.build`: `tsup`
 3. **写 `tsconfig.json`**：`extends: @kkfive/tsconfig/hono.json`（无 DOM lib）
-4. **建目录**：`domain/`（仅 re-export，无 hooks/无注入）、`src/{routes,middleware,lib}`、`src/app.ts`
+4. **建目录**：`src/{routes,middleware,lib}`、`src/app.ts`（导出 `export type AppType`）
 5. **注册 workspace** 同上
 6. **生成 `apps/api/AGENTS.md`**：thin-shell 格式，继承根级 + 追加 Hono 专属约束。参考现有 `apps/api/AGENTS.md`
 
@@ -48,8 +53,8 @@ import { withRepoConfig } from '@kkfive/nextjs-config'
 export default withRepoConfig({
   transpilePackages: [
     '@kkfive/contracts',
-    '@kkfive/domain-core',
     '@kkfive/http-client',
+    '@kkfive/rpc',
     '@kkfive/utils',
     '@kkfive/ui',
   ],
@@ -57,18 +62,31 @@ export default withRepoConfig({
 })
 ```
 
-## 模板：Domain 适配层
+## 模板：src/service 适配层
 
 ```ts
-// apps/client/domain/material/index.ts
-export * from '@kkfive/domain-core/material'           // re-export 共享包
-export { useMaterialList } from './hooks'              // app 专属 hooks
+// apps/client/src/service/http-client.ts
+import 'client-only'
+import { HttpService } from '@kkfive/http-client'
+export const httpClient = new HttpService({ prefix: '/api', /* 浏览器配置 */ })
+
+// apps/client/src/service/rpc-client.ts
+import 'client-only'
+import { createRpcClient } from '@kkfive/rpc'
+import { httpClient } from './http-client'
+export const rpcClient = createRpcClient(httpClient, '/api')
 ```
 
+## 模板：Hooks
+
 ```ts
-// apps/client/src/service/index.client.ts
-import { HttpService } from '@kkfive/http-client'
-export const httpClient = new HttpService({ /* 浏览器配置 */ })
+// apps/client/src/hooks/use-example.ts
+import { useQuery } from '@tanstack/react-query'
+import { fetchExample } from '@kkfive/rpc'
+import { rpcClient } from '@/service/rpc-client'
+export function useExample() {
+  return useQuery({ queryKey: ['example'], queryFn: () => fetchExample(rpcClient) })
+}
 ```
 
 ## 检查
@@ -76,8 +94,10 @@ export const httpClient = new HttpService({ /* 浏览器配置 */ })
 - [ ] app 不 import 其他 app（`apps/A` 不引 `apps/B`）
 - [ ] tsconfig 继承 `@kkfive/tsconfig/{nextjs|hono}.json`
 - [ ] Next.js app 的 `transpilePackages` 含所有消费的 `@kkfive/*`
-- [ ] `domain/` 适配层只 re-export + 注入实例 + 可选 hooks，不重写核心逻辑
-- [ ] `apps/api` 不注入 HttpService（同进程直调）
+- [ ] `src/service/` 双实例齐全：http-client/http-server + rpc-client/rpc-server
+- [ ] client-only / server-only 隔离正确：client 组件不引 `*-server`，server 组件不引 `*-client`
+- [ ] hc 经 `createRpcClient(http, baseUrl)` 注入实例，不硬编码 baseUrl
+- [ ] `apps/api` 不注入 HttpService（它是后端，不经 HTTP 调自己）
 - [ ] 根 `tsconfig.json` references 已追加
 - [ ] `pnpm install` 后 workspace 链接正常
 - [ ] 已生成 `apps/<name>/AGENTS.md`（thin-shell 格式，app 必定有专属约束）

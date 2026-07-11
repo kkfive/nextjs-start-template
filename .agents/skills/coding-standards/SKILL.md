@@ -9,11 +9,11 @@ user-invocable: true
 ## Scope
 - Target: TypeScript + React 文件级写法 + 测试
 - Cover: 层级 import 黑名单、UI 导入路径、类型定义、组件模式、错误处理、图标、测试
-- Avoid: 三层架构整体决策（去 `/project-architecture`）；Domain 模块内部分层（去 `/domain-layer`）
+- Avoid: 三层架构整体决策（去 `/project-architecture`）；包内分层红线（去 `.agents/rules/packages.rule.md`）
 
 **边界声明**：本 skill 回答"具体一行代码该怎么写"；同主题更宏观的去：
 - monorepo 分层与目录决策 → `/project-architecture`
-- Domain 适配层与共享包结构 → `/domain-layer`
+- 跨包/跨层 import 黑名单 → `references/layer-dependency.md`
 - 样式 → `/styling-system`
 
 ## Common Tasks
@@ -39,12 +39,12 @@ user-invocable: true
 | ❌ 不要 | ✅ 应该 |
 |---|---|
 | `packages/*` 里 import `apps/*` | 共享包不依赖应用 |
-| `packages/domain-core` 里 import React/Next/Hono | 共享包框架无关 |
+| `packages/rpc` 里 import React/react-query/Next | 共享包框架无关 |
 | `import { Button } from 'antd'`（业务代码） | `from '@/components/ui/button'`（底层 `@kkfive/ui`） |
 | `interface User {}` | `type User = {}` |
 | `export const Component = () => {}` | `export function Component() {}` |
 | `as any` / `@ts-ignore` | 改 type；如必须用 `as unknown as X` 并注释 |
-| 共享包 / 适配层里 import `@/components/*` | Domain 不依赖 UI |
+| `packages/rpc` 里 import `@/components/*` | rpc 不依赖 UI |
 | 测试直接打真网络 | 用 MSW 拦截 |
 
 ## Session Discipline
@@ -54,5 +54,5 @@ user-invocable: true
 ## 相关 Skills
 
 - `/project-architecture`：monorepo 分层与跨包依赖宏观规则
-- `/domain-layer`：Domain 适配层与共享包结构
+- `references/layer-dependency.md`：跨包/跨层 import 黑名单
 - `/ant-design`：antd 组件 API 与查询要求

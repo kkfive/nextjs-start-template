@@ -1,6 +1,6 @@
 # 项目协作准则
 
-pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享包 / `internal/` 工具链配置），每个 Next.js app 内部采用 Domain 适配层 / 应用基础设施 / UI / 路由分层。所有回复使用简体中文。
+pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享包 / `internal/` 工具链配置），每个 Next.js app 内部采用适配层（src/service）/ 应用基础设施 / UI / 路由分层。所有回复使用简体中文。
 
 规范源在 `.agents/`，本文件是 Claude Code（通过 `CLAUDE.md`）、Codex CLI、ZCode 三工具共用的路由薄壳。当本文件与 `.agents/rules/` 或 `.agents/skills/` 冲突时，以规范源为准。
 
@@ -28,7 +28,7 @@ pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享�
 
 ## Load When Editing
 
-- `apps/*/domain/**` → @.agents/rules/domain.rule.md
+- `apps/*/src/service/**` → @.agents/rules/domain.rule.md
 - `packages/**` → @.agents/rules/packages.rule.md
 - `apps/*/src/components/**` → @.agents/rules/ui.rule.md
 - `apps/*/src/app/**` → @.agents/rules/next-app.rule.md

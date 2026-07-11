@@ -17,14 +17,15 @@
 - **Hono app 误用 transpilePackages** → Hono 无此配置；开发用 tsx，生产用 tsup 打包
 - **新增 package 后忘记加进 app 的 transpilePackages** → 新包接入时同步更新所有消费 app
 
-## HttpService 注入
+## 实例注入（src/service 双实例）
 
-- **`apps/api` 注入 HttpService 调自己** → 同进程直调 domain-core Controller，不经 HTTP
-- **Next.js app 注入错实例** → client 用 `index.client`（浏览器），admin SSR 用 `index.server`（服务端）
-- **实例写进共享包** → 实例是 app 专属，放各 app 的 `src/service/`；共享包只有抽象（`@kkfive/http-client`）
+- **client component import `rpc-server` 或 `http-server`** → server/client 双实例由 `server-only`/`client-only` 强制隔离；client 组件只能引 `*-client`，server component 只能引 `*-server`
+- **hc 客户端自己造实例** → hc 经 `createRpcClient(http, baseUrl)` 复用 HttpService 实例的拦截器链；不要再 `new HttpService()`
+- **实例或 hc 客户端写进共享包** → 实例是 app 专属，放各 app 的 `src/service/`；共享包只有抽象（`@kkfive/http-client`）和工厂（`@kkfive/rpc`）
+- **SSE 走 hc** → hc 无流式语义；SSE 直连 api 的 SSE 路由，走 `@kkfive/http-client` 的 `.sse()`
 
-## Domain 适配层
+## calls 归位
 
-- **适配层重写核心业务逻辑** → 核心在 `@kkfive/domain-core`；适配层只 re-export + 注入实例 + 可选 hooks
-- **适配层 import `@/components/*`** → 适配层不依赖 UI
-- **把 React Query hooks 写进 `@kkfive/domain-core`** → 共享包框架无关；hooks 留各 Next.js app 适配层
+- **自有 api calls 写在 app 内** → 多 app 共享的自有 api calls 进 `@kkfive/rpc`；app 专属第三方 calls 放 `src/service/`
+- **React Query hooks 写进 `@kkfive/rpc`** → rpc 不含 react-query/react；hooks 由各 app 自写（缓存策略自治）
+- **业务组件写进共享包** → 业务组件留各 app `src/components/`；共享包不含业务 UI

@@ -2,7 +2,7 @@
 
 业务逻辑闭环在 `apps/api`（Hono）：路由层用 `@kkfive/contracts` 的 zod schema 校验入参、承担业务编排与外部 API 代理，并在入口导出 `export type AppType = typeof app` 作为前端类型链的源头。
 
-`packages/biz` 是前端业务包，用 `hono/client` 的 `hc<AppType>` 做端到端类型安全调用，按垂直业务组织——每个业务目录内聚 React Query hooks 与业务 UI 组件。HTTP 实例由各 app 注入（biz 的 hc client 经 wrapper 复用 app 的 HttpService interceptor），biz 不硬编码实例或 baseUrl。纯展示、零业务依赖的 dumb 组件留在各 app。
+`packages/rpc` 是类型化 RPC 包（`createRpcClient` 工厂 + `unwrapData` + 自有 api 共享 calls），不含 react-query/react——hooks 各 app 自写（缓存策略自治），业务组件留各 app `src/components/`。HTTP 实例由各 app 的 `src/service/` 注入（hc 经 `createRpcClient(http, baseUrl)` 复用实例拦截器），rpc 不硬编码实例或 baseUrl。第三方 calls 默认 app 专属，放 `src/service/`；多 app 共享时才提取进 rpc。
 
 各 app 的 `src/service` 注入 HttpService 实例（浏览器/服务端双实例，由 `server-only`/`client-only` 物理隔离）与 app 专属 calls；hc 经 `createRpcClient` 复用实例拦截器（retry / hooks / 401 / 错误归一化），不承载业务逻辑。
 

@@ -9,7 +9,7 @@ user-invocable: true
 ## Scope
 - Target: `packages/*` 下新建共享包
 - Cover: 目录结构、package.json exports、tsconfig（composite + references）、依赖声明、workspace 注册
-- Avoid: 业务逻辑编写（去 `/domain-layer`）；UI 组件实现（去 `/coding-standards`）；新建应用（去 `../create-app/SKILL.md`）
+- Avoid: 包内分层红线（去 `.agents/rules/packages.rule.md`）；UI 组件实现（去 `/coding-standards`）；新建应用（去 `../create-app/SKILL.md`）
 
 **先加载项目原则**：项目根 `.agents/rules/packages.rule.md` 与 `.agents/rules/monorepo.rule.md`。
 
@@ -46,6 +46,6 @@ user-invocable: true
 
 ## 相关 Skills
 
-- `/domain-layer`：`@kkfive/domain-core` 业务模块的内部结构
+- `.agents/rules/packages.rule.md`：包分类与红线
 - `../create-app/SKILL.md`：新建应用（消费 packages）
 - `/project-architecture`：monorepo 分层与 packages 定位

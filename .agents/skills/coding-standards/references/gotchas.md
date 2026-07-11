@@ -17,7 +17,7 @@
 ## Import 黑名单
 
 - **`packages/*` 里 import `apps/*`** → 共享包不依赖应用；逻辑放错位置
-- **`packages/domain-core` 里 import React/Next/Hono** → 破坏框架无关性；hooks/路由留各 app
+- **`packages/rpc` 里 import react-query/React** → 破坏框架无关性；rpc 是纯调用函数，hooks/React Query 留各 app
 - **`packages/contracts` 或 `packages/utils` 引入运行时框架** → 污染所有消费方 bundle
 - **app 的 `domain/` 适配层里 import `@/components/*`** → 适配层不依赖 UI
 - **`src/components/ui/` 里 import `@domain/*`** → 通用 UI 不依赖业务

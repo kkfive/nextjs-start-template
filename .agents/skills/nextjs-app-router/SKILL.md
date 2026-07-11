@@ -9,7 +9,7 @@ user-invocable: true
 ## Scope
 - Target: Next.js App Router 架构（`apps/client`、`apps/admin` 等 Next.js app）
 - Cover: Server/Client Components、数据获取、缓存、Server Actions、流式渲染、Metadata、性能优化、路由约定、多 app 场景
-- Avoid: Pages Router；与 Domain 层耦合（业务逻辑放 `@kkfive/domain-core`，经各 app 的 domain 适配层调用）
+- Avoid: Pages Router；与业务 RPC 层耦合（业务 calls 在 `@kkfive/rpc`，经各 app `src/service` 的 rpc 实例调用）
 
 先加载项目原则：项目根规则文件 `next-app.rule.md`（位于 `.agents/rules` 目录）。本 skill 只提供执行流程、决策与示例，不作为规则源。
 
@@ -35,7 +35,7 @@ user-invocable: true
 monorepo 下有多个 Next.js app（`apps/client`、`apps/admin`），各自独立构建部署：
 - 路由文件位于各自 `apps/{app}/src/app/`
 - 配置继承 `@kkfive/nextjs-config` 预设（含 `transpilePackages`）
-- 业务逻辑通过各自的 `domain/` 适配层调用 `@kkfive/domain-core`
+- 业务调用通过各自的 `src/service/` 适配层（`rpc-client` / `rpc-server`）调用 `@kkfive/rpc` 的 calls
 - `src/app/api/` 仅承担轻量 BFF，真正后端接口在 `apps/api`（Hono）
 
 ## 反模式速查

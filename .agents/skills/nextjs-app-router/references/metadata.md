@@ -27,14 +27,14 @@ export const metadata: Metadata = {
 ```ts
 // apps/client/src/app/material/[id]/page.tsx
 import type { Metadata } from 'next'
-import { httpClient } from '@/service/index.client'
-import { Controller as Material } from '@kkfive/domain-core/material'
+import { fetchMaterial } from '@kkfive/rpc'
+import { rpcServer } from '@/service/rpc-server'
 
 export async function generateMetadata(
   { params }: { params: Promise<{ id: string }> },
 ): Promise<Metadata> {
   const { id } = await params
-  const m = await Material.getDetail(httpClient, id)
+  const m = await fetchMaterial(rpcServer, id)
   return {
     title: `${m.name} - 素材`,
     description: m.description?.slice(0, 160),

@@ -12,9 +12,7 @@ packages/ui/                     基础 UI（shadcn 二次封装 + 自实现，�
 
 apps/{app}/src/components/        各 app 的 UI（直接消费 @kkfive/ui，无透传层）
   common/                         通用功能组件（可复用，不依赖特定业务）
-  domain/                         领域 UI（耦合业务，可连 biz）
-
-packages/biz/src/<业务>/          业务 UI 组件（耦合业务，垂直内聚）
+  domain/                         领域 UI（耦合业务，可连 rpc calls）
 ```
 
 ## 导入规则（Next.js apps）
@@ -23,7 +21,7 @@ packages/biz/src/<业务>/          业务 UI 组件（耦合业务，垂直内�
 |------|----------|------|
 | `src/app/` | ✅ 直接 `@kkfive/ui/components/*` | `import { Button } from '@kkfive/ui/components/button'` |
 | `src/components/common/` | ✅ 直接 `@kkfive/ui/components/*` / `hooks/*` | `import { useIsMobile } from '@kkfive/ui/hooks/use-mobile'` |
-| `src/components/domain/` | ✅ 直接 `@kkfive/ui/components/*` + biz | — |
+| `src/components/domain/` | ✅ 直接 `@kkfive/ui/components/*` + rpc calls | — |
 | 任何层 | ❌ 禁零价值透传层 | ~~`apps/{app}/src/components/ui/button.tsx` = `export * from '@kkfive/ui/...'`~~ |
 
 ## antd 使用

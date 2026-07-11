@@ -18,4 +18,4 @@ HTTP 抽象包：HttpService 接口/基础类 + 错误归一化 + SSE 工具。�
 import { HttpService, BusinessError, createErrorResponse } from '@kkfive/http-client'
 ```
 
-各 app 创建 `HttpService` 实例后，注入 `packages/biz` 的 `hc` client wrapper（经自定义 `fetch` 复用 interceptor 链，方案 A）——类型安全由 `hc<AppType>` 提供，interceptor 由 HttpService 提供。
+各 app 创建 `HttpService` 实例后，由 `@kkfive/rpc` 的 `createRpcClient(http, baseUrl)` 注入 hc 客户端（hc 的 fetch 走 `http.instance`，复用实例的拦截器链）——类型安全由 `hc<AppType>` 提供，interceptor 由 HttpService 提供。
