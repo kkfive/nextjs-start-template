@@ -2,8 +2,8 @@
 
 import { Button } from '@kkfive/ui/components/button'
 import {
-  LucideGithub,
   LucideTerminal,
+  SimpleIconsGithub,
 } from '@kkfive/ui/components/icon'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -117,7 +117,7 @@ export function HeroSection() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <LucideGithub className="size-4" />
+                <SimpleIconsGithub className="size-4" />
                 GitHub
               </Link>
             </Button>

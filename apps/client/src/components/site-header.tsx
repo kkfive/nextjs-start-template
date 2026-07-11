@@ -2,8 +2,8 @@
 
 import { cn } from '@kkfive/ui'
 import {
-  LucideGithub,
   LucideLayers,
+  SimpleIconsGithub,
 } from '@kkfive/ui/components/icon'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -63,7 +63,7 @@ export function SiteHeader() {
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-lg border border-border/60 bg-secondary/50 px-3 py-1.5 text-sm font-medium text-muted-foreground transition-all hover:border-primary/30 hover:text-foreground"
           >
-            <LucideGithub className="size-4" />
+            <SimpleIconsGithub className="size-4" />
             <span className="hidden sm:inline">GitHub</span>
           </Link>
         </div>

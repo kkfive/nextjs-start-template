@@ -34,7 +34,7 @@ export const LucideZoomOut = CreateIcon('icon-[lucide--zoom-out]')
 export const LucideRotateCw = CreateIcon('icon-[lucide--rotate-cw]')
 
 // New icons for redesign
-export const LucideGithub = CreateIcon('icon-[lucide--github]')
+export const SimpleIconsGithub = CreateIcon('icon-[simple-icons--github]')
 export const LucideSparkles = CreateIcon('icon-[lucide--sparkles]')
 export const LucideLayers = CreateIcon('icon-[lucide--layers]')
 export const LucideCode2 = CreateIcon('icon-[lucide--code-2]')
