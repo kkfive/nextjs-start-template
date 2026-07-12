@@ -33,4 +33,4 @@ Next.js App Router - Server Components、流式渲染、并行路由、数据获
 - `/coding-standards` - React 组件模式
 - `/project-architecture` - monorepo 分层与应用内组织
 - `/ant-design` - SSR 配置和 StyleProvider
-- `/hono-api` - 真正的后端 API 服务（`apps/api`）
+- `apps/api/.agents/skills/hono-api/` - 真正的后端 API 服务（按包自动发现）

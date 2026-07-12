@@ -1,6 +1,6 @@
 # @kkfive/rpc
 
-调 apps/api(Hono) 的 **类型化 RPC 扩展通道**：基于 Hono RPC（`hc<AppType>`）的端到端类型安全调用工厂 + envelope 解包 + 自有 api 共享业务 calls。
+调 apps/api（Hono）的 **类型化 RPC 扩展通道**：基于 Hono RPC（`hc<AppType>`）的端到端类型安全调用工厂 + envelope 解包 + 跨 app 自有 API calls。
 
 ## 定位：双后端通道中的扩展通道
 
@@ -16,7 +16,7 @@ client 有两条后端通道，rpc 是其中面向 Hono 的扩展通道：
 ## 作用
 - **hc RPC 工厂**：`createRpcClient(http, baseUrl)` 接收 app 注入的 `HttpService` 实例，hc 的 fetch 走 `http.instance`，复用实例的 retry / hooks / 401 跳转 / 错误归一化等拦截器
 - **envelope 解析**：`unwrapData` 解析 api 的 `HttpResponse` envelope，失败抛 `BusinessError`
-- **业务 calls**：`fetchHitokoto` / `callScenario` / `callEnvelopeScenario` 等纯调用函数，供 app 的 hooks / SSR / 组件复用
+- **共享 calls**：跨 app 复用的自有 API 纯调用函数，供 feature hooks / SSR / 组件复用；单一 app 的业务 calls 留在该 app 的 feature
 
 ## 红线
 - 依赖 `@kkfive/contracts`(type) / `hono`；peer 依赖 `@kkfive/http-client`（`createRpcClient` 需要 `HttpService` 类型）
@@ -27,7 +27,7 @@ client 有两条后端通道，rpc 是其中面向 Hono 的扩展通道：
 ## 消费方式
 ```ts
 import { createRpcClient, fetchHitokoto } from '@kkfive/rpc'
-import { httpClient } from '@/service/index.client'
+import { httpClient } from '@/service/http-client'
 
 // app 注入自己的 HttpService 实例（浏览器 / 服务端各自治）
 const client = createRpcClient(httpClient, apiBaseUrl)

@@ -2,8 +2,7 @@
   "extends": "@kkfive/tsconfig/nextjs.json",
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*"],
-      "@domain/*": ["./domain/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": [

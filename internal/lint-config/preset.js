@@ -7,7 +7,7 @@ import antfu from '@antfu/eslint-config'
  * 创建 ESLint 配置。
  *
  * @param {object} options
- * @param {boolean} [options.tailwind=true] - 是否加载 eslint-plugin-tailwindcss。
+ * @param {boolean} [options.tailwind] - 是否加载 eslint-plugin-tailwindcss。
  *   非 Tailwind 应用（如 Hono 后端、尚未接入 tailwindcss 的 app）传 false 跳过，
  *   否则插件启动时会因找不到 tailwindcss 包而崩溃。
  * @param {string} [options.tailwindCssPath] - 该 app 的 tailwind.css 路径（用于 tailwind plugin 检测）

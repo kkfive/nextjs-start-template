@@ -42,8 +42,23 @@
       "dependsOn": [],
       "inputs": ["$TURBO_DEFAULT$"]
     },
-    "verify:conventions": {
-      "dependsOn": []
+    "verify:architecture": {
+      "dependsOn": [],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "scripts/verify-conventions.mjs",
+        "apps/**",
+        "packages/**",
+        "internal/**"
+      ]
+    },
+    "verify:fixtures": {
+      "dependsOn": [],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "src/architecture-policy/**",
+        "$TURBO_ROOT$/scripts/verify-conventions.mjs"
+      ]
     }
   }
 }

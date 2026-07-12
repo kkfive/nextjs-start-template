@@ -1,16 +1,17 @@
 import { createConfig } from '@kkfive/lint-config'
-import { domainBoundaryRules } from '@kkfive/lint-config/rules/domain-boundary'
 
 export default createConfig({
   appDir: new URL('.', import.meta.url).pathname,
   // Hono app 无 tailwind，跳过 eslint-plugin-tailwindcss（否则启动时找不到 tailwindcss 崩溃）
   tailwind: false,
   overrides: [
-    domainBoundaryRules({ files: ['domain/**/*.ts'] }),
     {
-      // api 是后端，无 jsx/dom，放宽 nextjs 相关规则
+      // API 端不得回退到前端/DOM 依赖；此规则是架构门禁，不能由 override 关闭。
+      files: ['src/**/*.{ts,tsx}'],
       rules: {
-        'no-restricted-imports': 'off',
+        'no-restricted-imports': ['error', {
+          patterns: ['@/components/*', '@/service/*', '@kkfive/utils/dom', 'react', 'react-dom', 'next/*'],
+        }],
       },
     },
     {

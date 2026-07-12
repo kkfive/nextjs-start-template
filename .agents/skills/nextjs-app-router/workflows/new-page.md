@@ -67,7 +67,7 @@ export default function Error({
 
 - [ ] `params` / `searchParams` 已 `await`（Next 15+ 要求 Promise 形态）
 - [ ] 数据获取尽量留在 Server Component，向下传 props
-- [ ] 业务逻辑通过 `@kkfive/rpc` 的 calls（经该 app `src/service` 的 rpc 实例）调用，不在页面里 `fetch`
+- [ ] 页面只组合 feature 公开入口，不在页面里写 `fetch`、业务 call、业务状态或可复用视图
 - [ ] UI 组件来自该 app 的 `@/components/ui/*`（底层 `@kkfive/ui`）
 - [ ] 有失败可能的子树有 `error.tsx`
 

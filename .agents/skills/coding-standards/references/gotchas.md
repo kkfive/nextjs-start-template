@@ -19,8 +19,8 @@
 - **`packages/*` 里 import `apps/*`** → 共享包不依赖应用；逻辑放错位置
 - **`packages/rpc` 里 import react-query/React** → 破坏框架无关性；rpc 是纯调用函数，hooks/React Query 留各 app
 - **`packages/contracts` 或 `packages/utils` 引入运行时框架** → 污染所有消费方 bundle
-- **app 的 `domain/` 适配层里 import `@/components/*`** → 适配层不依赖 UI
-- **`src/components/ui/` 里 import `@domain/*`** → 通用 UI 不依赖业务
+- **`src/service/` 里 import `@/features/*` 或 `@/components/*`** → 运行时实例不依赖业务或 UI
+- **`src/components/ui/` 里 import feature 业务代码** → 通用 UI 不依赖业务
 - **业务代码 `from 'antd'`** → 经各 app 的 `from '@/components/ui/<component>'`（antd 各 app 自治）
 - **`from '@/hooks/*'` 在共享包 Service 中** → hooks 是各 app 适配层；让调用方注入
 

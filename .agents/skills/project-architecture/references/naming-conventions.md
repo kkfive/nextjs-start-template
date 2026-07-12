@@ -7,7 +7,7 @@
 | 目录 | kebab-case | `user-profile/`, `form-validation/` |
 | React 组件文件 | kebab-case | `hitokoto-card.tsx`, `scenario-card.tsx` |
 | UI 组件目录 | kebab-case + `/index.tsx` | `button/index.tsx`, `modal/index.tsx` |
-| 工具/服务文件 | kebab-case | `app-error.ts`, `index.base.ts` |
+| 工具/服务文件 | kebab-case | `app-error.ts`, `http-client.ts` |
 | Contracts 类型定义 | `type.ts` (固定名称) | `contracts/src/{module}/type.ts` |
 | 工具类型定义 | kebab-case + `.ts` | `utility-types.ts`, `request-types.ts` |
 | 全局类型扩展 | kebab-case + `.d.ts` | `axios.d.ts`, `window.d.ts` |
@@ -53,7 +53,7 @@ apps/{app}/src/components/ui/
 | 前缀 | 含义 | 示例 |
 |------|------|------|
 | `_` | 内部/私有模块 | `_shared/`, `_internal/` |
-| `index.` | 入口文件 | `index.ts`, `index.base.ts` |
+| `index.` | 入口文件 | `index.ts` |
 | `use` | React Hook | `useMobile`, `useMouseStore` |
 
 ## 共享包模块导出
@@ -76,7 +76,7 @@ export async function fetchMaterial(client: RpcClient, id: string) {
 }
 ```
 
-各 app 的 React Query hooks `apps/{app}/src/hooks/use-{module}.ts` 标准模式：
+各 app 的 React Query hooks `apps/{app}/src/features/{feature}/hooks/use-{module}.ts` 标准模式：
 
 ```typescript
 // 组合 rpc calls + app 专属 rpc 实例

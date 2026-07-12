@@ -1,6 +1,6 @@
 ---
 name: project-architecture
-description: monorepo 架构组织规范 - apps/packages/internal 三层、应用内适配层/基础设施/UI/路由分层、依赖规则、目录约定、命名规范。用于决定新代码该放哪一层、检查跨层/跨包 import 是否合规、初始化新模块的目录结构。
+description: monorepo 架构组织规范 - apps/packages/internal 三层、Feature-first、运行时 service 边界、路由组合、依赖规则、目录约定、命名规范。用于决定新代码该放哪一层、检查跨层/跨包 import 是否合规、初始化新模块的目录结构。
 primary: true
 user-invocable: true
 ---
@@ -9,7 +9,7 @@ user-invocable: true
 
 ## Scope
 - Target: pnpm workspace + Turborepo monorepo 的分层组织
-- Cover: apps/packages/internal 三层、应用内分层、依赖规则、目录约定、命名规范
+- Cover: apps/packages/internal 三层、Feature-first 应用内分层、依赖规则、目录约定、命名规范
 - Avoid: 单文件级的 TypeScript / React 写法（去 `/coding-standards`）；包内分层细节（去 `.agents/rules/packages.rule.md`）
 
 **边界声明**：本 skill 回答"代码该放哪、跨层/跨包依赖能不能 import"；同主题更细的细节去：
@@ -39,10 +39,9 @@ monorepo:
   internal/     工具链配置（tsconfig / lint-config / tailwind-config / nextjs-config）
 
 每个 Next.js app（apps/client、apps/admin）内部:
-  src/service/           适配层（http-client/http-server + rpc-client/rpc-server 双实例，server-only/client-only 隔离）
-                         app 专属 calls（第三方）也放此层；hc 经 createRpcClient 注入实例
-  src/hooks/             React Query hooks（各 app 自写，缓存策略自治）
-  src/components/        业务组件（ui/ + common/ + 领域组件）
+  src/features/          业务能力（视图、calls、hooks、状态、模型、内部测试）
+  src/service/           仅 HTTP/RPC/SSE 实例（server-only/client-only 隔离）
+  src/components/        跨 feature 的真实通用 UI 与 providers
   src/lib/               工具函数、错误处理
   src/app/               路由 / 页面 / Server Action
 
@@ -57,9 +56,9 @@ apps/api (Hono，真实后端):
 | ❌ 不要 | ✅ 应该 |
 |---|---|
 | `packages/*` 里 import `apps/*`（运行时） | 共享包不依赖应用（rpc 仅 type-only 引 AppType） |
-| `src/service/` 里写业务逻辑 | 适配层只创建实例 + 注入；业务 calls 共享进 rpc，hooks 各 app 自写 |
+| `src/service/` 里写业务逻辑 | service 只创建运行时实例；业务 calls、hooks、状态和视图放所属 feature |
 | `packages/ui` 里 import 业务代码或 antd | 基础 UI 保持通用、不含 antd |
-| `src/app/` 写可复用组件 | 下沉到 `src/components/` |
+| `src/app/` 写可复用组件或业务编排 | 组合 `src/features/` 公开入口；跨 feature UI 才下沉到 `src/components/` |
 | 目录用 `userProfile` | 用 `user-profile` (kebab-case) |
 | client 组件 import `rpc-server` | server/client 双实例由 server-only/client-only 强制隔离 |
 

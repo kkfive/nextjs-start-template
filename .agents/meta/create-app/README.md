@@ -20,7 +20,7 @@
 - **app 之间不互引**：共享内容提取为 package
 - **继承 internal 配置**：tsconfig / eslint / next.config / tailwind 都继承预设
 - **transpilePackages**：Next.js app 消费的每个 `@kkfive/*` 都要加进 `transpilePackages`
-- **适配层模式**：HttpService/hc 客户端实例在 app 的 `src/service/`（双实例 server-only/client-only），rpc 提供工厂 + 共享 calls，hooks 各 app 自写
+- **Feature-first**：业务视图、calls、hooks、状态和模型在 app 的 `src/features/`；`src/service/` 仅保存 HTTP/hc/SSE 双实例
 
 ## References
 

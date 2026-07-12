@@ -6,35 +6,35 @@
 
 ### 如何适配后端特定的响应信封结构？
 
-项目默认响应格式（成功/错误 envelope）的类型定义在 `packages/http-client`。适配不同后端格式时，修改 envelope 类型与 Controller 中的转换逻辑，不要在 HttpService 层全局转换（会影响不需要转换的接口）。
+项目默认响应格式（成功/错误 envelope）的类型定义在 `packages/http-client`。适配不同后端格式时，在所属 feature 或 API 业务模块中处理转换，不要在 HttpService 层全局转换（会影响不需要转换的接口）。
 
-### `src/service/` 下的 `.base.ts` / `.client.ts` / `.server.ts` 该用哪个？
+### `src/service/` 下的运行时实例该如何命名和使用？
 
 | 文件 | 场景 | 环境变量 |
 | --- | --- | --- |
-| `index.base.ts` | 通用/测试（无拦截器） | 无 |
-| `index.client.ts` | 客户端组件 (`'use client'`) | `NEXT_PUBLIC_API_URL` |
-| `index.server.ts` | 服务端组件 (RSC)、API 路由 | `API_BASE_URL` |
+| `http-client.ts` / `rpc-client.ts` | 客户端组件 (`'use client'`) | `NEXT_PUBLIC_API_URL` |
+| `http-server.ts` / `rpc-server.ts` | 服务端组件 (RSC)、API 路由 | `API_BASE_URL` |
+| `sse-client.ts`（可选） | 浏览器流式请求 | `NEXT_PUBLIC_API_URL` |
 
-- `.server.ts` 含 Cookie/Token 注入等服务端专用拦截器
-- `.client.ts` 含客户端日志、401 跳转等客户端专用拦截器
-- HttpService 实例由各 app 的 `src/service/` 创建并注入到 domain-core 的 Controller（实例是 app 专属，不进共享包）
+- `*-server.ts` 含 Cookie/Token 注入等服务端专用拦截器，并以 `server-only` 隔离
+- `*-client.ts` 含客户端日志、401 跳转等客户端专用拦截器，并以 `client-only` 隔离
+- `src/service/` 只创建 app 专属的 HTTP/RPC/SSE 实例；业务 calls、hooks、状态和视图归入 `src/features/<feature>/`
 
-### 为什么 Controller 采用 `getData(http, ...)` 显式注入模式？
+### 为什么运行时实例通过参数注入给 feature calls？
 
 1. **可测试性**：测试时注入 Mock 实例，无需 mock 模块
-2. **跨环境复用**：同一 Controller 可在客户端（注入 httpClient）和服务端（注入 httpServer）使用；`apps/api`（Hono）同进程直调，不经 HttpService
-3. **解耦**：`@kkfive/domain-core` 不依赖具体实例，保持框架无关
+2. **跨环境复用**：同一 feature call 可在客户端（注入 httpClient）和服务端（注入 httpServer）使用
+3. **边界清晰**：运行时实例不承载业务逻辑，feature 不依赖全局单例
 
 ## 数据类型
 
 ### 分页/通用工具类型放哪？
 
-跨 app 共享的工具类型（`Pagination`、`PaginatedResponse<T>`、`Nullable<T>`、`ExternalData<T>` 等）在 `packages/contracts/types/`。模块专属类型在各 domain 模块的 `type.ts`。
+跨 app 共享的工具类型（`Pagination`、`PaginatedResponse<T>`、`Nullable<T>`、`ExternalData<T>` 等）在 `packages/contracts/types/`。模块专属类型在所属 `src/features/<feature>/` 的 `type.ts`。
 
 ### 后端返回 `snake_case` 而前端用 `camelCase` 怎么处理？
 
-在 Controller 层用 `es-toolkit` 的 `toCamelCaseKeys` 转换，不要在 HttpService 层全局转换。
+在所属 feature 或 API 业务模块用 `es-toolkit` 的 `toCamelCaseKeys` 转换，不要在 HttpService 层全局转换。
 
 ## 状态管理
 

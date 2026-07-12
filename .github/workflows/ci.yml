@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
+  verify:
+    name: Static Governance
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -28,31 +28,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run ESLint（全量：规范门禁需全局一致）
-        run: pnpm lint
-
-      - name: Verify conventions（全量：跨包规范/enum 一致性）
-        run: pnpm verify:conventions
-
-  typecheck:
-    name: Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup mise
-        uses: jdx/mise-action@v2
-        with:
-          cache: true
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run TypeScript（走 turbo run typecheck，获拓扑与缓存）
-        run: pnpm typecheck
+      - name: Run static governance（全量：不使用 affected filter）
+        run: pnpm verify
 
   test:
     name: Test
@@ -97,7 +74,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test]
+    needs: [verify, test]
     steps:
       - uses: actions/checkout@v6
         with:

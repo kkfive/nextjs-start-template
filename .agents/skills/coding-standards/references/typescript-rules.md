@@ -7,7 +7,7 @@
 | 共享包类型定义 | `packages/contracts/src/{module}/`（zod schema + z.infer） | 显式导入导出，避免全局污染 |
 | 跨 app 共享契约 | `packages/contracts/`（schemas / types / errors） | 单一真源，客户端服务端共用 |
 | 通用工具类型 | `packages/utils/src/` 或 `@kkfive/contracts/types/` | 显式导入，避免全局污染 |
-| app 专属类型 | 各 app 的 `domain/{module}/type.ts` 或 `src/lib/` | 仅该 app 使用 |
+| app 专属类型 | 各 app 的 `src/features/<feature>/type.ts` 或 `src/lib/` | 仅该 app 使用 |
 | 第三方库扩展 | 各 app 的 `typings/*.d.ts` + `declare module` | TypeScript 模块扩展机制 |
 
 ## 基本规则

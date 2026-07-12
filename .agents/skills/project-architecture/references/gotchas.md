@@ -10,7 +10,7 @@
 
 ## 跨层 import（应用内）
 
-- **`src/service/` 里 import `@/components/*` 或 `@/app/*`** → 适配层不依赖 UI 或路由
+- **`src/service/` 里 import `@/components/*`、`@/features/*` 或 `@/app/*`** → 运行时实例不依赖 UI、业务或路由
 - **client component import `@/service/rpc-server`** → server/client 双实例由 `server-only`/`client-only` 强制隔离；client 组件只能引 `rpc-client`，server component 只能引 `rpc-server`
 - **`src/components/ui/` 里 import 业务调用（`@kkfive/rpc` calls）** → UI 通用层不依赖业务；下沉到业务组件
 - **`src/components/common/` 直接 import 第三方 UI 库（非 @kkfive/ui）** → 必须经 `@/components/ui/*` 或 `@kkfive/ui`
@@ -24,9 +24,9 @@
 ## 文件位置错乱
 
 - **可复用组件放在 `src/app/components/`** → `src/app` 仅放路由元素；下沉到 `src/components/`
-- **业务 calls 写在 `src/lib/` 或 `src/hooks/`** → 自有 api 共享 calls 进 `@kkfive/rpc`；第三方 app 专属 calls 放 `src/service/`
+- **业务 calls 写在 `src/lib/` 或 `src/service/`** → 跨 app 的自有 API calls 进 `@kkfive/rpc`；app 专属 calls 放所属 `src/features/<feature>/`
 - **HTTP 实例或 hc 客户端写进共享包** → 实例是运行环境，放各 app 的 `src/service/`；`createRpcClient` 接收注入的 HttpService
-- **React Query hooks 写进 `@kkfive/rpc`** → rpc 不含 react-query/react；hooks 由各 app 自写（缓存策略自治）
+- **React Query hooks 写进 `@kkfive/rpc` 或 `src/service/`** → rpc 和 service 不含 hooks；hooks 放所属 feature（缓存策略自治）
 - **只在某一 app 用到的东西放进 `packages/`** → packages 必须通用；先在 app 实现，等第二个消费方再提取
 
 ## 命名
@@ -38,7 +38,7 @@
 ## 何时新建 vs 复用
 
 - 写第二次 → 还不抽
-- 写第三次相似的 → 抽到对应层（功能性 → `common/`；业务相关 → 业务组件；跨 app 共享的自有 api calls → `packages/rpc`）
+- 写第三次相似的 → 抽到对应层（功能性 → `common/`；业务相关 → feature；跨 app 共享的自有 API calls → `packages/rpc`）
 - "复用 ≠ 抽象"：先内联到 3 处，再看真正的差异点决定抽象边界
 
 ## 与其他 skill 的边界

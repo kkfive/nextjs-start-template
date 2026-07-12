@@ -7,9 +7,7 @@
   },
   "exports": {
     ".": "./preset.js",
-    "./preset": "./preset.js",
-    "./rules/domain-boundary": "./rules/domain-boundary.js",
-    "./rules/domain-boundary.js": "./rules/domain-boundary.js"
+    "./preset": "./preset.js"
   },
   "peerDependencies": {
     "eslint": "^10.0.0",

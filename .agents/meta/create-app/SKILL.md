@@ -1,6 +1,6 @@
 ---
 name: create-app
-description: 新建应用规范 - workspace 注册、继承 internal 配置、transpilePackages、app 内部适配层（src/service 双实例）、hooks/components 分层。用于在 apps/ 下新建 Next.js 或 Hono 应用、接入 @kkfive/* 共享包、配置应用基础设施。
+description: 新建应用规范 - workspace 注册、继承 internal 配置、transpilePackages、Feature-first、src/service 运行时双实例。用于在 apps/ 下新建 Next.js 或 Hono 应用、接入 @kkfive/* 共享包、配置应用基础设施。
 user-invocable: true
 ---
 
@@ -8,8 +8,8 @@ user-invocable: true
 
 ## Scope
 - Target: `apps/*` 下新建应用（Next.js client/admin 或 Hono api）
-- Cover: workspace 注册、继承 `internal/*` 配置、`transpilePackages`、app 内部分层、HttpService/hc 实例注入
-- Avoid: 新建共享包（去 `../create-package/SKILL.md`）；具体路由/页面写法（去 `/nextjs-app-router` 或 `/hono-api`）
+- Cover: workspace 注册、继承 `internal/*` 配置、`transpilePackages`、Feature-first、HttpService/hc 实例注入
+- Avoid: 新建共享包（去 `../create-package/SKILL.md`）；具体路由/页面写法（去 `/nextjs-app-router` 或包级 Hono skill）
 
 **先加载项目原则**：项目根 `.agents/rules/monorepo.rule.md`、`next-app.rule.md`（Next.js）或 `hono.rule.md`（Hono）。
 
@@ -51,5 +51,5 @@ user-invocable: true
 
 - `../create-package/SKILL.md`：新建共享包（app 消费的对象）
 - `/nextjs-app-router`：Next.js app 的路由约定
-- `/hono-api`：Hono app 的路由约定
+- `apps/api/.agents/skills/hono-api/`：Hono app 的路由约定（按包自动发现）
 - `/project-architecture`：monorepo 分层与 app 定位

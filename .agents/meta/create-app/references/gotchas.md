@@ -26,6 +26,6 @@
 
 ## calls 归位
 
-- **自有 api calls 写在 app 内** → 多 app 共享的自有 api calls 进 `@kkfive/rpc`；app 专属第三方 calls 放 `src/service/`
-- **React Query hooks 写进 `@kkfive/rpc`** → rpc 不含 react-query/react；hooks 由各 app 自写（缓存策略自治）
-- **业务组件写进共享包** → 业务组件留各 app `src/components/`；共享包不含业务 UI
+- **自有 API calls 写在错误位置** → 多 app 共享的自有 API calls 进 `@kkfive/rpc`；app 专属 calls 放所属 `src/features/<feature>/`
+- **React Query hooks 写进 `@kkfive/rpc` 或 `src/service/`** → rpc 和 service 不含 hooks；hooks 放所属 feature（缓存策略自治）
+- **业务组件写进共享包** → 业务组件留各 app `src/features/<feature>/`；共享包不含业务 UI

@@ -3,11 +3,9 @@
   "compilerOptions": {
     "types": ["node"],
     "paths": {
-      "@/*": ["./src/*"],
-      "@domain/*": ["./domain/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
-

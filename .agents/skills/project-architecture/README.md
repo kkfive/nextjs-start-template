@@ -23,7 +23,7 @@
 ## 包含内容
 
 - **monorepo 三层**：apps（独立应用）/ packages（共享包）/ internal（工具链配置）
-- **应用内分层**：适配层（src/service）、基础设施、UI、路由
+- **应用内分层**：Feature-first、运行时 service、跨 feature UI、路由组合
 - **依赖规则**：跨包与应用内的导入限制
 - **目录约定**：文件和目录组织规范
 - **命名规范**：文件、目录、代码标识符命名
@@ -41,11 +41,10 @@ internal/            → 工具链配置预设
 ### 应用内分层（Next.js apps）
 
 ```
-apps/{app}/src/service/        → 适配层（http-client/http-server + rpc-client/rpc-server 双实例）
-apps/{app}/src/hooks/          → React Query hooks（各 app 自写）
-apps/{app}/src/components/ui/  → 基础 UI（来自 @kkfive/ui）
-apps/{app}/src/components/     → 业务组件
-apps/{app}/src/app/            → 页面路由层
+apps/{app}/src/features/       → 业务视图、calls、hooks、状态、模型
+apps/{app}/src/service/        → HTTP/RPC/SSE 运行时实例（双实例物理隔离）
+apps/{app}/src/components/     → 跨 feature 的通用 UI（含 ui 入口）
+apps/{app}/src/app/            → 页面路由层，仅组合 feature 入口
 ```
 
 ### 命名规范

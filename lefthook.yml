@@ -4,11 +4,7 @@ commit-msg:
       run: npx commitlint --edit {1}
 
 pre-commit:
-  parallel: true
   commands:
-    lint:
-      glob: '*'
-      run: pnpm exec turbo run lint
     verify:
       glob: '*'
-      run: pnpm -w run verify
+      run: pnpm verify

@@ -54,5 +54,5 @@ apps/client/src/app/
 ## 反例
 
 - ❌ 在 `src/app/` 下放可复用组件 → 下沉到该 app 的 `src/components/`
-- ❌ 在 page 里写 Domain 业务 → 通过 `@kkfive/rpc` 的 calls（经该 app `src/service` 的 rpc 实例）调用
+- ❌ 在 page 里写业务实现 → 组合所属 feature 的公开入口；feature 经该 app `src/service` 的运行时实例调用数据
 - ❌ 同一目录既有 `page.tsx` 又有 `route.ts` → Next 报冲突

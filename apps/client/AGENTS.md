@@ -1,32 +1,30 @@
 # apps/client 协作准则（主应用 Next.js）
 
-`apps/client` 是主应用（Next.js App Router），面向终端用户的客户端。它同时承担 BFF 职责（`src/app/api/` 做聚合/转发，非完整后端）。
+`apps/client` 是主应用（Next.js App Router），面向终端用户，也可通过 `src/app/api/` 提供轻量 BFF 聚合/转发。
 
-继承根 `AGENTS.md` 全部规则，补充本 app 专属约束。与根级冲突时以本文件为准（但不违反根级硬性约束）。
+继承根 `AGENTS.md` 全部规则，补充本 app 专属约束。与根级冲突时以根级硬性约束为准。
 
 <always-applicable>
 
 ## 关键约束
 
-### Domain 适配层（client 特有：含 React Query hooks）
+### Feature-first
 
-- `domain/` 是运行环境适配层：re-export `@kkfive/domain-core` 纯逻辑 + 注入客户端 HttpService + 封装 React Query hooks
-- HTTP 实例由调用方注入（hooks 从 `@/service/index.client` 导入 httpClient），Domain 不自建实例
-- 共享包核心逻辑框架无关；hooks 只调用 Domain 公共入口并注入 HTTP 实例
+- 业务视图、calls、React Query hooks、页面模型、store 和 feature 内测试归入 `src/features/<feature>/`
+- `src/app/` 的页面和 layout 只组合 feature 入口、路由元数据与 Next.js 路由能力
+- `src/service/` 仅保存 HTTP、RPC、SSE 运行时实例；不得放业务 calls、hooks、组件或状态
 
 ### antd 自治
 
 - antd 及 `@ant-design/*` 在 client 内自行安装与配置，**不进 `@kkfive/ui`**
 - ConfigProvider / theme token 在 `src/components/providers.tsx` 自治，避免与 `@kkfive/ui` 体系冲突
-- 业务封装基于 antd 的组件留在 `src/components/`，不进共享包
+- 基于 antd 的跨 feature 封装留在 `src/components/`，feature 专属封装留在所属 feature
 
-### HTTP 服务分层（src/service/）
+### 运行时实例
 
-- `index.base.ts` — 公共实例配置
-- `index.client.ts` — 客户端 HttpService（浏览器环境，含 BFF 前缀）
-- `index.server.ts` — 服务端 HttpService（SSR 场景）
-- `index.sse.ts` — SSE 流式请求
-- 拦截器不含 `console.error` / `console.warn`（交由业务层处理）
+- `http-client.ts` / `rpc-client.ts` 仅用于浏览器，必须 `client-only`
+- `http-server.ts` / `rpc-server.ts` 仅用于服务端，必须 `server-only`
+- `sse-client.ts`（如需要）仅创建 SSE 运行时实例；拦截器不含 `console.error` / `console.warn`
 
 ### 环境变量
 
@@ -39,17 +37,15 @@
 
 ## 目录结构
 
-```
+```text
 apps/client/
-├── domain/              # 适配层（re-export domain-core + hooks）
 ├── src/
-│   ├── app/             # 路由 / 页面 / BFF api 路由
-│   ├── components/      # 业务组件 + providers + ui 入口
+│   ├── app/             # 路由 / 页面 / BFF API 路由；仅组合
+│   ├── features/        # feature 业务代码（视图、calls、hooks、状态、模型）
+│   ├── components/      # 跨 feature 的业务组件、providers、ui 入口
 │   ├── config/          # 环境变量、站点配置
-│   ├── hooks/           # app 级 hooks
 │   ├── lib/             # app 级工具函数
-│   ├── service/         # HttpService 实例（client/server/sse）
-│   ├── store/           # 客户端状态（zustand）
+│   ├── service/         # HTTP / RPC / SSE 运行时实例
 │   └── styles/          # 全局样式
 ├── public/              # 静态资源
 └── typings/             # 全局类型声明

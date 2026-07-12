@@ -2,11 +2,13 @@
   "name": "nextjs-start-template",
   "version": "0.0.0",
   "devDependencies": {
+    "@antfu/eslint-config": "^9.1.0",
     "@commitlint/cli": "^21.2.1",
     "@commitlint/config-angular": "^21.2.0",
     "@commitlint/config-conventional": "^21.2.0",
     "@eslint-react/eslint-plugin": "^5.12.1",
     "@kkfive/node-utils": "workspace:*",
+    "eslint": "^10.6.0",
     "lefthook": "^2.1.10",
     "syncpack": "^13.0.0",
     "taze": "^19.14.1",
@@ -17,14 +19,10 @@
     "node": ">=24"
   },
   "packageManager": "pnpm@11.10.0",
-  "pnpm": {
-    "strictPeerDependencies": true,
-    "auto-install-peers": false,
-    "verify-deps-before-run": true
-  },
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "catalog": "pnpx codemod pnpm/catalog",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint -- --fix",
@@ -34,9 +32,12 @@
     "test:run": "turbo run test:run",
     "typecheck": "turbo run typecheck",
     "up": "taze major -I -r",
-    "verify": "pnpm run verify:conventions && pnpm run verify:deps",
-    "verify:conventions": "node scripts/verify-conventions.mjs",
-    "verify:deps": "syncpack lint"
+    "verify": "pnpm run verify:lint && pnpm run verify:typecheck && pnpm run verify:deps && pnpm run verify:architecture && pnpm run verify:fixtures",
+    "verify:architecture": "node scripts/verify-conventions.mjs",
+    "verify:deps": "syncpack lint",
+    "verify:fixtures": "pnpm --filter @kkfive/node-utils run verify:fixtures",
+    "verify:lint": "pnpm lint",
+    "verify:typecheck": "pnpm typecheck"
   },
   "type": "module"
 }

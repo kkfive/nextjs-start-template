@@ -1,8 +1,3 @@
-packages:
-  - 'apps/*'
-  - 'packages/*'
-  - 'internal/*'
-
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
@@ -13,3 +8,10 @@ allowBuilds:
 minimumReleaseAge: 0
 shellEmulator: true
 trustPolicy: off
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'internal/*'
+
+strictPeerDependencies: true
+autoInstallPeers: false

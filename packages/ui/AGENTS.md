@@ -11,7 +11,7 @@
 ### 通用性
 
 - **只放真正可复用的基础组件**：Button、Input、Dialog、Select、布局组件、图标系统、主题 token
-- **不放业务组件**：`OrderTable`、`UserSearchSelect` 等业务组件留在各 app 的 `src/components/domain/`
+- **不放业务组件**：`OrderTable`、`UserSearchSelect` 等业务组件留在各 app 的 `src/features/<feature>/`；跨 feature 的真实通用组件才留在 app 的 `src/components/`
 - 判断标准：换一个新项目还能直接用 → 放这里；只服务特定业务 → 留 app 内
 
 ### 不含 antd
