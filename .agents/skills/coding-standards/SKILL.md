@@ -32,8 +32,6 @@ user-invocable: true
 | 踩坑：类型导出 / `as any` / 测试 mock / 幽灵依赖 | `references/gotchas.md` |
 | 核验规范/配置/自动触发是否生效（端到端验证） | `workflows/verify-end-to-end.md` |
 
-源头表见 `routing.yaml`。
-
 ## 反模式速查
 
 | ❌ 不要 | ✅ 应该 |
@@ -55,4 +53,4 @@ user-invocable: true
 
 - `/project-architecture`：monorepo 分层与跨包依赖宏观规则
 - `references/layer-dependency.md`：跨包/跨层 import 黑名单
-- `/ant-design`：antd 组件 API 与查询要求
+- `/styling-system`：Ant Design 与 Tailwind 样式策略

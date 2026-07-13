@@ -25,8 +25,6 @@ user-invocable: true
 | 看 5 个典型案例 | `references/case-studies.md` |
 | 踩坑速查 | `references/gotchas.md` |
 
-源头表见 `routing.yaml`。
-
 ## 反模式速查
 
 | ❌ 不要 | ✅ 应该 |
@@ -44,5 +42,5 @@ user-invocable: true
 
 ## 相关 Skills
 
-- `/ant-design`：组件 API 查询与 SSR 配置
+- Ant Design 官方文档：组件 API 与 SSR 配置事实源
 - `/coding-standards`：UI 导入规则

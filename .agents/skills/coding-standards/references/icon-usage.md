@@ -7,8 +7,8 @@
 ## 使用方式
 
 ```typescript
-// 从各 app 的统一入口导入图标组件
-import { LucideHome, LucideArrowRight } from '@/components/ui/icon'
+// 从共享 UI 的稳定 export 导入
+import { LucideArrowRight, LucideHome } from '@kkfive/ui/components/icon'
 
 // 在 JSX 中使用，支持 className 自定义样式
 <LucideHome className="size-5 text-blue-500" />
@@ -16,7 +16,7 @@ import { LucideHome, LucideArrowRight } from '@/components/ui/icon'
 
 ## 添加新图标
 
-1. 在各 app 的 `src/components/ui/icon/index.ts` 中添加导出（底层可复用 `@kkfive/ui` 的 `createIcon`）：
+1. 在 `packages/ui/src/components/icon/index.ts` 中添加导出：
 
 ```typescript
 import { CreateIcon } from './create-icon'
@@ -40,7 +40,7 @@ export const MdiAccount = CreateIcon('icon-[mdi--account]')
 
 ## 核心原则
 
-- **统一入口**：所有图标通过 `@/components/ui/icon` 导入
+- **统一入口**：所有图标通过 `@kkfive/ui/components/icon` 导入
 - **按需加载**：Iconify 自动按需加载图标
 - **类型安全**：图标组件有完整的 TypeScript 类型
 - **样式灵活**：支持 Tailwind className 自定义样式

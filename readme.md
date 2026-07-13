@@ -11,7 +11,7 @@
 - **Tailwind CSS v4** — 原子化 CSS，主题 token 共享
 - **TanStack Query + Zustand** — 服务端与客户端状态管理
 - **Vitest + MSW** — 单元测试与 API Mock
-- **AI 辅助开发规范** — `.agents/` 提供跨 agent 的分层、编码、skill 规范
+- **AI 辅助开发规范** — `AGENTS.md` 提供薄路由，`.agents/` 仅在任务命中时加载
 
 ## 快速开始
 
@@ -39,16 +39,15 @@ pnpm dev
 ├── packages/                      # 共享包
 │   ├── contracts/                 # API 契约（zod schema + 类型）
 │   ├── http-client/               # HTTP 抽象（HttpService）
-│   ├── rpc/                       # 类型化 RPC 工厂与跨 app 自有 API calls
+│   ├── rpc/                       # 泛型 Hono RPC 工厂与 envelope 解包
 │   ├── utils/                     # 纯工具函数
 │   └── ui/                        # 基础 UI 组件（shadcn）
 ├── internal/                      # 工具链配置预设
-│   ├── tsconfig/                  # TypeScript 预设
-│   ├── lint-config/               # ESLint 预设
-│   ├── tailwind-config/           # Tailwind/PostCSS 预设
 │   ├── nextjs-config/             # Next.js 预设
-│   └── node-utils/                # Node 工具函数库
-├── docs/                          # 仓库级文档（ADR、FAQ）
+│   ├── tailwind-config/           # Tailwind/PostCSS 预设
+│   └── tsconfig/                  # TypeScript 预设
+├── scripts/repo-tooling/          # 仓库级架构与 workspace guards
+├── docs/                          # 当前使用文档
 └── .agents/                       # AI 辅助开发规范
 ```
 
@@ -70,7 +69,6 @@ pnpm dev
 ## 文档
 
 - [项目协作准则（AGENTS.md）](AGENTS.md) — AI 辅助开发的全局规范入口
-- [架构决策记录](docs/decisions/) — ADR（monorepo 重构、规则治理等）
 - [FAQ](docs/faq.md) — 常见问题
 
 ## License

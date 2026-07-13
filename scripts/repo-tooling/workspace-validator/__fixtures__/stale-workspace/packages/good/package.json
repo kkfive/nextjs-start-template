@@ -1,0 +1,7 @@
+{
+  "name": "good-package",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}

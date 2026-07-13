@@ -51,7 +51,7 @@ apps/client/
 └── typings/             # 全局类型声明
 ```
 
-Skill 的 meta 由工具自动注入，按 description 匹配按需打开。client 额外有包级专属 skill `ant-design`（`.agents/skills/ant-design/`）。
+Skill 的 meta 由工具自动注入，按 description 匹配按需打开；Ant Design 与 Tailwind 统一路由到根 `styling-system` skill。
 
 ## 参考
 

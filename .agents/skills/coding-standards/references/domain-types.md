@@ -1,6 +1,6 @@
 # Domain 层类型定义规范
 
-**文件命名**：共享包类型定义在 `packages/contracts/src/{module}/`（zod schema + z.infer）；rpc 调用函数在 `packages/rpc/src/{module}/calls.ts`。
+**文件放置**：跨 app 契约放 `packages/contracts/src/{module}/`（Zod schema + `z.infer`）；业务 calls 与 app 专属扩展类型放所属 `src/features/<feature>/`。
 
 ## 规范
 
@@ -42,21 +42,20 @@ export type CreateMaterialRequest = z.infer<typeof createMaterialRequestSchema>
 ```
 
 ```typescript
-// packages/rpc/src/material/calls.ts
-import type { RpcClient } from '../rpc/client'
-import { unwrapData } from '../rpc/envelope'
-import type { MaterialListResponse } from '@kkfive/contracts'
+// apps/client/src/features/material/model/calls.ts
+import { unwrapData } from '@kkfive/rpc'
+import { rpcClient } from '@/service/rpc-client'
 
-export async function fetchMaterialList(client: RpcClient) {
-  const res = await client.api.materials.$get()
-  return unwrapData<MaterialListResponse>(await res.json())
+export async function fetchMaterialList() {
+  const response = await rpcClient.materials.$get()
+  return unwrapData(await response.json())
 }
 ```
 
 ## 示例（app 专属类型扩展）
 
 ```typescript
-// apps/client/src/lib/types/material.ts - 扩展业务专属类型
+// apps/client/src/features/material/model/types.ts
 import type { MaterialItem } from '@kkfive/contracts'
 export type MaterialItemWithPosts = MaterialItem & { posts: Post[] }
 ```

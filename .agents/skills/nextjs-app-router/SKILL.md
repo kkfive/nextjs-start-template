@@ -28,8 +28,6 @@ user-invocable: true
 | `next/image`、`dynamic()`、Bundle 优化 | `references/performance.md` |
 | 踩坑：序列化失败 / 缓存不刷新 / 嵌套过深 / 多 app 冲突 | `references/gotchas.md` |
 
-源头表见 `routing.yaml`。
-
 ## 多 app 注意事项
 
 monorepo 下有多个 Next.js app（`apps/client`、`apps/admin`），各自独立构建部署：
@@ -57,5 +55,5 @@ monorepo 下有多个 Next.js app（`apps/client`、`apps/admin`），各自独�
 
 - `/coding-standards`：React 组件模式（函数声明、`'use client'` 标记）
 - `/project-architecture`：路由层与组件层的边界、多 app 结构
-- `/ant-design`：SSR/StyleProvider 配置
-- `apps/api/.agents/skills/hono-api/`：真正的后端 API 服务（按包自动发现）
+- `/styling-system`：Ant Design SSR 与主题配置
+- `.agents/rules/hono.rule.md`：独立 Hono API 服务边界

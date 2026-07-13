@@ -67,31 +67,21 @@ export const materialSchema = z.object({ /* ... */ })
 export type Material = z.infer<typeof materialSchema>
 ```
 
-`packages/rpc/src/{module}/calls.ts` 标准导出（纯调用函数）：
+业务 calls 放在 app feature 的 `model/calls.ts`：
 
 ```typescript
-import type { RpcClient } from '@kkfive/rpc'
-export async function fetchMaterial(client: RpcClient, id: string) {
-  // 调用 hc RPC，返回 unwrapData 后的结果
-}
-```
-
-各 app 的 React Query hooks `apps/{app}/src/features/{feature}/hooks/use-{module}.ts` 标准模式：
-
-```typescript
-// 组合 rpc calls + app 专属 rpc 实例
-import { useQuery } from '@tanstack/react-query'
-import { fetchMaterial } from '@kkfive/rpc'
+import { unwrapData } from '@kkfive/rpc'
 import { rpcClient } from '@/service/rpc-client'
-export function useMaterial(id: string) {
-  return useQuery({ queryKey: ['material', id], queryFn: () => fetchMaterial(rpcClient, id) })
+export async function fetchMaterial(id: string) {
+  const response = await rpcClient.materials[':id'].$get({ param: { id } })
+  return unwrapData(await response.json())
 }
 ```
 
 **说明**：
 - 共享包类型在 `@kkfive/contracts` 用 `export type` 显式导出（zod-first）
 - 业务代码通过 `import type` 引用类型，避免全局类型污染
-- 跨包引用走 `@kkfive/rpc`（calls）/ `@kkfive/contracts`（schema + 类型），app 内部走 `@/*` 别名
+- 跨包引用走 package 公开 export；业务 calls 与 hooks 通过 app 内 `@/*` 别名引用
 
 ## 组件 Props
 

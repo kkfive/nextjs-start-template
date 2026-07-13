@@ -6,7 +6,7 @@
 
 Next.js app 采用 Feature-first：业务视图、calls、hooks、状态、页面模型和纯逻辑聚合在 `src/features/<feature>/`。`src/app/` 仅组合 feature 入口和路由能力；`src/service/` 只创建 HTTP/RPC/SSE 运行时实例并隔离浏览器/服务端边界。跨层调用应依赖稳定入口，避免深链到内部实现文件。
 
-组件应使用可搜索、可重构的函数声明导出。类型定义优先使用 `type`，让数据形状以组合方式演进。UI 能力应通过项目 UI 入口（各 app 的 `src/components/ui/*`，底层来自 `@kkfive/ui`）进入业务代码，避免应用层直接绑定第三方 UI 库。
+类型定义优先使用 `type`；组件保持具名、职责单一。基础 UI 直接从 `@kkfive/ui/components/*` 消费；app 的 `src/components/` 只保留跨 feature 的真实组合、provider 与 app 专属封装，不建立零价值 re-export。antd 属于 app 自治依赖，可在需要其专属能力时直接使用。
 
 文档负责解释原则、背景和取舍；`.agents/rules` 负责沉淀高频原则；`.agents/skills` 负责按任务引导；脚本负责执行可检查的细则。
 

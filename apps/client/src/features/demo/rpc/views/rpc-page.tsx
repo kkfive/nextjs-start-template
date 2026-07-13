@@ -1,12 +1,12 @@
 'use client'
 
 import type { HttpResponse } from '@kkfive/contracts'
-import { callEnvelopeScenario, callScenario, fetchHitokoto, unwrapData } from '@kkfive/rpc'
+import { unwrapData } from '@kkfive/rpc'
 import { Button } from '@kkfive/ui/components/button'
 import { LucideGitBranch } from '@kkfive/ui/components/icon'
 import { useState } from 'react'
 import { DemoWrapper } from '@/features/demo/navigation/components/demo-wrapper'
-import { rpcClient } from '@/service/rpc-client'
+import { callEnvelopeScenario, callScenario, fetchHitokoto } from '../model/calls'
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
@@ -44,16 +44,16 @@ export default function RpcPage() {
 
   // unified：callScenario 内部调 unwrapData，业务失败抛 BusinessError。
   const handleScenario = () =>
-    run('callScenario(rpcClient, "success")', () => callScenario(rpcClient, 'success'))
+    run('callScenario("success")', () => callScenario('success'))
 
   const handleHitokoto = () =>
-    run('fetchHitokoto(rpcClient)', () => fetchHitokoto(rpcClient))
+    run('fetchHitokoto()', () => fetchHitokoto())
 
   // envelope：返回原始响应包络；额外演示 unwrapData 在 success:false 时抛 BusinessError。
   const handleEnvelope = async () => {
     const envelope = await run(
-      'callEnvelopeScenario(rpcClient, "business-error")',
-      () => callEnvelopeScenario(rpcClient, 'business-error'),
+      'callEnvelopeScenario("business-error")',
+      () => callEnvelopeScenario('business-error'),
     )
     if (envelope === undefined)
       return

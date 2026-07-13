@@ -7,13 +7,19 @@
     "@commitlint/config-angular": "^21.2.0",
     "@commitlint/config-conventional": "^21.2.0",
     "@eslint-react/eslint-plugin": "^5.12.1",
-    "@kkfive/node-utils": "workspace:*",
+    "@next/eslint-plugin-next": "^16.2.10",
+    "@types/node": "^26.1.1",
     "eslint": "^10.6.0",
+    "eslint-plugin-format": "^2.0.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "eslint-plugin-tailwindcss": "^4.0.6",
     "lefthook": "^2.1.10",
     "syncpack": "^13.0.0",
+    "tailwindcss": "4.3.2",
     "taze": "^19.14.1",
     "turbo": "^2.5.0",
-    "typescript": "^6.0.3"
+    "typescript": "catalog:",
+    "vitest": "^4.1.10"
   },
   "engines": {
     "node": ">=24"
@@ -24,20 +30,23 @@
     "build": "turbo run build",
     "catalog": "pnpx codemod pnpm/catalog",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint -- --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "postinstall": "lefthook install",
     "preinstall": "npx only-allow pnpm",
     "test": "turbo run test",
-    "test:run": "turbo run test:run",
-    "typecheck": "turbo run typecheck",
+    "test:repo": "vitest run scripts/repo-tooling",
+    "test:run": "pnpm run test:repo && turbo run test:run",
+    "typecheck": "pnpm run typecheck:repo && turbo run typecheck",
+    "typecheck:repo": "tsc --noEmit -p scripts/repo-tooling/tsconfig.json",
     "up": "taze major -I -r",
-    "verify": "pnpm run verify:lint && pnpm run verify:typecheck && pnpm run verify:deps && pnpm run verify:architecture && pnpm run verify:fixtures",
+    "verify": "pnpm run verify:lint && pnpm run verify:typecheck && pnpm run verify:versions && pnpm run verify:architecture && pnpm run verify:workspaces && pnpm run verify:fixtures",
     "verify:architecture": "node scripts/verify-conventions.mjs",
-    "verify:deps": "syncpack lint",
-    "verify:fixtures": "pnpm --filter @kkfive/node-utils run verify:fixtures",
+    "verify:fixtures": "vitest run scripts/repo-tooling/architecture-policy/runner.test.ts scripts/repo-tooling/workspace-validator/workspace-validator.test.ts",
     "verify:lint": "pnpm lint",
-    "verify:typecheck": "pnpm typecheck"
+    "verify:typecheck": "pnpm typecheck",
+    "verify:versions": "syncpack lint",
+    "verify:workspaces": "node scripts/verify-workspaces.mjs"
   },
   "type": "module"
 }

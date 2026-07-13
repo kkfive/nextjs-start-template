@@ -2,7 +2,7 @@
 
 **触发条件**：把"单向依赖"规则（packages↛apps 等）从文档变成可自动运行的校验。
 
-**目标**：扩展 `scripts/verify-conventions.mjs`，加一条扫描跨包 import 方向的规则。
+**目标**：扩展 `scripts/repo-tooling/architecture-policy/`，由现有 CLI 与 fixtures 统一验证。
 
 ## Step 1: 规则源
 
@@ -14,43 +14,34 @@
 
 本 workflow 负责把这些规则**机器化**，不重复定义规则。
 
-## Step 2: 为什么用 verify 脚本而非 madge/boundaries
+## Step 2: 为什么扩展现有 policy
 
-- 项目已有 `verify-conventions.mjs` 的 G 规则模式（G01–G07），扩展它**零新依赖**
-- packages 没有独立 eslint config，`eslint-plugin-boundaries` 无处挂载
-- madge 检测**循环**依赖，但单向依赖是**方向**问题，用路径前缀判定更直接
+- `scripts/verify-conventions.mjs` 已是薄 CLI，真实规则实现集中在 repository-local policy
+- 根 ESLint 负责文件级 lint；architecture policy 负责跨目录、manifest 与 type-only edge 等仓库级事实
+- 不引入 madge/boundaries，也不创建新的 internal tooling package
 
-## Step 3: 实现方法（以 G07 为例）
+## Step 3: 实现方法
 
-沿用 `rule(id, message, checkFn)` 模式，checkFn 自带 `globSync` 扫描：
-
-1. `globSync` 扫各包源码（`packages/*/src/**`、`apps/*/src/**` 单层 `*` 展开，避免进 node_modules）
-2. 正则提取相对路径 import（`import ... from './...'`），bare import（`@kkfive/*`）放行——跨层违规几乎只能靠相对路径绕过 workspace 协议
-3. `path.resolve` 解析目标，按路径前缀判定所属层
-4. 命中违规方向 → push issue
-
-检测矩阵：
-
-| 源层 | 违规目标 |
-|---|---|
-| packages | apps |
-| internal | apps / packages |
-| apps/A | apps/B（B≠A） |
+1. 在 `architecture-policy/rules/` 新增或修改单一规则模块
+2. 复用 parser 与 manifest scanner，不在规则内重复遍历仓库
+3. 在 registry 登记规则，并为合法、非法场景分别补 `__fixtures__/<RULE>/valid|invalid`
+4. 若存在窄例外，把允许条件编码成可判定的路径、import kind 与 manifest section，而不是自然语言豁免
 
 ## Step 4: 接入
 
-G07 自动随 `pnpm verify:conventions` 运行（已在 lefthook pre-commit + CI lint job）。无需额外接线。
+规则自动随 `pnpm run verify:architecture` 运行；fixture 由 `pnpm run verify:fixtures` 覆盖。不要再增加第二个 task owner。
 
 ## Step 5: 先 dry-run 再固化
 
 加规则后先全量跑，确认现有代码无违规：
 
 ```bash
-node scripts/verify-conventions.mjs
+pnpm run verify:architecture
+pnpm run verify:fixtures
 ```
 
 若发现现存违规 → 报告，决定"修代码"还是"放宽规则"，**不擅自改业务代码**。反向验证可用一个临时违规 import 文件确认规则能抓到（验证后删除）。
 
 ## 边界
 
-G07 只补**跨包方向**。应用内 domain↛UI 由 `internal/lint-config/rules/domain-boundary.js`（ESLint `no-restricted-imports`）覆盖，不重复。
+文件内语法和常规 import 限制留给根 ESLint；需要理解仓库路径、manifest 或跨文件关系的规则进入 architecture policy。

@@ -1,3 +1,11 @@
+const repoTranspilePackages = [
+  '@kkfive/contracts',
+  '@kkfive/rpc',
+  '@kkfive/http-client',
+  '@kkfive/utils',
+  '@kkfive/ui',
+]
+
 /**
  * withRepoConfig —— 共享 Next.js 配置工厂。
  *
@@ -19,20 +27,13 @@ function withRepoConfig(userConfig = {}) {
 
   return {
     ...rest,
-    // 消费的 workspace 包源码（Phase 2 后各 app 按需补全）
-    transpilePackages: [
-      '@kkfive/contracts',
-      '@kkfive/rpc',
-      '@kkfive/http-client',
-      '@kkfive/utils',
-      '@kkfive/ui',
-      ...userTranspile,
-    ],
+    // create 命令把新 source-consumed package 写入 userTranspile；这里统一去重派生。
+    transpilePackages: [...new Set([...repoTranspilePackages, ...userTranspile])],
     sassOptions: {
       ...userSass,
     },
   }
 }
 
-export { withRepoConfig }
+export { repoTranspilePackages, withRepoConfig }
 export default withRepoConfig

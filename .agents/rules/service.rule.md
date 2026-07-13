@@ -4,4 +4,4 @@
 
 业务 calls、React Query hooks、页面模型、store、业务组件和 feature 纯逻辑都属于 `src/features/<feature>/`，不得放入 `src/service/` 或按业务名建立 service 子目录。
 
-浏览器实例必须由 `client-only` 物理隔离，服务端实例必须由 `server-only` 物理隔离。hc RPC 客户端通过 `createRpcClient(http, baseUrl)` 复用 app 注入的 HTTP 实例；SSE 不经 hc。
+浏览器实例必须由 `client-only` 物理隔离，服务端实例必须由 `server-only` 物理隔离。只有 `rpc-*.ts`（含同目录测试）可 type-only 导入 `api.AppType`，并通过 `createRpcClient<AppType>(http, baseUrl)` 复用 app 注入的 HTTP 实例；SSE 不经 hc。

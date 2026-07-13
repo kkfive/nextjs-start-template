@@ -6,7 +6,7 @@
 
 ### 如何适配后端特定的响应信封结构？
 
-项目默认响应格式（成功/错误 envelope）的类型定义在 `packages/http-client`。适配不同后端格式时，在所属 feature 或 API 业务模块中处理转换，不要在 HttpService 层全局转换（会影响不需要转换的接口）。
+项目默认响应 envelope 定义在 `packages/contracts/src/`，`packages/http-client` 只负责通用传输。适配不同后端格式时，在所属 feature 或 API route 中转换，不要污染 HttpService 全局行为。
 
 ### `src/service/` 下的运行时实例该如何命名和使用？
 
@@ -30,7 +30,7 @@
 
 ### 分页/通用工具类型放哪？
 
-跨 app 共享的工具类型（`Pagination`、`PaginatedResponse<T>`、`Nullable<T>`、`ExternalData<T>` 等）在 `packages/contracts/types/`。模块专属类型在所属 `src/features/<feature>/` 的 `type.ts`。
+跨 app 共享的 schema 与类型放 `packages/contracts/src/`。模块专属类型放所属 `src/features/<feature>/` 的 `type.ts`。
 
 ### 后端返回 `snake_case` 而前端用 `camelCase` 怎么处理？
 
@@ -58,4 +58,4 @@
 
 ## 图标
 
-使用 **Iconify + Tailwind CSS** 方案，禁止直接安装 `lucide-react` 等图标库。从各 app 的 `@/components/ui/icon` 统一入口导入。图标查询：[Iconify 图标库](https://icon-sets.iconify.design/)。详见 `.agents/skills/coding-standards/references/icon-usage.md`。
+图标统一从 `@kkfive/ui/components/icon` 导入；不要在业务 app 重复安装图标库。图标查询：[Iconify 图标库](https://icon-sets.iconify.design/)。详见 `.agents/skills/coding-standards/references/icon-usage.md`。

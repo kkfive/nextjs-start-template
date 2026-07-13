@@ -5,9 +5,9 @@
 ```typescript
 // 测试文件与源文件同目录（共享包与各 app 均如此）
 // packages/utils/src/string.ts → packages/utils/src/string.test.ts
-// packages/rpc/src/material/calls.ts → packages/rpc/src/material/calls.test.ts
+// packages/rpc/src/rpc/client.ts → packages/rpc/src/rpc/client.test.ts
 // apps/client/src/lib/utils.ts → apps/client/src/lib/utils.test.ts
-// apps/client/src/components/ui/button/index.tsx → apps/client/src/components/ui/button/button.test.tsx
+// apps/client/src/service/rpc-client.ts → apps/client/src/service/rpc-client.test.ts
 ```
 
 ## 测试框架
@@ -28,8 +28,8 @@ describe('ComponentName', () => {
 ## Mock 处理
 
 ```typescript
-// Mock 使用 MSW (Mock Service Worker)
-// 各 app 的测试 mock：apps/{app}/src/__tests__/mocks/handlers.ts
+// HTTP 交互优先使用 MSW (Mock Service Worker)
+// 共享 handlers：apps/{app}/src/__tests__/mocks/handlers.ts
 
 import { http, HttpResponse } from 'msw'
 
@@ -44,5 +44,5 @@ export const handlers = [
 
 - **测试文件同目录**：测试文件与源文件放在同一目录
 - **使用 vitest**：项目统一使用 vitest 作为测试框架
-- **使用 MSW**：HTTP 请求 mock 使用 MSW
+- **按边界 mock**：HTTP 行为优先 MSW；底层 adapter contract 可 mock 最外层 IO
 - **测试覆盖率**：关键业务逻辑必须有测试覆盖

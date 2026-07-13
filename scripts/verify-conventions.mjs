@@ -3,7 +3,7 @@
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
-import { runArchitecturePolicies, runArchitecturePolicy } from '@kkfive/node-utils'
+import { runArchitecturePolicies, runArchitecturePolicy } from './repo-tooling/architecture-policy/runner.ts'
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const rootOption = process.argv.indexOf('--root')

@@ -1,0 +1,7 @@
+{
+  "name": "omitted-test-owner",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}

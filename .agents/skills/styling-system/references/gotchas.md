@@ -39,7 +39,7 @@
 
 ## SSR / Next.js 相关
 
-- 首屏 FOUC 见 `/ant-design` `workflows/nextjs-ssr.md`
+- 首屏 FOUC 按当前 Ant Design SSR 官方指南核对，并检查 app 的 provider 实现
 - Tailwind preflight 与 antd 默认样式可能冲突 → 在 `tailwind.config` 关 preflight 或限定 selector
 - 暗色切换时 antd `algorithm` 与 CSS Variables 要同步切换
 

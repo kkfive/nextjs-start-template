@@ -1,63 +1,35 @@
 # 项目协作准则
 
-pnpm workspace + Turborepo monorepo（`apps/` 独立应用 / `packages/` 共享包 / `internal/` 工具链配置）。每个 Next.js app 采用 Feature-first：业务代码归入 `src/features/`，`src/service/` 只保存 HTTP/RPC/SSE 运行时实例，`src/app/` 只组合路由。所有回复使用简体中文。
+本仓库是 pnpm workspace + Turborepo monorepo：`apps/` 是独立应用，`packages/` 是共享能力，`internal/` 是工具链配置。Next.js app 使用 Feature-first：业务代码放 `src/features/`，`src/service/` 只创建运行时实例，`src/app/` 只组合路由。所有回复使用简体中文。
 
-规范源在 `.agents/`，本文件是 Claude Code（通过 `CLAUDE.md`）、Codex CLI、ZCode 三工具共用的路由薄壳。当本文件与 `.agents/rules/` 或 `.agents/skills/` 冲突时，以规范源为准。
+## 权威与加载
 
-<!-- <always-applicable> 和 <task-routing> XML 标签是承重的：LLM 在上下文压缩后
-     仍能识别标签包裹的硬约束区块。详见 skill-based-architecture thin-shells 规范。 -->
+- 用户当前要求优先于仓库内历史规范。规则与当前代码或真实命令冲突时，先用代码和端到端结果裁决，再同步修正规则。
+- 本文件只负责路由，不 eager include `.agents/`。仅在任务命中下列路径或主题时读取对应 rule/skill。
+- `CLAUDE.md`、Codex 和其他工具均以本文件为项目入口；不要复制第二份规则正文。
 
-<always-applicable>
+## 按路径加载
 
-## Always Load
+- `apps/*/src/features/**`：`.agents/rules/feature.rule.md`
+- `apps/*/src/service/**`：`.agents/rules/service.rule.md`
+- `apps/*/src/app/**`：`.agents/rules/next-app.rule.md`；测试文件再读 `testing.rule.md`
+- `apps/api/**`：`.agents/rules/hono.rule.md`
+- `packages/**`：`.agents/rules/packages.rule.md`；UI 文件再读 `ui.rule.md`
+- monorepo、CI、Turbo、依赖治理：`.agents/rules/monorepo.rule.md` 与 `monorepo-engineering` skill
+- TypeScript/React/import/test 写法：`coding-standards` skill
+- Next.js App Router：`nextjs-app-router` skill
+- 样式、Ant Design、Tailwind：`styling-system` skill
+- 目录和依赖边界设计：`project-architecture` skill
 
-@.agents/rules/core.rule.md
-@.agents/rules/monorepo.rule.md
+## 工作方式
 
-## 先查后建（通用门禁）
+- 新建组件、类型、service 或 util 前先检索已有实现；已有则复用或改造。
+- `.workflow/` 是 ignored 的本地任务状态，不是源码、规范或脚本输入；Git 历史承担演变记录。
+- tracked 文档只描述当前使用方式，不记录迁移波次、临时验收状态或已删除方案。
+- 只修改当前任务文件；不要回滚工作树中的其他用户改动。
 
-接到任务后，按任务类型决定是否先检索已有实现：
+## 完成门禁
 
-- **新建类任务**（新建组件、新对接接口、新定义类型/schema、新封装 service/util）：**必须**先检索项目是否已有同类实现。发现已有 → 优先复用或改造；未发现 → 才新建并在对应导出入口登记。
-- **改造/修复类任务**：**视情况**检索。但用户明确要求检索时，**必须**执行。
-- 检索方法见 `.agents/skills/coding-standards/workflows/search-before-create.md`。
-
-</always-applicable>
-
-<task-routing>
-
-## Load When Editing
-
-- `apps/*/src/features/**` → @.agents/rules/feature.rule.md
-- `apps/*/src/service/**` → @.agents/rules/service.rule.md
-- `packages/**` → @.agents/rules/packages.rule.md
-- `apps/*/src/components/**` → @.agents/rules/ui.rule.md
-- `apps/*/src/app/api/**` → @.agents/rules/next-app.rule.md（Route Handler 主后端）
-- `apps/*/src/app/**` → @.agents/rules/next-app.rule.md
-- `apps/api/**` → @.agents/rules/hono.rule.md
-- `**/*.test.*`、`**/__tests__/**` → @.agents/rules/testing.rule.md
-
-规则文件简短只表达稳定原则；具体流程、示例、踩坑在对应 skill 的 `SKILL.md` + `routing.yaml` 中。
-
-Skill 的 `name` / `description` / `file path` 由各工具（ZCode / Codex / Claude Code）自动注入会话上下文，无需在此手动维护索引。单包专属 skill 放 `<包>/.agents/skills/`，多包共享 skill 放根 `.agents/skills/`。新建/上升/下沉 skill 见 `.agents/meta/_template/SKILL.md`。
-
-</task-routing>
-
-## Auto-Triggers
-
-- **新任务（同一会话）** → 重读本文件 + 按需重读 required rules。"我之前读过"不成立——上下文会压缩，路由可能变化。
-- **非平凡任务完成前** → 运行 Machine Guards 校验。仅格式化、注释、依赖版本号、保持行为的重构可跳过。
-
-## Machine Guards
-
-- `pnpm run verify`
-- `pnpm test:run`
-- `pnpm run lint`
-
-Git hook 在 `lefthook.yml` 接入 commit message 与 pre-commit 校验。多人协作时只暂存和提交当前任务直接产生的文件。
-
-核验规范/配置/自动触发机制是否「真的生效」时，用端到端真实验证（`.agents/skills/coding-standards/workflows/verify-end-to-end.md`），警惕自带脚本的循环论证。
-
-## 参考
-
-- Skill 模板与原则：`.agents/meta/_template/`
+- 非平凡修改运行 `pnpm verify` 与 `pnpm test:run`。
+- 修改 app 或构建配置时，再运行相关 app build。
+- 项目要求 Node 24；使用 `mise.toml` 指定的版本。

@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "dependencies": {
     "@kkfive/contracts": "workspace:*",
-    "api": "workspace:*",
     "hono": "^4.7.0"
   },
   "devDependencies": {

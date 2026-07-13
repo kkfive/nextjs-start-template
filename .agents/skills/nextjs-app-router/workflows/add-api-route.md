@@ -16,8 +16,7 @@ Route Handler 用 Web 标准 `Request` / `Response`，按 HTTP 方法命名导�
 // apps/client/src/app/api/materials/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { ListQuerySchema } from '@kkfive/contracts'
-import { rpcServer } from '@/service/rpc-server'
-import { fetchMaterialList } from '@kkfive/rpc'
+import { fetchMaterialList } from '@/features/material/model/calls.server'
 
 export async function GET(request: NextRequest) {
   const parsed = ListQuerySchema.safeParse(
@@ -26,7 +25,7 @@ export async function GET(request: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: 'invalid_query' }, { status: 400 })
   }
-  const data = await fetchMaterialList(rpcServer, parsed.data)
+  const data = await fetchMaterialList(parsed.data)
   return NextResponse.json(data)
 }
 ```
@@ -34,8 +33,8 @@ export async function GET(request: NextRequest) {
 ## 检查
 
 - [ ] 输入用 `@kkfive/contracts` schema 校验，错误返回 400
-- [ ] 业务通过 `@kkfive/rpc` 的 calls（经 `@/service/rpc-server`），不直接拼 SQL/拼 URL
-- [ ] rpc 实例通过该 app 的 `@/service/*` 注入（server 端用 `rpc-server`）
+- [ ] 业务调用留在所属 feature；需要 Hono 时由 feature 的 server call 使用 `@/service/rpc-server`
+- [ ] Route Handler 不直接拼接外部 URL，也不把 calls 下沉到 `packages/rpc`
 - [ ] 返回正确状态码（200/201/400/401/404/500）
 - [ ] 决定是否需要 `export const runtime = 'edge'`
 - [ ] 核心后端逻辑不在 BFF，而在 `apps/api`（Hono）

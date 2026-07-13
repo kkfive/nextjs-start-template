@@ -36,7 +36,6 @@ apps/{app}/src/
 apps/api/src/
 ├── app.ts                      # Hono 入口（导出 AppType）
 ├── routes/                     # zod 校验、HTTP 适配、响应格式化
-├── features/<feature>/         # 业务编排及其私有逻辑
 ├── middleware/                 # 认证、日志、错误处理、CORS
 └── lib/                        # DB、缓存、第三方 SDK
 ```
@@ -48,8 +47,8 @@ apps/api/src/
 | 页面 | `apps/{app}/src/app/{route}/page.tsx` | 组合 `@/features/...` 入口 |
 | 轻量 BFF | `apps/{app}/src/app/api/{endpoint}/route.ts` | `apps/client/src/app/api/revalidate/route.ts` |
 | feature 业务代码 | `apps/{app}/src/features/{feature}/` | `apps/client/src/features/material/` |
-| 跨 feature UI | `apps/{app}/src/components/` | `apps/client/src/components/common/pdf-viewer/` |
-| 自有 API 共享 calls | `packages/rpc/src/{module}/calls.ts` | `packages/rpc/src/example-request/calls.ts` |
+| 跨 feature UI / provider | `apps/{app}/src/components/` | `apps/client/src/components/page-container.tsx` |
+| 业务 API calls | `apps/{app}/src/features/{feature}/model/calls.ts` | `apps/client/src/features/demo/rpc/model/calls.ts` |
 | HTTP / RPC / SSE 实例 | `apps/{app}/src/service/` | `apps/client/src/service/rpc-client.ts` |
 | app 工具函数 | `apps/{app}/src/lib/` | `apps/client/src/lib/utils.ts` |
 | feature 测试 | 与 feature 源文件同目录 | `features/material/calls.test.ts` |

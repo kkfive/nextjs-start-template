@@ -1,6 +1,6 @@
 ---
 name: monorepo-engineering
-description: monorepo 工程化流水线规范 - Turborepo cache 精细化（inputs/outputs/globalDependencies/globalEnv/env）、CI affected filter、跨包单向依赖机器校验（G07）。用于优化构建缓存命中率、配置 CI 只跑受影响包、排查 stale cache、给 verify-conventions 加依赖方向校验规则。
+description: monorepo 工程化规范 - Turborepo cache、CI affected filter、repository architecture policy。用于优化构建缓存、配置受影响范围校验和扩展跨包机器规则。
 user-invocable: true
 ---
 
@@ -25,13 +25,11 @@ user-invocable: true
 | turbo.json v2 怎么写 | `references/turbo-v2-config.md` |
 | 踩坑：v1 pipeline / 源码消费 vs 预构建 / env stale | `references/gotchas.md` |
 
-源头表见 `routing.yaml`。
-
 ## 核心原则
 
-- **静态规则在 `/project-architecture`，本 skill 只做工程化**：单向依赖规则定义在 layer-dependency.md，本 skill 负责把它变成机器校验（G07）
+- **静态规则在 `/project-architecture`，本 skill 只做工程化**：单向依赖定义在 layer-dependency.md，本 skill 负责同步到 architecture policy
 - **cache 三要素**：`inputs`（哪些文件计入 hash）+ `outputs`（缓存什么产物）+ `env`/`globalEnv`（哪些环境变量计入 hash）
-- **affected 与全局并存**：耗时任务（build/test）用 affected；全局一致性检查（lint/typecheck/verify:conventions）保持全量
+- **affected 与全局并存**：耗时任务（build/test）可用 affected；根 lint、typecheck 与 architecture policy 保持全量
 - **源码消费不预构建**：packages 走 `transpilePackages` 消费源码，不引入 tsup/dist 预构建（与外部 skill 的"预构建"方案相反）
 
 ## 反模式速查
@@ -51,4 +49,4 @@ user-invocable: true
 ## 相关 Skills
 
 - `/project-architecture`：分层与单向依赖**规则本身**（本 skill 把这些规则工程化）
-- `/coding-standards`：`references/layer-dependency.md` 是 G07 校验的规则源
+- `/coding-standards`：`references/layer-dependency.md` 是 architecture policy 的语义参考

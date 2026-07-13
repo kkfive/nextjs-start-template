@@ -6,7 +6,6 @@
     { "path": "packages/http-client" },
     { "path": "packages/ui" },
     { "path": "packages/rpc" },
-    { "path": "internal/node-utils" },
     { "path": "apps/client" },
     { "path": "apps/admin" },
     { "path": "apps/api" }

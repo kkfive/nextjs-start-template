@@ -51,7 +51,7 @@ run: |
 |---|---|
 | lint | 规范门禁需全局一致 |
 | typecheck | 类型安全跨包 |
-| verify:conventions | 跨包规范 / enum 一致性 |
+| verify:architecture | 跨目录与 manifest 架构边界 |
 
 只给**耗时任务**（build / test）加 affected。本项目实际结构见 `.github/workflows/ci.yml`（lint/typecheck 全量，test/build affected）。
 

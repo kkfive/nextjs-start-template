@@ -1,10 +1,9 @@
-import { fetchHitokoto } from '@kkfive/rpc'
-import { rpcServer } from '@/service/rpc-server'
+import { fetchHitokoto } from '@/features/hitokoto/model/calls'
 
 // admin 示例：SSR 直取，使用已注入的服务端 HttpService 实例
 async function getHitokoto() {
   try {
-    return await fetchHitokoto(rpcServer)
+    return await fetchHitokoto()
   }
   catch {
     return null
@@ -46,9 +45,9 @@ export default async function HomePage() {
           — Next.js App Router
         </li>
         <li>
-          <code>domain/</code>
+          <code>src/features/</code>
           {' '}
-          — Domain 适配层（re-export @kkfive/rpc）
+          — 业务调用与页面能力
         </li>
         <li>
           <code>src/service/</code>

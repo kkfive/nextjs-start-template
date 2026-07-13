@@ -25,7 +25,7 @@ Ant Design 样式自定义规范 Skill
 - **快速参考**：5 级优先级体系、决策流程图
 - **核心原则**：ConfigProvider → CSS Variables → 组件 API → Tailwind → SCSS
 - **反模式警告**：常见错误和正确做法
-- **详细规范**：按任务读取 `routing.yaml` 中的 `rules/`、`workflows/` 与 `references/`
+- **详细规范**：按当前任务直接读取相关 `rules/`、`workflows/` 或 `references/`
 
 ## 优先级体系
 
@@ -75,7 +75,6 @@ Ant Design 样式自定义规范 Skill
 
 ## 相关文档
 
-- `routing.yaml` - 任务路由源
 - `rules/priority-order.md` - 5 级优先级硬约束
 - `workflows/choose-level.md` - 样式方案选择流程
 - `references/gotchas.md` - 常见踩坑

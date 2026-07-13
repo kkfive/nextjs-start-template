@@ -38,8 +38,8 @@
     "./widgets/pdf-viewer": "./src/widgets/pdf-viewer.tsx"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19"
   },
   "private": true,
   "scripts": {

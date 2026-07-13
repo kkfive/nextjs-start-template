@@ -11,19 +11,20 @@
   ],
   "versionGroups": [
     {
-      "label": "peer dependencies 使用宽泛 range，不强制版本一致",
-      "dependencies": ["**"],
+      "label": "pnpm catalog 管理 react、react-dom 与 typescript 版本语义",
+      "dependencies": ["react", "react-dom", "typescript"],
+      "isIgnored": true
+    },
+    {
+      "label": "pnpm workspace protocol 管理本地包链接",
+      "specifierTypes": ["workspace-protocol"],
+      "isIgnored": true
+    },
+    {
+      "label": "nextjs-config 声明 Next 16 兼容范围",
+      "packages": ["@kkfive/nextjs-config"],
+      "dependencies": ["next"],
       "dependencyTypes": ["peer"],
-      "isIgnored": true
-    },
-    {
-      "label": "workspace 内部引用不检查版本",
-      "dependencies": ["@kkfive/**"],
-      "isIgnored": true
-    },
-    {
-      "label": "rpc type-only 引 api AppType（Hono RPC 端到端类型链例外，见 monorepo.rule）",
-      "dependencies": ["api"],
       "isIgnored": true
     }
   ]

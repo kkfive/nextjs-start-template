@@ -26,10 +26,6 @@
       "cache": false,
       "persistent": true
     },
-    "lint": {
-      "dependsOn": [],
-      "inputs": ["$TURBO_DEFAULT$"]
-    },
     "typecheck": {
       "dependsOn": ["^typecheck"],
       "inputs": ["$TURBO_DEFAULT$"]
@@ -41,24 +37,6 @@
     "test:run": {
       "dependsOn": [],
       "inputs": ["$TURBO_DEFAULT$"]
-    },
-    "verify:architecture": {
-      "dependsOn": [],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "scripts/verify-conventions.mjs",
-        "apps/**",
-        "packages/**",
-        "internal/**"
-      ]
-    },
-    "verify:fixtures": {
-      "dependsOn": [],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "src/architecture-policy/**",
-        "$TURBO_ROOT$/scripts/verify-conventions.mjs"
-      ]
     }
   }
 }

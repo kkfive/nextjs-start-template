@@ -1,8 +1,8 @@
 # Packages Rule
 
-`packages/*` 通过 `package.json` 的 `exports` 直接指向源码，不产出 build 产物；由消费方（Next.js `transpilePackages` / Hono tsx）编译。每个 package 的 `tsconfig.json` 继承 `@kkfive/tsconfig/base.json`，启用 `composite: true` 并经 `references` 声明依赖的 workspace 包，让根级 `tsc --build` 跨包增量检查。
+`packages/*` 通过 `package.json` 的 `exports` 直接指向源码，不产出 build 产物；由消费方编译。每个 package 的 `tsconfig.json` 继承 `@kkfive/tsconfig/base.json`，包级 typecheck 由 Turbo 从根入口统一调度。
 
-依赖必须完整且最小：只声明真正使用的依赖；运行时框架（React 等）走 peerDependencies。包内路径别名（`@/*`）各包自身 tsconfig 定义、不跨包；跨包引用统一走 `@kkfive/<pkg>` workspace 协议。新增 package 必须在根 `pnpm-workspace.yaml` 与 `tsconfig.json` references 注册。
+依赖必须完整且最小：只声明真正使用的依赖；运行时框架（React 等）走 peerDependencies。包内路径别名不跨包，跨包引用统一走 `@kkfive/<pkg>` 与 `workspace:*`。新增 package 需提供 manifest、源码 export、tsconfig、README，并在根 `tsconfig.json` references 登记。
 
 ## 包分类与红线
 
@@ -12,7 +12,7 @@
 | `ui` | 基础 UI 控件（shadcn 二次封装 + 自实现） | 不含 antd；React 走 peer |
 | `utils` | 多端通用算法 | `common`（多端）/ `dom`（浏览器）物理隔离，服务端只引 common |
 | `http-client` | HttpService 抽象 + interceptor + BusinessError | 底层 fetch；不绑业务 |
-| `rpc` | 类型化 RPC（hc<AppType> 工厂 + unwrapData + 自有 api 共享 calls）；不含 react-query/react | 依赖 contracts/http-client + api AppType（type-only）；实例由 app 注入 |
+| `rpc` | 泛型 `createRpcClient<App>()` + envelope 解包；不含业务 calls、React 或 app 类型 | 依赖 contracts/http-client；AppType 与实例均由 app 注入 |
 
 ## README 强制
 

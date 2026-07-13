@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "build": {},
+    "test:run": {},
+    "typecheck": {}
+  }
+}

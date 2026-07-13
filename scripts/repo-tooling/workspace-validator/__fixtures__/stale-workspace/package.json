@@ -1,0 +1,10 @@
+{
+  "name": "stale-workspace-fixture",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "lint": "node lint.mjs",
+    "test:run": "turbo run test:run",
+    "typecheck": "turbo run typecheck"
+  }
+}

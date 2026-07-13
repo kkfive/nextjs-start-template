@@ -2,6 +2,7 @@
 
 # dependencies
 node_modules
+.pnpm-store/
 .pnp
 .pnp.js
 .yarn/install-state.gz
@@ -53,5 +54,7 @@ data/WebGUI.md
 
 # tool session history（工具本地状态，不纳入版本控制）
 .zcode/
+.codex/
 
 temp
+.governance/

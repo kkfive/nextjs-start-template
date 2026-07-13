@@ -57,7 +57,7 @@
 - 该组件是否支持
 - 可用的"部位 key"有哪些（如 `input` / `prefix` / `suffix`）
 
-详见 `/ant-design` 的 `rules/api-query-required.md`。
+以当前 Ant Design 官方组件文档为事实源，不依赖仓库内复制的 API 快照。
 
 ## 反例
 

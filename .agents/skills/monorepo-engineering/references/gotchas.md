@@ -27,8 +27,8 @@ build task 若不声明 `env`，改 `.env` / `NEXT_PUBLIC_*` 后 build 命中旧
 
 ## 6. 静态规则 vs 工程化：边界
 
-单向依赖**规则**（packages↛apps 等）定义在 `layer-dependency.md`。本 skill 不重复定义规则，只负责**机器校验**（G07）。规则语义变了，先改 layer-dependency.md；G07 的检测逻辑需手动同步（它读取 import 路径，不读 markdown）。
+单向依赖规则定义在 `layer-dependency.md`，机器实现位于 `scripts/repo-tooling/architecture-policy/`。规则语义变化时同时更新 reference、rule module 与 valid/invalid fixtures，不能只改文档。
 
-## 7. G07 只检测相对路径跨层
+## 7. 依赖方向由 architecture policy 统一检查
 
-跨包方向违规几乎只能通过**相对路径**（`../../apps/...`）绕过 workspace 协议。bare import（`@kkfive/*`）的方向由 package.json 依赖声明 + pnpm 严格模式 + syncpack 管控，G07 不重复检测。应用内 domain↛UI 由 `internal/lint-config/rules/domain-boundary.js`（ESLint）覆盖，G07 只补跨包方向。
+`scripts/repo-tooling/architecture-policy/` 同时解析源码 import 与 manifest 依赖，规则集中在 `rules/` 并由 registry 执行。pnpm 严格模式负责解析隔离，Syncpack 只检查版本一致性；不要把两者描述成架构方向校验器。应用内与跨包边界均通过现有 FFG rules 扩展，不另建第二套 lint package。
