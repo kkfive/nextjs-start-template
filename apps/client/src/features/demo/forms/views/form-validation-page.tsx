@@ -128,7 +128,7 @@ function SuccessCard({ data, onReset }: { data: ContactFormData, onReset: () => 
 
       <button
         onClick={onReset}
-        className="mt-4 w-full rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-green-700 active:scale-[0.98]"
+        className="active:scale-0.98 mt-4 w-full rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-green-700"
       >
         再次提交
       </button>

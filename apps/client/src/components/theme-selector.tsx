@@ -1,6 +1,6 @@
 'use client'
 
-import type { ColorTheme } from '@/components/theme-provider'
+import type { ColorTheme } from '@/components/theme-context'
 import { cn } from '@kkfive/ui'
 import {
   LucideCheck,
@@ -9,7 +9,7 @@ import {
 } from '@kkfive/ui/components/icon'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
-import { useTheme } from '@/components/theme-provider'
+import { useTheme } from '@/components/theme-context'
 
 type ThemeOption = {
   id: ColorTheme

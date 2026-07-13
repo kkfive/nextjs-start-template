@@ -37,7 +37,7 @@ export function DemoWrapper({ children, title, description }: DemoWrapperProps) 
   return (
     <div className="relative mx-auto min-h-[calc(100vh-4rem-4rem)] max-w-6xl space-y-6 px-6 py-8">
       {/* Subtle background glow */}
-      <div className="pointer-events-none absolute top-0 -right-20 size-64 rounded-full bg-gradient-to-bl from-[var(--gradient-from)] to-transparent opacity-[0.04] blur-3xl" />
+      <div className="opacity-0.04 pointer-events-none absolute top-0 -right-20 size-64 rounded-full bg-gradient-to-bl from-[var(--gradient-from)] to-transparent blur-3xl" />
 
       <AnimatePresence mode="wait">
         <motion.div

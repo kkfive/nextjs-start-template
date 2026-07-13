@@ -55,14 +55,14 @@ pnpm dev
 
 ## 常用命令
 
-| 命令 | 说明 |
-| --- | --- |
-| `pnpm dev` | 启动所有 app 开发服务器 |
-| `pnpm build` | 构建所有 app |
-| `pnpm lint` | ESLint 检查 |
-| `pnpm typecheck` | TypeScript 类型检查 |
-| `pnpm test:run` | 运行测试 |
-| `pnpm verify` | lint、typecheck、依赖一致性、架构策略及 fixture 校验（不替代测试或构建） |
+| 命令             | 说明                                                                     |
+| ---------------- | ------------------------------------------------------------------------ |
+| `pnpm dev`       | 启动所有 app 开发服务器                                                  |
+| `pnpm build`     | 构建所有 app                                                             |
+| `pnpm lint`      | ESLint 检查                                                              |
+| `pnpm typecheck` | TypeScript 类型检查                                                      |
+| `pnpm test:run`  | 运行测试                                                                 |
+| `pnpm verify`    | lint、typecheck、依赖一致性、架构策略及 fixture 校验（不替代测试或构建） |
 
 > 单 app 操作：`pnpm --filter client dev`、`pnpm --filter client build` 等。
 

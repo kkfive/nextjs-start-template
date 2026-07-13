@@ -1,6 +1,7 @@
 {
   "name": "@kkfive/tsconfig",
   "version": "0.0.0",
+  "private": true,
   "exports": {
     "./base.json": "./base.json",
     "./nextjs.json": "./nextjs.json",
@@ -8,8 +9,7 @@
   },
   "files": [
     "base.json",
-    "nextjs.json",
-    "hono.json"
-  ],
-  "private": true
+    "hono.json",
+    "nextjs.json"
+  ]
 }

@@ -1,23 +1,23 @@
 {
   "name": "@kkfive/rpc",
+  "type": "module",
   "version": "0.0.0",
-  "dependencies": {
-    "@kkfive/contracts": "workspace:*",
-    "hono": "^4.7.0"
-  },
-  "devDependencies": {
-    "@kkfive/http-client": "workspace:*",
-    "@kkfive/tsconfig": "workspace:*"
-  },
+  "private": true,
   "exports": {
     ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
     "@kkfive/http-client": "workspace:*"
   },
-  "private": true,
-  "scripts": {
-    "typecheck": "tsc --noEmit"
+  "dependencies": {
+    "@kkfive/contracts": "workspace:*",
+    "hono": "catalog:"
   },
-  "type": "module"
+  "devDependencies": {
+    "@kkfive/http-client": "workspace:*",
+    "@kkfive/tsconfig": "workspace:*"
+  }
 }

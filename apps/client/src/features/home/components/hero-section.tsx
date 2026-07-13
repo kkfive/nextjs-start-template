@@ -51,7 +51,7 @@ export function HeroSection() {
       />
       {/* Subtle grid overlay */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.015]"
+        className="opacity-0.015 pointer-events-none absolute inset-0"
         style={{
           backgroundImage: 'linear-gradient(var(--text-default) 1px, transparent 1px), linear-gradient(90deg, var(--text-default) 1px, transparent 1px)',
           backgroundSize: '60px 60px',
@@ -79,7 +79,7 @@ export function HeroSection() {
           {/* Title */}
           <motion.h1
             variants={itemVariants}
-            className="text-5xl font-bold tracking-tighter text-foreground sm:text-6xl md:text-7xl lg:text-[5rem] lg:leading-[1.1]"
+            className="lg:leading-1.1 text-5xl font-bold tracking-tighter text-foreground sm:text-6xl md:text-7xl lg:text-[5rem]"
           >
             <span className="gradient-text">Next.js Start</span>
             <br />

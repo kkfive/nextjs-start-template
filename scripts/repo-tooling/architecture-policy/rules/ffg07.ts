@@ -1,7 +1,7 @@
-import ts from 'typescript'
 import type { ArchitecturePolicy } from '../types.ts'
-import { importsOf, issue, relative, sourceFiles } from './helpers.ts'
+import ts from 'typescript'
 import { readSourceFile } from '../parser.ts'
+import { importsOf, issue, relative, sourceFiles } from './helpers.ts'
 
 const restrictedApiImports = ['@kkfive/utils/dom', 'react', 'react-dom']
 

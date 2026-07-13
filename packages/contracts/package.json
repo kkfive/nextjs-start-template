@@ -1,21 +1,21 @@
 {
   "name": "@kkfive/contracts",
+  "type": "module",
   "version": "0.0.0",
-  "dependencies": {
-    "zod": "^4.4.3"
-  },
-  "devDependencies": {
-    "@kkfive/tsconfig": "workspace:*"
-  },
+  "private": true,
   "exports": {
     ".": "./src/index.ts",
     "./schemas": "./src/schemas/index.ts",
     "./types": "./src/types/index.ts",
     "./errors": "./src/errors/index.ts"
   },
-  "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
-  "type": "module"
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@kkfive/tsconfig": "workspace:*"
+  }
 }

@@ -1,5 +1,5 @@
-import process from 'node:process'
 import type { AppType } from 'api'
+import process from 'node:process'
 import { createRpcClient } from '@kkfive/rpc'
 import { httpServer } from './http-server'
 import 'server-only'

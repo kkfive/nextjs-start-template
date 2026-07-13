@@ -1,7 +1,7 @@
+import type { ArchitecturePolicyIssue, RunArchitecturePoliciesOptions } from './types.ts'
 import path from 'node:path'
 import { collectPolicyFiles } from './parser.ts'
 import { architecturePolicyRegistry } from './registry.ts'
-import type { ArchitecturePolicyIssue, RunArchitecturePoliciesOptions } from './types.ts'
 
 export function runArchitecturePolicies(options: RunArchitecturePoliciesOptions): ArchitecturePolicyIssue[] {
   const rootDir = path.resolve(options.rootDir)

@@ -1,16 +1,17 @@
 {
   "name": "@kkfive/tailwind-config",
+  "type": "module",
   "version": "0.0.0",
-  "dependencies": {
-    "@csstools/postcss-oklab-function": "^5.0.6",
-    "@tailwindcss/postcss": "^4.3.2",
-    "autoprefixer": "^10.5.2",
-    "postcss": "^8.5.16",
-    "postcss-import": "^16.1.1"
-  },
-  "exports": {
-    ".": "./preset.js"
-  },
   "private": true,
-  "type": "module"
+  "exports": {
+    ".": "./preset.js",
+    "./postcss-plugin": "./postcss-plugin.cjs"
+  },
+  "dependencies": {
+    "@csstools/postcss-oklab-function": "catalog:",
+    "@tailwindcss/postcss": "catalog:",
+    "autoprefixer": "catalog:",
+    "postcss": "catalog:",
+    "postcss-import": "catalog:"
+  }
 }

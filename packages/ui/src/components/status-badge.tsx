@@ -18,7 +18,7 @@ export function StatusBadge({ type, className }: StatusBadgeProps) {
         isServer
           ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
           : 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
-        className
+        className,
       )}
     >
       {isServer ? 'Server' : 'Client'}

@@ -304,7 +304,7 @@ export default function SseRequestPage() {
               </p>
             </div>
 
-            <div className="max-h-[360px] space-y-2 overflow-auto pr-1">
+            <div className="max-h-90 space-y-2 overflow-auto pr-1">
               {events.length === 0 && (
                 <div className="rounded-xl border border-dashed border-border/70 p-6 text-center text-xs text-muted-foreground">
                   暂无事件

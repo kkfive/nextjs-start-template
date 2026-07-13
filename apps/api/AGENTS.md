@@ -27,8 +27,8 @@
 
 ## 构建与运行
 
-- `dev`: `tsx watch src/app.ts`（走源码消费，无需预 build packages）
-- `build`: `tsup`（打包整个 app，含 workspace 包源码）
+- `dev`: `tsx watch src/server.ts`（走源码消费，无需预 build packages）
+- `build`: `tsdown`（打包整个 app，含 workspace 包源码）
 - tsconfig 继承 `@kkfive/tsconfig/hono.json`（无 DOM lib）
 
 Hono 任务按根 `AGENTS.md` 路由到 `.agents/rules/hono.rule.md`，不维护第二份包级 skill。

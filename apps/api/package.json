@@ -1,31 +1,31 @@
 {
   "name": "api",
+  "type": "module",
   "version": "0.0.0",
-  "dependencies": {
-    "@hono/zod-validator": "^0.7.0",
-    "@kkfive/contracts": "workspace:*",
-    "@kkfive/utils": "workspace:*",
-    "hono": "^4.7.0"
-  },
-  "devDependencies": {
-    "@kkfive/tsconfig": "workspace:*",
-    "@types/node": "^26.1.1",
-    "tsup": "^8.5.0",
-    "tsx": "^4.19.0",
-    "typescript": "catalog:"
-  },
+  "private": true,
   "exports": {
     ".": {
       "types": "./src/app.ts",
       "default": "./src/app.ts"
     }
   },
-  "private": true,
   "scripts": {
-    "build": "tsup src/server.ts --format esm",
+    "build": "tsdown",
     "dev": "tsx watch src/server.ts",
-    "start": "node dist/server.js",
+    "start": "node dist/server.mjs",
     "typecheck": "tsc --noEmit"
   },
-  "type": "module"
+  "dependencies": {
+    "@hono/node-server": "catalog:",
+    "@hono/zod-validator": "catalog:",
+    "@kkfive/contracts": "workspace:*",
+    "hono": "catalog:"
+  },
+  "devDependencies": {
+    "@kkfive/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
 }

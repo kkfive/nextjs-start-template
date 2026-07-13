@@ -44,7 +44,7 @@ export default function ZustandMousePage() {
         >
           {/* Background grid pattern */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.03]"
+            className="opacity-0.03 pointer-events-none absolute inset-0"
             style={{
               backgroundImage: `
                 linear-gradient(to right, currentColor 1px, transparent 1px),

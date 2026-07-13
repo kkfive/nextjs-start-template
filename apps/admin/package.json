@@ -1,39 +1,7 @@
 {
   "name": "admin",
+  "type": "module",
   "version": "0.0.0",
-  "dependencies": {
-    "@kkfive/contracts": "workspace:*",
-    "@kkfive/http-client": "workspace:*",
-    "@kkfive/rpc": "workspace:*",
-    "@kkfive/ui": "workspace:*",
-    "@kkfive/utils": "workspace:*",
-    "client-only": "^0.0.1",
-    "next": "16.2.10",
-    "react": "catalog:",
-    "react-dom": "catalog:",
-    "server-only": "^0.0.1"
-  },
-  "devDependencies": {
-    "@csstools/postcss-oklab-function": "^5.0.6",
-    "@iconify/json": "^2.2.497",
-    "@iconify/tailwind4": "^1.2.3",
-    "@kkfive/nextjs-config": "workspace:*",
-    "@kkfive/tailwind-config": "workspace:*",
-    "@kkfive/tsconfig": "workspace:*",
-    "@tailwindcss/postcss": "^4.3.2",
-    "@types/node": "^26.1.1",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "api": "workspace:*",
-    "postcss": "^8.5.16",
-    "postcss-import": "^16.1.1",
-    "postcss-load-config": "^6.0.1",
-    "postcss-scss": "^4.0.9",
-    "sass": "^1.101.0",
-    "tailwindcss": "4.3.2",
-    "tailwindcss-animate": "^1.0.7",
-    "typescript": "catalog:"
-  },
   "private": true,
   "scripts": {
     "build": "next build",
@@ -41,5 +9,30 @@
     "start": "next start",
     "typecheck": "tsc --noEmit"
   },
-  "type": "module"
+  "dependencies": {
+    "@kkfive/http-client": "workspace:*",
+    "@kkfive/rpc": "workspace:*",
+    "@kkfive/ui": "workspace:*",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "server-only": "catalog:"
+  },
+  "devDependencies": {
+    "@iconify/json": "catalog:",
+    "@iconify/tailwind4": "catalog:",
+    "@kkfive/nextjs-config": "workspace:*",
+    "@kkfive/tailwind-config": "workspace:*",
+    "@kkfive/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "api": "workspace:*",
+    "postcss": "catalog:",
+    "postcss-load-config": "catalog:",
+    "sass": "catalog:",
+    "tailwindcss": "catalog:",
+    "tailwindcss-animate": "catalog:",
+    "typescript": "catalog:"
+  }
 }

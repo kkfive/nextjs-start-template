@@ -7,10 +7,10 @@
  * - apps/api（Hono）独立后端，不经 HttpService
  */
 
-export * from './type'
-export { HttpService } from './http-service'
 export { BusinessError, type BusinessErrorOptions } from './error'
 export { createErrorResponse, type ErrorContext } from './error-handler'
+export { HttpService } from './http-service'
+export * from './type'
 
 // 透传 @kkfive/request 的运行时工具，让消费方无需直接依赖 @kkfive/request
 export { createClient, isHTTPError } from '@kkfive/request'

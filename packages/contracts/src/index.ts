@@ -5,6 +5,6 @@
  * 接口端用它校验请求/格式化响应，客户端用它做表单验证与类型推断。
  */
 
-export * from './types'
 export * from './errors'
 export * from './schemas'
+export * from './types'

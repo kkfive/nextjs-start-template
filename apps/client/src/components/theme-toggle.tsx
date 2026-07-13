@@ -5,7 +5,7 @@ import {
   LucideSun,
 } from '@kkfive/ui/components/icon'
 import { motion } from 'framer-motion'
-import { useTheme } from '@/components/theme-provider'
+import { useTheme } from '@/components/theme-context'
 
 export function ThemeToggle() {
   const { resolvedMode, toggleMode } = useTheme()

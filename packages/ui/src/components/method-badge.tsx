@@ -24,7 +24,7 @@ export function MethodBadge({ method, className }: MethodBadgeProps) {
       className={cn(
         'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-tight',
         methodStyles[method],
-        className
+        className,
       )}
     >
       {method}

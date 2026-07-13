@@ -22,10 +22,10 @@
 ## 消费方式
 
 ```ts
-import { httpTo, isNonNullable } from '@kkfive/utils/common'   // 多端通用（推荐显式）
-import { copyToClipboard } from '@kkfive/utils/dom'            // 浏览器专用（前端 only）
+// 等价于 /common，向后兼容保留
+// 多端通用（推荐显式）
 
-import { isNonNullable } from '@kkfive/utils'                  // 等价于 /common，向后兼容保留
+// 浏览器专用（前端 only）
 ```
 
 > `.`（根入口）是 `./common` 的向后兼容别名：等价导出多端算法、**不包含 dom**，因此服务端安全。新代码建议显式写 `/common` 或 `/dom` 以表明运行环境意图。

@@ -1,10 +1,10 @@
 'use client'
 
-import { cn } from '../utils/cn'
 import * as SheetPrimitive from '@radix-ui/react-dialog'
-import { LucideX } from './icon'
-
 import * as React from 'react'
+import { cn } from '../utils/cn'
+
+import { LucideX } from './icon'
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />

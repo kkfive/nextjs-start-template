@@ -47,11 +47,11 @@ export const scenarioSchema = z.object({
   scenario: z.string(),
 })
 
-export type ScenarioType =
-  | 'success'
-  | 'business-error'
-  | 'error-400'
-  | 'error-401'
-  | 'error-404'
-  | 'error-500'
-  | 'error-503'
+export type ScenarioType
+  = | 'success'
+    | 'business-error'
+    | 'error-400'
+    | 'error-401'
+    | 'error-404'
+    | 'error-500'
+    | 'error-503'

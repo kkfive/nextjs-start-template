@@ -1,10 +1,10 @@
 {
   "extends": "@kkfive/tsconfig/hono.json",
   "compilerOptions": {
-    "types": ["node"],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["node"]
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]

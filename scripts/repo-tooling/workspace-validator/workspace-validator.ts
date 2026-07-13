@@ -9,11 +9,11 @@ const REQUIRED_TURBO_TASKS = ['build', 'typecheck', 'test:run'] as const
 
 export type WorkspaceTaskName = typeof GOVERNED_TASKS[number]
 
-export type WorkspaceValidationCode =
-  | 'DANGLING_TEST_OWNER'
-  | 'MISSING_REQUIRED_TASK'
-  | 'OMITTED_TEST_OWNER'
-  | 'STALE_WORKSPACE_MANIFEST'
+export type WorkspaceValidationCode
+  = | 'DANGLING_TEST_OWNER'
+    | 'MISSING_REQUIRED_TASK'
+    | 'OMITTED_TEST_OWNER'
+    | 'STALE_WORKSPACE_MANIFEST'
 
 export type WorkspaceValidationIssue = {
   code: WorkspaceValidationCode
@@ -182,10 +182,10 @@ function parseWorkspacePatterns(source: string): string[] {
       continue
     if (/^[^\s#][^:]*:/u.test(line))
       break
-    const match = line.match(/^\s+-\s+(.+?)\s*$/u)
-    if (!match)
+    const trimmedLine = line.trimStart()
+    if (!/^-\s/u.test(trimmedLine))
       continue
-    const value = match[1].replace(/\s+#.*$/u, '').trim().replace(/^(['"])(.*)\1$/u, '$2')
+    const value = trimmedLine.slice(1).replace(/\s+#.*$/u, '').trim().replace(/^(['"])(.*)\1$/u, '$2')
     if (value)
       patterns.push(value)
   }

@@ -1,10 +1,10 @@
+import { spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { describe, expect, it } from 'vitest'
 import ts from 'typescript'
+import { describe, expect, it } from 'vitest'
 import { collectImportReferences, collectPolicyFiles } from './parser.ts'
 import { architecturePolicyRegistry } from './registry.ts'
 import { runArchitecturePolicy } from './runner.ts'
@@ -17,14 +17,18 @@ function fixture(ruleId: string, kind: 'valid' | 'invalid'): string {
   return path.join(fixtureRoot, ruleId, kind)
 }
 
+function toPosixPath(file: string): string {
+  return file.split(path.sep).join('/')
+}
+
 describe('architecture policy registry', () => {
   it('parses every supported import form through the TypeScript AST', () => {
     const source = ts.createSourceFile('forms.ts', [
-      "import { value } from './static'",
-      "export { value } from './exported'",
-      "type Imported = import('./typed').Imported",
-      "await import('./dynamic')",
-      "require('./required')",
+      'import { value } from \'./static\'',
+      'export { value } from \'./exported\'',
+      'type Imported = import(\'./typed\').Imported',
+      'await import(\'./dynamic\')',
+      'require(\'./required\')',
     ].join('\n'), ts.ScriptTarget.Latest, true)
 
     expect(collectImportReferences(source).map(reference => reference.kind)).toEqual([
@@ -45,7 +49,7 @@ describe('architecture policy registry', () => {
       fs.writeFileSync(path.join(root, '.workflow/state.ts'), 'export const state = true\n')
       fs.writeFileSync(path.join(root, 'src/index.ts'), 'export const source = true\n')
 
-      expect(collectPolicyFiles(root).map(file => path.relative(root, file))).toEqual(['src/index.ts'])
+      expect(collectPolicyFiles(root).map(file => toPosixPath(path.relative(root, file)))).toEqual(['src/index.ts'])
     }
     finally {
       fs.rmSync(root, { force: true, recursive: true })
@@ -60,7 +64,7 @@ describe('architecture policy registry', () => {
     const issues = runArchitecturePolicy(ruleId, { rootDir: fixture(ruleId, 'invalid') })
     expect(issues).toHaveLength(1)
     expect(issues[0]).toMatchObject({ ruleId })
-    expect(issues[0]?.file).toContain('/invalid/')
+    expect(toPosixPath(issues[0]?.file ?? '')).toContain('/invalid/')
     expect(issues[0]?.line).toBeGreaterThan(0)
   })
 

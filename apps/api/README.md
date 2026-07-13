@@ -23,4 +23,4 @@
 ## 运行
 
 - `pnpm --filter api dev`（tsx watch，默认端口 8787）
-- `pnpm --filter api build`（tsup）
+- `pnpm --filter api build`（tsdown）

@@ -1,7 +1,6 @@
 {
+  "lintFormatting": false,
   "semverRange": false,
-  "sortAz": false,
-  "sortFirst": false,
   "semverGroups": [
     {
       "label": "不强制统一 semver range 格式（项目允许 ^/~ 等多种 range）",

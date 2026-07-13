@@ -1,7 +1,7 @@
-import ts from 'typescript'
 import type { ArchitecturePolicy } from '../types.ts'
-import { issue, relative } from './helpers.ts'
+import ts from 'typescript'
 import { readSourceFile } from '../parser.ts'
+import { issue, relative } from './helpers.ts'
 
 const routeFile = /\/src\/app\/(?:.*\/)?(?:page|layout)\.tsx?$/
 

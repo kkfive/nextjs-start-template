@@ -10,11 +10,11 @@
 
 ### `src/service/` 下的运行时实例该如何命名和使用？
 
-| 文件 | 场景 | 环境变量 |
-| --- | --- | --- |
+| 文件                               | 场景                        | 环境变量              |
+| ---------------------------------- | --------------------------- | --------------------- |
 | `http-client.ts` / `rpc-client.ts` | 客户端组件 (`'use client'`) | `NEXT_PUBLIC_API_URL` |
-| `http-server.ts` / `rpc-server.ts` | 服务端组件 (RSC)、API 路由 | `API_BASE_URL` |
-| `sse-client.ts`（可选） | 浏览器流式请求 | `NEXT_PUBLIC_API_URL` |
+| `http-server.ts` / `rpc-server.ts` | 服务端组件 (RSC)、API 路由  | `API_BASE_URL`        |
+| `sse-client.ts`（可选）            | 浏览器流式请求              | `NEXT_PUBLIC_API_URL` |
 
 - `*-server.ts` 含 Cookie/Token 注入等服务端专用拦截器，并以 `server-only` 隔离
 - `*-client.ts` 含客户端日志、401 跳转等客户端专用拦截器，并以 `client-only` 隔离
@@ -47,12 +47,12 @@
 
 ## 环境变量
 
-| 文件 | 用途 | 优先级 |
-| --- | --- | --- |
-| `.env` | 默认值（所有环境） | 最低 |
-| `.env.local` | 本地开发（不提交 Git） | 高 |
-| `.env.development` | 开发环境 | 中 |
-| `.env.production` | 生产环境 | 中 |
+| 文件               | 用途                   | 优先级 |
+| ------------------ | ---------------------- | ------ |
+| `.env`             | 默认值（所有环境）     | 最低   |
+| `.env.local`       | 本地开发（不提交 Git） | 高     |
+| `.env.development` | 开发环境               | 中     |
+| `.env.production`  | 生产环境               | 中     |
 
 关键变量：服务端用 `API_BASE_URL`（不暴露浏览器），客户端用 `NEXT_PUBLIC_API_URL`（必须 NEXT_PUBLIC_ 前缀）。类型安全校验在 `apps/client/src/config/env.ts`（用 `@t3-oss/env-nextjs`）。
 

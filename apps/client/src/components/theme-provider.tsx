@@ -1,26 +1,12 @@
 'use client'
 
+import type { ColorTheme, Mode } from './theme-context'
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from 'react'
-
-export type ColorTheme = 'warm' | 'ocean' | 'sunset' | 'midnight' | 'forest'
-export type Mode = 'light' | 'dark' | 'system'
-
-type ThemeProviderState = {
-  colorTheme: ColorTheme
-  mode: Mode
-  resolvedMode: 'light' | 'dark'
-  setColorTheme: (theme: ColorTheme) => void
-  setMode: (mode: Mode) => void
-  toggleMode: () => void
-}
-
-const ThemeProviderContext = createContext<ThemeProviderState | null>(null)
+import { ThemeProviderContext } from './theme-context'
 
 function getSystemMode(): 'light' | 'dark' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -117,12 +103,4 @@ export function ThemeProvider({
       {children}
     </ThemeProviderContext.Provider>
   )
-}
-
-export function useTheme() {
-  const context = useContext(ThemeProviderContext)
-  if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider')
-  }
-  return context
 }

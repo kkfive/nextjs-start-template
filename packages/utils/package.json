@@ -1,17 +1,17 @@
 {
   "name": "@kkfive/utils",
+  "type": "module",
   "version": "0.0.0",
-  "devDependencies": {
-    "@kkfive/tsconfig": "workspace:*"
-  },
+  "private": true,
   "exports": {
     ".": "./src/common/index.ts",
     "./common": "./src/common/index.ts",
     "./dom": "./src/dom/index.ts"
   },
-  "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
-  "type": "module"
+  "devDependencies": {
+    "@kkfive/tsconfig": "workspace:*"
+  }
 }

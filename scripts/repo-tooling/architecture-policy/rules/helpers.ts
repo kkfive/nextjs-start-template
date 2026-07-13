@@ -1,8 +1,8 @@
+import type { ImportReference } from '../parser.ts'
+import type { ArchitecturePolicyContext, ArchitecturePolicyIssue } from '../types.ts'
 import fs from 'node:fs'
 import path from 'node:path'
-import type { ImportReference } from '../parser.ts'
 import { collectImportReferences, readSourceFile } from '../parser.ts'
-import type { ArchitecturePolicyContext, ArchitecturePolicyIssue } from '../types.ts'
 
 export function relative(context: ArchitecturePolicyContext, file: string): string {
   return path.relative(context.rootDir, file).split(path.sep).join('/')

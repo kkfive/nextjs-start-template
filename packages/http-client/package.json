@@ -1,23 +1,19 @@
 {
   "name": "@kkfive/http-client",
+  "type": "module",
   "version": "0.0.0",
-  "dependencies": {
-    "@kkfive/request": "^0.6.0",
-    "defu": "^6.1.7"
-  },
-  "devDependencies": {
-    "@kkfive/contracts": "workspace:*",
-    "@kkfive/tsconfig": "workspace:*"
-  },
+  "private": true,
   "exports": {
     ".": "./src/index.ts"
   },
-  "peerDependencies": {
-    "@kkfive/contracts": "workspace:*"
-  },
-  "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
-  "type": "module"
+  "dependencies": {
+    "@kkfive/request": "catalog:",
+    "defu": "catalog:"
+  },
+  "devDependencies": {
+    "@kkfive/tsconfig": "workspace:*"
+  }
 }

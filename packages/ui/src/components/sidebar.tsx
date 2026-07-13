@@ -1,10 +1,16 @@
 'use client'
 
 import type { VariantProps } from '@esdora/biz/atom-css'
+import { cva } from '@esdora/biz/atom-css'
+import { Slot } from '@radix-ui/react-slot'
+import * as React from 'react'
+
+import { useIsMobile } from '../hooks/use-mobile'
+import { cn } from '../utils/cn'
 import { Button } from './button'
+import { LucidePanelLeft } from './icon'
 import { Input } from './input'
 import { Separator } from './separator'
-
 import {
   Sheet,
   SheetContent,
@@ -19,12 +25,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from './tooltip'
-import { useIsMobile } from '../hooks/use-mobile'
-import { cn } from '../utils/cn'
-import { Slot } from '@radix-ui/react-slot'
-import { cva } from '@esdora/biz/atom-css'
-import { LucidePanelLeft } from './icon'
-import * as React from 'react'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -718,5 +718,4 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar,
 }

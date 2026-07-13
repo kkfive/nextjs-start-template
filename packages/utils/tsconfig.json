@@ -1,9 +1,9 @@
 {
   "extends": "@kkfive/tsconfig/base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "outDir": "dist"
   },
-  "include": ["src"],
-  "references": []
+  "references": [],
+  "include": ["src"]
 }

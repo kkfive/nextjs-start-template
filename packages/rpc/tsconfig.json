@@ -1,10 +1,10 @@
 {
   "extends": "@kkfive/tsconfig/base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
     "jsx": "react-jsx",
-    "lib": ["dom", "dom.iterable", "esnext"]
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "rootDir": "src",
+    "outDir": "dist"
   },
   "include": ["src"]
 }
