@@ -6,5 +6,6 @@ import { ffg04 } from './rules/ffg04.ts'
 import { ffg05 } from './rules/ffg05.ts'
 import { ffg06 } from './rules/ffg06.ts'
 import { ffg07 } from './rules/ffg07.ts'
+import { ffg08 } from './rules/ffg08.ts'
 
-export const architecturePolicyRegistry: ArchitecturePolicy[] = [ffg01, ffg02, ffg03, ffg04, ffg05, ffg06, ffg07]
+export const architecturePolicyRegistry: ArchitecturePolicy[] = [ffg01, ffg02, ffg03, ffg04, ffg05, ffg06, ffg07, ffg08]

@@ -10,16 +10,33 @@
 
 ## 按路径加载
 
-- `apps/*/src/features/**`：`.agents/rules/feature.rule.md`
-- `apps/*/src/service/**`：`.agents/rules/service.rule.md`
-- `apps/*/src/app/**`：`.agents/rules/next-app.rule.md`；测试文件再读 `testing.rule.md`
-- `apps/api/**`：`.agents/rules/hono.rule.md`
-- `packages/**`：`.agents/rules/packages.rule.md`；UI 文件再读 `ui.rule.md`
-- monorepo、CI、Turbo、依赖治理：`.agents/rules/monorepo.rule.md` 与 `monorepo-engineering` skill
-- TypeScript/React/import/test 写法：`coding-standards` skill
-- Next.js App Router：`nextjs-app-router` skill
-- 样式、Ant Design、Tailwind：`styling-system` skill
-- 目录和依赖边界设计：`project-architecture` skill
+路径规则先确定 owner rule；测试规则只作为跨路径叠加层，不替代 owner rule。
+
+| 路径 | 必须加载 |
+|---|---|
+| `apps/*/src/features/**` | `.agents/rules/feature.rule.md` |
+| `apps/*/src/features/**/*.test.*` | `.agents/rules/feature.rule.md` + `.agents/rules/testing.rule.md` |
+| `apps/*/src/service/**` | `.agents/rules/service.rule.md` |
+| `apps/*/src/service/**/*.test.*` | `.agents/rules/service.rule.md` + `.agents/rules/testing.rule.md` |
+| `apps/*/src/app/**` | `.agents/rules/next-app.rule.md` |
+| `apps/*/src/components/**` | `.agents/rules/ui.rule.md` |
+| `apps/*/src/lib/**`、`apps/*/src/config/**` | `.agents/rules/core.rule.md` |
+| `apps/*/src/styles/**` | `.agents/rules/ui.rule.md` + `styling-system` skill |
+| `apps/api/**` | `.agents/rules/hono.rule.md` |
+| `packages/**` | `.agents/rules/packages.rule.md` |
+| `packages/**/*.test.*` | `.agents/rules/packages.rule.md` + `.agents/rules/testing.rule.md` |
+| `packages/ui/**` | `.agents/rules/packages.rule.md` + `.agents/rules/ui.rule.md` |
+| `internal/**`、`scripts/repo-tooling/**`、`.github/workflows/**`、`turbo.json`、`pnpm-workspace.yaml` | `.agents/rules/monorepo.rule.md` + `monorepo-engineering` skill |
+
+任何其他 `*.test.*` 或 `*.spec.*` 文件，都在其 owner rule 之外叠加 `.agents/rules/testing.rule.md`。
+
+## 按意图加载 Skill
+
+- TypeScript、React、import，或实际 `*.test.*` / `*.spec.*` 测试源码的文件级写法：`coding-standards`；CI 中的 `test` / `build` job 名称不触发。
+- `apps/*/src/app/**` 下的 App Router 页面、布局、Route Handler、Server Action、缓存或 Metadata：`nextjs-app-router`。
+- 只有用户明确要求视觉/布局设计、主题、CSS Variables、Tailwind/SCSS class 方案或样式冲突时才触发 `styling-system`；页面实现中为了结构或复用控件而写普通 `className`、Tailwind utility、表单布局不触发，普通 UI import 也不触发。
+- 仅当用户明确要求改变目录归属、模块拆分、跨层/跨包依赖边界，或创建新 app/package 时使用 `project-architecture`。按现有 Feature-first 模板新增普通 page、feature 或 public entry 不触发；这类页面实现使用 owner rule、`nextjs-app-router` 与 `coding-standards`。
+- 明确修改 Turbo、CI、workspace 或 architecture-policy 工程化：`monorepo-engineering`；普通页面与普通 package 代码不触发。
 
 ## 工作方式
 

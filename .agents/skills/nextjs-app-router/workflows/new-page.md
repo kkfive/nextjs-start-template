@@ -68,7 +68,7 @@ export default function Error({
 - [ ] `params` / `searchParams` 已 `await`（Next 15+ 要求 Promise 形态）
 - [ ] 数据获取尽量留在 Server Component，向下传 props
 - [ ] 页面只组合 feature 公开入口，不在页面里写 `fetch`、业务 call、业务状态或可复用视图
-- [ ] UI 组件来自该 app 的 `@/components/ui/*`（底层 `@kkfive/ui`）
+- [ ] 基础 UI 组件直接来自 `@kkfive/ui/components/*`；antd 专属能力可由 app 直接导入
 - [ ] 有失败可能的子树有 `error.tsx`
 
 更深的文件约定查 `references/file-conventions.md`。

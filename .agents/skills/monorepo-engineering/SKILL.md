@@ -1,52 +1,35 @@
 ---
 name: monorepo-engineering
-description: monorepo 工程化规范 - Turborepo cache、CI affected filter、repository architecture policy。用于优化构建缓存、配置受影响范围校验和扩展跨包机器规则。
+description: monorepo 工程化规范。用于修改 Turborepo/Turbo cache、CI affected filter、pnpm workspace、internal 工具链或 repository architecture-policy 机器规则；不因普通页面、一般 package 代码或目录归属讨论自动触发。
 user-invocable: true
 ---
 
 # Monorepo Engineering
 
 ## Scope
-- Target: pnpm workspace + Turborepo monorepo 的**工程化流水线**（构建缓存、CI、依赖方向机器校验）
-- Cover: turbo.json cache 精细化、CI affected filter、跨包单向依赖的机器校验
-- Avoid: 代码该放哪 / import 合不合规（去 `/project-architecture`）；文件级 TS/React 写法（去 `/coding-standards`）
 
-**边界声明**：本 skill 回答"构建怎么缓存、CI 怎么只跑受影响包、已定义的依赖规则如何机器校验"。
-- 分层 / 目录 / 单向依赖**规则本身** → `/project-architecture`（静态结构）+ `coding-standards/references/layer-dependency.md`
-- 本 skill 只答：**如何把这些规则工程化**（缓存配置、CI filter、机器校验脚本）
+- 用于 Turbo cache、CI affected、workspace 与 architecture-policy 的工程化任务。
+- 命中具体任务后，只读取 `Common Tasks` 中对应的一条 workflow 或 reference。
+
+## Avoid
+
+- 代码归属与依赖规则本身使用 `/project-architecture`；文件级写法使用 `/coding-standards`。
+- 普通页面或 package 实现不触发本 skill；CI 中出现 `test` / `build` job 只是工程任务名，不触发 `coding-standards`，除非实际修改 TypeScript、React、import 或 `*.test.*` / `*.spec.*` 源码。
+- 不要默认读取全部 workflows 或 `references/gotchas.md`。
 
 ## Common Tasks
 
-| 触发场景 | 路由 |
+| 任务 | 一跳导航 |
 |---|---|
-| 优化构建缓存 / 排查 cache miss / stale | `workflows/optimize-turbo-cache.md` |
-| CI 只跑受影响包 / 配置 affected filter | `workflows/setup-ci-affected.md` |
-| 单向依赖机器校验 / 加 verify 规则 | `workflows/enforce-dependency-direction.md` |
-| turbo.json v2 怎么写 | `references/turbo-v2-config.md` |
-| 踩坑：v1 pipeline / 源码消费 vs 预构建 / env stale | `references/gotchas.md` |
+| 优化 Turbo cache 或排查 cache miss | `workflows/optimize-turbo-cache.md` |
+| 配置 CI affected filter | `workflows/setup-ci-affected.md` |
+| 将依赖方向规则落实为机器校验 | `workflows/enforce-dependency-direction.md` |
+| 查询 Turbo v2 配置语法 | `references/turbo-v2-config.md` |
+| 排查 cache、env 或源码消费陷阱 | `references/gotchas.md` |
 
-## 核心原则
+## Semantic Principles
 
-- **静态规则在 `/project-architecture`，本 skill 只做工程化**：单向依赖定义在 layer-dependency.md，本 skill 负责同步到 architecture policy
-- **cache 三要素**：`inputs`（哪些文件计入 hash）+ `outputs`（缓存什么产物）+ `env`/`globalEnv`（哪些环境变量计入 hash）
-- **affected 与全局并存**：耗时任务（build/test）可用 affected；根 lint、typecheck 与 architecture policy 保持全量
-- **源码消费不预构建**：packages 走 `transpilePackages` 消费源码，不引入 tsup/dist 预构建（与外部 skill 的"预构建"方案相反）
-
-## 反模式速查
-
-| ❌ 不要 | ✅ 应该 |
-|---|---|
-| 照抄外部 skill 的 v1 `pipeline` | 用 v2 `tasks` |
-| build 不声明 `env` | 声明影响构建产物的环境变量（NEXT_PUBLIC_* 等） |
-| 把 packages exports 改指向 `dist/` | 源码消费，指向 `./src/index.ts` |
-| 全局检查也加 affected filter | lint/typecheck/verify 保持全量 |
-| 用 madge/boundaries 重造依赖校验 | 扩展 verify-conventions.mjs（项目已有 G 规则模式） |
-
-## Session Discipline
-
-每次进入"改 turbo.json / 改 CI / 加构建或依赖校验"任务时**重新阅读本 SKILL.md**。turbo 配置与 CI 策略随项目规模演化。
-
-## 相关 Skills
-
-- `/project-architecture`：分层与单向依赖**规则本身**（本 skill 把这些规则工程化）
-- `/coding-standards`：`references/layer-dependency.md` 是 architecture policy 的语义参考
+- 静态边界由 owner rule 定义，本 skill 只负责可执行的工程化落实。
+- cache identity 必须同时覆盖输入、输出与影响产物的环境变量。
+- affected 优化只用于适合增量执行的任务，仓库级静态治理保持全量。
+- workspace package 保持当前源码消费模型，除非任务明确改变发布边界。

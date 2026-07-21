@@ -31,7 +31,7 @@
 - `build`: `tsdown`（打包整个 app，含 workspace 包源码）
 - tsconfig 继承 `@kkfive/tsconfig/hono.json`（无 DOM lib）
 
-Hono 任务按根 `AGENTS.md` 路由到 `.agents/rules/hono.rule.md`，不维护第二份包级 skill。
+Hono 任务按根 `AGENTS.md` 唯一路由到 `.agents/rules/hono.rule.md`，不维护第二份包级 skill，也不因位于 `apps/` 自动触发 Next.js 或前端样式 Skill。
 
 ## 参考
 

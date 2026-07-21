@@ -4,6 +4,8 @@
 
 依赖必须完整且最小：只声明真正使用的依赖；运行时框架（React 等）走 peerDependencies。包内路径别名不跨包，跨包引用统一走 `@kkfive/<pkg>` 与 `workspace:*`。新增 package 需提供 manifest、源码 export、tsconfig、README，并在根 `tsconfig.json` references 登记。
 
+普通 workspace package 的测试 runner 由根 `devDependencies` 统一提供。新增 `test:run` 时复用根 Vitest，例如 `pnpm --workspace-root exec vitest run packages/<pkg>`；不要为单个 package 重复添加 `vitest` devDependency 或改动 lockfile，除非任务明确涉及依赖治理或独立发布边界。
+
 ## 包分类与红线
 
 | 包 | 职责 | 红线 |

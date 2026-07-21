@@ -27,8 +27,7 @@ export const metadata: Metadata = {
 ```ts
 // apps/client/src/app/material/[id]/page.tsx
 import type { Metadata } from 'next'
-import { fetchMaterial } from '@kkfive/rpc'
-import { rpcServer } from '@/service/rpc-server'
+import { fetchMaterial } from '@/features/material/model/calls'
 
 export async function generateMetadata(
   { params }: { params: Promise<{ id: string }> },

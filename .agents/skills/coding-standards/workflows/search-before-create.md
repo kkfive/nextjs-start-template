@@ -25,14 +25,14 @@
 | 目标物 | 检索路径 | 检索关键词 |
 |---|---|---|
 | UI 基础组件 | `packages/ui/src/components/` + `packages/ui/src/index.ts` | 组件名（Button/Input/Dialog） |
-| App 业务组件 | `apps/<app>/src/components/` | 业务名词（订单/用户） |
+| App 业务组件 | `apps/<app>/src/features/<feature>/components/` | 业务名词（订单/用户） |
 | API schema | `packages/contracts/src/schemas/` + `index.ts` | 接口路径 / 数据实体名 |
 | HTTP 封装 | `packages/http-client/src/` | 请求方法 / 拦截器类型 |
-| RPC calls / Contracts schema | `packages/rpc/src/<module>/` + `packages/contracts/src/{module}/` | 模块名 / 业务能力 |
+| RPC calls / Contracts schema | `apps/<app>/src/features/<feature>/model/calls.ts` + `packages/contracts/src/{module}/` | 模块名 / 业务能力；call 使用 `@/service/rpc-client` 或 `@/service/rpc-server` |
 | 工具函数 | `packages/utils/src/` | 函数行为（isXxx / assertXxx / format） |
 | 类型定义 | 对应包的 `type.ts` + `packages/contracts/src/types/` | 类型名 |
 
-**检索方法**：用 Grep / Glob 按关键词搜索上述路径，同时读对应 `index.ts` 看导出列表。
+**检索方法**：先用 `maestro explore` 按关键词搜索上述明确路径；重要搜索从定义与调用等不同角度交叉检索。仅单命中时，再用 `rg` 与 Read 精确确认，同时检查对应 `index.ts` 的导出列表。
 
 ## Step 3: 评估并决策
 
@@ -53,7 +53,7 @@
 > 用户："帮我对接 /api/order/list 接口，返回订单列表"
 
 1. 目标物：API schema（订单列表响应结构）
-2. 检索：`packages/contracts/src/schemas/` 搜 "order" / "订单"
+2. 检索：先用 `maestro explore` 在 `packages/contracts/src/schemas/` 搜 "order" / "订单"；单命中再用 `rg` 与 Read 确认
 3. 决策：
    - 找到 `order-schema.ts` 已定义 `OrderListResponseSchema` → 复用，不重复定义
    - 未找到 → 在 `packages/contracts/src/schemas/` 新建，并登记到 `index.ts`

@@ -22,6 +22,7 @@
     "typecheck:repo": "tsc --noEmit -p scripts/repo-tooling/tsconfig.json",
     "up": "taze major -I -r",
     "verify": "pnpm run verify:lint && pnpm run verify:typecheck && pnpm run verify:versions && pnpm run verify:architecture && pnpm run verify:workspaces && pnpm run verify:fixtures",
+    "verify:ai-governance:e2e": "node scripts/repo-tooling/ai-governance-e2e/runner.ts prepare",
     "verify:architecture": "node scripts/verify-conventions.mjs",
     "verify:fixtures": "vitest run scripts/repo-tooling/architecture-policy/runner.test.ts scripts/repo-tooling/workspace-validator/workspace-validator.test.ts",
     "verify:lint": "pnpm lint",

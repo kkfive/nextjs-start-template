@@ -1,0 +1,1 @@
+{"id":"cmd-1","processId":"proc-1","timestamp":"2026-07-16T00:00:00.000Z","type":"command_exec","command":"/bin/zsh -lc \"nl -ba .agents/rules/packages.rule.md .agents/rules/testing.rule.md .agents/skills/coding-standards/SKILL.md .agents/skills/styling-system/SKILL.md\"","exitCode":0,"output":"sanitized"}

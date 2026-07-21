@@ -23,11 +23,10 @@ fetch(url, { next: { tags: ['material:list'] } })
 ```ts
 'use server'
 import { revalidateTag, revalidatePath } from 'next/cache'
-import { rpcServer } from '@/service/rpc-server'
-import { updateMaterial } from '@kkfive/rpc'
+import { updateMaterial } from '@/features/material/model/calls'
 
 export async function updateMaterialAction(id: string, data: Patch) {
-  await updateMaterial(rpcServer, id, data)
+  await updateMaterial(id, data)
   // 选其一或组合
   revalidateTag('material:list')              // 同 tag 的所有 fetch 失效
   revalidateTag(`material:detail:${id}`)

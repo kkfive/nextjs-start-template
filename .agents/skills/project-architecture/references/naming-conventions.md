@@ -6,7 +6,7 @@
 |------|----------|------|
 | 目录 | kebab-case | `user-profile/`, `form-validation/` |
 | React 组件文件 | kebab-case | `hitokoto-card.tsx`, `scenario-card.tsx` |
-| UI 组件目录 | kebab-case + `/index.tsx` | `button/index.tsx`, `modal/index.tsx` |
+| App UI 封装文件 | kebab-case | `page-button.tsx`, `material-modal.tsx` |
 | 工具/服务文件 | kebab-case | `app-error.ts`, `http-client.ts` |
 | Contracts 类型定义 | `type.ts` (固定名称) | `contracts/src/{module}/type.ts` |
 | 工具类型定义 | kebab-case + `.ts` | `utility-types.ts`, `request-types.ts` |
@@ -14,26 +14,7 @@
 | 测试文件 | `{name}.test.ts(x)` | `utils.test.ts`, `button.test.tsx` |
 | 常量文件 | kebab-case | `api.ts`, `site-features.tsx` |
 
-**UI 组件文件结构规范**：
-
-所有 `apps/{app}/src/components/ui/` 下的组件必须使用目录形式：
-
-```
-✅ 正确：
-apps/{app}/src/components/ui/
-├── button/
-│   └── index.tsx
-├── modal/
-│   └── index.tsx
-└── sonner/
-    └── index.tsx
-
-❌ 错误：
-apps/{app}/src/components/ui/
-├── button.tsx
-├── modal.tsx
-└── sonner.tsx
-```
+基础 UI 由业务代码直接从 `@kkfive/ui/components/*` 消费，不在 app 内建立纯 re-export 目录。只有改变默认 props、限制 API、注入主题或组合控件等真实加工时，才在 app 的 `src/components/` 或所属 feature 中新增 kebab-case 组件文件。
 
 ## 代码标识符
 
@@ -91,8 +72,8 @@ type HitokotoCardProps = {
   initialData: Hitokoto
 }
 
-// 或使用 props.ts 文件
-// apps/{app}/src/components/ui/button/props.ts
+// 简单 Props 可与组件放在同一文件
+// apps/{app}/src/components/page-button.tsx
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   primary?: boolean
 }

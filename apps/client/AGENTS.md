@@ -35,23 +35,7 @@
 
 <task-routing>
 
-## 目录结构
-
-```text
-apps/client/
-├── src/
-│   ├── app/             # 路由 / 页面 / BFF API 路由；仅组合
-│   ├── features/        # feature 业务代码（视图、calls、hooks、状态、模型）
-│   ├── components/      # 跨 feature 的业务组件、providers、ui 入口
-│   ├── config/          # 环境变量、站点配置
-│   ├── lib/             # app 级工具函数
-│   ├── service/         # HTTP / RPC / SSE 运行时实例
-│   └── styles/          # 全局样式
-├── public/              # 静态资源
-└── typings/             # 全局类型声明
-```
-
-Skill 的 meta 由工具自动注入，按 description 匹配按需打开；Ant Design 与 Tailwind 统一路由到根 `styling-system` skill。
+目录 owner rule、测试叠加规则与 Skill 触发条件全部继承根 `AGENTS.md`。本文件只补充 client 的 antd 自治、运行时实例与环境变量约束。
 
 ## 参考
 

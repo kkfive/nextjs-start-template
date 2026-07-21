@@ -29,19 +29,7 @@
 
 <task-routing>
 
-## 目录结构
-
-```text
-apps/admin/
-├── src/
-│   ├── app/             # 路由 / 页面（Server Component，仅组合）
-│   ├── features/        # SSR feature 视图、calls、模型
-│   └── service/         # HTTP / RPC 运行时实例
-├── next.config.ts       # withRepoConfig + transpilePackages
-└── tsconfig.json        # extends @kkfive/tsconfig/nextjs.json
-```
-
-Skill 的 meta 由工具自动注入，按 description 匹配按需打开。
+目录 owner rule、测试叠加规则与 Skill 触发条件全部继承根 `AGENTS.md`。本文件只补充 admin 的 SSR 默认策略与示例阶段约束。
 
 ## 参考
 

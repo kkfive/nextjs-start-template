@@ -25,11 +25,10 @@
 
 ## Step 3: 端到端真实运行（配置/规范/自动触发类核心）
 
-1. **用干净进程执行真实任务**：`maestro delegate "<真实开发任务>" --to claude --mode write --cd <worktree>`，prompt 只说要做什么、**不暗示**去读规范/配置。
-   - 验证"自动触发/注入"类机制**必须用没读过规范的干净进程**——知情者自己跑会作弊（主动遵循 ≠ 机制生效）。
-2. **审查运行日志**（`maestro delegate output <id>`）：看它**实际读了什么/做了什么**（是否 Read `.agents/skills/`、是否引用规则原文），而非它自述。
-3. **用脚本验证独立产物**：产物是独立 agent 生成的，此时用自带脚本校验产物**不是循环论证**（脚本校验独立产物 ≠ 脚本自证）。
-4. **隔离 worktree**：`git worktree add` 新分支，避免污染当前分支；验证完清理。
+1. **prepare**：在 clean source 与 Node 24 环境运行 `pnpm verify:ai-governance:e2e`。Harness 从 `scripts/repo-tooling/ai-governance-e2e/profiles.ts` 读取唯一 profile contract，创建 run-owned detached worktree，并生成 `commands.json`；本文不复制 profile 表。
+2. **执行干净进程**：逐条执行 `commands.json` 中的 canonical Codex 命令。每条命令已经固定 `--mode write`、唯一 execution ID 与隔离 worktree；调用方必须使用 `run_in_background=true`，prompt 只包含真实业务要求，不提示读取规范或配置。
+3. **collect**：所有 background delegate 完成后运行 `node scripts/repo-tooling/ai-governance-e2e/runner.ts collect <artifact-dir>`。Harness 直接解析持久化 JSONL 的成功 `command_exec`，收集实际治理文件读取、UTF-8 Token 估算、diff 与独立 gates；缺失或未知 schema 记为 `infrastructure_error`，不采信 agent 自述。
+4. **cleanup**：审查 `report.json` 后运行 `node scripts/repo-tooling/ai-governance-e2e/runner.ts cleanup <artifact-dir>`。Cleanup 只删除 manifest 记录的 run-owned worktree，不触碰主工作树或其他运行资源。
 
 ## Step 4: 判据与归因
 

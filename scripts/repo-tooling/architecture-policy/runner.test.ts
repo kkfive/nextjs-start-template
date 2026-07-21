@@ -5,8 +5,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
+import { profiles } from '../ai-governance-e2e/profiles.ts'
 import { collectImportReferences, collectPolicyFiles } from './parser.ts'
 import { architecturePolicyRegistry } from './registry.ts'
+import { validateProfileRouting } from './rules/ffg08.ts'
 import { runArchitecturePolicy } from './runner.ts'
 
 const fixtureRoot = fileURLToPath(new URL('./__fixtures__/', import.meta.url))
@@ -31,6 +33,10 @@ function ffg04Scenario(name: string): string {
 
 function ffg07Scenario(name: string): string {
   return path.join(fixtureRoot, 'FFG07', 'scenarios', name)
+}
+
+function ffg08Scenario(name: string): string {
+  return path.join(fixtureRoot, 'FFG08', 'scenarios', name)
 }
 
 function toPosixPath(file: string): string {
@@ -192,9 +198,66 @@ describe('architecture policy registry', () => {
     expect(runArchitecturePolicy('FFG07', { rootDir: ffg07Scenario('exact-six-required-patterns') })).toEqual([])
   })
 
+  it('validates FFG08 governance integrity against missing, broken, orphaned, mismatched and deprecated cases', () => {
+    const scenarios = [
+      ['missing-reference', '引用不存在'],
+      ['broken-relative-reference', '引用不存在'],
+      ['orphan-rule', 'rule 未被 AGENTS 路由'],
+      ['frontmatter-mismatch', 'frontmatter name'],
+      ['deprecated-path', '已废弃路径'],
+    ] as const
+
+    for (const [scenario, message] of scenarios) {
+      const issues = runArchitecturePolicy('FFG08', { rootDir: ffg08Scenario(scenario) })
+      expect(issues, scenario).toHaveLength(1)
+      expect(issues[0], scenario).toMatchObject({ ruleId: 'FFG08' })
+      expect(issues[0]?.message, scenario).toContain(message)
+      expect(issues[0]?.line, scenario).toBeGreaterThan(0)
+    }
+  })
+
+  it('validates FFG08 profile contract import with dynamic valid, missing-required and forbidden-category cases', () => {
+    for (const profile of profiles) {
+      const valid = { rules: [...profile.expectedRules], skills: [...profile.expectedSkills] }
+      expect(validateProfileRouting(profile.id, valid), profile.id).toEqual([])
+
+      const missing = profile.expectedRules.length > 0
+        ? { ...valid, rules: valid.rules.slice(1) }
+        : { ...valid, skills: valid.skills.slice(1) }
+      expect(validateProfileRouting(profile.id, missing).some(issue => issue.includes('missing required')), profile.id).toBe(true)
+
+      const forbiddenCategory = profile.forbiddenCategories[0]
+      expect(forbiddenCategory, profile.id).toBeDefined()
+      expect(validateProfileRouting(profile.id, {
+        ...valid,
+        skills: [...valid.skills, forbiddenCategory!],
+      }).some(issue => issue.includes('forbidden category')), profile.id).toBe(true)
+    }
+  })
+
+  it('validates FFG08 no copied oracle ownership for profile prompts and routing tables', () => {
+    const policySource = fs.readFileSync(path.join(repositoryRoot, 'scripts/repo-tooling/architecture-policy/rules/ffg08.ts'), 'utf8')
+    const fixtureSource = readFilesRecursively(path.join(fixtureRoot, 'FFG08')).join('\n')
+    const ownedSource = `${policySource}\n${fixtureSource}`
+
+    for (const profile of profiles) {
+      expect(ownedSource).not.toContain(profile.prompt)
+      expect(ownedSource).not.toContain(String(profile.budgetTokens))
+      for (const oracle of [profile.allowedPaths, profile.expectedRules, profile.expectedSkills, profile.forbiddenCategories])
+        expect(ownedSource).not.toContain(JSON.stringify(oracle))
+    }
+  })
+
   it('cli returns a non-zero exit code and the failing ruleId for an invalid fixture', () => {
     const result = spawnSync(process.execPath, [cli, '--root', fixture('FFG04', 'invalid'), '--rule', 'FFG04'], { encoding: 'utf8' })
     expect(result.status).toBe(1)
     expect(result.stderr).toContain('[FFG04]')
   })
 })
+
+function readFilesRecursively(directory: string): string[] {
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const target = path.join(directory, entry.name)
+    return entry.isDirectory() ? readFilesRecursively(target) : [fs.readFileSync(target, 'utf8')]
+  })
+}
