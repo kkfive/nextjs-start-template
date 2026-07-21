@@ -17,6 +17,22 @@ function fixture(ruleId: string, kind: 'valid' | 'invalid'): string {
   return path.join(fixtureRoot, ruleId, kind)
 }
 
+function ffg02Scenario(name: string): string {
+  return path.join(fixtureRoot, 'FFG02', 'scenarios', name)
+}
+
+function ffg03Scenario(name: string): string {
+  return path.join(fixtureRoot, 'FFG03', 'scenarios', name)
+}
+
+function ffg04Scenario(name: string): string {
+  return path.join(fixtureRoot, 'FFG04', 'scenarios', name)
+}
+
+function ffg07Scenario(name: string): string {
+  return path.join(fixtureRoot, 'FFG07', 'scenarios', name)
+}
+
 function toPosixPath(file: string): string {
   return file.split(path.sep).join('/')
 }
@@ -66,6 +82,114 @@ describe('architecture policy registry', () => {
     expect(issues[0]).toMatchObject({ ruleId })
     expect(toPosixPath(issues[0]?.file ?? '')).toContain('/invalid/')
     expect(issues[0]?.line).toBeGreaterThan(0)
+  })
+
+  it('keeps FFG modules, registry entries and fixture IDs equal', () => {
+    const ruleIds = fs.readdirSync(path.join(repositoryRoot, 'scripts/repo-tooling/architecture-policy/rules'))
+      .flatMap(file => file.match(/^ffg(\d+)\.ts$/u)?.[1] ? [`FFG${file.match(/^ffg(\d+)\.ts$/u)?.[1]}`] : [])
+      .sort()
+    const registryIds = architecturePolicyRegistry.map(policy => policy.id).sort()
+    const fixtureIds = fs.readdirSync(fixtureRoot, { withFileTypes: true })
+      .filter(entry => entry.isDirectory()
+        && fs.existsSync(path.join(fixtureRoot, entry.name, 'valid'))
+        && fs.existsSync(path.join(fixtureRoot, entry.name, 'invalid')))
+      .map(entry => entry.name)
+      .sort()
+
+    expect(registryIds).toEqual(ruleIds)
+    expect(fixtureIds).toEqual(ruleIds)
+  })
+
+  it.each([
+    'client-directive',
+    'client-state-use-state',
+    'client-state-use-reducer',
+    'client-state-use-effect',
+    'client-state-use-layout-effect',
+    'client-state-use-sync-external-store',
+    'deep-feature-import',
+    'direct-service-import',
+    'direct-request-call',
+    'direct-request-axios',
+  ])('rejects FFG02 independent %s scenario with one located issue', (scenario) => {
+    const issues = runArchitecturePolicy('FFG02', { rootDir: ffg02Scenario(scenario) })
+
+    expect(issues).toHaveLength(1)
+    expect(issues[0]).toMatchObject({ ruleId: 'FFG02' })
+    expect(toPosixPath(issues[0]?.file ?? '')).toContain(`/scenarios/${scenario}/`)
+    expect(issues[0]?.line).toBeGreaterThan(0)
+  })
+
+  it.each([
+    'allowed-route-imports',
+    'stable-feature-call',
+    'next-helper-call',
+  ])('accepts FFG02 source-aware %s scenario', (scenario) => {
+    expect(runArchitecturePolicy('FFG02', { rootDir: ffg02Scenario(scenario) })).toEqual([])
+  })
+
+  it.each([
+    'invalid-basename',
+    'nested-service',
+    'missing-client-only',
+    'missing-server-only',
+    'opposite-marker',
+    'bound-client-marker',
+    'invalid-apptype-owner',
+    'invalid-apptype-value',
+    'business-export-function',
+    'business-export-class',
+    'business-export-hook',
+    'business-export-store',
+    'business-export-calls',
+  ])('rejects FFG03 independent %s scenario with one located issue', (scenario) => {
+    const issues = runArchitecturePolicy('FFG03', { rootDir: ffg03Scenario(scenario) })
+
+    expect(issues).toHaveLength(1)
+    expect(issues[0]).toMatchObject({ ruleId: 'FFG03' })
+    expect(toPosixPath(issues[0]?.file ?? '')).toContain(`/scenarios/${scenario}/`)
+    expect(issues[0]?.line).toBeGreaterThan(0)
+  })
+
+  it.each([
+    'export-star',
+    'direct-named-export-ui',
+    'direct-named-export-antd',
+    'import-then-export',
+  ])('rejects FFG04 %s UI passthrough scenario with one located issue', (scenario) => {
+    const issues = runArchitecturePolicy('FFG04', { rootDir: ffg04Scenario(scenario) })
+
+    expect(issues).toHaveLength(1)
+    expect(issues[0]).toMatchObject({ ruleId: 'FFG04' })
+    expect(toPosixPath(issues[0]?.file ?? '')).toContain(`/scenarios/${scenario}/`)
+    expect(issues[0]?.line).toBeGreaterThan(0)
+  })
+
+  it.each([
+    'valid-wrapper',
+    'direct-antd-import',
+  ])('accepts FFG04 %s implementation scenario', (scenario) => {
+    expect(runArchitecturePolicy('FFG04', { rootDir: ffg04Scenario(scenario) })).toEqual([])
+  })
+
+  it('rejects FFG07 disabled-rule scenario', () => {
+    const issues = runArchitecturePolicy('FFG07', { rootDir: ffg07Scenario('disabled-rule') })
+
+    expect(issues).toHaveLength(1)
+    expect(issues[0]).toMatchObject({ ruleId: 'FFG07' })
+    expect(issues[0]?.message).toContain('必须保持启用')
+  })
+
+  it('rejects FFG07 missing-required-pattern scenario and reports the missing pattern', () => {
+    const issues = runArchitecturePolicy('FFG07', { rootDir: ffg07Scenario('missing-required-pattern') })
+
+    expect(issues).toHaveLength(1)
+    expect(issues[0]).toMatchObject({ ruleId: 'FFG07' })
+    expect(issues[0]?.message).toContain('next/*')
+  })
+
+  it('accepts FFG07 exact-six-required-patterns scenario', () => {
+    expect(runArchitecturePolicy('FFG07', { rootDir: ffg07Scenario('exact-six-required-patterns') })).toEqual([])
   })
 
   it('cli returns a non-zero exit code and the failing ruleId for an invalid fixture', () => {

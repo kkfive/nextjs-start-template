@@ -1,4 +1,4 @@
-import ErrorsRequestPage from '@/features/demo/request/views/errors-request-page'
+import { ErrorsRequestPage } from '@/features/demo/request'
 
 export default function Page() {
   return <ErrorsRequestPage />

@@ -1,4 +1,4 @@
-import { fetchHitokoto } from '@/features/hitokoto/model/calls'
+import { fetchHitokoto } from '@/features/hitokoto'
 
 // admin 示例：SSR 直取，使用已注入的服务端 HttpService 实例
 async function getHitokoto() {

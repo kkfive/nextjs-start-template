@@ -1,4 +1,4 @@
-import AuthRequestPage from '@/features/demo/request/views/auth-request-page'
+import { AuthRequestPage } from '@/features/demo/request'
 
 export default function Page() {
   return <AuthRequestPage />

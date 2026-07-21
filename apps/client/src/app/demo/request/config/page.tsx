@@ -1,4 +1,4 @@
-import ConfigRequestPage from '@/features/demo/request/views/config-request-page'
+import { ConfigRequestPage } from '@/features/demo/request'
 
 export default function Page() {
   return <ConfigRequestPage />

@@ -1,4 +1,4 @@
-import HomePage from '@/features/home/components/home-page'
+import { HomePage } from '@/features/home'
 
 export const runtime = 'nodejs'
 

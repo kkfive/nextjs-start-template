@@ -51,7 +51,7 @@ describe('sse request service', () => {
     vi.stubEnv('NEXT_PUBLIC_API_URL', TEST_BASE_URL)
     vi.stubEnv('SKIP_ENV_VALIDATION', 'true')
 
-    const { createRequestSseStream } = await import('./index.sse')
+    const { createRequestSseStream } = await import('./sse-client')
     const stream = createRequestSseStream<TestChunk>('/api/example/request/sse', {
       topic: 'vitest',
     })

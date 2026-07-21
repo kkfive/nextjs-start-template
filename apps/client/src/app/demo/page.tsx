@@ -1,4 +1,4 @@
-import DemoIndexPage from '@/features/demo/navigation/views/demo-index-page'
+import { DemoIndexPage } from '@/features/demo/navigation'
 
 export default function Page() {
   return <DemoIndexPage />

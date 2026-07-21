@@ -1,4 +1,4 @@
-import PdfViewerPage from '@/features/demo/pdf-viewer/views/pdf-viewer-page'
+import { PdfViewerPage } from '@/features/demo/pdf-viewer'
 
 export default function Page() {
   return <PdfViewerPage />

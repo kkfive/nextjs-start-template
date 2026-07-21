@@ -1,4 +1,4 @@
-import HitokotoPage from '@/features/demo/hitokoto/views/hitokoto-page'
+import { HitokotoPage } from '@/features/demo/request'
 
 export const dynamic = 'force-dynamic'
 

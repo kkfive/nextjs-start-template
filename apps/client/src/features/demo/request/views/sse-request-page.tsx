@@ -1,6 +1,6 @@
 'use client'
 
-import type { RequestSseEvent } from '@/service/index.sse'
+import type { RequestSseEvent } from '@/service/sse-client'
 import {
   LucidePause,
   LucidePlay,
@@ -9,7 +9,7 @@ import {
 } from '@kkfive/ui/components/icon'
 import { useRef, useState } from 'react'
 import { DemoWrapper } from '@/features/demo/navigation/components/demo-wrapper'
-import { createRequestSseStream } from '@/service/index.sse'
+import { createRequestSseStream } from '@/service/sse-client'
 
 type StreamMode = 'iteration' | 'emitter'
 

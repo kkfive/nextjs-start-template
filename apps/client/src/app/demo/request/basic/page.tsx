@@ -1,4 +1,4 @@
-import BasicRequestPage from '@/features/demo/request/views/basic-request-page'
+import { BasicRequestPage } from '@/features/demo/request'
 
 export default function Page() {
   return <BasicRequestPage />

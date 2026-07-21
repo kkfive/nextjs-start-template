@@ -1,4 +1,4 @@
-import ColorPalettePage from '@/features/demo/ui/views/color-palette-page'
+import { ColorPalettePage } from '@/features/demo/ui'
 
 export default function Page() {
   return <ColorPalettePage />

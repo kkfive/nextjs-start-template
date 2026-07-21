@@ -5,7 +5,7 @@
 ## 作用
 
 - **路由层**（`src/routes/`）：HTTP 协议适配 + 业务编排，用 `@kkfive/contracts` 的 zod schema 校验入参
-- **`AppType`**（`src/app.ts`）：前端 `packages/biz` 的 `hc<AppType>` 类型链源头（type-only 消费）
+- **`AppType`**（`src/app.ts`）：仅由 `apps/client` 与 `apps/admin` 的 `src/service/rpc-*.ts` 通过 `import type { AppType } from 'api'` 消费
 - **错误归一化**：经 `app.onError` 统一为 envelope（复用 `@kkfive/contracts` 的 `HttpResponse`）
 - **SSE**：`hono/streaming`（hc 不支持流式，客户端经 `@kkfive/http-client` 直连）
 
@@ -17,7 +17,7 @@
 
 ## 消费方式
 
-- 前端：`packages/biz` 的 `hc<AppType>` 类型化调用
+- 前端：`apps/{client,admin}/src/service/rpc-*.ts` 创建 `hc<AppType>` 实例；所属 feature 的业务 calls 调用这些实例
 - SSE：客户端 `@kkfive/http-client` 的 `.sse()` 直连 SSE 路由
 
 ## 运行

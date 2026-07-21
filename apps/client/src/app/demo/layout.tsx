@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { DemoLayoutClient } from '@/features/demo/navigation/components/demo-layout-client'
+import { DemoLayoutClient } from '@/features/demo/navigation'
 
 export const metadata: Metadata = {
   title: 'Demo Examples | Next.js Start Template',

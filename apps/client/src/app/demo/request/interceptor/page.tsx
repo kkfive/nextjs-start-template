@@ -1,4 +1,4 @@
-import InterceptorRequestPage from '@/features/demo/request/views/interceptor-request-page'
+import { InterceptorRequestPage } from '@/features/demo/request'
 
 export default function Page() {
   return <InterceptorRequestPage />
