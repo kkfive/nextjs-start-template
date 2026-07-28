@@ -85,6 +85,7 @@ export function PdfViewer({ file, workerUrl, className, onLoadSuccess, onError }
           onClick={handlePreviousPage}
           disabled={pageNumber <= 1}
           aria-label="上一页"
+          className="size-11"
         >
           <LucideChevronLeft className="size-4" />
         </Button>
@@ -102,6 +103,7 @@ export function PdfViewer({ file, workerUrl, className, onLoadSuccess, onError }
           onClick={handleNextPage}
           disabled={pageNumber >= numPages}
           aria-label="下一页"
+          className="size-11"
         >
           <LucideChevronRight className="size-4" />
         </Button>
@@ -114,6 +116,7 @@ export function PdfViewer({ file, workerUrl, className, onLoadSuccess, onError }
           size="icon"
           onClick={handleZoomOut}
           aria-label="缩小"
+          className="size-11"
         >
           <LucideZoomOut className="size-4" />
         </Button>
@@ -128,6 +131,7 @@ export function PdfViewer({ file, workerUrl, className, onLoadSuccess, onError }
           size="icon"
           onClick={handleZoomIn}
           aria-label="放大"
+          className="size-11"
         >
           <LucideZoomIn className="size-4" />
         </Button>
@@ -140,13 +144,14 @@ export function PdfViewer({ file, workerUrl, className, onLoadSuccess, onError }
           size="icon"
           onClick={handleRotate}
           aria-label="旋转"
+          className="size-11"
         >
           <LucideRotateCw className="size-4" />
         </Button>
       </div>
 
       {/* PDF 渲染区域 */}
-      <div className="flex min-h-100 justify-center overflow-hidden rounded-md border bg-muted/20">
+      <div className="flex min-h-100 justify-center overflow-auto rounded-md border bg-muted/20">
         {file
           ? (
               <Document
