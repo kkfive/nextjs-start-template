@@ -17,11 +17,11 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-red-50 to-orange-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md text-center">
         {/* Friendly SVG Illustration */}
         <div className="mb-8 flex justify-center">
-          <svg className="size-48 text-red-400" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg className="size-48 text-destructive" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             {/* Background circle */}
             <circle cx="100" cy="100" r="80" fill="currentColor" opacity="0.3" />
 
@@ -41,13 +41,13 @@ export default function Error({
         </div>
 
         {/* Error Code */}
-        <h1 className="mb-4 text-6xl font-bold text-gray-800">500</h1>
+        <h1 className="mb-4 text-6xl font-bold text-foreground">500</h1>
 
         {/* Title */}
-        <h2 className="mb-4 text-2xl font-semibold text-gray-700">服务器出错了</h2>
+        <h2 className="mb-4 text-2xl font-semibold text-foreground">服务器出错了</h2>
 
         {/* Description */}
-        <p className="mb-8 text-gray-600">
+        <p className="mb-8 text-muted-foreground">
           很抱歉，服务器遇到了一些问题。请稍后再试，或返回首页继续浏览。
         </p>
 

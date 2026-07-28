@@ -11,15 +11,17 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <motion.main
+        id="main-content"
         key={layoutKey}
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -4 }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="pt-20"
       >
         {children}
-      </motion.div>
+      </motion.main>
     </AnimatePresence>
   )
 }

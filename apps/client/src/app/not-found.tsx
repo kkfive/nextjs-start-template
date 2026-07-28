@@ -3,11 +3,11 @@ import Link from 'next/link'
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md text-center">
         {/* Friendly SVG Illustration */}
         <div className="mb-8 flex justify-center">
-          <svg className="size-48 text-blue-400" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg className="size-48 text-accent" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             {/* Background circle */}
             <circle cx="100" cy="100" r="80" fill="currentColor" opacity="0.3" />
 
@@ -27,13 +27,13 @@ export default function NotFound() {
         </div>
 
         {/* Error Code */}
-        <h1 className="mb-4 text-6xl font-bold text-gray-800">404</h1>
+        <h1 className="mb-4 text-6xl font-bold text-foreground">404</h1>
 
         {/* Title */}
-        <h2 className="mb-4 text-2xl font-semibold text-gray-700">页面走丢了</h2>
+        <h2 className="mb-4 text-2xl font-semibold text-foreground">页面走丢了</h2>
 
         {/* Description */}
-        <p className="mb-8 text-gray-600">
+        <p className="mb-8 text-muted-foreground">
           抱歉，您访问的页面不存在。可能是链接错误或者页面已被移除。
         </p>
 
@@ -43,7 +43,7 @@ export default function NotFound() {
             <Link href="/">返回首页</Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
-            <Link href="/#features">查看示例</Link>
+            <Link href="/demo">查看示例</Link>
           </Button>
         </div>
       </div>
