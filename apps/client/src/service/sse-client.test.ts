@@ -48,7 +48,7 @@ describe('sse request service', () => {
         return createSseResponse()
       }),
     )
-    vi.stubEnv('NEXT_PUBLIC_API_URL', TEST_BASE_URL)
+    vi.stubEnv('NEXT_PUBLIC_API_URL', 'http://localhost:8787')
     vi.stubEnv('SKIP_ENV_VALIDATION', 'true')
 
     const { createRequestSseStream } = await import('./sse-client')

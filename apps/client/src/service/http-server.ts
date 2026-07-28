@@ -6,11 +6,11 @@ import { env } from '@/config/env'
 import 'server-only'
 
 function getBaseUrl() {
-  if (env.API_BASE_URL) {
-    return env.API_BASE_URL
+  if (env.NEXT_PUBLIC_APP_URL) {
+    return env.NEXT_PUBLIC_APP_URL
   }
   if (env.NODE_ENV === 'production') {
-    throw new Error('API_BASE_URL environment variable is required in production')
+    throw new Error('NEXT_PUBLIC_APP_URL environment variable is required in production')
   }
   return 'http://localhost:5373'
 }
@@ -41,9 +41,9 @@ const http = new HttpService({
         const method = request.method || 'GET'
         const timestamp = new Date().toISOString()
 
+        // 日志只记录非敏感元数据，避免 Authorization、Cookie 等凭据泄漏。
         // eslint-disable-next-line no-console
         console.log(`[Server Request] ${timestamp} ${method} ${url}`, {
-          headers: Object.fromEntries(request.headers.entries()),
           hasBody: !!request.body,
         })
       },

@@ -1,21 +1,13 @@
 import type { SSEConfig, SSEEvent } from '@kkfive/http-client'
 import { HttpService } from '@kkfive/http-client'
-import { env } from '@/config/env'
 import 'client-only'
 
 export type RequestSseConfig = SSEConfig
 export type RequestSseEvent<T = unknown> = SSEEvent<T>
 
-function getBaseUrl() {
-  if (env.NEXT_PUBLIC_API_URL) {
-    return env.NEXT_PUBLIC_API_URL
-  }
-
-  return '/'
-}
-
 const sseHttp = new HttpService({
-  prefix: getBaseUrl(),
+  // SSE 示例由当前 Next Route Handler 提供，不复用外部 RPC origin。
+  prefix: globalThis.location?.origin ?? 'http://localhost:5373',
 })
 
 function createRequestSseStreamImpl<T = unknown>(

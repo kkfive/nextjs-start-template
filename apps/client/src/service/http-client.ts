@@ -1,16 +1,9 @@
 import { createErrorResponse, HttpService } from '@kkfive/http-client'
-import { env } from '@/config/env'
 import 'client-only'
 
-function getBaseUrl() {
-  if (env.NEXT_PUBLIC_API_URL) {
-    return env.NEXT_PUBLIC_API_URL
-  }
-  return '/'
-}
-
 const http = new HttpService({
-  prefix: getBaseUrl(),
+  // 基础 HTTP 始终访问当前 Next 应用；外部 API 仅由 rpcClient 负责。
+  prefix: globalThis.location?.origin ?? 'http://localhost:5373',
   hooks: {
     afterResponse: [
       // Response logging interceptor - logs request details and timing

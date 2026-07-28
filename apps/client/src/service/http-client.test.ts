@@ -33,7 +33,7 @@ describe('client http service', () => {
         })
       }),
     )
-    vi.stubEnv('NEXT_PUBLIC_API_URL', TEST_BASE_URL)
+    vi.stubEnv('NEXT_PUBLIC_API_URL', 'http://localhost:8787')
     vi.stubEnv('SKIP_ENV_VALIDATION', 'true')
 
     const { httpClient } = await import('./http-client')

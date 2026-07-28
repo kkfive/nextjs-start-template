@@ -16,10 +16,14 @@ export function createRpcClient<App extends RpcApp>(
   baseUrl: string,
 ): ReturnType<typeof hc<App>> {
   return hc<App>(baseUrl, {
-    fetch: ((input: RequestInfo | URL, init?: RequestInit) =>
-      http.instance.request(input.toString(), {
+    fetch: ((input: RequestInfo | URL, init?: RequestInit) => {
+      const target = new URL(input.toString())
+      return http.instance.request(`${target.pathname}${target.search}`, {
         ...(init as object),
+        // 显式覆盖注入 HttpService 的 Next-origin prefix，RPC 始终使用 hc 的外部 origin。
+        prefix: target.origin,
         responseParser: { responseReturn: 'raw' },
-      } as never) as Promise<Response>) as typeof fetch,
+      } as never) as Promise<Response>
+    }) as typeof fetch,
   })
 }

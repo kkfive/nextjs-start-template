@@ -20,7 +20,7 @@ export const env = createEnv({
    * 这些变量会暴露给浏览器（必须以 NEXT_PUBLIC_ 为前缀）
    */
   client: {
-    NEXT_PUBLIC_APP_URL: z.url().default(''),
+    NEXT_PUBLIC_APP_URL: z.url().optional(),
     NEXT_PUBLIC_API_URL: z.url().optional(),
     NEXT_PUBLIC_DEBUG: z.coerce.boolean().default(false),
     // 在此添加更多客户端环境变量

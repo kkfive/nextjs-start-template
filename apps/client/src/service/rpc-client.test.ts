@@ -30,8 +30,11 @@ it('hc GET hitokoto: ky 消费 hc fetch + raw Response + unwrapData', async () =
   expect(res.status).toBe(200)
   expect(unwrapData(await res.json()).hitokoto).toBe('test quote')
   expect(request).toHaveBeenCalledWith(
-    `${BASE}/hitokoto`,
-    expect.objectContaining({ responseParser: { responseReturn: 'raw' } }),
+    '/hitokoto',
+    expect.objectContaining({
+      prefix: BASE,
+      responseParser: { responseReturn: 'raw' },
+    }),
   )
 })
 
@@ -46,8 +49,8 @@ it('hc POST scenario: json body 经 ky 透传 + 解包', async () => {
   const res = await client.example.request.scenario.$post({ json: { scenario: 'success' } })
   expect(unwrapData(await res.json())).toEqual({ a: 1, b: 2, token: '' })
   expect(request).toHaveBeenCalledWith(
-    `${BASE}/example/request/scenario`,
-    expect.objectContaining({ method: 'POST' }),
+    '/example/request/scenario',
+    expect.objectContaining({ method: 'POST', prefix: BASE }),
   )
 })
 
