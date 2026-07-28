@@ -1,9 +1,11 @@
 'use client'
 import type { Hitokoto } from '@kkfive/contracts'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useState } from 'react'
 import { useHitokoto } from '../model/hooks'
 
 export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
+  const [lastUpdatedLabel, setLastUpdatedLabel] = useState('—')
   const { data, refetch, isFetching } = useHitokoto({
     initialData,
     enabled: false,
@@ -14,7 +16,7 @@ export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
       {/* Main Quote Card */}
       <motion.div
         layout
-        className="relative overflow-hidden rounded-2xl border border-border/50 bg-card p-8 shadow-sm"
+        className="relative overflow-hidden rounded-xl border border-border/50 bg-card p-8 "
       >
         {/* Decorative quote marks */}
         <div className="absolute top-4 left-6 font-serif text-6xl leading-none text-primary/10 select-none">
@@ -67,18 +69,22 @@ export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
           </AnimatePresence>
         </div>
 
-        {/* Bottom gradient line */}
-        <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-primary/40 via-accent/30 to-primary/40" />
+        {/* Bottom status line */}
+        <div className="absolute inset-x-0 bottom-0 h-0.5 bg-none " />
       </motion.div>
 
       {/* Refresh Button */}
       <div className="flex justify-center">
         <motion.button
-          onClick={() => refetch()}
+          onClick={async () => {
+            const result = await refetch()
+            if (result.data)
+              setLastUpdatedLabel(new Date().toLocaleTimeString())
+          }}
           disabled={isFetching}
           whileHover={{ y: -1 }}
           whileTap={{ scale: 0.97 }}
-          className="group relative flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg disabled:cursor-wait disabled:opacity-70"
+          className="group relative flex min-h-11 items-center gap-2 rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-soft-sm transition-shadow hover:shadow-soft-sm disabled:cursor-wait disabled:opacity-70"
         >
           <svg
             className={`size-4 transition-transform ${isFetching ? 'animate-spin' : 'group-hover:rotate-180'}`}
@@ -92,6 +98,30 @@ export function HitokotoCard({ initialData }: { initialData?: Hitokoto }) {
           </svg>
           {isFetching ? '获取中...' : '换一条'}
         </motion.button>
+      </div>
+
+      {/* 请求生命周期 / 当前响应（仅展示现有 query 结果，不保存历史） */}
+      <div className="grid grid-cols-2 gap-3 rounded-xl border border-border/50 bg-muted/20 p-4 sm:grid-cols-4">
+        <div>
+          <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">状态</p>
+          <p className="mt-1 font-mono text-xs">
+            {isFetching ? '请求中' : data ? '已就绪' : '待触发'}
+          </p>
+        </div>
+        <div>
+          <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">初始数据</p>
+          <p className="mt-1 font-mono text-xs">{initialData ? 'SSR 注入' : '无'}</p>
+        </div>
+        <div>
+          <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">条目 ID</p>
+          <p className="mt-1 font-mono text-xs">{data ? data.id : '—'}</p>
+        </div>
+        <div>
+          <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">最近更新</p>
+          <p className="mt-1 font-mono text-xs">
+            {lastUpdatedLabel}
+          </p>
+        </div>
       </div>
 
       {/* API Info */}

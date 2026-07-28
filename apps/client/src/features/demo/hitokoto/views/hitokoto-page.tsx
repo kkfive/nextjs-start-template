@@ -11,9 +11,9 @@ export default async function HitokotoPage() {
 
   return (
     <DemoWrapper>
-      <div className="mx-auto max-w-2xl">
+      <div className="space-y-6">
         {error && (
-          <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6 text-center">
+          <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6 text-center">
             <div className="mb-3 flex justify-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-destructive/10">
                 <svg className="size-6 text-destructive" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
