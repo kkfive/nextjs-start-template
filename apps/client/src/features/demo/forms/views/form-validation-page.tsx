@@ -97,7 +97,7 @@ function SuccessCard({ data, onReset }: { data: ContactFormData, onReset: () => 
       initial={{ opacity: 0, scale: 0.95, y: 12 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className="overflow-hidden rounded-2xl border border-green-500/20 bg-gradient-to-br from-green-500/5 to-emerald-500/5 p-6"
+      className="overflow-hidden rounded-xl border border-green-500/20 bg-none  p-6"
     >
       <div className="mb-4 flex items-center gap-3">
         <div className="flex size-10 items-center justify-center rounded-full bg-green-500/15">
@@ -128,7 +128,7 @@ function SuccessCard({ data, onReset }: { data: ContactFormData, onReset: () => 
 
       <button
         onClick={onReset}
-        className="active:scale-0.98 mt-4 w-full rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-green-700"
+        className="active:scale-95 mt-4 w-full rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-green-700"
       >
         再次提交
       </button>
@@ -162,7 +162,7 @@ export default function FormValidationPage() {
 
   return (
     <DemoWrapper>
-      <div className="mx-auto max-w-lg">
+      <div className="max-w-3xl">
         <AnimatePresence mode="wait">
           {submitted
             ? (
@@ -241,8 +241,8 @@ export default function FormValidationPage() {
                     whileHover={{ y: -1 }}
                     whileTap={{ scale: 0.98 }}
                     className={cn(
-                      'w-full rounded-xl px-6 py-3 text-sm font-semibold text-white transition-all duration-200',
-                      'bg-primary shadow-md hover:shadow-lg',
+                      'min-h-11 w-full rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all duration-200',
+                      'shadow-soft-sm hover:shadow-soft-sm',
                       'disabled:cursor-not-allowed disabled:opacity-60',
                       isSubmitting && 'cursor-wait',
                     )}
