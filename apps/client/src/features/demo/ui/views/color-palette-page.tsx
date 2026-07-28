@@ -2,7 +2,8 @@
 
 import { cn } from '@kkfive/ui'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useTheme } from '@/components/theme-context'
 import { DemoWrapper } from '@/features/demo/navigation/components/demo-wrapper'
 
 // ── 颜色配置 ──
@@ -99,8 +100,8 @@ const tailwindColors: ColorGroup[] = [
     ],
   },
   {
-    name: '紫蓝色系',
-    description: '品牌主色区域，用于关键交互和标识',
+    name: '靛蓝色系',
+    description: 'Tailwind 原子色阶，可用于信息标记和自定义扩展',
     colors: [
       { label: '50', class: 'bg-indigo-50', hex: '#eef2ff' },
       { label: '100', class: 'bg-indigo-100', hex: '#e0e7ff' },
@@ -142,31 +143,31 @@ const themeTokens: TokenGroup[] = [
     name: 'Background 背景色',
     description: '所有可用的背景颜色类名',
     items: [
-      { label: 'background', tw: 'bg-background', class: 'bg-[var(--surface-page)]', value: 'oklch(0.96 0.008 270)', usage: '页面底层背景' },
-      { label: 'card', tw: 'bg-card', class: 'bg-[var(--surface-card)]', value: 'oklch(0.985 0.006 270)', usage: '卡片、面板背景' },
-      { label: 'popover', tw: 'bg-popover', class: 'bg-[var(--surface-popover)]', value: 'oklch(0.99 0.005 270)', usage: '弹窗、下拉菜单背景' },
-      { label: 'muted', tw: 'bg-muted', class: 'bg-[var(--surface-muted)]', value: 'oklch(0.92 0.01 270)', usage: '表格交替行、标签背景' },
-      { label: 'primary', tw: 'bg-primary', class: 'bg-[var(--action-primary)]', value: 'oklch(0.55 0.18 270)', usage: '主按钮、CTA 背景' },
-      { label: 'secondary', tw: 'bg-secondary', class: 'bg-[var(--action-secondary)]', value: 'oklch(0.93 0.01 270)', usage: '次按钮、取消背景' },
-      { label: 'accent', tw: 'bg-accent', class: 'bg-[var(--action-accent)]', value: 'oklch(0.62 0.2 25)', usage: '选中态、高亮背景' },
-      { label: 'destructive', tw: 'bg-destructive', class: 'bg-[var(--action-destructive)]', value: 'oklch(0.55 0.2 25)', usage: '删除、危险操作背景' },
-      { label: 'success', tw: 'bg-success', class: 'bg-[var(--action-success)]', value: 'oklch(0.55 0.16 145)', usage: '成功状态背景' },
-      { label: 'warning', tw: 'bg-warning', class: 'bg-[var(--action-warning)]', value: 'oklch(0.7 0.14 85)', usage: '警告状态背景' },
+      { label: 'background', tw: 'bg-background', class: 'bg-[var(--surface-page)]', value: '#F7F5F0', usage: '页面底层背景' },
+      { label: 'card', tw: 'bg-card', class: 'bg-[var(--surface-card)]', value: '#FFFFFF', usage: '卡片、面板背景' },
+      { label: 'popover', tw: 'bg-popover', class: 'bg-[var(--surface-popover)]', value: '#FFFFFF', usage: '弹窗、下拉菜单背景' },
+      { label: 'muted', tw: 'bg-muted', class: 'bg-[var(--surface-muted)]', value: '#EFEDE7', usage: '表格交替行、标签背景' },
+      { label: 'primary', tw: 'bg-primary', class: 'bg-[var(--action-primary)]', value: '#1A1A18', usage: '主按钮、CTA 背景' },
+      { label: 'secondary', tw: 'bg-secondary', class: 'bg-[var(--action-secondary)]', value: '#EFEDE7', usage: '次按钮、取消背景' },
+      { label: 'accent', tw: 'bg-accent', class: 'bg-[var(--action-accent)]', value: '#E4572E', usage: '选中态、高亮背景' },
+      { label: 'destructive', tw: 'bg-destructive', class: 'bg-[var(--action-destructive)]', value: '#C0392B', usage: '删除、危险操作背景' },
+      { label: 'success', tw: 'bg-success', class: 'bg-[var(--action-success)]', value: '#2F7D4F', usage: '成功状态背景' },
+      { label: 'warning', tw: 'bg-warning', class: 'bg-[var(--action-warning)]', value: '#B8860B', usage: '警告状态背景' },
     ],
   },
   {
     name: 'Text 文字色',
     description: '所有可用的文字颜色类名',
     items: [
-      { label: 'primary', tw: 'text-primary', class: 'bg-[var(--text-primary)]', value: 'oklch(0.55 0.18 270)', usage: '品牌色、链接、强调文字' },
-      { label: 'foreground', tw: 'text-foreground', class: 'bg-[var(--text-default)]', value: 'oklch(0.15 0.02 270)', usage: '正文、标题、主要文字' },
-      { label: 'muted-foreground', tw: 'text-muted-foreground', class: 'bg-[var(--text-muted)]', value: 'oklch(0.5 0.02 270)', usage: '次要信息、占位符、禁用状态' },
-      { label: 'primary-foreground', tw: 'text-primary-foreground', class: 'bg-[var(--action-primary-text)]', value: 'oklch(0.96 0.008 270)', usage: '主按钮上的文字' },
-      { label: 'secondary-foreground', tw: 'text-secondary-foreground', class: 'bg-[var(--action-secondary-text)]', value: 'oklch(0.4 0.03 270)', usage: '次按钮上的文字' },
-      { label: 'accent-foreground', tw: 'text-accent-foreground', class: 'bg-[var(--action-accent-text)]', value: 'oklch(0.96 0.008 270)', usage: '高亮/选中项上的文字' },
-      { label: 'destructive-foreground', tw: 'text-destructive-foreground', class: 'bg-[var(--action-destructive-text)]', value: 'oklch(0.96 0.008 270)', usage: '危险按钮上的文字' },
-      { label: 'success-foreground', tw: 'text-success-foreground', class: 'bg-[var(--action-success-text)]', value: 'oklch(0.96 0.008 270)', usage: '成功按钮/标签上的文字' },
-      { label: 'warning-foreground', tw: 'text-warning-foreground', class: 'bg-[var(--action-warning-text)]', value: 'oklch(0.2 0.05 85)', usage: '警告按钮/标签上的文字' },
+      { label: 'primary', tw: 'text-primary', class: 'bg-[var(--text-primary)]', value: '#1A1A18', usage: '品牌色、链接、强调文字' },
+      { label: 'foreground', tw: 'text-foreground', class: 'bg-[var(--text-default)]', value: '#1A1A18', usage: '正文、标题、主要文字' },
+      { label: 'muted-foreground', tw: 'text-muted-foreground', class: 'bg-[var(--text-muted)]', value: '#6B675F', usage: '次要信息、占位符、禁用状态' },
+      { label: 'primary-foreground', tw: 'text-primary-foreground', class: 'bg-[var(--action-primary-text)]', value: '#F7F5F0', usage: '主按钮上的文字' },
+      { label: 'secondary-foreground', tw: 'text-secondary-foreground', class: 'bg-[var(--action-secondary-text)]', value: '#1A1A18', usage: '次按钮上的文字' },
+      { label: 'accent-foreground', tw: 'text-accent-foreground', class: 'bg-[var(--action-accent-text)]', value: '#F7F5F0', usage: '高亮/选中项上的文字' },
+      { label: 'destructive-foreground', tw: 'text-destructive-foreground', class: 'bg-[var(--action-destructive-text)]', value: '#F7F5F0', usage: '危险按钮上的文字' },
+      { label: 'success-foreground', tw: 'text-success-foreground', class: 'bg-[var(--action-success-text)]', value: '#F7F5F0', usage: '成功按钮/标签上的文字' },
+      { label: 'warning-foreground', tw: 'text-warning-foreground', class: 'bg-[var(--action-warning-text)]', value: '#1A1A18', usage: '警告按钮/标签上的文字' },
     ],
   },
   {
@@ -177,49 +178,49 @@ const themeTokens: TokenGroup[] = [
         label: 'Primary',
         tw: 'bg-primary',
         class: 'bg-[var(--action-primary)]',
-        value: 'oklch(0.55 0.18 270)',
+        value: '#1A1A18',
         usage: '主按钮、CTA、关键操作',
-        pair: { label: '文字', tw: 'text-primary-foreground', class: 'bg-[var(--action-primary-text)]', value: 'oklch(0.96 0.008 270)' },
+        pair: { label: '文字', tw: 'text-primary-foreground', class: 'bg-[var(--action-primary-text)]', value: '#F7F5F0' },
       },
       {
         label: 'Secondary',
         tw: 'bg-secondary',
         class: 'bg-[var(--action-secondary)]',
-        value: 'oklch(0.93 0.01 270)',
+        value: '#EFEDE7',
         usage: '次按钮、取消、返回',
-        pair: { label: '文字', tw: 'text-secondary-foreground', class: 'bg-[var(--action-secondary-text)]', value: 'oklch(0.4 0.03 270)' },
+        pair: { label: '文字', tw: 'text-secondary-foreground', class: 'bg-[var(--action-secondary-text)]', value: '#1A1A18' },
       },
       {
         label: 'Accent',
         tw: 'bg-accent',
         class: 'bg-[var(--action-accent)]',
-        value: 'oklch(0.62 0.2 25)',
+        value: '#E4572E',
         usage: '选中态、高亮、标签',
-        pair: { label: '文字', tw: 'text-accent-foreground', class: 'bg-[var(--action-accent-text)]', value: 'oklch(0.96 0.008 270)' },
+        pair: { label: '文字', tw: 'text-accent-foreground', class: 'bg-[var(--action-accent-text)]', value: '#F7F5F0' },
       },
       {
         label: 'Destructive',
         tw: 'bg-destructive',
         class: 'bg-[var(--action-destructive)]',
-        value: 'oklch(0.55 0.2 25)',
+        value: '#C0392B',
         usage: '删除、退出、危险操作',
-        pair: { label: '文字', tw: 'text-destructive-foreground', class: 'bg-[var(--action-destructive-text)]', value: 'oklch(0.96 0.008 270)' },
+        pair: { label: '文字', tw: 'text-destructive-foreground', class: 'bg-[var(--action-destructive-text)]', value: '#F7F5F0' },
       },
       {
         label: 'Success',
         tw: 'bg-success',
         class: 'bg-[var(--action-success)]',
-        value: 'oklch(0.55 0.16 145)',
+        value: '#2F7D4F',
         usage: '成功状态、正向反馈、通过',
-        pair: { label: '文字', tw: 'text-success-foreground', class: 'bg-[var(--action-success-text)]', value: 'oklch(0.96 0.008 270)' },
+        pair: { label: '文字', tw: 'text-success-foreground', class: 'bg-[var(--action-success-text)]', value: '#F7F5F0' },
       },
       {
         label: 'Warning',
         tw: 'bg-warning',
         class: 'bg-[var(--action-warning)]',
-        value: 'oklch(0.7 0.14 85)',
+        value: '#B8860B',
         usage: '警告状态、注意提示、待处理',
-        pair: { label: '文字', tw: 'text-warning-foreground', class: 'bg-[var(--action-warning-text)]', value: 'oklch(0.2 0.05 85)' },
+        pair: { label: '文字', tw: 'text-warning-foreground', class: 'bg-[var(--action-warning-text)]', value: '#1A1A18' },
       },
     ],
   },
@@ -227,10 +228,10 @@ const themeTokens: TokenGroup[] = [
     name: 'Border 边框',
     description: '边框、分割线、焦点指示器',
     items: [
-      { label: 'border', tw: 'border-border', class: 'bg-[var(--border-default)]', value: 'oklch(0.82 0.015 270)', usage: '卡片边框、分割线' },
-      { label: 'input', tw: 'border-input', class: 'bg-[var(--border-input)]', value: 'oklch(0.82 0.015 270)', usage: '输入框、选择器边框' },
-      { label: 'strong', tw: 'border-[var(--border-strong)]', class: 'bg-[var(--border-strong)]', value: 'oklch(0.7 0.02 270)', usage: '表头分割线、弹窗边框' },
-      { label: 'ring', tw: 'ring-ring / outline-ring', class: 'bg-[var(--focus-ring)]', value: 'oklch(0.55 0.18 270)', usage: '焦点指示器、选中轮廓' },
+      { label: 'border', tw: 'border-border', class: 'bg-[var(--border-default)]', value: '#D8D4CB', usage: '卡片边框、分割线' },
+      { label: 'input', tw: 'border-input', class: 'bg-[var(--border-input)]', value: '#D8D4CB', usage: '输入框、选择器边框' },
+      { label: 'strong', tw: 'border-[var(--border-strong)]', class: 'bg-[var(--border-strong)]', value: '#1A1A18', usage: '表头分割线、弹窗边框' },
+      { label: 'ring', tw: 'ring-ring / outline-ring', class: 'bg-[var(--focus-ring)]', value: '#1A1A18', usage: '焦点指示器、选中轮廓' },
     ],
   },
 ]
@@ -263,14 +264,14 @@ function ColorSwatch({ color, groupName }: { color: ColorGroup['colors'][0], gro
       onClick={handleCopy}
       whileHover={{ scale: 1.08, y: -2 }}
       whileTap={{ scale: 0.95 }}
-      className="group relative flex flex-col items-center gap-1.5"
+      className="group relative flex shrink-0 flex-col items-center gap-1.5"
       title={`${groupName} ${color.label} — 点击复制 ${color.hex}`}
     >
       <div
         className={cn(
-          'size-14 rounded-xl border border-black/5 shadow-sm transition-shadow duration-200',
+          'size-14 rounded-xl border border-black/5  transition-shadow duration-200',
           color.class,
-          'group-hover:shadow-md',
+          'group-hover:shadow-soft-sm',
         )}
       />
       <span className="text-[10px] font-medium text-muted-foreground tabular-nums">
@@ -283,7 +284,7 @@ function ColorSwatch({ color, groupName }: { color: ColorGroup['colors'][0], gro
             initial={{ opacity: 0, scale: 0.8, y: 4 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 4 }}
-            className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-md bg-foreground px-2 py-0.5 text-[10px] font-medium whitespace-nowrap text-background shadow-lg"
+            className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-xl bg-foreground px-2 py-0.5 text-[10px] font-medium whitespace-nowrap text-background shadow-soft-sm"
           >
             已复制
           </motion.div>
@@ -293,16 +294,24 @@ function ColorSwatch({ color, groupName }: { color: ColorGroup['colors'][0], gro
   )
 }
 
-function ThemeTokenCard({ item }: { item: TokenItem }) {
+function ThemeTokenCard({ item, resolvedMode }: { item: TokenItem, resolvedMode: 'light' | 'dark' }) {
   const [copied, setCopied] = useState(false)
+  const [currentValue, setCurrentValue] = useState(item.value)
+
+  useEffect(() => {
+    const variable = item.class.match(/var\((--[^)]+)\)/)?.[1]
+    if (variable) {
+      setCurrentValue(getComputedStyle(document.documentElement).getPropertyValue(variable).trim() || item.value)
+    }
+  }, [item, resolvedMode])
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(item.value)
+      await navigator.clipboard.writeText(currentValue)
     }
     catch {
       const textarea = document.createElement('textarea')
-      textarea.value = item.value
+      textarea.value = currentValue
       textarea.style.position = 'fixed'
       textarea.style.opacity = '0'
       document.body.appendChild(textarea)
@@ -322,9 +331,9 @@ function ThemeTokenCard({ item }: { item: TokenItem }) {
       <div className="mb-3 flex items-center gap-3">
         {/* Color swatch */}
         <div className="flex gap-1.5">
-          <div className={cn('size-10 rounded-lg border border-black/5 shadow-sm', item.class)} />
+          <div className={cn('size-10 rounded-xl border border-black/5 ', item.class)} />
           {item.pair && (
-            <div className={cn('size-10 rounded-lg border border-black/5 shadow-sm', item.pair.class)} />
+            <div className={cn('size-10 rounded-xl border border-black/5 ', item.pair.class)} />
           )}
         </div>
         <div className="min-w-0 flex-1">
@@ -335,19 +344,19 @@ function ThemeTokenCard({ item }: { item: TokenItem }) {
 
       {/* Tailwind classes */}
       <div className="mb-2 flex flex-wrap gap-1.5">
-        <code className="inline-block rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">{item.tw}</code>
+        <code className="inline-block rounded-xl bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">{item.tw}</code>
         {item.pair && (
-          <code className="inline-block rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">{item.pair.tw}</code>
+          <code className="inline-block rounded-xl bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">{item.pair.tw}</code>
         )}
       </div>
 
       {/* Value + copy */}
       <button
         onClick={handleCopy}
-        className="w-full rounded-lg bg-muted/50 px-3 py-1.5 text-left font-mono text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        className="min-h-11 w-full rounded-xl bg-muted/50 px-3 py-2 text-left font-mono text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
       >
         <span className="flex items-center justify-between">
-          <code className="truncate">{item.value}</code>
+          <code className="truncate">{currentValue}</code>
           <span className="ml-2 shrink-0 text-[10px] font-medium">
             {copied ? '已复制' : '复制'}
           </span>
@@ -359,6 +368,7 @@ function ThemeTokenCard({ item }: { item: TokenItem }) {
 
 export default function ColorPalettePage() {
   const [activeTab, setActiveTab] = useState<'tailwind' | 'tokens'>('tailwind')
+  const { resolvedMode } = useTheme()
 
   return (
     <DemoWrapper>
@@ -368,9 +378,9 @@ export default function ColorPalettePage() {
           <button
             onClick={() => setActiveTab('tailwind')}
             className={cn(
-              'rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200',
+              'inline-flex min-h-11 items-center rounded-xl px-4 text-sm font-medium transition-all duration-200',
               activeTab === 'tailwind'
-                ? 'bg-card text-foreground shadow-sm'
+                ? 'bg-card text-foreground '
                 : 'text-muted-foreground hover:text-foreground',
             )}
           >
@@ -379,9 +389,9 @@ export default function ColorPalettePage() {
           <button
             onClick={() => setActiveTab('tokens')}
             className={cn(
-              'rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200',
+              'inline-flex min-h-11 items-center rounded-xl px-4 text-sm font-medium transition-all duration-200',
               activeTab === 'tokens'
-                ? 'bg-card text-foreground shadow-sm'
+                ? 'bg-card text-foreground '
                 : 'text-muted-foreground hover:text-foreground',
             )}
           >
@@ -410,11 +420,14 @@ export default function ColorPalettePage() {
                         transition={{ delay: groupIndex * 0.06, duration: 0.35 }}
                         className="space-y-3"
                       >
-                        <div className="flex items-baseline gap-3">
-                          <h3 className="text-base font-semibold">{group.name}</h3>
-                          <span className="text-xs text-muted-foreground">{group.description}</span>
+                        <div className="flex items-baseline justify-between gap-3">
+                          <div className="flex items-baseline gap-3">
+                            <h3 className="text-base font-semibold">{group.name}</h3>
+                            <span className="text-xs text-muted-foreground">{group.description}</span>
+                          </div>
+                          <span className="shrink-0 text-[10px] text-muted-foreground sm:hidden">横向滑动查看更多 →</span>
                         </div>
-                        <div className="flex flex-wrap gap-3">
+                        <div className="flex scrollbar-thin gap-3 overflow-x-auto pb-2 sm:flex-wrap sm:overflow-visible sm:pb-0">
                           {group.colors.map(color => (
                             <ColorSwatch key={color.label} color={color} groupName={group.name} />
                           ))}
@@ -449,53 +462,13 @@ export default function ColorPalettePage() {
                         </div>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                           {group.items.map(item => (
-                            <ThemeTokenCard key={item.label} item={item} />
+                            <ThemeTokenCard key={item.label} item={item} resolvedMode={resolvedMode} />
                           ))}
                         </div>
                       </motion.div>
                     ))}
                   </div>
 
-                  {/* Gradient Showcase */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.35 }}
-                    className="space-y-4"
-                  >
-                    <div className="space-y-1">
-                      <h3 className="text-base font-semibold">渐变效果</h3>
-                      <p className="text-sm text-muted-foreground">项目中使用的渐变样式及引用方式</p>
-                    </div>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <div
-                          className="h-24 rounded-2xl"
-                          style={{ background: 'var(--gradient-text-primary)' }}
-                        />
-                        <p className="text-xs font-medium text-foreground">文字渐变 (Primary)</p>
-                        <code className="block text-[10px] text-muted-foreground">{'style={{ background: \'var(--gradient-text-primary)\' }}'}</code>
-                      </div>
-                      <div className="space-y-2">
-                        <div
-                          className="h-24 rounded-2xl"
-                          style={{ background: 'var(--gradient-text-secondary)' }}
-                        />
-                        <p className="text-xs font-medium text-foreground">文字渐变 (Secondary)</p>
-                        <code className="block text-[10px] text-muted-foreground">{'style={{ background: \'var(--gradient-text-secondary)\' }}'}</code>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="gradient-bg-soft h-24 rounded-2xl" />
-                        <p className="text-xs font-medium text-foreground">柔和渐变背景</p>
-                        <code className="block text-[10px] text-muted-foreground">className="gradient-bg-soft"</code>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="gradient-bg h-24 rounded-2xl" />
-                        <p className="text-xs font-medium text-foreground">品牌渐变</p>
-                        <code className="block text-[10px] text-muted-foreground">className="gradient-bg"</code>
-                      </div>
-                    </div>
-                  </motion.div>
                 </motion.div>
               )}
         </AnimatePresence>
