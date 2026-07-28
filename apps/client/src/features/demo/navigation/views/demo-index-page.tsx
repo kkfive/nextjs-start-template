@@ -1,98 +1,73 @@
-import {
-  LucideArrowUpRight,
-  LucideTrash2,
-} from '@kkfive/ui/components/icon'
+import { LucideArrowRight } from '@kkfive/ui/components/icon'
 import Link from 'next/link'
+import { AtmosphereLayer } from '@/components/atmosphere/atmosphere-layer'
 import { demoNavConfig } from '../model/nav'
+
+const totalCount = demoNavConfig.reduce((sum, category) => sum + category.items.length, 0)
 
 export default function DemoIndexPage() {
   return (
-    <div className="mx-auto max-w-6xl space-y-16 px-6 py-12 sm:py-16">
-      {/* Hero Section */}
-      <div className="space-y-4 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          功能演示
-        </h1>
-        <p className="mx-auto max-w-2xl text-muted-foreground">
-          通过交互式示例探索模板的各种功能。每个演示都聚焦于特定特性，展示最佳实践。
-        </p>
-      </div>
-
-      {/* How to Remove Demos */}
-      <div className="rounded-xl border border-amber-200/60 bg-amber-50/50 p-5 dark:border-amber-900/40 dark:bg-amber-950/20">
-        <div className="flex items-start gap-3">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
-            <LucideTrash2 className="size-4" />
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-sm font-semibold text-amber-900 dark:text-amber-300">
-              如何移除演示代码
-            </h2>
-            <p className="text-sm text-amber-800 dark:text-amber-400/80">
-              开始新项目时，可以安全地删除以下目录：
+    <div className="px-4 pb-18 sm:px-6">
+      <div className="mx-auto max-w-300">
+        <section className="relative overflow-hidden rounded-4xl border border-border/60 bg-canvas/88 px-6 py-10 shadow-soft sm:px-8">
+          <AtmosphereLayer intensity="section" gridInset="inset-x-[14%] top-[14%] bottom-[18%]" />
+          <div className="relative max-w-3xl">
+            <p className="meta-mono text-muted-foreground">
+              DEMO INDEX —
+              {String(totalCount).padStart(2, '0')}
+              {' '}
+              EXPERIMENTS
             </p>
-            <div className="flex flex-wrap gap-2">
-              {['src/app/demo/', 'src/app/api/demo/', 'src/features/demo/'].map(path => (
-                <code
-                  key={path}
-                  className="rounded-md bg-amber-100 px-2 py-0.5 font-mono text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
-                >
-                  {path}
-                </code>
-              ))}
-            </div>
+            <h1 className="mt-4 text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">以真实页面验证模板的边界、样式与交互。</h1>
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground">每个演示对应一个真实 feature 模块，覆盖请求、状态、表单、RPC 与主题能力，可在真实页面中逐项验证，验证通过即可复用到业务代码。</p>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Demo Categories */}
-      <div className="space-y-12">
-        <h2 className="text-xl font-bold tracking-tight">按分类浏览</h2>
-
-        {demoNavConfig.map(category => (
-          <div key={category.category} className="space-y-4">
-            {/* Category Header */}
-            <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/8 text-primary">
-                {category.icon}
+        <div className="mt-10 space-y-10">
+          {demoNavConfig.map((category, categoryIndex) => (
+            <section key={category.id} className="animate-soft-rise opacity-0" style={{ animationDelay: `${categoryIndex * 60}ms` }}>
+              <div className="mb-4 flex items-center gap-3">
+                <span aria-hidden className="flex size-9 items-center justify-center rounded-xl bg-accent/10 text-accent [&_svg]:size-4.5">{category.icon}</span>
+                <h2 className="text-lg font-semibold tracking-tight">{category.name}</h2>
+                <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-[11px] text-muted-foreground">{category.items.length}</span>
+                <span aria-hidden className="h-px min-w-6 flex-1 bg-border/60" />
               </div>
-              <h3 className="text-lg font-semibold">{category.category}</h3>
-              <span className="ml-1 rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                {category.items.length}
-              </span>
-            </div>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {category.items.map((item, itemIndex) => {
+                  const itemNo = `${categoryIndex + 1}.${itemIndex + 1}`
+                  return (
+                    <Link key={item.id} href={item.href} className="group relative animate-soft-rise overflow-hidden rounded-2xl border border-border/60 bg-card/75 p-4 opacity-0 shadow-soft-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/35 hover:shadow-soft" style={{ animationDelay: `${categoryIndex * 60 + itemIndex * 40 + 80}ms` }}>
+                      <div aria-hidden className="luminous-divider pointer-events-none absolute inset-x-0 top-0 h-px" />
+                      <div className="relative min-w-0">
+                        <div className="flex items-baseline gap-2">
+                          <span className="meta-mono shrink-0 text-muted-foreground transition-colors group-hover:text-accent">{itemNo}</span>
+                          <span className="truncate text-sm font-semibold">{item.name}</span>
+                        </div>
+                        <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted-foreground">{item.description}</p>
+                        <div className="mt-4 flex items-center justify-between">
+                          <span className="meta-mono text-muted-foreground">{category.name}</span>
+                          <span aria-hidden className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition-all duration-200 group-hover:bg-accent group-hover:text-accent-foreground"><LucideArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" /></span>
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            </section>
+          ))}
+        </div>
 
-            {/* Category Items */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {category.items.map(item => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="group flex flex-col rounded-xl border border-border/50 bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-border hover:shadow-md"
-                >
-                  <div className="mb-3 flex items-start justify-between">
-                    <div className="space-y-1">
-                      <h4 className="font-semibold text-foreground">
-                        {item.name}
-                      </h4>
-                      <p className="text-sm leading-relaxed text-muted-foreground">
-                        {item.description}
-                      </p>
-                    </div>
-                    <LucideArrowUpRight className="size-4 shrink-0 text-muted-foreground/40 transition-all duration-200 group-hover:text-primary" />
-                  </div>
-
-                  <div className="mt-auto pt-2">
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-primary">
-                      打开演示
-                      <LucideArrowUpRight className="size-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
+        <div className="mt-14 rounded-2xl border border-border/60 bg-card/70 p-4 shadow-soft-sm">
+          <p className="meta-mono text-muted-foreground">
+            NOTE — 移除
+            <code className="font-mono">src/app/demo</code>
+            {' '}
+            与
+            <code className="font-mono">src/features/demo</code>
+            {' '}
+            即可剥离全部演示代码。
+          </p>
+        </div>
       </div>
     </div>
   )
