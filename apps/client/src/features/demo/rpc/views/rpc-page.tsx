@@ -76,7 +76,7 @@ export default function RpcPage() {
     <DemoWrapper>
       <div className="space-y-8">
         {/* Info Banner */}
-        <div className="rounded-2xl border border-primary/15 bg-linear-to-r from-primary/[0.04] to-accent/[0.03] p-5">
+        <div className="rounded-xl border border-primary/15 bg-none  p-5">
           <div className="flex items-start gap-3">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
               <LucideGitBranch className="size-4.5 text-primary" />
@@ -87,10 +87,10 @@ export default function RpcPage() {
                 此页演示 Hono RPC 扩展通道（hc&lt;AppType&gt; → apps/api）。常规请求走 client Route
                 Handler（见
                 {' '}
-                <code className="rounded bg-muted px-1 py-0.5 font-mono">/demo/request/*</code>
+                <code className="rounded-xl bg-muted px-1 py-0.5 font-mono">/demo/request/*</code>
                 ），rpc
                 仅用于需要 Hono 后端、端到端类型化调用的场景。需 apps/api 在跑且
-                <code className="mx-1 rounded bg-muted px-1 py-0.5 font-mono">NEXT_PUBLIC_API_URL</code>
+                <code className="mx-1 rounded-xl bg-muted px-1 py-0.5 font-mono">NEXT_PUBLIC_API_URL</code>
                 已指向其地址；否则 hc 请求会失败（页面不崩，错误信息展示）。
               </p>
             </div>
@@ -99,16 +99,38 @@ export default function RpcPage() {
 
         {/* Action Buttons */}
         <div className="grid gap-3 sm:grid-cols-3">
-          <Button onClick={handleScenario} disabled={loading} variant="default">
+          <Button onClick={handleScenario} disabled={loading} variant="default" className="min-h-11">
             callScenario('success')
           </Button>
-          <Button onClick={handleHitokoto} disabled={loading} variant="secondary">
+          <Button onClick={handleHitokoto} disabled={loading} variant="secondary" className="min-h-11">
             fetchHitokoto()
           </Button>
-          <Button onClick={handleEnvelope} disabled={loading} variant="outline">
+          <Button onClick={handleEnvelope} disabled={loading} variant="outline" className="min-h-11">
             callEnvelopeScenario('business-error')
           </Button>
         </div>
+
+        {/* 调用链说明（idle 静态展示，不产生状态） */}
+        {is('idle') && (
+          <div className="rounded-xl border border-border/50 bg-muted/20 p-5">
+            <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
+              调用链
+            </p>
+            <ol className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5 font-mono text-xs">
+              {['browser', 'hc<AppType>', 'Hono', 'unwrapData'].map((step, index, steps) => (
+                <li key={step} className="flex items-center gap-2">
+                  <span className="rounded-xl bg-muted px-2 py-1">{step}</span>
+                  {index < steps.length - 1 && (
+                    <span aria-hidden className="text-muted-foreground">→</span>
+                  )}
+                </li>
+              ))}
+            </ol>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              浏览器直接调用 hc&lt;AppType&gt; 生成的类型化客户端，请求打到 apps/api 的 Hono 路由；响应包络由 unwrapData 解包，success:false 时抛 BusinessError。点击上方任一按钮即可沿此链发出真实调用。
+            </p>
+          </div>
+        )}
 
         {/* Result */}
         {result.status !== 'idle' && (
@@ -116,15 +138,15 @@ export default function RpcPage() {
             {/* Status line */}
             <div className="flex items-center gap-2 text-xs">
               <span className="font-medium text-muted-foreground">调用:</span>
-              <code className="rounded bg-muted px-1.5 py-0.5 font-mono">{result.label}</code>
+              <code className="rounded-xl bg-muted px-1.5 py-0.5 font-mono">{result.label}</code>
               {loading && <span className="text-muted-foreground">请求中…</span>}
               {is('success') && (
-                <span className="rounded-md bg-green-500/10 px-2 py-0.5 font-medium text-green-600">
+                <span className="rounded-xl bg-green-500/10 px-2 py-0.5 font-medium text-green-600">
                   success
                 </span>
               )}
               {is('error') && (
-                <span className="rounded-md bg-red-500/10 px-2 py-0.5 font-medium text-red-600">
+                <span className="rounded-xl bg-red-500/10 px-2 py-0.5 font-medium text-red-600">
                   error
                 </span>
               )}
@@ -146,7 +168,7 @@ export default function RpcPage() {
                 <div className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
                   解包结果
                 </div>
-                <pre className="scrollbar-thin overflow-auto rounded-lg bg-black/[0.04] p-4 font-mono text-xs leading-relaxed dark:bg-white/[0.04]">
+                <pre className="scrollbar-thin overflow-auto rounded-xl bg-black/[0.04] p-4 font-mono text-xs leading-relaxed dark:bg-white/[0.04]">
                   {JSON.stringify(result.data, null, 2)}
                 </pre>
 
@@ -158,13 +180,13 @@ export default function RpcPage() {
                     </div>
                     {result.unwrapPreview.ok
                       ? (
-                          <pre className="scrollbar-thin overflow-auto rounded-lg bg-green-500/[0.04] p-4 font-mono text-xs leading-relaxed">
+                          <pre className="scrollbar-thin overflow-auto rounded-xl bg-green-500/[0.04] p-4 font-mono text-xs leading-relaxed">
                             {JSON.stringify(result.unwrapPreview.data, null, 2)}
                           </pre>
                         )
                       : (
-                          <div className="rounded-lg border border-orange-500/30 bg-orange-500/[0.03] p-3">
-                            <span className="rounded-md bg-orange-500/10 px-2 py-0.5 text-[10px] font-medium text-orange-600">
+                          <div className="rounded-xl border border-orange-500/30 bg-orange-500/[0.03] p-3">
+                            <span className="rounded-xl bg-orange-500/10 px-2 py-0.5 text-[10px] font-medium text-orange-600">
                               BusinessError
                             </span>
                             <code className="mt-1 block font-mono text-xs break-all text-orange-600">

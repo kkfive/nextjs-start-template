@@ -7,7 +7,7 @@ import {
   LucideRadio,
   LucideSquare,
 } from '@kkfive/ui/components/icon'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DemoWrapper } from '@/features/demo/navigation/components/demo-wrapper'
 import { createRequestSseStream } from '@/service/sse-client'
 
@@ -54,6 +54,8 @@ export default function SseRequestPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const abortControllerRef = useRef<AbortController | null>(null)
 
+  useEffect(() => () => abortControllerRef.current?.abort(), [])
+
   const isStreaming = status === 'streaming'
   const progress = events.reduce((value, item) => item.data.progress ?? value, 0)
 
@@ -78,7 +80,7 @@ export default function SseRequestPage() {
 
   const createStream = (signal: AbortSignal) => {
     return createRequestSseStream<StreamChunk>(
-      '/example/request/sse',
+      '/api/example/request/sse',
       {
         count,
         interval,
@@ -142,7 +144,7 @@ export default function SseRequestPage() {
   return (
     <DemoWrapper>
       <div className="space-y-8">
-        <div className="rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.04] to-accent/[0.03] p-5">
+        <div className="rounded-xl border border-primary/15 bg-none  p-5">
           <div className="flex items-start gap-3">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <LucideRadio className="size-4.5" />
@@ -157,10 +159,10 @@ export default function SseRequestPage() {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <section className="space-y-5 rounded-2xl border border-border/50 bg-card p-5">
+          <section className="space-y-5 rounded-xl border border-border/50 bg-card p-5">
             <div className="space-y-1">
               <h3 className="text-sm font-semibold">流配置</h3>
-              <p className="text-xs text-muted-foreground">POST /example/request/sse</p>
+              <p className="text-xs text-muted-foreground">POST /api/example/request/sse</p>
             </div>
 
             <div className="grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">
@@ -170,9 +172,9 @@ export default function SseRequestPage() {
                   type="button"
                   onClick={() => setMode(item)}
                   disabled={isStreaming}
-                  className={`rounded-lg px-3 py-2 text-left text-xs transition-colors ${
+                  className={`rounded-xl px-3 py-2 text-left text-xs transition-colors ${
                     mode === item
-                      ? 'bg-card text-foreground shadow-sm'
+                      ? 'bg-card text-foreground '
                       : 'text-muted-foreground hover:text-foreground'
                   } disabled:cursor-not-allowed disabled:opacity-60`}
                 >
@@ -186,7 +188,7 @@ export default function SseRequestPage() {
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
                   <label className="text-xs font-medium text-muted-foreground">事件数量</label>
-                  <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
+                  <span className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
                     {count}
                     {' '}
                     条
@@ -200,14 +202,15 @@ export default function SseRequestPage() {
                   value={count}
                   disabled={isStreaming}
                   onChange={event => setCount(Number(event.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted-foreground/20 accent-primary disabled:cursor-not-allowed"
+                  aria-label="事件数量"
+                  className="h-11 w-full cursor-pointer accent-primary disabled:cursor-not-allowed"
                 />
               </div>
 
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
                   <label className="text-xs font-medium text-muted-foreground">事件间隔</label>
-                  <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
+                  <span className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
                     {interval}
                     ms
                   </span>
@@ -220,7 +223,8 @@ export default function SseRequestPage() {
                   value={interval}
                   disabled={isStreaming}
                   onChange={event => setIntervalMs(Number(event.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted-foreground/20 accent-primary disabled:cursor-not-allowed"
+                  aria-label="事件间隔（毫秒）"
+                  className="h-11 w-full cursor-pointer accent-primary disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -230,7 +234,7 @@ export default function SseRequestPage() {
                 type="button"
                 onClick={handleStart}
                 disabled={isStreaming}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:shadow-md disabled:cursor-wait disabled:opacity-60"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:shadow-soft-sm disabled:cursor-wait disabled:opacity-60"
               >
                 {isStreaming ? <LucidePause className="size-4" /> : <LucidePlay className="size-4" />}
                 {isStreaming ? '接收中' : '开始流'}
@@ -239,7 +243,7 @@ export default function SseRequestPage() {
                 type="button"
                 onClick={handleCancel}
                 disabled={!isStreaming}
-                className="inline-flex size-10 items-center justify-center rounded-xl border border-border/60 bg-card text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex size-11 items-center justify-center rounded-xl border border-border/60 bg-card text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
                 aria-label="取消流"
               >
                 <LucideSquare className="size-4" />
@@ -247,7 +251,7 @@ export default function SseRequestPage() {
             </div>
           </section>
 
-          <section className="space-y-5 rounded-2xl border border-border/50 bg-card p-5">
+          <section className="space-y-5 rounded-xl border border-border/50 bg-card p-5">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1">
                 <h3 className="text-sm font-semibold">实时响应</h3>
@@ -287,7 +291,7 @@ export default function SseRequestPage() {
                   {progress}
                   %
                 </span>
-                <span>{events.length ? `${events.length}/${count + 1}` : '0 events'}</span>
+                <span>{events.length ? `${events.length}/${count + 2}` : '0 events'}</span>
               </div>
             </div>
 
@@ -313,7 +317,7 @@ export default function SseRequestPage() {
               {events.map(item => (
                 <div key={`${item.event}-${item.id}`} className="rounded-xl border border-border/50 bg-muted/20 p-3">
                   <div className="mb-2 flex items-center justify-between gap-3">
-                    <span className="rounded bg-primary/10 px-2 py-0.5 font-mono text-[10px] text-primary">
+                    <span className="rounded-xl bg-primary/10 px-2 py-0.5 font-mono text-[10px] text-primary">
                       {item.event}
                       #
                       {item.id}

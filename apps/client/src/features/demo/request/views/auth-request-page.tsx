@@ -14,7 +14,7 @@ export default function AuthPage() {
     <DemoWrapper>
       <div className="space-y-8">
         {/* Info Banner */}
-        <div className="rounded-2xl border border-orange-500/15 bg-gradient-to-r from-orange-500/[0.04] to-yellow-500/[0.03] p-5">
+        <div className="rounded-xl border border-orange-500/15 bg-none  p-5">
           <div className="flex items-start gap-3">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-orange-500/10">
               <svg className="size-4.5 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -35,12 +35,12 @@ export default function AuthPage() {
         {/* Config Toggle */}
         <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/30 p-3">
           <span className="text-xs font-medium text-muted-foreground">认证跳转模式:</span>
-          <div className="flex rounded-lg bg-muted p-0.5">
+          <div className="flex rounded-xl bg-muted p-0.5">
             <button
               onClick={() => setSkipRedirect(false)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
                 !skipRedirect
-                  ? 'bg-card text-foreground shadow-sm'
+                  ? 'bg-card text-foreground '
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -48,9 +48,9 @@ export default function AuthPage() {
             </button>
             <button
               onClick={() => setSkipRedirect(true)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
                 skipRedirect
-                  ? 'bg-card text-foreground shadow-sm'
+                  ? 'bg-card text-foreground '
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -111,7 +111,7 @@ export default function AuthPage() {
           <div className="space-y-3">
             <div>
               <div className="mb-1 text-[10px] font-medium text-muted-foreground/70">客户端拦截器</div>
-              <pre className="scrollbar-thin overflow-auto rounded-lg bg-black/[0.04] p-3 font-mono text-[11px] leading-relaxed dark:bg-white/[0.04]">
+              <pre className="scrollbar-thin overflow-auto rounded-xl bg-black/[0.04] p-3 font-mono text-[11px] leading-relaxed dark:bg-white/[0.04]">
                 {`if (response.status === 401 && !options.context?.skipAuthRedirect) {
   window.location.href = '/login'
 }`}
@@ -119,7 +119,7 @@ export default function AuthPage() {
             </div>
             <div>
               <div className="mb-1 text-[10px] font-medium text-muted-foreground/70">服务端拦截器</div>
-              <pre className="scrollbar-thin overflow-auto rounded-lg bg-black/[0.04] p-3 font-mono text-[11px] leading-relaxed dark:bg-white/[0.04]">
+              <pre className="scrollbar-thin overflow-auto rounded-xl bg-black/[0.04] p-3 font-mono text-[11px] leading-relaxed dark:bg-white/[0.04]">
                 {`if (response.status === 401 && !options.context?.skipAuthRedirect) {
   redirect('/login')
 }`}

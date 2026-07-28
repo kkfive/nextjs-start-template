@@ -11,7 +11,7 @@ export default function BasicRequestPage() {
     <DemoWrapper>
       <div className="space-y-8">
         {/* Info Banner */}
-        <div className="rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.04] to-accent/[0.03] p-5">
+        <div className="rounded-xl border border-primary/15 bg-none  p-5">
           <div className="flex items-start gap-3">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
               <svg className="size-4.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

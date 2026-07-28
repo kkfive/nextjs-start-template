@@ -21,7 +21,7 @@ export default function InterceptorPage() {
     <DemoWrapper>
       <div className="space-y-8">
         {/* Info Banner */}
-        <div className="rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.04] to-accent/[0.03] p-5">
+        <div className="rounded-xl border border-primary/15 bg-none  p-5">
           <div className="flex items-start gap-3">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
               <svg className="size-4.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -99,12 +99,12 @@ export default function InterceptorPage() {
         {/* Mode Toggle */}
         <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/30 p-3">
           <span className="text-xs font-medium text-muted-foreground">响应处理模式:</span>
-          <div className="flex rounded-lg bg-muted p-0.5">
+          <div className="flex rounded-xl bg-muted p-0.5">
             <button
               onClick={() => setShowUnified(true)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
                 showUnified
-                  ? 'bg-card text-foreground shadow-sm'
+                  ? 'bg-card text-foreground '
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -112,9 +112,9 @@ export default function InterceptorPage() {
             </button>
             <button
               onClick={() => setShowUnified(false)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
                 !showUnified
-                  ? 'bg-card text-foreground shadow-sm'
+                  ? 'bg-card text-foreground '
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -160,7 +160,7 @@ export default function InterceptorPage() {
           <div className="space-y-3">
             <div>
               <div className="mb-1 text-[10px] font-medium text-muted-foreground/70">beforeRequest — 请求前处理</div>
-              <pre className="scrollbar-thin overflow-auto rounded-lg bg-black/[0.04] p-3 font-mono text-[11px] leading-relaxed dark:bg-white/[0.04]">
+              <pre className="scrollbar-thin overflow-auto rounded-xl bg-black/[0.04] p-3 font-mono text-[11px] leading-relaxed dark:bg-white/[0.04]">
                 {`hooks: {
   beforeRequest: [
     // 注入 x-customer-id Cookie
@@ -181,7 +181,7 @@ export default function InterceptorPage() {
             </div>
             <div>
               <div className="mb-1 text-[10px] font-medium text-muted-foreground/70">afterResponse — 响应后处理</div>
-              <pre className="scrollbar-thin overflow-auto rounded-lg bg-black/[0.04] p-3 font-mono text-[11px] leading-relaxed dark:bg-white/[0.04]">
+              <pre className="scrollbar-thin overflow-auto rounded-xl bg-black/[0.04] p-3 font-mono text-[11px] leading-relaxed dark:bg-white/[0.04]">
                 {`hooks: {
   afterResponse: [
     // 响应日志

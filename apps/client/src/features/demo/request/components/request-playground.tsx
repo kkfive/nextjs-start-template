@@ -153,7 +153,7 @@ export function RequestPlayground({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        'space-y-4 rounded-2xl border bg-card p-5 transition-colors duration-200',
+        'space-y-4 rounded-xl border bg-card p-5 transition-colors duration-200',
         config.border,
         config.bg,
       )}
@@ -166,20 +166,20 @@ export function RequestPlayground({
           </div>
           <p className="text-xs leading-relaxed text-muted-foreground">{description}</p>
         </div>
-        <div className={cn('flex size-8 shrink-0 items-center justify-center rounded-lg', config.badge)}>
+        <div className={cn('flex size-8 shrink-0 items-center justify-center rounded-xl', config.badge)}>
           {config.icon}
         </div>
       </div>
 
       {/* Endpoint */}
-      <div className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2">
+      <div className="flex items-center gap-2 rounded-xl bg-muted/50 px-3 py-2">
         <MethodBadge method={method} />
         <code className="truncate font-mono text-xs text-muted-foreground">{endpoint}</code>
       </div>
 
       {/* Config Display */}
       {configDisplay && Object.keys(configDisplay).length > 0 && (
-        <div className="rounded-lg bg-muted/30 px-3 py-2">
+        <div className="rounded-xl bg-muted/30 px-3 py-2">
           <div className="mb-1 text-[10px] font-medium tracking-wider text-muted-foreground uppercase">请求配置</div>
           <pre className="overflow-auto font-mono text-[11px] leading-relaxed text-muted-foreground">
             {JSON.stringify(configDisplay, null, 2)}
@@ -197,9 +197,9 @@ export function RequestPlayground({
         whileHover={{ y: -1 }}
         whileTap={{ scale: 0.97 }}
         className={cn(
-          'w-full rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200',
-          'bg-primary text-primary-foreground shadow-sm',
-          'hover:shadow-md',
+          'min-h-11 w-full rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200',
+          'bg-primary text-primary-foreground ',
+          'hover:shadow-soft-sm',
           'disabled:cursor-wait disabled:opacity-60',
         )}
       >
@@ -264,22 +264,22 @@ export function RequestPlayground({
               {/* Error Flags */}
               <div className="mb-3 flex flex-wrap gap-1.5">
                 {errorDetails.isBusinessError && (
-                  <span className="rounded-md bg-orange-500/10 px-2 py-0.5 text-[10px] font-medium text-orange-600">业务错误</span>
+                  <span className="rounded-xl bg-orange-500/10 px-2 py-0.5 text-[10px] font-medium text-orange-600">业务错误</span>
                 )}
                 {errorDetails.isNetworkError && (
-                  <span className="rounded-md bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-600">网络错误</span>
+                  <span className="rounded-xl bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-600">网络错误</span>
                 )}
                 {errorDetails.isHTTPError && (
-                  <span className="rounded-md bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-600">HTTP 错误</span>
+                  <span className="rounded-xl bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-600">HTTP 错误</span>
                 )}
                 {errorDetails.is4xxError && (
-                  <span className="rounded-md bg-orange-500/10 px-2 py-0.5 text-[10px] font-medium text-orange-600">4xx 客户端错误</span>
+                  <span className="rounded-xl bg-orange-500/10 px-2 py-0.5 text-[10px] font-medium text-orange-600">4xx 客户端错误</span>
                 )}
                 {errorDetails.is5xxError && (
-                  <span className="rounded-md bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-600">5xx 服务端错误</span>
+                  <span className="rounded-xl bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-600">5xx 服务端错误</span>
                 )}
                 {errorDetails.isTimeout && (
-                  <span className="rounded-md bg-yellow-500/10 px-2 py-0.5 text-[10px] font-medium text-yellow-600">超时错误</span>
+                  <span className="rounded-xl bg-yellow-500/10 px-2 py-0.5 text-[10px] font-medium text-yellow-600">超时错误</span>
                 )}
               </div>
 
@@ -288,23 +288,23 @@ export function RequestPlayground({
                 {errorDetails.name && (
                   <div className="flex items-center gap-2 text-xs">
                     <span className="w-16 shrink-0 text-muted-foreground">name:</span>
-                    <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-red-600">{errorDetails.name}</code>
+                    <code className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-red-600">{errorDetails.name}</code>
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-xs">
                   <span className="w-16 shrink-0 text-muted-foreground">message:</span>
-                  <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-red-600">{errorDetails.message}</code>
+                  <code className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-red-600">{errorDetails.message}</code>
                 </div>
                 {errorDetails.code !== undefined && (
                   <div className="flex items-center gap-2 text-xs">
                     <span className="w-16 shrink-0 text-muted-foreground">code:</span>
-                    <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-red-600">{String(errorDetails.code)}</code>
+                    <code className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-red-600">{String(errorDetails.code)}</code>
                   </div>
                 )}
                 {errorDetails.responseStatus !== undefined && (
                   <div className="flex items-center gap-2 text-xs">
                     <span className="w-16 shrink-0 text-muted-foreground">status:</span>
-                    <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-red-600">{errorDetails.responseStatus}</code>
+                    <code className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-red-600">{errorDetails.responseStatus}</code>
                   </div>
                 )}
                 {errorDetails.data !== undefined && (
@@ -313,7 +313,7 @@ export function RequestPlayground({
                       <span className="w-16 shrink-0 text-muted-foreground">data:</span>
                       <span className="text-[10px] text-muted-foreground">HTTPError 预解析响应体</span>
                     </div>
-                    <pre className="scrollbar-thin overflow-auto rounded-lg bg-black/[0.04] p-3 font-mono text-[10px] leading-relaxed dark:bg-white/[0.04]">
+                    <pre className="scrollbar-thin overflow-auto rounded-xl bg-black/[0.04] p-3 font-mono text-[10px] leading-relaxed dark:bg-white/[0.04]">
                       {JSON.stringify(errorDetails.data, null, 2)}
                     </pre>
                   </div>
@@ -324,7 +324,7 @@ export function RequestPlayground({
                       <span className="w-16 shrink-0 text-muted-foreground">toJSON:</span>
                       <span className="text-[10px] text-muted-foreground">序列化后的错误对象</span>
                     </div>
-                    <pre className="scrollbar-thin overflow-auto rounded-lg bg-black/[0.04] p-3 font-mono text-[10px] leading-relaxed dark:bg-white/[0.04]">
+                    <pre className="scrollbar-thin overflow-auto rounded-xl bg-black/[0.04] p-3 font-mono text-[10px] leading-relaxed dark:bg-white/[0.04]">
                       {JSON.stringify(errorDetails.toJSON, null, 2)}
                     </pre>
                   </div>

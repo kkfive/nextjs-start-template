@@ -17,7 +17,7 @@ export default function ConfigPage() {
     <DemoWrapper>
       <div className="space-y-8">
         {/* Info Banner */}
-        <div className="rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.04] to-accent/[0.03] p-5">
+        <div className="rounded-xl border border-primary/15 bg-none  p-5">
           <div className="flex items-start gap-3">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
               <svg className="size-4.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -47,11 +47,11 @@ export default function ConfigPage() {
             expectedStatus={delayMs > timeoutMs ? 'http-error' : 'success'}
             requestFn={async () => unwrapData(await httpClient.get<HttpResponse>('/api/example/request/config', { params: { delay: delayMs, failRate: 0 } }))}
           >
-            <div className="space-y-3 rounded-lg bg-muted/30 p-3">
+            <div className="space-y-3 rounded-xl bg-muted/30 p-3">
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
                   <label className="text-xs font-medium text-muted-foreground">超时时间 (timeout)</label>
-                  <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
+                  <span className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
                     {timeoutMs}
                     ms
                   </span>
@@ -63,7 +63,8 @@ export default function ConfigPage() {
                   step="500"
                   value={timeoutMs}
                   onChange={e => setTimeoutMs(Number(e.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted-foreground/20 accent-primary"
+                  aria-label="超时时间（毫秒）"
+                  className="h-11 w-full cursor-pointer accent-primary"
                 />
                 <div className="mt-1 flex justify-between text-[10px] text-muted-foreground/60">
                   <span>500ms</span>
@@ -73,7 +74,7 @@ export default function ConfigPage() {
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
                   <label className="text-xs font-medium text-muted-foreground">服务端延迟 (delay)</label>
-                  <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
+                  <span className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
                     {delayMs}
                     ms
                   </span>
@@ -85,7 +86,8 @@ export default function ConfigPage() {
                   step="500"
                   value={delayMs}
                   onChange={e => setDelayMs(Number(e.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted-foreground/20 accent-primary"
+                  aria-label="服务端延迟（毫秒）"
+                  className="h-11 w-full cursor-pointer accent-primary"
                 />
                 <div className="mt-1 flex justify-between text-[10px] text-muted-foreground/60">
                   <span>0ms</span>
@@ -93,7 +95,7 @@ export default function ConfigPage() {
                 </div>
               </div>
               {delayMs > timeoutMs && (
-                <div className="rounded-md bg-yellow-500/10 px-2.5 py-1.5 text-[11px] text-yellow-600">
+                <div className="rounded-xl bg-yellow-500/10 px-2.5 py-1.5 text-[11px] text-yellow-600">
                   注意: 服务端延迟 (
                   {delayMs}
                   ms) 超过超时时间 (
@@ -117,11 +119,11 @@ export default function ConfigPage() {
             expectedStatus={failRate > 0 ? 'http-error' : 'success'}
             requestFn={async () => unwrapData(await httpClient.get<HttpResponse>('/api/example/request/config', { params: { delay: 0, failRate } }))}
           >
-            <div className="space-y-3 rounded-lg bg-muted/30 p-3">
+            <div className="space-y-3 rounded-xl bg-muted/30 p-3">
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
                   <label className="text-xs font-medium text-muted-foreground">重试次数 (retry)</label>
-                  <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
+                  <span className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
                     {retryCount}
                     {' '}
                     次
@@ -134,7 +136,8 @@ export default function ConfigPage() {
                   step="1"
                   value={retryCount}
                   onChange={e => setRetryCount(Number(e.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted-foreground/20 accent-primary"
+                  aria-label="重试次数"
+                  className="h-11 w-full cursor-pointer accent-primary"
                 />
                 <div className="mt-1 flex justify-between text-[10px] text-muted-foreground/60">
                   <span>0 (不重试)</span>
@@ -144,7 +147,7 @@ export default function ConfigPage() {
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
                   <label className="text-xs font-medium text-muted-foreground">失败概率 (failRate)</label>
-                  <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
+                  <span className="rounded-xl bg-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground">
                     {failRate}
                     %
                   </span>
@@ -156,7 +159,8 @@ export default function ConfigPage() {
                   step="10"
                   value={failRate}
                   onChange={e => setFailRate(Number(e.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted-foreground/20 accent-primary"
+                  aria-label="失败概率（百分比）"
+                  className="h-11 w-full cursor-pointer accent-primary"
                 />
                 <div className="mt-1 flex justify-between text-[10px] text-muted-foreground/60">
                   <span>0% (总是成功)</span>
@@ -164,7 +168,7 @@ export default function ConfigPage() {
                 </div>
               </div>
               {failRate > 0 && (
-                <div className="rounded-md bg-blue-500/10 px-2.5 py-1.5 text-[11px] text-blue-600">
+                <div className="rounded-xl bg-blue-500/10 px-2.5 py-1.5 text-[11px] text-blue-600">
                   提示: 服务端以
                   {' '}
                   {failRate}

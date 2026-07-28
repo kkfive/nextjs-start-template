@@ -80,7 +80,7 @@ export function ResponseViewer({
         </div>
         <div className="flex items-center gap-2">
           {statusCode !== undefined && (
-            <span className={cn('rounded-md px-2 py-0.5 text-xs font-bold', config.badgeBg, config.badgeText)}>
+            <span className={cn('rounded-xl px-2 py-0.5 text-xs font-bold', config.badgeBg, config.badgeText)}>
               HTTP
               {' '}
               {statusCode}
@@ -108,7 +108,7 @@ export function ResponseViewer({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className={cn(
-                  'scrollbar-thin overflow-auto rounded-lg bg-black/[0.04] p-3 font-mono text-xs leading-relaxed dark:bg-white/[0.04]',
+                  'scrollbar-thin overflow-auto rounded-xl bg-black/[0.04] p-3 font-mono text-xs leading-relaxed dark:bg-white/[0.04]',
                   isExpanded ? 'max-h-64' : 'max-h-24',
                 )}
               >
@@ -117,7 +117,7 @@ export function ResponseViewer({
             )}
 
         {!isExpanded && data !== null && data !== undefined && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-card/90 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-none " />
         )}
       </div>
     </div>
