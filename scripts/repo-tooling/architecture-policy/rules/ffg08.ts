@@ -70,6 +70,8 @@ export const ffg08: ArchitecturePolicy = {
     }
 
     issues.push(...orphanRuleIssues(context.rootDir, contents))
+    issues.push(...skillRoutingIssues(context.rootDir, contents))
+    issues.push(...evidenceWorkflowOwnershipIssues(context.rootDir, contents))
     issues.push(...skillFrontmatterIssues(context.rootDir, contents))
     return issues
   },
@@ -166,6 +168,39 @@ function orphanRuleIssues(rootDir: string, contents: Map<string, string>): Archi
     if (references.includes(routePath) || references.includes(entry.name))
       return []
     return [createIssue(path.join(rulesDir, entry.name), 1, `rule 未被 AGENTS 路由: ${entry.name}`)]
+  })
+}
+
+function skillRoutingIssues(rootDir: string, contents: Map<string, string>): ArchitecturePolicyIssue[] {
+  const skillsDir = path.join(rootDir, '.agents', 'skills')
+  const rootAgents = path.join(rootDir, 'AGENTS.md')
+  if (!fs.existsSync(skillsDir) || !contents.has(rootAgents))
+    return []
+  const routes = contents.get(rootAgents) ?? ''
+  return fs.readdirSync(skillsDir, { withFileTypes: true }).flatMap((entry) => {
+    if (!entry.isDirectory() || !fs.existsSync(path.join(skillsDir, entry.name, 'SKILL.md')))
+      return []
+    if (routes.includes(entry.name))
+      return []
+    return [createIssue(path.join(skillsDir, entry.name, 'SKILL.md'), 1, `Skill 未被 AGENTS 路由: ${entry.name}`)]
+  })
+}
+
+function evidenceWorkflowOwnershipIssues(rootDir: string, contents: Map<string, string>): ArchitecturePolicyIssue[] {
+  const owner = path.join(rootDir, '.agents', 'skills', 'evidence-first-development', 'SKILL.md')
+  if (!fs.existsSync(owner))
+    return []
+  return [...contents].flatMap(([file, content]) => {
+    if (file === owner || file.startsWith(`${path.dirname(owner)}${path.sep}`))
+      return []
+    const numberedSteps = content.split(/\r?\n/u).filter(line => /^\s*\d+\.\s/u.test(line)).length
+    const copiesDetailedWorkflow = /^## Full workflow$/mu.test(content)
+      && numberedSteps >= 3
+      && /\bRED\b/u.test(content)
+      && /\bGREEN\b/u.test(content)
+    return copiesDetailedWorkflow
+      ? [createIssue(file, lineAt(content, content.search(/^## Full workflow$/mu)), '完整行为/证据流程只能由 evidence-first-development Skill 维护')]
+      : []
   })
 }
 

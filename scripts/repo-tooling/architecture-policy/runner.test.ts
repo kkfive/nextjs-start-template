@@ -203,6 +203,8 @@ describe('architecture policy registry', () => {
       ['missing-reference', '引用不存在'],
       ['broken-relative-reference', '引用不存在'],
       ['orphan-rule', 'rule 未被 AGENTS 路由'],
+      ['orphan-skill', 'Skill 未被 AGENTS 路由'],
+      ['duplicate-workflow-owner', '完整行为/证据流程只能由 evidence-first-development Skill 维护'],
       ['frontmatter-mismatch', 'frontmatter name'],
       ['deprecated-path', '已废弃路径'],
     ] as const
