@@ -28,6 +28,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Run AI friendliness audit
+        if: always()
+        run: |
+          mkdir -p .artifacts/ai-friendliness
+          pnpm audit:ai-friendliness --format json --output .artifacts/ai-friendliness/report.json
+
+      - name: Upload AI friendliness report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ai-friendliness-static-${{ github.run_id }}
+          path: .artifacts/ai-friendliness
+          if-no-files-found: error
+
       - name: Run static governance（全量：不使用 affected filter）
         run: pnpm verify
 

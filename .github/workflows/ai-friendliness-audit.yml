@@ -1,0 +1,364 @@
+name: AI Friendliness Audit
+
+on:
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      run_e2e:
+        description: Run the real governance harness
+        required: false
+        type: boolean
+        default: false
+      acceptance_evidence_dir:
+        description: Optional repo-relative directory containing real acceptance evidence files named <profile>.json plus attachments
+        required: false
+        type: string
+        default: ''
+      holdout_profiles:
+        description: Optional comma-separated holdout profile ids to run instead of the default unhinted business set
+        required: false
+        type: string
+        default: ''
+
+concurrency:
+  group: ai-friendliness-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  static_audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup mise
+        uses: jdx/mise-action@v2
+        with:
+          cache: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run static audit
+        run: |
+          mkdir -p .artifacts/ai-friendliness/static
+          pnpm audit:ai-friendliness --format json --output .artifacts/ai-friendliness/static/static-report.json
+          pnpm audit:ai-friendliness --format markdown --output .artifacts/ai-friendliness/static/static-report.md
+
+      - name: Upload static audit artifact
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ai-friendliness-static-${{ github.run_id }}
+          path: .artifacts/ai-friendliness/static
+          if-no-files-found: error
+          retention-days: 30
+
+  governance_technical:
+    if: github.event_name == 'schedule' || inputs.run_e2e
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.meta.outputs.artifact_name }}
+      scheduled_infrastructure_error: ${{ steps.harness.outputs.scheduled_infrastructure_error }}
+    steps:
+      - name: Set artifact metadata
+        id: meta
+        run: echo "artifact_name=ai-friendliness-e2e-${GITHUB_RUN_ID}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup mise
+        uses: jdx/mise-action@v2
+        with:
+          cache: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Decide whether real harness is available
+        id: harness
+        env:
+          ENDPOINT_CONFIG: ${{ secrets.MAESTRO_CLI_TOOLS_JSON }}
+          REQUESTED: ${{ github.event_name == 'schedule' || inputs.run_e2e }}
+        run: |
+          mkdir -p .artifacts/ai-friendliness
+          if [ "$REQUESTED" = "true" ] && [ -n "$ENDPOINT_CONFIG" ]; then
+            mkdir -p "$HOME/.maestro"
+            printf '%s' "$ENDPOINT_CONFIG" > "$HOME/.maestro/cli-tools.json"
+            chmod 600 "$HOME/.maestro/cli-tools.json"
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            printf '%s\n' '{"status":"infrastructure_error","reason":"real harness not requested or endpoint unavailable"}' > .artifacts/ai-friendliness/e2e-status.json
+            if [ "${{ github.event_name }}" = "schedule" ]; then
+              echo "scheduled_infrastructure_error=true" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Prepare selected governance run
+        if: steps.harness.outputs.enabled == 'true'
+        id: prepare
+        env:
+          HOLDOUT_PROFILES: ${{ github.event_name == 'workflow_dispatch' && inputs.holdout_profiles || '' }}
+        run: |
+          if [ -n "$HOLDOUT_PROFILES" ]; then
+            pnpm verify:ai-governance:prepare -- . "$HOLDOUT_PROFILES" > .artifacts/ai-friendliness/prepare.json
+          else
+            pnpm verify:ai-governance:prepare > .artifacts/ai-friendliness/prepare.json
+          fi
+          artifact_dir=$(node -e "const r=require('./.artifacts/ai-friendliness/prepare.json'); process.stdout.write(r.artifactDir)")
+          echo "artifact_dir=$artifact_dir" >> "$GITHUB_OUTPUT"
+
+      - name: Document selected holdout execution
+        if: steps.harness.outputs.enabled == 'true' && github.event_name == 'workflow_dispatch' && inputs.holdout_profiles != ''
+        run: |
+          echo '### Holdout governance execution' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Selected holdouts: `${{ inputs.holdout_profiles }}`' >> "$GITHUB_STEP_SUMMARY"
+          echo 'These holdouts are executed manually and remain excluded from default run/calibration.' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Execute unhinted business profiles
+        if: steps.harness.outputs.enabled == 'true'
+        run: |
+          node -e "const r=require('./.artifacts/ai-friendliness/prepare.json'); for (const item of r.commands) console.log(item.command)" |
+          while IFS= read -r command; do
+            bash -lc "$command"
+          done
+
+      - name: Collect real governance evidence
+        if: steps.harness.outputs.enabled == 'true'
+        run: |
+          artifact_dir='${{ steps.prepare.outputs.artifact_dir }}'
+          node scripts/repo-tooling/ai-governance-e2e/runner.ts collect "$artifact_dir"
+          rm -rf .artifacts/ai-friendliness/e2e-run
+          cp -R "$artifact_dir" .artifacts/ai-friendliness/e2e-run
+
+      - name: Verify self-contained rebuild artifact
+        if: steps.harness.outputs.enabled == 'true'
+        run: |
+          run_dir='.artifacts/ai-friendliness/e2e-run'
+          test -f "$run_dir/manifest.json"
+          test -f "$run_dir/integrity.json"
+          test -f "$run_dir/report.json"
+          test -f "$run_dir/commands.json"
+          find "$run_dir" -name '*-raw.jsonl' | grep -q .
+          find "$run_dir" -name '*-gates.json' | grep -q .
+          find "$run_dir" -name '*-final-diff.json' | grep -q .
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs'
+          import path from 'node:path'
+
+          const root = path.resolve('.artifacts/ai-friendliness/e2e-run')
+          const files = []
+          const walk = (dir) => {
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              const absolute = path.join(dir, entry.name)
+              if (entry.isDirectory())
+                walk(absolute)
+              else
+                files.push(path.relative(root, absolute).split(path.sep).join('/'))
+            }
+          }
+          walk(root)
+          files.sort()
+          fs.writeFileSync(path.join(root, 'artifact-inventory.json'), `${JSON.stringify({ files }, null, 2)}\n`)
+          fs.writeFileSync(path.join(root, 'cache-verification.json'), `${JSON.stringify({
+            metrics: null,
+            status: 'configuration_verified',
+            workflow: '.github/workflows/ai-friendliness-audit.yml',
+          }, null, 2)}\n`)
+          NODE
+
+      - name: Validate technical governance gates
+        if: steps.harness.outputs.enabled == 'true'
+        run: |
+          artifact_dir='${{ steps.prepare.outputs.artifact_dir }}'
+          node scripts/repo-tooling/ai-governance-e2e/runner.ts validate-technical "$artifact_dir"
+          echo '### Independent acceptance pending' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Technical gates passed. A separate acceptance job records only real browser/API/reviewer evidence. Without supplied evidence, the run remains acceptance_pending.' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Cleanup run-owned worktrees
+        if: always() && steps.prepare.outputs.artifact_dir != ''
+        run: node scripts/repo-tooling/ai-governance-e2e/runner.ts cleanup '${{ steps.prepare.outputs.artifact_dir }}'
+
+      - name: Upload technical governance artifact
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ steps.meta.outputs.artifact_name }}
+          path: .artifacts/ai-friendliness
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Fail scheduled audit when real harness is unavailable
+        if: always() && steps.harness.outputs.scheduled_infrastructure_error == 'true'
+        run: exit 1
+
+  independent_acceptance:
+    if: always() && needs.governance_technical.result != 'skipped'
+    needs:
+      - governance_technical
+    runs-on: ubuntu-latest
+    env:
+      ACCEPTANCE_EVIDENCE_DIR: ${{ github.event_name == 'workflow_dispatch' && inputs.acceptance_evidence_dir || '' }}
+      ACCEPTANCE_JOB_IDENTITY: github-actions://${{ github.workflow }}/${{ github.job }}/${{ github.run_id }}
+      ACCEPTANCE_GITHUB_ACTOR: ${{ github.actor }}
+      ACCEPTANCE_GITHUB_JOB: ${{ github.job }}
+      ACCEPTANCE_GITHUB_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Download technical governance artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: ${{ needs.governance_technical.outputs.artifact_name }}
+          path: .artifacts/acceptance-source
+
+      - name: Record or defer independent acceptance
+        shell: bash
+        run: |
+          mkdir -p .artifacts/acceptance-source
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs'
+          import path from 'node:path'
+          import { spawnSync } from 'node:child_process'
+
+          const acceptanceRoot = path.resolve('.artifacts/acceptance-source')
+          const artifactDir = path.join(acceptanceRoot, 'e2e-run')
+          const provenance = {
+            githubActor: process.env.ACCEPTANCE_GITHUB_ACTOR,
+            githubJob: process.env.ACCEPTANCE_GITHUB_JOB,
+            githubRunId: process.env.ACCEPTANCE_GITHUB_RUN_ID,
+            jobIdentity: process.env.ACCEPTANCE_JOB_IDENTITY,
+          }
+
+          fs.writeFileSync(path.join(acceptanceRoot, 'acceptance-provenance.json'), `${JSON.stringify(provenance, null, 2)}\n`)
+
+          const writeStatus = (status) => {
+            fs.writeFileSync(path.join(acceptanceRoot, 'acceptance-status.json'), `${JSON.stringify(status, null, 2)}\n`)
+          }
+
+          if (!fs.existsSync(path.join(artifactDir, 'report.json'))) {
+            writeStatus({
+              provenance,
+              reason: 'technical_artifact_unavailable',
+              status: 'pending',
+            })
+            process.exit(0)
+          }
+
+          const report = JSON.parse(fs.readFileSync(path.join(artifactDir, 'report.json'), 'utf8'))
+          const pendingProfiles = report.profiles.map((item) => item.profile)
+          const evidenceDirInput = (process.env.ACCEPTANCE_EVIDENCE_DIR ?? '').trim()
+
+          if (evidenceDirInput.length === 0) {
+            writeStatus({
+              pendingProfiles,
+              provenance,
+              reason: 'real_acceptance_evidence_not_supplied',
+              status: 'pending',
+            })
+            process.exit(0)
+          }
+
+          const evidenceDir = path.resolve(evidenceDirInput)
+          if (!fs.existsSync(evidenceDir) || !fs.statSync(evidenceDir).isDirectory()) {
+            writeStatus({
+              pendingProfiles,
+              provenance,
+              reason: 'acceptance_evidence_dir_missing',
+              status: 'pending',
+            })
+            process.exit(0)
+          }
+
+          const acceptanceInputsDir = path.join(artifactDir, 'acceptance-inputs')
+          fs.rmSync(acceptanceInputsDir, { force: true, recursive: true })
+          fs.cpSync(evidenceDir, acceptanceInputsDir, { recursive: true })
+          const evidenceFiles = fs.readdirSync(acceptanceInputsDir)
+            .filter(file => file.endsWith('.json'))
+            .sort()
+
+          if (evidenceFiles.length === 0) {
+            writeStatus({
+              pendingProfiles,
+              provenance,
+              reason: 'acceptance_evidence_files_missing',
+              status: 'pending',
+            })
+            process.exit(0)
+          }
+
+          for (const file of evidenceFiles) {
+            const profileId = path.basename(file, '.json')
+            const evidencePath = path.join(acceptanceInputsDir, file)
+            const evidence = JSON.parse(fs.readFileSync(evidencePath, 'utf8'))
+            if (evidence?.provenance?.level === 'independently_verified') {
+              evidence.provenance = {
+                ...evidence.provenance,
+                actor: typeof evidence.provenance.actor === 'string' && evidence.provenance.actor.trim().length > 0
+                  ? evidence.provenance.actor
+                  : provenance.githubActor,
+                ...provenance,
+              }
+              fs.writeFileSync(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`)
+            }
+            const accept = spawnSync('node', [
+              'scripts/repo-tooling/ai-governance-e2e/runner.ts',
+              'accept',
+              artifactDir,
+              profileId,
+              evidence.method,
+              evidencePath,
+            ], {
+              cwd: process.cwd(),
+              encoding: 'utf8',
+              env: process.env,
+              stdio: 'inherit',
+            })
+            if (accept.status !== 0)
+              process.exit(accept.status ?? 1)
+          }
+
+          const updated = JSON.parse(fs.readFileSync(path.join(artifactDir, 'report.json'), 'utf8'))
+          const stillPending = updated.profiles.filter((item) => item.verdict === 'acceptance_pending').map((item) => item.profile)
+          const validateCommand = stillPending.length === 0 ? 'validate' : 'validate-technical'
+          const validate = spawnSync('node', [
+            'scripts/repo-tooling/ai-governance-e2e/runner.ts',
+            validateCommand,
+            artifactDir,
+          ], {
+            cwd: process.cwd(),
+            encoding: 'utf8',
+            env: process.env,
+            stdio: 'inherit',
+          })
+          if (validate.status !== 0)
+            process.exit(validate.status ?? 1)
+
+          writeStatus({
+            pendingProfiles: stillPending,
+            provenance,
+            status: stillPending.length === 0 ? 'independently_verified' : 'pending',
+          })
+          NODE
+
+      - name: Upload acceptance artifact
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ai-friendliness-acceptance-${{ github.run_id }}
+          path: .artifacts/acceptance-source
+          if-no-files-found: error
+          retention-days: 30
