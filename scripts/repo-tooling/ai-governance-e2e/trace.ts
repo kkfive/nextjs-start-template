@@ -16,12 +16,16 @@ export type GovernanceRead = {
 export type GovernanceTrace = {
   errors: string[]
   governanceTokens: number
+  observationLimitations: string[]
   rawLogPath: string
+  rawReadCount: number
   readTrace: GovernanceRead[]
   requiredReadCoverage: number
+  requiredReadGroups: Array<{ hits: string[], id: string, required: string[], satisfied: boolean, weight: number }>
   requiredReadsHit: string[]
   requiredReadsMissing: string[]
   status: 'infrastructure_error' | 'ok'
+  uniqueReadCount: number
   unrelatedCategoryReads: string[]
 }
 
@@ -40,8 +44,8 @@ const KNOWN_ENTRY_TYPES = new Set([
   'tool_use',
 ])
 
-const READ_COMMAND_PATTERN = /\b(?:cat|find|grep|head|less|nl|rg|sed|tail|wc)\b|\bgit\s+ls-files\b/u
-const GOVERNANCE_PATH_PATTERN = /(?:^|[\s"'=])((?:\/[^"'`\s;|&()]+\/)?AGENTS\.md|(?:\/[^"'`\s;|&()]+)?\.agents\/[^"'`\s;|&()]+)/gu
+const READ_COMMAND_PATTERN = /\b(?:cat|head|less|nl|sed|tail)\b/u
+const GOVERNANCE_TOKEN_PATTERN = /[^\s"'`;|&()]+/gu
 
 export function parseGovernanceTrace(
   rawLog: string,
@@ -55,16 +59,17 @@ export function parseGovernanceTrace(
   if (commandEntries.length === 0)
     errors.push('missing_command_exec_trace')
 
-  const readPaths = new Set<string>()
+  const readPaths: string[] = []
   for (const entry of commandEntries) {
     if (entry.exitCode !== 0 || typeof entry.command !== 'string' || !READ_COMMAND_PATTERN.test(entry.command))
       continue
     for (const candidate of extractGovernancePaths(entry.command, options.rootDir))
-      readPaths.add(candidate)
+      readPaths.push(candidate)
   }
 
+  const uniqueReadPaths = [...new Set(readPaths)]
   const readTrace: GovernanceRead[] = []
-  for (const relativePath of [...readPaths].sort()) {
+  for (const relativePath of uniqueReadPaths.sort()) {
     const absolutePath = path.resolve(options.rootDir, relativePath)
     try {
       if (!options.readFile && !fs.statSync(absolutePath).isFile())
@@ -78,12 +83,27 @@ export function parseGovernanceTrace(
     }
   }
 
-  const requiredReads = [
-    ...profile.expectedRules.map(rule => `rule:${rule}`),
-    ...profile.expectedSkills.map(skill => `skill:${skill}`),
-  ]
-  const requiredReadsHit = requiredReads.filter(required => isRequiredReadHit(required, readTrace))
+  const requiredReadGroups = [
+    { id: 'entries', required: profile.expectedAgentEntries.map(entry => `entry:${entry}`), weight: profile.expectedAgentEntries.length === 0 ? 0 : 1 },
+    { id: 'rules', required: profile.expectedRules.map(rule => `rule:${rule}`), weight: profile.expectedRules.length === 0 ? 0 : 1 },
+    { id: 'skills', required: profile.expectedSkills.map(skill => `skill:${skill}`), weight: profile.expectedSkills.length === 0 ? 0 : 1 },
+  ].map((group) => {
+    const hits = group.required.filter(required => isRequiredReadHit(required, readTrace))
+    return {
+      hits,
+      id: group.id,
+      required: group.required,
+      satisfied: group.required.length === 0 || hits.length === group.required.length,
+      weight: group.weight,
+    }
+  })
+  const requiredReads = requiredReadGroups.flatMap(group => group.required)
+  const requiredReadsHit = requiredReadGroups.flatMap(group => group.hits)
   const requiredReadsMissing = requiredReads.filter(required => !requiredReadsHit.includes(required))
+  const weightedGroups = requiredReadGroups.filter(group => group.weight > 0)
+  const requiredReadCoverage = weightedGroups.length === 0
+    ? 1
+    : weightedGroups.reduce((total, group) => total + (group.satisfied ? group.weight : 0), 0) / weightedGroups.reduce((total, group) => total + group.weight, 0)
   const unrelatedCategoryReads = profile.forbiddenCategories.filter(category => (
     readTrace.some(read => read.path.includes(`.agents/skills/${category}/`))
   ))
@@ -91,12 +111,16 @@ export function parseGovernanceTrace(
   return {
     errors,
     governanceTokens: readTrace.reduce((total, read) => total + read.tokens, 0),
+    observationLimitations: ['content_read_shell_commands_only', 'model_attention_not_observable'],
     rawLogPath: options.rawLogPath,
+    rawReadCount: readPaths.length,
     readTrace,
-    requiredReadCoverage: requiredReads.length === 0 ? 1 : requiredReadsHit.length / requiredReads.length,
+    requiredReadCoverage,
+    requiredReadGroups,
     requiredReadsHit,
     requiredReadsMissing,
     status: errors.length === 0 ? 'ok' : 'infrastructure_error',
+    uniqueReadCount: readTrace.length,
     unrelatedCategoryReads,
   }
 }
@@ -117,10 +141,8 @@ function parseEntries(rawLog: string, errors: string[]): JsonRecord[] {
         errors.push(`invalid_entry_shape:${index + 1}`)
         continue
       }
-      if (!KNOWN_ENTRY_TYPES.has(value.type)) {
-        errors.push(`unknown_entry_type:${value.type}`)
+      if (!KNOWN_ENTRY_TYPES.has(value.type))
         continue
-      }
       if (!hasValidEntryShape(value)) {
         errors.push(`invalid_${value.type}_shape:${index + 1}`)
         continue
@@ -162,10 +184,11 @@ function hasValidEntryShape(entry: JsonRecord): boolean {
 function extractGovernancePaths(command: string, rootDir: string): string[] {
   const paths: string[] = []
   const canonicalRoot = canonicalizePath(rootDir)
-  for (const match of command.matchAll(GOVERNANCE_PATH_PATTERN)) {
-    const rawPath = match[1]?.replace(/[,:]+$/u, '')
-    if (!rawPath || /[*?{}[\]]/u.test(rawPath))
+  for (const tokenMatch of command.matchAll(GOVERNANCE_TOKEN_PATTERN)) {
+    const token = tokenMatch[0]?.replace(/^["'=]+|[,:"']+$/gu, '')
+    if (!token || (path.posix.basename(token) !== 'AGENTS.md' && !token.includes('.agents/')))
       continue
+    const rawPath = token
     const absolutePath = path.isAbsolute(rawPath) ? rawPath : path.resolve(rootDir, rawPath)
     const relativePath = normalizePath(path.relative(canonicalRoot, canonicalizePath(absolutePath)))
     if (relativePath.startsWith('../') || path.isAbsolute(relativePath))
@@ -190,8 +213,10 @@ function isRequiredReadHit(required: string, reads: GovernanceRead[]): boolean {
   const [kind, name] = required.split(':', 2)
   if (!name)
     return false
+  if (kind === 'entry')
+    return reads.some(read => read.path === name)
   if (kind === 'rule')
-    return reads.some(read => path.posix.basename(read.path) === name)
+    return reads.some(read => read.path === `.agents/rules/${name}`)
   return reads.some(read => read.path === `.agents/skills/${name}/SKILL.md`)
 }
 
