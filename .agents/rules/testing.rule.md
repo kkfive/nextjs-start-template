@@ -1,9 +1,7 @@
 # Testing Rule
 
-测试应证明公共行为，而不是复制实现细节。
+测试证明公共行为，不复制实现细节。组件关注可观察状态、交互和可访问语义；跨 HTTP/RPC 边界优先契约、MSW 或集成证据。
 
-共享包和各 app `src/lib` 的公开函数需要覆盖正常路径、错误路径和边界条件。外部依赖通过注入、MSW 或轻量 mock 隔离，避免测试依赖真实网络和不稳定环境。
+测试应覆盖与风险相称的正常路径、错误路径、边界条件和关键不变量。mock 用于隔离不稳定外部依赖，不以调用次数代替结果。
 
-普通 workspace package 新增 `test:run` 时复用根目录提供的 Vitest runner，例如 `pnpm --workspace-root exec vitest run packages/<pkg>`。不要仅为运行测试而给 package 重复添加 `vitest` devDependency 或修改 lockfile；依赖治理或独立发布任务除外。
-
-组件测试关注用户可观察行为：渲染状态、交互结果、无障碍语义和错误兜底。新增约定或修复漂移时，应优先补充可自动运行的校验，避免只靠文档提醒。
+需求分析、RED/GREEN、回归升级与独立验收由 `evidence-first-development` 统一编排；本规则只负责测试证据质量。测试依赖与 runner 一致性由 workspace validator 和现有门禁负责。

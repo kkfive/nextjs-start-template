@@ -12,6 +12,7 @@
 - **TanStack Query + Zustand** — 服务端与客户端状态管理
 - **Vitest + MSW** — 单元测试与 API Mock
 - **AI 辅助开发规范** — `AGENTS.md` 提供薄路由，`.agents/` 仅在任务命中时加载
+- **行为 / 证据先行** — 行为变更先定义验收和失败证据，再最小实现、分层回归与独立验收
 
 ## 快速开始
 
@@ -51,7 +52,7 @@ pnpm dev
 └── .agents/                       # AI 辅助开发规范
 ```
 
-每个 Next.js app 的业务代码归入 `src/features/`，`src/app/` 只负责组合路由，`src/service/` 仅保存 HTTP/RPC/SSE 运行时实例。详细架构与编码规范见 [AGENTS.md](AGENTS.md) 与 `.agents/`。
+每个 Next.js app 的业务代码归入 `src/features/`，`src/app/` 只负责组合路由，`src/service/` 仅保存 HTTP/RPC/SSE 运行时实例。行为或工程行为变更采用“需求与影响分析 → 验收/证据设计 → 有效 RED 或等价失败证据 → 最小 GREEN → 分层回归 → 独立验收”；不机械要求每个文件新增单元测试。详细架构与开发规范见 [AGENTS.md](AGENTS.md) 与 `.agents/`。
 
 ## 常用命令
 

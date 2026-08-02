@@ -1,21 +1,7 @@
 # Packages Rule
 
-`packages/*` 通过 `package.json` 的 `exports` 直接指向源码，不产出 build 产物；由消费方编译。每个 package 的 `tsconfig.json` 继承 `@kkfive/tsconfig/base.json`，包级 typecheck 由 Turbo 从根入口统一调度。
+package 通过 `exports` 暴露稳定源码入口，由消费者编译。依赖必须完整且最小；运行时框架通常使用 peerDependencies，内部依赖使用 `workspace:*`。
 
-依赖必须完整且最小：只声明真正使用的依赖；运行时框架（React 等）走 peerDependencies。包内路径别名不跨包，跨包引用统一走 `@kkfive/<pkg>` 与 `workspace:*`。新增 package 需提供 manifest、源码 export、tsconfig、README，并在根 `tsconfig.json` references 登记。
+新增 package 需具备 manifest、源码 export、统一 tsconfig、README 和根 TypeScript reference。测试 runner 复用根工具链；不得以空 runner、skip 或 `passWithNoTests` 冒充覆盖。
 
-普通 workspace package 的测试 runner 由根 `devDependencies` 统一提供。新增 `test:run` 时复用根 Vitest，例如 `pnpm --workspace-root exec vitest run packages/<pkg>`；不要为单个 package 重复添加 `vitest` devDependency 或改动 lockfile，除非任务明确涉及依赖治理或独立发布边界。
-
-## 包分类与红线
-
-| 包 | 职责 | 红线 |
-|---|---|---|
-| `contracts` | zod schema + infer 类型 + 错误类型，全栈契约源 | 框架无关、零运行时依赖（仅 zod） |
-| `ui` | 基础 UI 控件（shadcn 二次封装 + 自实现） | 不含 antd；React 走 peer |
-| `utils` | 多端通用算法 | `common`（多端）/ `dom`（浏览器）物理隔离，服务端只引 common |
-| `http-client` | HttpService 抽象 + interceptor + BusinessError | 底层 fetch；不绑业务 |
-| `rpc` | 泛型 `createRpcClient<App>()` + envelope 解包；不含业务 calls、React 或 app 类型 | 依赖 contracts/http-client；AppType 与实例均由 app 注入 |
-
-## README 强制
-
-每个 package 必须有 `README.md`，说明该包的作用、依赖红线、消费方式——作为防架构偏移的锚点。新增 package 不带 README 视为不完整。
+公共 export、schema、error envelope、RPC/HTTP 或基础 UI 契约变化必须识别并回归直接消费者。具体 workspace/task 完整性由 validator 校验；包的领域红线由其 scoped `AGENTS.md` 或代码事实负责，不在此维护易腐包清单。

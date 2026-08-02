@@ -1,9 +1,7 @@
 # UI Rule
 
-UI 层负责呈现、交互与组合，不重新实现业务规则。
+基础控件来自 `@kkfive/ui`；antd 由各 app 自治。app 内封装必须提供真实加工，不建立纯 re-export；明显透传由 FFG04 校验。
 
-基础 UI 控件统一来自 `@kkfive/ui`（shadcn 二次封装 + 自实现）。**业务代码直接消费 `@kkfive/ui/components/*`**，不在 app 内做零价值的 re-export 透传层（`export * from '@kkfive/ui/...'` 即 anti-pattern）。仅当存在真实加工（改默认 props、限制 API、注入主题、组合多控件）时才在 app 内封装，且封装必须含实现，不做纯 re-export。
+业务 UI 留在 feature；`src/components/` 只放跨 feature 共享组合、provider 与 app 专属基础封装。是否提升为共享组件依据真实消费者，而非预期复用。
 
-`@kkfive/ui` 不含 antd；antd 由各 app 按需安装，ConfigProvider 与主题 token 各 app 自治。业务代码可直接使用 antd（antd 是 app 的合法 UI 依赖）；用 antd 独有能力（Form/Table/Upload 等）时直接 import，基础控件优先 `@kkfive/ui` 减少重复。
-
-业务 UI 留在所属 feature；`src/components/` 仅放跨 feature 的共享组合、provider 与 app 专属基础封装，不依赖业务 calls 或 feature 私有模型。交互组件显式声明客户端边界；无交互、浏览器 API 或客户端状态需求时优先 Server Component。
+UI 证据关注可观察结果、可访问语义和交互状态；视觉、响应式与键盘路径按风险升级为真实浏览器验收。

@@ -1,9 +1,7 @@
 # Hono Rule
 
-`apps/api` 是独立 Hono 后端，用于类型化 RPC、SSE 及需要独立服务进程的能力。当前业务在 `src/routes/` 的 handler 内闭环，用 `@kkfive/contracts` 校验输入并返回统一 envelope；入口 `src/app.ts` 导出 `AppType`，只由前端 app 的 service 层 type-only 消费。
+`apps/api` 是独立后端；route handler 负责协议适配与当前业务编排，复杂纯逻辑可在对应 route 目录拆分。`src/lib` 存放服务端基础设施，middleware 只处理横切关注点。
 
-路由层做 HTTP 协议适配与业务编排；复杂逻辑可在对应 route 目录中拆为纯函数。数据库、缓存、第三方 SDK 等 api 专属基础设施需要时放 `src/lib/`；`src/middleware/` 只处理认证、日志、错误和 CORS 等横切关注点。
+输入使用共享 contract 校验，响应和错误保持统一 envelope；SSE 帧格式必须与客户端解析一致。前端通过 app service 中的 RPC 实例访问，`packages/rpc` 不绑定业务或 app 类型。
 
-错误统一经 `app.onError` 归一化为业务可用的 envelope（复用 `@kkfive/contracts` 的 `ok`/`fail`）。SSE 是 Hono 的扩展能力（client Route Handler 不承担流式），用 `hono/streaming` 的 `c.streamSSE`，帧格式与前端 `@kkfive/http-client` 的流式解析对齐；客户端经 `NEXT_PUBLIC_API_URL` 直连 apps/api 的 SSE 路由。
-
-前端访问 Hono 时，由 feature-local call 使用 `src/service/rpc-client.ts` 或 `rpc-server.ts` 提供的实例；`packages/rpc` 只提供泛型客户端工厂与 envelope 工具。
+前端框架依赖限制由 ESLint/FFG07 校验。行为变化仍需覆盖 schema、状态码、错误传播和关键副作用；契约共同变化时验证真实边界。

@@ -1,5 +1,9 @@
 # 测试规范
 
+## 流程边界
+
+本文件只规定 Vitest、Testing Library 与 MSW 的项目内写法。行为变更先按 `evidence-first-development` 完成验收/证据设计和有效 RED，再使用本页实现测试；不要在此复制完整开发流程。
+
 ## 测试文件位置
 
 ```typescript
@@ -47,7 +51,9 @@ export const handlers = [
 - **测试文件同目录**：测试文件与源文件放在同一目录
 - **使用 vitest**：项目统一使用 vitest 作为测试框架
 - **按边界 mock**：HTTP 行为优先 MSW；底层 adapter contract 可 mock 最外层 IO
-- **测试覆盖率**：关键业务逻辑必须有测试覆盖
+- **测试覆盖率**：关键业务逻辑必须有测试覆盖；coverage 只作诊断信号，不能替代行为断言、跨边界证据或独立验收
+- **RED 质量**：目标测试应因缺失行为失败；环境、import、fixture、测试发现或 mock 配置错误不算有效 RED
+- **断言稳定性**：取得 RED 后不得为迎合实现删除、跳过或弱化断言；需求澄清或测试缺陷必须说明
 
 ## 异步 mutation 交互测试
 
