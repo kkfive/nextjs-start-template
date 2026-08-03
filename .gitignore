@@ -51,6 +51,7 @@ dist/**
 data/WebGUI.md
 .ace-tool/
 .claude/plan
+settings.local.json
 
 # tool session history（工具本地状态，不纳入版本控制）
 .zcode/
