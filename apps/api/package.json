@@ -11,9 +11,14 @@
   },
   "scripts": {
     "build": "tsdown",
+    "deploy:cloudflare": "wrangler deploy",
     "dev": "tsx watch src/server.ts",
+    "dev:cloudflare": "wrangler dev",
     "start": "node dist/server.mjs",
-    "typecheck": "tsc --noEmit"
+    "test": "vitest",
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "types:cloudflare": "wrangler types"
   },
   "dependencies": {
     "@hono/node-server": "catalog:",
@@ -26,6 +31,7 @@
     "@types/node": "catalog:",
     "tsdown": "catalog:",
     "tsx": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "wrangler": "catalog:"
   }
 }

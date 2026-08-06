@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kkfive-api",
+  "main": "src/cloudflare.ts",
+  "compatibility_date": "2026-08-03",
+  "observability": {
+    "enabled": true
+  }
+}
