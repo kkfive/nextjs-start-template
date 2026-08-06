@@ -30,6 +30,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
 
 # vercel
@@ -55,7 +56,11 @@ settings.local.json
 
 # tool session history（工具本地状态，不纳入版本控制）
 .zcode/
-.codex/
+.maestro/
+.codex/*
+!.codex/hooks.json
+!.codex/hooks/
+!.codex/hooks/session-start
 
 temp
 .governance/

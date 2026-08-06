@@ -7,12 +7,9 @@ export const env = createEnv({
    * 这些变量仅在服务端可用
    */
   server: {
-    NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     API_BASE_URL: z.string().optional(),
     API_TOKEN: z.string().optional(),
-    // 在此添加更多服务端环境变量
-    // JWT_SECRET: z.string().min(32),
-    // DATABASE_URL: z.string().url(),
   },
 
   /**
@@ -22,9 +19,6 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_APP_URL: z.url().optional(),
     NEXT_PUBLIC_API_URL: z.url().optional(),
-    NEXT_PUBLIC_DEBUG: z.coerce.boolean().default(false),
-    // 在此添加更多客户端环境变量
-    // NEXT_PUBLIC_GA_ID: z.string().optional(),
   },
 
   /**
@@ -37,7 +31,6 @@ export const env = createEnv({
     API_TOKEN: process.env.API_TOKEN,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    NEXT_PUBLIC_DEBUG: process.env.NEXT_PUBLIC_DEBUG,
   },
 
   /**

@@ -69,6 +69,7 @@ pnpm dev
 
 ## 文档
 
+- [Docker 构建与运行指南](docs/docker.md) — 本地镜像构建、Compose 运行、环境变量与 CI 配置
 - [项目协作准则（AGENTS.md）](AGENTS.md) — AI 辅助开发的全局规范入口
 - [FAQ](docs/faq.md) — 常见问题
 
