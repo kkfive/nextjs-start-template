@@ -7,7 +7,7 @@ import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
-import { holdoutProfiles, profiles, runProfiles } from './profiles.ts'
+import { profiles, runProfiles } from './profiles.ts'
 import { logSchemaVersion, parseGovernanceTrace } from './trace.ts'
 
 type EndpointSnapshot = {
@@ -58,6 +58,7 @@ export type RunManifest = {
   profileContractHashes: Record<string, string>
   rootDir: string
   runId: string
+  selectedProfileIds: string[]
   sourceHead: string
   worktreeRoot: string
 }
@@ -230,6 +231,7 @@ export type PrepareRunOptions = {
   holdoutProfileIds?: readonly string[]
   rootDir?: string
   runId?: string
+  selectedProfileIds?: readonly string[]
   worktreeRoot?: string
 }
 
@@ -263,6 +265,32 @@ export type RecordAcceptanceOptions = {
   profileId: string
 }
 
+function resolveSelectedProfiles(
+  selectedProfileIds?: readonly string[],
+  holdoutProfileIds?: readonly string[],
+): GovernanceProfile[] {
+  const requestedIds = selectedProfileIds ?? holdoutProfileIds
+  if (!requestedIds || requestedIds.length === 0)
+    return [...runProfiles]
+
+  const normalizedIds = requestedIds.map(profileId => profileId.trim())
+  if (normalizedIds.some(profileId => profileId.length === 0))
+    throw new Error('EMPTY_PROFILE_ID')
+
+  const seen = new Set<string>()
+  const selectedProfiles: GovernanceProfile[] = []
+  for (const profileId of normalizedIds) {
+    if (seen.has(profileId))
+      throw new Error(`DUPLICATE_PROFILE_ID: ${profileId}`)
+    seen.add(profileId)
+    const profile = profiles.find(candidate => candidate.id === profileId)
+    if (!profile)
+      throw new Error(`UNKNOWN_PROFILE: ${profileId}`)
+    selectedProfiles.push(profile)
+  }
+  return selectedProfiles
+}
+
 export function prepareRun(options: PrepareRunOptions = {}): RunManifest {
   assertNode24()
   const rootDir = path.resolve(options.rootDir ?? process.cwd())
@@ -276,6 +304,7 @@ export function prepareRun(options: PrepareRunOptions = {}): RunManifest {
   const artifactDir = path.join(artifactRoot, runId)
   const worktreeRoot = path.resolve(options.worktreeRoot ?? path.join(os.tmpdir(), 'kkfive-ai-governance-e2e', runId))
   const cliToolsPath = path.resolve(options.cliToolsPath ?? path.join(os.homedir(), '.maestro', 'cli-tools.json'))
+  const selectedProfiles = resolveSelectedProfiles(options.selectedProfileIds, options.holdoutProfileIds)
 
   if (fs.existsSync(artifactDir) || fs.existsSync(worktreeRoot))
     throw new Error(`RUN_ALREADY_EXISTS: ${runId}`)
@@ -283,15 +312,6 @@ export function prepareRun(options: PrepareRunOptions = {}): RunManifest {
   const endpointSnapshot = loadCodexEndpointSnapshot(cliToolsPath)
   fs.mkdirSync(artifactDir, { recursive: true })
   fs.mkdirSync(worktreeRoot, { recursive: true })
-
-  const selectedProfiles = options.holdoutProfileIds && options.holdoutProfileIds.length > 0
-    ? options.holdoutProfileIds.map((profileId) => {
-        const profile = holdoutProfiles.find(candidate => candidate.id === profileId)
-        if (!profile)
-          throw new Error(`UNKNOWN_HOLDOUT_PROFILE: ${profileId}`)
-        return profile
-      })
-    : runProfiles
 
   const ownedWorktrees: string[] = []
   try {
@@ -317,9 +337,10 @@ export function prepareRun(options: PrepareRunOptions = {}): RunManifest {
       endpointSnapshot,
       mainWorktreeDiffBefore,
       ownedWorktrees,
-      profileContractHashes: Object.fromEntries(profiles.map(profile => [profile.id, hashJson(profile)])),
+      profileContractHashes: Object.fromEntries(selectedProfiles.map(profile => [profile.id, hashJson(profile)])),
       rootDir,
       runId,
+      selectedProfileIds: selectedProfiles.map(profile => profile.id),
       sourceHead,
       worktreeRoot,
     }
@@ -340,7 +361,15 @@ export function collectRun(options: CollectRunOptions): RunReport {
   const artifactDir = path.resolve(options.artifactDir)
   const manifest = readJson<RunManifest>(path.join(artifactDir, 'manifest.json'))
   const historyDir = path.resolve(options.historyDir ?? path.join(os.homedir(), '.maestro', 'cli-history'))
-  const profileMap = new Map<string, GovernanceProfile>(profiles.map(profile => [profile.id, profile]))
+  const selectedProfiles = manifest.selectedProfileIds.map((profileId) => {
+    const profile = profiles.find(candidate => candidate.id === profileId)
+    if (!profile)
+      throw new Error(`UNKNOWN_PROFILE: ${profileId}`)
+    if (manifest.profileContractHashes?.[profile.id] !== hashJson(profile))
+      throw new Error(`PROFILE_CONTRACT_HASH_MISMATCH: ${profile.id}`)
+    return profile
+  })
+  const profileMap = new Map<string, GovernanceProfile>(selectedProfiles.map(profile => [profile.id, profile]))
   const traceParser = options.parseTrace ?? parseGovernanceTrace
   const evidenceReplayer = options.replayEvidence ?? replayEvidence
   const gateRunner = options.runGate ?? runGate
@@ -703,6 +732,41 @@ export function replayEvidence(options: ReplayEvidenceOptions): EvidenceReplayRe
   }
 }
 
+type ManifestProfileResolution = {
+  issues: string[]
+  profiles: GovernanceProfile[]
+}
+
+function expectedProfilesFromManifest(manifest: RunManifest | null): ManifestProfileResolution | null {
+  if (!manifest)
+    return null
+
+  const issues: string[] = []
+  const profileIds = Array.isArray(manifest.selectedProfileIds) ? manifest.selectedProfileIds : []
+  if (profileIds.length === 0)
+    issues.push('manifest:empty_selected_profiles')
+  if (new Set(profileIds).size !== profileIds.length)
+    issues.push('manifest:duplicate_selected_profiles')
+
+  const commandIds = Array.isArray(manifest.commands) ? manifest.commands.map(command => command.profileId) : []
+  if (new Set(commandIds).size !== commandIds.length)
+    issues.push('manifest:duplicate_profile_commands')
+  if (JSON.stringify([...new Set(commandIds)].sort()) !== JSON.stringify([...new Set(profileIds)].sort()))
+    issues.push('manifest:selected_profiles_commands_mismatch')
+
+  const resolvedProfiles = profileIds.flatMap((profileId) => {
+    const profile = profiles.find(candidate => candidate.id === profileId)
+    if (!profile) {
+      issues.push(`manifest:unknown_profile:${profileId}`)
+      return []
+    }
+    if (manifest.profileContractHashes?.[profile.id] !== hashJson(profile))
+      issues.push(`${profile.id}:profile_contract_hash_mismatch`)
+    return [profile]
+  })
+  return { issues, profiles: resolvedProfiles }
+}
+
 function isEvidenceFile(file: string): boolean {
   return /(?:^|\/)(?:__fixtures__|fixtures?)(?:\/|$)/u.test(file)
     || /\.(?:spec|test)\.[cm]?[jt]sx?$/u.test(file)
@@ -727,9 +791,13 @@ export function validateReportAgainstProfiles(
   const integrity = artifactDir && fs.existsSync(path.join(artifactDir, 'integrity.json'))
     ? readJson<IntegritySnapshot>(path.join(artifactDir, 'integrity.json'))
     : null
+  const manifestProfileResolution = expectedProfilesFromManifest(manifest)
+  const resolvedExpectedProfiles = manifestProfileResolution?.profiles ?? expectedProfiles
+  if (manifestProfileResolution)
+    issues.push(...manifestProfileResolution.issues)
   const assurance = determineValidationAssurance(artifactDir, manifest, integrity)
   const executionSafety = assurance === 'live'
-    ? determineExecutionSafety(artifactDir, manifest, integrity, expectedProfiles, options.trustedRootDir)
+    ? determineExecutionSafety(artifactDir, manifest, integrity, resolvedExpectedProfiles, options.trustedRootDir)
     : { issues: [], safe: false }
   issues.push(...executionSafety.issues)
 
@@ -757,12 +825,14 @@ export function validateReportAgainstProfiles(
       issues.push('integrity_profile_contract_hashes_mismatch')
   }
 
-  for (const profile of expectedProfiles) {
+  for (const profile of resolvedExpectedProfiles) {
     const item = reportMap.get(profile.id)
     if (!item) {
       issues.push(`${profile.id}:missing_report`)
       continue
     }
+    if (item.log_schema_version !== logSchemaVersion)
+      issues.push(`${profile.id}:log_schema_version`)
     if (item.budget !== profile.budgetTokens)
       issues.push(`${profile.id}:budget_contract_mismatch`)
     if (item.governance_tokens > profile.budgetTokens)
@@ -1008,7 +1078,7 @@ export function validateReportAgainstProfiles(
       issues.push(`${profile.id}:invalid_pass_without_acceptance`)
   }
   for (const profileId of reportMap.keys()) {
-    if (!expectedProfiles.some(profile => profile.id === profileId))
+    if (!resolvedExpectedProfiles.some(profile => profile.id === profileId))
       issues.push(`${profileId}:unknown_profile`)
   }
   return { assurance, issues, valid: issues.length === 0 }
@@ -1476,19 +1546,52 @@ function trustedAcceptanceProvenanceFromEnv(): TrustedAcceptanceProvenance | nul
 }
 
 function printUsage(): void {
-  process.stderr.write('Usage: runner.ts prepare [root] | collect <artifact-dir> | validate <artifact-dir> | validate-technical <artifact-dir> | accept <artifact-dir> <profile> <method> <evidence> | cleanup <artifact-dir>\n')
+  process.stderr.write('Usage: runner.ts prepare [root] | prepare --root <path> [--profiles <id,id>] | collect <artifact-dir> | validate <artifact-dir> | validate-technical <artifact-dir> | accept <artifact-dir> <profile> <method> <evidence> | cleanup <artifact-dir>\n')
+}
+
+function parsePrepareArguments(rawArgs: string[]): { profiles?: string[], rootDir?: string } {
+  const args = rawArgs[0] === '--' ? rawArgs.slice(1) : rawArgs
+  if (args.length === 0)
+    return {}
+
+  if (!args[0]?.startsWith('--')) {
+    const rootDir = args[0]
+    const profiles = args[1]
+      ? args[1].split(',').map(item => item.trim()).filter(Boolean)
+      : undefined
+    return { profiles, rootDir }
+  }
+
+  let rootDir: string | undefined
+  let profiles: string[] | undefined
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index]
+    if (argument === '--root') {
+      rootDir = args[index + 1]
+      index += 1
+      continue
+    }
+    if (argument === '--profiles') {
+      const value = args[index + 1]
+      profiles = value ? value.split(',').map(item => item.trim()) : []
+      index += 1
+      continue
+    }
+    throw new Error(`UNKNOWN_ARGUMENT: ${argument}`)
+  }
+
+  return { profiles, rootDir }
 }
 
 function main(): void {
-  const [command, argument, profileId, method, evidence, holdoutArgument] = process.argv.slice(2)
+  const [command, ...args] = process.argv.slice(2)
   if (command === 'prepare') {
-    const holdoutProfileIds = holdoutArgument
-      ? holdoutArgument.split(',').map(item => item.trim()).filter(Boolean)
-      : undefined
-    const manifest = prepareRun({ holdoutProfileIds, rootDir: argument })
+    const { profiles: selectedProfileIds, rootDir } = parsePrepareArguments(args)
+    const manifest = prepareRun({ rootDir, selectedProfileIds })
     process.stdout.write(`${JSON.stringify({ artifactDir: manifest.artifactDir, commands: manifest.commands }, null, 2)}\n`)
     return
   }
+  const [argument, profileId, method, evidence] = args
   if (command === 'collect' && argument) {
     process.stdout.write(`${JSON.stringify(collectRun({ artifactDir: argument }), null, 2)}\n`)
     return
@@ -1496,7 +1599,7 @@ function main(): void {
   if ((command === 'validate' || command === 'validate-technical') && argument) {
     const validation = validateReportAgainstProfiles(
       readJson<RunReport>(path.join(path.resolve(argument), 'report.json')),
-      profiles,
+      undefined,
       {
         artifactDir: path.resolve(argument),
         expectedAcceptanceProvenance: trustedAcceptanceProvenanceFromEnv(),

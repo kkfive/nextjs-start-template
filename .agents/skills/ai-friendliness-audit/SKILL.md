@@ -10,6 +10,5 @@ user-invocable: true
 
 - 流程：`workflows/audit.md`
 - keep/delete/automate 判定：`references/decision-matrix.md`
-- 最近一次多 Agent 交叉审计、量化算法与真实运行边界：`references/audit-evidence.md`
 
-阈值、检查算法和报告 schema 以 `scripts/repo-tooling/ai-friendliness-audit/` 为唯一事实源。本 Skill 不复制它们。
+阈值、检查算法和报告 schema 以 `scripts/repo-tooling/ai-friendliness-audit/` 为事实源。

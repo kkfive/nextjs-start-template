@@ -16,9 +16,9 @@ Turbo affected 只能提示执行范围，不能证明测试覆盖了语义影�
 
 1. **目标证据**：RED/GREEN 使用的同一命令或步骤。
 2. **所属边界**：feature、app、package 或 repo-tooling 的聚焦测试。
-3. **直接消费者**：公共 export、contract、RPC、HTTP client、UI 变化必须验证直接消费者。
-4. **全局门禁**：非平凡修改运行 `pnpm verify` 与 `pnpm test:run`。
-5. **运行时验收**：修改 app 或构建配置时构建相关 app；关键跨边界路径执行集成、API 或浏览器验收。
+3. **直接消费者**：公共契约变化验证受影响的直接消费者。
+4. **全局门禁**：公共契约、跨 workspace、repo-tooling 或高后果运行时变化运行 `pnpm verify` 与 `pnpm test:run`；这些命令只覆盖其实际声明的任务。
+5. **运行时验收**：按受影响 workspace 的真实 script 选择 build、集成、API 或浏览器验收。
 
 ## 风险升级
 

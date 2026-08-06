@@ -71,6 +71,7 @@ export const ffg08: ArchitecturePolicy = {
 
     issues.push(...orphanRuleIssues(context.rootDir, contents))
     issues.push(...skillRoutingIssues(context.rootDir, contents))
+    issues.push(...claudeSkillCompatibilityIssues(context.rootDir))
     issues.push(...evidenceWorkflowOwnershipIssues(context.rootDir, contents))
     issues.push(...skillFrontmatterIssues(context.rootDir, contents))
     return issues
@@ -184,6 +185,26 @@ function skillRoutingIssues(rootDir: string, contents: Map<string, string>): Arc
       return []
     return [createIssue(path.join(skillsDir, entry.name, 'SKILL.md'), 1, `Skill 未被 AGENTS 路由: ${entry.name}`)]
   })
+}
+
+function claudeSkillCompatibilityIssues(rootDir: string): ArchitecturePolicyIssue[] {
+  const canonicalSkills = path.join(rootDir, '.agents', 'skills')
+  if (!fs.existsSync(canonicalSkills))
+    return []
+
+  const compatibilitySkills = path.join(rootDir, '.claude', 'skills')
+  if (!fs.existsSync(path.join(rootDir, '.claude')))
+    return []
+  try {
+    if (!fs.lstatSync(compatibilitySkills).isSymbolicLink() || fs.readlinkSync(compatibilitySkills) !== '../.agents/skills')
+      return [createIssue(compatibilitySkills, 1, '.claude/skills 必须是指向 ../.agents/skills 的符号链接')]
+    if (!fs.statSync(compatibilitySkills).isDirectory())
+      return [createIssue(compatibilitySkills, 1, '.claude/skills 符号链接目标必须存在且为目录')]
+    return []
+  }
+  catch {
+    return [createIssue(compatibilitySkills, 1, '.claude/skills 必须是指向 ../.agents/skills 的符号链接')]
+  }
 }
 
 function evidenceWorkflowOwnershipIssues(rootDir: string, contents: Map<string, string>): ArchitecturePolicyIssue[] {

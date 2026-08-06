@@ -17,4 +17,4 @@ user-invocable: true
 | 影响与回归 | `references/impact-and-regression.md` |
 | 验收与报告 | `references/acceptance-and-reporting.md` |
 
-实现前固定目标、非目标、影响、验收和证据；取得因目标行为缺失而失败的 RED 或可重复等价证据。GREEN 后按风险扩展到消费者、全局门禁及必要的 build/E2E；高风险由独立主体验收。不得用环境错误、AI 自述、时间顺序或弱化断言伪造证据。
+行为缺陷或新增行为优先取得与目标缺口一致的 RED；无法合理制造失败时，明确标记 characterization、预防性验证或未观测证据。

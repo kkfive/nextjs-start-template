@@ -44,7 +44,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run static audit
+      - name: Run unified deterministic AI friendliness gate
+        run: pnpm test:ai-friendliness
+
+      - name: Run static audit artifacts
         run: |
           mkdir -p .artifacts/ai-friendliness/static
           pnpm audit:ai-friendliness --format json --output .artifacts/ai-friendliness/static/static-report.json
@@ -111,11 +114,11 @@ jobs:
         env:
           HOLDOUT_PROFILES: ${{ github.event_name == 'workflow_dispatch' && inputs.holdout_profiles || '' }}
         run: |
+          prepare_args=(prepare --root .)
           if [ -n "$HOLDOUT_PROFILES" ]; then
-            pnpm verify:ai-governance:prepare -- . "$HOLDOUT_PROFILES" > .artifacts/ai-friendliness/prepare.json
-          else
-            pnpm verify:ai-governance:prepare > .artifacts/ai-friendliness/prepare.json
+            prepare_args+=(--profiles "$HOLDOUT_PROFILES")
           fi
+          pnpm verify:ai-governance:prepare -- "${prepare_args[@]}" > .artifacts/ai-friendliness/prepare.json
           artifact_dir=$(node -e "const r=require('./.artifacts/ai-friendliness/prepare.json'); process.stdout.write(r.artifactDir)")
           echo "artifact_dir=$artifact_dir" >> "$GITHUB_OUTPUT"
 
@@ -286,8 +289,9 @@ jobs:
           const acceptanceInputsDir = path.join(artifactDir, 'acceptance-inputs')
           fs.rmSync(acceptanceInputsDir, { force: true, recursive: true })
           fs.cpSync(evidenceDir, acceptanceInputsDir, { recursive: true })
+          const allowedEvidenceFiles = new Set(pendingProfiles.map(profile => `${profile}.json`))
           const evidenceFiles = fs.readdirSync(acceptanceInputsDir)
-            .filter(file => file.endsWith('.json'))
+            .filter(file => allowedEvidenceFiles.has(file))
             .sort()
 
           if (evidenceFiles.length === 0) {
@@ -305,14 +309,13 @@ jobs:
             const evidencePath = path.join(acceptanceInputsDir, file)
             const evidence = JSON.parse(fs.readFileSync(evidencePath, 'utf8'))
             if (evidence?.provenance?.level === 'independently_verified') {
-              evidence.provenance = {
-                ...evidence.provenance,
-                actor: typeof evidence.provenance.actor === 'string' && evidence.provenance.actor.trim().length > 0
-                  ? evidence.provenance.actor
-                  : provenance.githubActor,
-                ...provenance,
-              }
-              fs.writeFileSync(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`)
+              writeStatus({
+                pendingProfiles,
+                provenance,
+                reason: 'repository_supplied_independent_provenance_rejected',
+                status: 'pending',
+              })
+              process.exit(0)
             }
             const accept = spawnSync('node', [
               'scripts/repo-tooling/ai-governance-e2e/runner.ts',
@@ -333,7 +336,7 @@ jobs:
 
           const updated = JSON.parse(fs.readFileSync(path.join(artifactDir, 'report.json'), 'utf8'))
           const stillPending = updated.profiles.filter((item) => item.verdict === 'acceptance_pending').map((item) => item.profile)
-          const validateCommand = stillPending.length === 0 ? 'validate' : 'validate-technical'
+          const validateCommand = 'validate-technical'
           const validate = spawnSync('node', [
             'scripts/repo-tooling/ai-governance-e2e/runner.ts',
             validateCommand,
@@ -350,7 +353,7 @@ jobs:
           writeStatus({
             pendingProfiles: stillPending,
             provenance,
-            status: stillPending.length === 0 ? 'independently_verified' : 'pending',
+            status: 'pending',
           })
           NODE
 

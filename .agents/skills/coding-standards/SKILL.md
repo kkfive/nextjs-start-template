@@ -16,6 +16,3 @@ user-invocable: true
 | React/错误/图标 | `references/react-patterns.md`、`references/error-handling.md` 或 `references/icon-usage.md` |
 | Vitest + MSW 写法 | `references/testing.md` |
 | 历史陷阱 | `references/gotchas.md` |
-| 治理 E2E | `workflows/verify-end-to-end.md` |
-
-先检索复用，依赖稳定入口，不用 suppression 隐藏设计或 runtime 问题。开发证据流程由 `evidence-first-development` 负责。

@@ -16,5 +16,3 @@ user-invocable: true
 | Server/Client 与序列化 | `rules/server-vs-client.md` 或 `rules/data-serialization.md` |
 | 缓存/Metadata/性能 | `references/caching-strategies.md`、`references/metadata.md` 或 `references/performance.md` |
 | 文件约定/陷阱 | `references/file-conventions.md` 或 `references/gotchas.md` |
-
-默认 Server Component，Client 边界最小化；跨边界数据可序列化；缓存与失效同时设计。

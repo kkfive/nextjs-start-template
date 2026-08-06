@@ -14,11 +14,13 @@ export type GovernanceRead = {
 }
 
 export type GovernanceTrace = {
+  contentReadTrace: GovernanceRead[]
   errors: string[]
   governanceTokens: number
   observationLimitations: string[]
   rawLogPath: string
   rawReadCount: number
+  readCandidateTrace: string[]
   readTrace: GovernanceRead[]
   requiredReadCoverage: number
   requiredReadGroups: Array<{ hits: string[], id: string, required: string[], satisfied: boolean, weight: number }>
@@ -44,7 +46,8 @@ const KNOWN_ENTRY_TYPES = new Set([
   'tool_use',
 ])
 
-const READ_COMMAND_PATTERN = /\b(?:cat|head|less|nl|sed|tail)\b/u
+const READ_COMMANDS = new Set(['cat', 'head', 'less', 'nl', 'sed', 'tail'])
+const SHELL_COMMANDS = new Set(['bash', 'sh', 'zsh'])
 const GOVERNANCE_TOKEN_PATTERN = /[^\s"'`;|&()]+/gu
 
 export function parseGovernanceTrace(
@@ -55,19 +58,31 @@ export function parseGovernanceTrace(
   const errors: string[] = []
   const entries = parseEntries(rawLog, errors)
   const commandEntries = entries.filter(entry => entry.type === 'command_exec')
+  const toolReadEntries = entries.filter(isSuccessfulStructuredRead)
 
-  if (commandEntries.length === 0)
-    errors.push('missing_command_exec_trace')
+  if (commandEntries.length === 0 && toolReadEntries.length === 0)
+    errors.push('missing_content_read_trace')
 
-  const readPaths: string[] = []
+  const readCandidatePaths: string[] = []
+  const contentReadPaths: string[] = []
   for (const entry of commandEntries) {
-    if (entry.exitCode !== 0 || typeof entry.command !== 'string' || !READ_COMMAND_PATTERN.test(entry.command))
+    if (entry.exitCode !== 0 || typeof entry.command !== 'string')
       continue
-    for (const candidate of extractGovernancePaths(entry.command, options.rootDir))
-      readPaths.push(candidate)
+    const candidates = extractGovernancePaths(entry.command, options.rootDir)
+    readCandidatePaths.push(...candidates)
+    if (isExecutedReadCommand(entry.command) && typeof entry.output === 'string' && entry.output.length > 0)
+      contentReadPaths.push(...candidates)
+  }
+  for (const entry of toolReadEntries) {
+    const input = entry.input as JsonRecord
+    const candidate = typeof input.path === 'string' ? normalizeGovernancePath(input.path, options.rootDir) : null
+    if (candidate) {
+      readCandidatePaths.push(candidate)
+      contentReadPaths.push(candidate)
+    }
   }
 
-  const uniqueReadPaths = [...new Set(readPaths)]
+  const uniqueReadPaths = [...new Set(contentReadPaths)]
   const readTrace: GovernanceRead[] = []
   for (const relativePath of uniqueReadPaths.sort()) {
     const absolutePath = path.resolve(options.rootDir, relativePath)
@@ -109,11 +124,13 @@ export function parseGovernanceTrace(
   ))
 
   return {
+    contentReadTrace: readTrace,
     errors,
     governanceTokens: readTrace.reduce((total, read) => total + read.tokens, 0),
-    observationLimitations: ['content_read_shell_commands_only', 'model_attention_not_observable'],
+    observationLimitations: ['supported_content_read_events_only', 'model_attention_not_observable'],
     rawLogPath: options.rawLogPath,
-    rawReadCount: readPaths.length,
+    rawReadCount: contentReadPaths.length,
+    readCandidateTrace: [...new Set(readCandidatePaths)].sort(),
     readTrace,
     requiredReadCoverage,
     requiredReadGroups,
@@ -181,22 +198,56 @@ function hasValidEntryShape(entry: JsonRecord): boolean {
   }
 }
 
+function isSuccessfulStructuredRead(entry: JsonRecord): boolean {
+  if (entry.type !== 'tool_use' || entry.name !== 'read' || entry.status !== 'completed' || typeof entry.result !== 'string')
+    return false
+  if (!isRecord(entry.input) || typeof entry.input.path !== 'string')
+    return false
+  return entry.result.length > 0
+}
+
+function isExecutedReadCommand(command: string): boolean {
+  const tokens = [...command.matchAll(GOVERNANCE_TOKEN_PATTERN)]
+    .map(match => match[0]?.replace(/^["'=]+|[,?:"']+$/gu, ''))
+    .filter((token): token is string => Boolean(token))
+  if (tokens.length === 0)
+    return false
+
+  const executable = path.basename(tokens[0]!)
+  if (READ_COMMANDS.has(executable))
+    return true
+  if (!SHELL_COMMANDS.has(executable))
+    return false
+
+  const commandFlag = tokens.findIndex(token => token === '-c' || token === '-lc')
+  if (commandFlag < 0)
+    return false
+  const nestedExecutable = tokens[commandFlag + 1]
+  return nestedExecutable ? READ_COMMANDS.has(path.basename(nestedExecutable)) : false
+}
+
 function extractGovernancePaths(command: string, rootDir: string): string[] {
   const paths: string[] = []
-  const canonicalRoot = canonicalizePath(rootDir)
   for (const tokenMatch of command.matchAll(GOVERNANCE_TOKEN_PATTERN)) {
     const token = tokenMatch[0]?.replace(/^["'=]+|[,:"']+$/gu, '')
     if (!token || (path.posix.basename(token) !== 'AGENTS.md' && !token.includes('.agents/')))
       continue
-    const rawPath = token
-    const absolutePath = path.isAbsolute(rawPath) ? rawPath : path.resolve(rootDir, rawPath)
-    const relativePath = normalizePath(path.relative(canonicalRoot, canonicalizePath(absolutePath)))
-    if (relativePath.startsWith('../') || path.isAbsolute(relativePath))
-      continue
-    if (relativePath === 'AGENTS.md' || relativePath.endsWith('/AGENTS.md') || relativePath.startsWith('.agents/'))
-      paths.push(relativePath)
+    const normalized = normalizeGovernancePath(token, rootDir)
+    if (normalized)
+      paths.push(normalized)
   }
   return paths
+}
+
+function normalizeGovernancePath(rawPath: string, rootDir: string): string | null {
+  const canonicalRoot = canonicalizePath(rootDir)
+  const absolutePath = path.isAbsolute(rawPath) ? rawPath : path.resolve(rootDir, rawPath)
+  const relativePath = normalizePath(path.relative(canonicalRoot, canonicalizePath(absolutePath)))
+  if (relativePath.startsWith('../') || path.isAbsolute(relativePath))
+    return null
+  if (relativePath === 'AGENTS.md' || relativePath.endsWith('/AGENTS.md') || relativePath.startsWith('.agents/'))
+    return relativePath
+  return null
 }
 
 function canonicalizePath(value: string): string {

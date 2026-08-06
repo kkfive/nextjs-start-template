@@ -10,6 +10,8 @@ const negativeCases = [
   ['stale-workspace', 'STALE_WORKSPACE_MANIFEST'],
   ['dangling-test-owner', 'DANGLING_TEST_OWNER'],
   ['omitted-test-owner', 'OMITTED_TEST_OWNER'],
+  ['invalid-package-structure', 'INVALID_PACKAGE_STRUCTURE'],
+  ['invalid-test-runner', 'INVALID_TEST_RUNNER'],
 ] as const
 
 describe('manifest-derived workspace and task validation', () => {

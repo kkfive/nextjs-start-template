@@ -1,8 +1,8 @@
 # 项目协作入口
 
-pnpm + Turborepo monorepo：`apps/` 是应用，`packages/` 是共享能力，`internal/` 是工具链。回复使用简体中文。
+回复使用简体中文。本文件只提供任务路由；实现事实以代码、类型、测试、manifest 与配置为准。
 
-当前代码与真实命令是事实源；本文件只路由，不复制规则正文。编辑 `apps/**` 或 `packages/ui/**` 时，还要读取目标路径最近的 scoped `AGENTS.md`（如存在）。测试文件在 owner rule 之外叠加 `testing.rule.md`。
+编辑 `apps/**` 或 `packages/ui/**` 时读取最近的 scoped `AGENTS.md`；测试文件叠加 `testing.rule.md`。
 
 ## 路径路由
 
@@ -30,8 +30,5 @@ pnpm + Turborepo monorepo：`apps/` 是应用，`packages/` 是共享能力，`i
 
 ## 工作与门禁
 
-- 新建组件、类型、service 或 util 前检索并复用已有实现。
-- 不把 `.workflow/`、历史状态或 AI 自述当作源码事实或验收证据。
-- 行为变化先按 `evidence-first-development` 取得有效 RED 或等价失败证据；纯文档可免新增 RED。
-- 非平凡修改运行聚焦证据、直接消费者回归、`pnpm verify` 与 `pnpm test:run`；app/构建配置变化再运行相关 build。
-- Node 版本以 `mise.toml` 为准；只修改任务相关文件，不回滚其他工作树改动。
+- 新建定义前检索已有实现；行为变化路由到 `evidence-first-development`。
+- `.workflow/`、历史状态和 AI 自述不能作为源码或验收证据。

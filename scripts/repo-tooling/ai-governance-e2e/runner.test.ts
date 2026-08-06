@@ -1,3 +1,4 @@
+import type { GovernanceProfile } from './profiles.ts'
 import type { ProfileReport, RunReport } from './runner.ts'
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -137,7 +138,7 @@ describe('persisted JSONL read trace', () => {
         command: 'cat .agents/rules/feature.rule.md',
         exitCode: 0,
         id: 'command-1',
-        output: '',
+        output: 'content',
         processId: 'process-1',
         timestamp: '2026-07-17T00:00:01.000Z',
         type: 'command_exec',
@@ -154,12 +155,72 @@ describe('persisted JSONL read trace', () => {
     expect(trace.readTrace.map(read => read.path)).toEqual(['.agents/rules/feature.rule.md'])
   })
 
+  it('counts only executed file reads and ignores commands that merely mention cat', () => {
+    const rawLog = JSON.stringify({
+      command: 'echo "cat .agents/rules/feature.rule.md"',
+      exitCode: 0,
+      id: 'command-1',
+      output: 'cat .agents/rules/feature.rule.md',
+      processId: 'process-1',
+      timestamp: '2026-07-17T00:00:00.000Z',
+      type: 'command_exec',
+    })
+    const trace = parseGovernanceTrace(rawLog, profiles[0], {
+      rawLogPath: '/tmp/mentioned-read.jsonl',
+      readFile: () => 'content',
+      rootDir: '/fixture/repository',
+    })
+
+    expect(trace.readTrace).toEqual([])
+    expect(trace.requiredReadCoverage).toBe(0)
+  })
+
+  it('does not count a successful shell read with empty output as content delivery', () => {
+    const rawLog = JSON.stringify({
+      command: 'head -n 0 AGENTS.md',
+      exitCode: 0,
+      id: 'command-empty-read',
+      output: '',
+      processId: 'process-1',
+      timestamp: '2026-07-17T00:00:00.000Z',
+      type: 'command_exec',
+    })
+    const trace = parseGovernanceTrace(rawLog, profiles[0], {
+      rawLogPath: '/tmp/empty-read.jsonl',
+      readFile: () => 'content',
+      rootDir: '/fixture/repository',
+    })
+
+    expect(trace.readCandidateTrace).toEqual(['AGENTS.md'])
+    expect(trace.contentReadTrace).toEqual([])
+  })
+
+  it('counts successful structured read tool events as content reads', () => {
+    const rawLog = JSON.stringify({
+      id: 'tool-1',
+      input: { path: '.agents/rules/feature.rule.md' },
+      name: 'read',
+      processId: 'process-1',
+      result: 'content',
+      status: 'completed',
+      timestamp: '2026-07-17T00:00:00.000Z',
+      type: 'tool_use',
+    })
+    const trace = parseGovernanceTrace(rawLog, profiles[0], {
+      rawLogPath: '/tmp/structured-read.jsonl',
+      readFile: () => 'content',
+      rootDir: '/fixture/repository',
+    })
+
+    expect(trace.readTrace.map(read => read.path)).toEqual(['.agents/rules/feature.rule.md'])
+  })
+
   it('canonicalizes macOS private path aliases for absolute governance reads', () => {
     const rawLog = JSON.stringify({
       command: 'cat \'/private/var/folders/project/.agents/skills/coding-standards/SKILL.md\'',
       exitCode: 0,
       id: 'command-1',
-      output: '',
+      output: 'content',
       processId: 'process-1',
       timestamp: '2026-07-17T00:00:00.000Z',
       type: 'command_exec',
@@ -243,6 +304,10 @@ describe.concurrent('prepare, report validation and cleanup', () => {
       })
 
       expect(manifest.commands).toHaveLength(runProfiles.length)
+      expect(manifest).toMatchObject({
+        selectedProfileIds: ['next-page', 'package-test', 'monorepo-config', 'bug-fix'],
+      })
+      expect(Object.keys(manifest.profileContractHashes)).toEqual(['next-page', 'package-test', 'monorepo-config', 'bug-fix'])
       expect(new Set(manifest.commands.map(command => command.executionId)).size).toBe(runProfiles.length)
       expect(manifest.commands.every(command => command.runInBackground)).toBe(true)
       expect(manifest.commands.every(command => command.command.includes('--to codex --mode write'))).toBe(true)
@@ -365,7 +430,7 @@ describe.concurrent('prepare, report validation and cleanup', () => {
       command,
       exitCode: 0,
       id: `command-${index + 1}`,
-      output: '',
+      output: 'content',
       processId: 'process-1',
       timestamp: `2026-07-17T00:00:0${index}.000Z`,
       type: 'command_exec',
@@ -400,7 +465,7 @@ describe.concurrent('prepare, report validation and cleanup', () => {
         command,
         exitCode: 0,
         id: `${holdout.id}-command-${index + 1}`,
-        output: '',
+        output: 'content',
         processId: holdout.id,
         timestamp: `2026-07-17T00:00:${String(index).padStart(2, '0')}.000Z`,
         type: 'command_exec',
@@ -436,7 +501,7 @@ describe.concurrent('prepare, report validation and cleanup', () => {
             command,
             exitCode: 0,
             id: `${holdout.id}-${group.id}-${index + 1}`,
-            output: '',
+            output: 'content',
             processId: `${holdout.id}-${group.id}`,
             timestamp: `2026-07-17T00:01:${String(index).padStart(2, '0')}.000Z`,
             type: 'command_exec',
@@ -468,7 +533,7 @@ describe.concurrent('prepare, report validation and cleanup', () => {
         command,
         exitCode: 0,
         id: `${holdout.id}-forbidden-${index + 1}`,
-        output: '',
+        output: 'content',
         processId: `${holdout.id}-forbidden`,
         timestamp: `2026-07-17T00:02:${String(index).padStart(2, '0')}.000Z`,
         type: 'command_exec',
@@ -509,6 +574,130 @@ describe.concurrent('prepare, report validation and cleanup', () => {
     }
   })
 
+  it('accepts the selected holdout set without requiring default profile reports', () => {
+    const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-governance-holdout-cli-'))
+    try {
+      const holdoutProfileId = 'holdout-package-test'
+      const fixture = createValidationArtifact(temporaryRoot, holdoutProfiles.find(profile => profile.id === holdoutProfileId)!)
+      const result = runRunnerCli(['validate-technical', fixture.artifactDir])
+      const validation = JSON.parse(result.stdout) as { issues: string[], valid: boolean }
+
+      expect(validation.issues.filter(issue => issue.startsWith('manifest:'))).toEqual([])
+      expect(validation.issues).not.toContain('holdout-package-test:unknown_profile')
+      expect(validation.issues).not.toContain('next-page:missing_report')
+      expect(validation.issues).not.toContain('package-test:missing_report')
+      expect(validation.issues).not.toContain('monorepo-config:missing_report')
+      expect(validation.issues).not.toContain('bug-fix:missing_report')
+    }
+    finally {
+      fs.rmSync(temporaryRoot, { force: true, recursive: true })
+    }
+  })
+
+  it('rejects empty, duplicate and command-mismatched selected profile manifests', () => {
+    const cases = [
+      {
+        expectedIssue: 'manifest:empty_selected_profiles',
+        mutate: (manifest: RunManifestFixture) => {
+          manifest.selectedProfileIds = []
+          manifest.commands = []
+          manifest.profileContractHashes = {}
+        },
+      },
+      {
+        expectedIssue: 'manifest:duplicate_selected_profiles',
+        mutate: (manifest: RunManifestFixture) => {
+          manifest.selectedProfileIds = [manifest.selectedProfileIds[0]!, manifest.selectedProfileIds[0]!]
+        },
+      },
+      {
+        expectedIssue: 'manifest:selected_profiles_commands_mismatch',
+        mutate: (manifest: RunManifestFixture) => {
+          manifest.commands = []
+        },
+      },
+    ]
+    for (const testCase of cases) {
+      const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-governance-manifest-contract-'))
+      try {
+        const { artifactDir } = createValidationArtifact(temporaryRoot, holdoutProfiles[1]!)
+        const manifestPath = path.join(artifactDir, 'manifest.json')
+        const integrityPath = path.join(artifactDir, 'integrity.json')
+        const manifest = readJsonFile<RunManifestFixture>(manifestPath)
+        testCase.mutate(manifest)
+        writeJsonFile(manifestPath, manifest)
+        const integrity = readJsonFile<Record<string, unknown>>(integrityPath)
+        integrity.manifestHash = createHash('sha256').update(JSON.stringify(manifest)).digest('hex')
+        integrity.profileContractHashes = manifest.profileContractHashes
+        writeJsonFile(integrityPath, integrity)
+
+        const report = readJsonFile<RunReport>(path.join(artifactDir, 'report.json'))
+        const validation = validateReportAgainstProfiles(report, profiles, { artifactDir, requireIndependentAcceptance: false })
+        expect(validation.valid).toBe(false)
+        expect(validation.issues).toContain(testCase.expectedIssue)
+      }
+      finally { fs.rmSync(temporaryRoot, { force: true, recursive: true }) }
+    }
+  })
+
+  it('rejects an unsupported profile log schema version', () => {
+    const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-governance-log-schema-'))
+    try {
+      const { artifactDir, profile } = createValidationArtifact(temporaryRoot, holdoutProfiles[1]!)
+      const reportPath = path.join(artifactDir, 'report.json')
+      const integrityPath = path.join(artifactDir, 'integrity.json')
+      const report = readJsonFile<RunReport>(reportPath)
+      report.profiles[0]!.log_schema_version = 'maestro-cli-history/future'
+      writeJsonFile(reportPath, report)
+      const integrity = readJsonFile<{ profiles: Record<string, { reportHash: string }>, runReportHash: string }>(integrityPath)
+      integrity.profiles[profile.id]!.reportHash = createHash('sha256').update(JSON.stringify(report.profiles[0])).digest('hex')
+      integrity.runReportHash = createHash('sha256').update(JSON.stringify(report)).digest('hex')
+      writeJsonFile(integrityPath, integrity)
+
+      expect(validateReportAgainstProfiles(report, profiles, { artifactDir, requireIndependentAcceptance: false }).issues)
+        .toContain(`${profile.id}:log_schema_version`)
+    }
+    finally { fs.rmSync(temporaryRoot, { force: true, recursive: true }) }
+  })
+
+  it('accepts pnpm forwarded separators before prepare options', () => {
+    const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-governance-pnpm-separator-'))
+    try {
+      const repository = createRepository(temporaryRoot)
+      fs.writeFileSync(path.join(repository, 'dirty.txt'), 'force the clean-source guard after argument parsing')
+      const result = runRunnerCli(['prepare', '--', '--root', repository])
+
+      expect(result.status).toBe(1)
+      expect(result.stderr).toContain('DIRTY_SOURCE')
+      expect(result.stderr).not.toContain('UNKNOWN_ARGUMENT')
+    }
+    finally { fs.rmSync(temporaryRoot, { force: true, recursive: true }) }
+  })
+
+  it('does not leave run directories when an unknown selected profile is rejected', () => {
+    const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-governance-unknown-profile-'))
+    try {
+      const repository = createRepository(temporaryRoot)
+      const runId = 'unknown-profile-run'
+      const artifactRoot = path.join(temporaryRoot, 'artifacts')
+      const worktreeRoot = path.join(temporaryRoot, 'worktrees', runId)
+
+      expect(() => prepareRun({
+        artifactRoot,
+        cliToolsPath: createCliToolsFixture(temporaryRoot),
+        holdoutProfileIds: ['holdout-does-not-exist'],
+        rootDir: repository,
+        runId,
+        worktreeRoot,
+      })).toThrow('UNKNOWN_PROFILE: holdout-does-not-exist')
+      expect(fs.existsSync(path.join(artifactRoot, runId))).toBe(false)
+      expect(fs.existsSync(worktreeRoot)).toBe(false)
+    }
+    finally {
+      fs.rmSync(temporaryRoot, { force: true, recursive: true })
+    }
+  })
+
   it('fails package mutation sensitivity when the suite does not detect a seeded mutation', () => {
     const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-governance-mutation-'))
     try {
@@ -542,7 +731,7 @@ describe.concurrent('prepare, report validation and cleanup', () => {
         command,
         exitCode: 0,
         id: `command-${index + 1}`,
-        output: '',
+        output: 'content',
         processId: 'process-1',
         timestamp: `2026-07-17T00:00:0${index}.000Z`,
         type: 'command_exec',
@@ -651,7 +840,7 @@ describe.concurrent('prepare, report validation and cleanup', () => {
       fs.writeFileSync(path.join(artifactDir, `${profile.id}-raw.jsonl`), `${JSON.stringify({ type: 'command_exec', command: 'cat AGENTS.md', exitCode: 0 })}
 `)
       expect(validateReportAgainstProfiles(readJsonFile<RunReport>(path.join(artifactDir, 'report.json')), [profile], { artifactDir })).toMatchObject({
-        issues: expect.arrayContaining([`${profile.id}:raw_log_hash_mismatch`, `${profile.id}:required_read_coverage_tampered`]),
+        issues: expect.arrayContaining([`${profile.id}:raw_log_hash_mismatch`, `${profile.id}:trace_errors_tampered`]),
         valid: false,
       })
     }
@@ -1198,7 +1387,7 @@ function createReviewerPayload(overrides: Record<string, unknown> = {}) {
 
 function createValidationArtifact(
   temporaryRoot: string,
-  profile: typeof profiles[number] = profiles[0]!,
+  profile: GovernanceProfile = profiles[0]!,
 ) {
   const artifactDir = path.join(temporaryRoot, 'artifact')
   const historyDir = path.join(temporaryRoot, 'history')
@@ -1306,6 +1495,7 @@ function createValidationArtifact(
     profileContractHashes: { [profile.id]: createHash('sha256').update(JSON.stringify(profile)).digest('hex') },
     rootDir: repository,
     runId: 'run',
+    selectedProfileIds: [profile.id],
     sourceHead,
     worktreeRoot,
   }
@@ -1336,6 +1526,19 @@ function createValidationArtifact(
     sourceHead: report.source_head,
   })
   return { artifactDir, historyDir, profile, repository, worktree }
+}
+
+type RunManifestFixture = {
+  commands: Array<{ profileId: string } & Record<string, unknown>>
+  profileContractHashes: Record<string, string>
+  selectedProfileIds: string[]
+} & Record<string, unknown>
+
+function runRunnerCli(args: string[], cwd = process.cwd()) {
+  return spawnSync(process.execPath, [fileURLToPath(new URL('./runner.ts', import.meta.url)), ...args], {
+    cwd,
+    encoding: 'utf8',
+  })
 }
 
 function readJsonFile<T>(file: string): T {
@@ -1389,7 +1592,7 @@ function gitText(cwd: string, args: string[]): string {
   return result.stdout.trim()
 }
 
-function createPassingReport(profile: typeof profiles[number]): ProfileReport {
+function createPassingReport(profile: GovernanceProfile): ProfileReport {
   const gateResults = [...profile.gates, ...(profile.regressionGates ?? [])]
     .map(gate => ({
       command: gate.kind === 'command' ? gate.command : gate.assertion,

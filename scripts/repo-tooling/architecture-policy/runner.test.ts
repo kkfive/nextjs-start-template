@@ -117,6 +117,8 @@ describe('architecture policy registry', () => {
     'direct-service-import',
     'direct-request-call',
     'direct-request-axios',
+    'extra-arrow-component',
+    'extra-class-component',
   ])('rejects FFG02 independent %s scenario with one located issue', (scenario) => {
     const issues = runArchitecturePolicy('FFG02', { rootDir: ffg02Scenario(scenario) })
 
@@ -218,6 +220,19 @@ describe('architecture policy registry', () => {
     }
   })
 
+  it('validates the canonical Claude Skill compatibility symlink', () => {
+    const validRoot = ffg08Scenario('claude-skill-symlink-valid')
+    const invalidRoot = ffg08Scenario('claude-skill-symlink-directory')
+
+    expect(runArchitecturePolicy('FFG08', { rootDir: validRoot })).toEqual([])
+    expect(runArchitecturePolicy('FFG08', { rootDir: invalidRoot })).toEqual([
+      expect.objectContaining({
+        message: expect.stringContaining('.claude/skills 必须是指向 ../.agents/skills 的符号链接'),
+        ruleId: 'FFG08',
+      }),
+    ])
+  })
+
   it('validates FFG08 profile contract import with dynamic valid, missing-required and forbidden-category cases', () => {
     for (const profile of profiles) {
       const valid = { rules: [...profile.expectedRules], skills: [...profile.expectedSkills] }
@@ -260,6 +275,8 @@ describe('architecture policy registry', () => {
 function readFilesRecursively(directory: string): string[] {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const target = path.join(directory, entry.name)
+    if (entry.isSymbolicLink())
+      return []
     return entry.isDirectory() ? readFilesRecursively(target) : [fs.readFileSync(target, 'utf8')]
   })
 }

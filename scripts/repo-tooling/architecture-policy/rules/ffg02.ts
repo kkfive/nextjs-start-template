@@ -105,9 +105,20 @@ export const ffg02: ArchitecturePolicy = {
         }
         const isDefaultExport = Boolean(ts.canHaveModifiers(statement)
           && ts.getModifiers(statement)?.some(modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword))
-        if (ts.isFunctionDeclaration(statement) && !isDefaultExport && statement.name && /^[A-Z]/.test(statement.name.text)) {
+        if (ts.isFunctionDeclaration(statement) && !isDefaultExport && statement.name && /^[A-Z]/.test(statement.name.text))
           report(statement, '路由文件不得定义额外业务或可复用组件函数')
+        if (ts.isVariableStatement(statement) && !isDefaultExport) {
+          for (const declaration of statement.declarationList.declarations) {
+            if (ts.isIdentifier(declaration.name)
+              && /^[A-Z]/.test(declaration.name.text)
+              && declaration.initializer
+              && (ts.isArrowFunction(declaration.initializer) || ts.isFunctionExpression(declaration.initializer))) {
+              report(declaration, '路由文件不得定义额外业务或可复用组件函数')
+            }
+          }
         }
+        if (ts.isClassDeclaration(statement) && !isDefaultExport && statement.name && /^[A-Z]/.test(statement.name.text))
+          report(statement, '路由文件不得定义额外业务或可复用组件类')
       }
 
       function visit(node: ts.Node) {

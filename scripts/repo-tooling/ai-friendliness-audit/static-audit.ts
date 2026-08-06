@@ -3,6 +3,7 @@ import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import path from 'node:path'
 import { defaultAuditConfig } from './config.ts'
+import { calculateTaskRouteClosure, estimateTokens } from './task-route-closure.ts'
 
 type GovernanceDocument = {
   absolutePath: string
@@ -20,23 +21,29 @@ export function runStaticAudit(options: RunStaticAuditOptions): AuditReport {
   const config = { ...defaultAuditConfig, ...options.config }
   const documents = collectGovernanceDocuments(rootDir)
   const findings = [
+    ...findMissingRootEntry(rootDir, documents),
     ...findOrphanRoutes(rootDir, documents),
     ...findDuplicateOwners(documents, config.duplicateMinimumCharacters),
     ...findBudgetExcesses(documents, config.documentTokenBudget),
     ...findStaleReferences(rootDir, documents),
   ].sort(compareFindings)
   const governanceBytes = documents.reduce((total, document) => total + document.bytes, 0)
+  const governanceCorpusEstimatedTokens = estimateTokens(governanceBytes)
 
   return {
     schemaVersion: 'ai-friendliness-audit/1',
     rootDir,
     verdict: findings.some(finding => finding.severity === 'error') ? 'failed' : 'passed',
     metrics: {
-      estimatedTokens: estimateTokens(governanceBytes),
+      governanceCorpusEstimatedTokens,
+      estimatedTokens: governanceCorpusEstimatedTokens,
       governanceBytes,
       governanceFiles: documents.length,
     },
     findings,
+    taskRouteClosure: options.taskRouteClosureInput
+      ? calculateTaskRouteClosure(rootDir, options.taskRouteClosureInput)
+      : undefined,
   }
 }
 
@@ -46,7 +53,7 @@ export function renderAuditMarkdown(report: AuditReport): string {
     '',
     `- Verdict: **${report.verdict}**`,
     `- Governance files: ${report.metrics.governanceFiles}`,
-    `- Estimated context tokens: ${report.metrics.estimatedTokens}`,
+    `- Governance corpus estimated tokens: ${report.metrics.governanceCorpusEstimatedTokens}`,
     `- Findings: ${report.findings.length}`,
     '',
   ]
@@ -106,6 +113,19 @@ function collectMarkdown(directory: string, output: string[]): void {
     else if (entry.name.endsWith('.md'))
       output.push(target)
   }
+}
+
+function findMissingRootEntry(rootDir: string, documents: GovernanceDocument[]): AuditFinding[] {
+  if (documents.some(document => document.relativePath === 'AGENTS.md'))
+    return []
+  return [{
+    checkId: 'AIFA005',
+    evidence: { kind: 'filesystem', details: { required: 'AGENTS.md' } },
+    file: 'AGENTS.md',
+    line: 1,
+    message: '缺少根 AGENTS 治理入口',
+    severity: 'error',
+  }]
 }
 
 function findOrphanRoutes(rootDir: string, documents: GovernanceDocument[]): AuditFinding[] {
@@ -181,10 +201,10 @@ function findBudgetExcesses(documents: GovernanceDocument[], budget: number): Au
     return tokens > budget
       ? [{
           checkId: 'AIFA003' as const,
-          evidence: { kind: 'token-budget' as const, details: { budget, bytes: document.bytes, estimatedTokens: tokens } },
+          evidence: { kind: 'token-budget' as const, details: { budget, bytes: document.bytes, governanceCorpusEstimatedTokens: tokens, estimatedTokens: tokens } },
           file: document.relativePath,
           line: 1,
-          message: `文档估算上下文 ${tokens} tokens，超过预算 ${budget}`,
+          message: `文档治理语料估算 ${tokens} tokens，超过预算 ${budget}`,
           severity: 'warning' as const,
         }]
       : []
@@ -220,10 +240,6 @@ function findStaleReferences(rootDir: string, documents: GovernanceDocument[]): 
     }
   }
   return findings
-}
-
-function estimateTokens(bytes: number): number {
-  return Math.ceil(bytes / 4)
 }
 
 function compareFindings(left: AuditFinding, right: AuditFinding): number {

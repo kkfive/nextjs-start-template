@@ -1,0 +1,11 @@
+{
+  "name": "dangling-test-owner",
+  "private": true,
+  "scripts": {
+    "test:run": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

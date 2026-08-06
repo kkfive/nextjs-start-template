@@ -13,7 +13,4 @@ user-invocable: true
 | Turbo cache | `workflows/optimize-turbo-cache.md` |
 | CI affected | `workflows/setup-ci-affected.md` |
 | 机器化依赖边界 | `workflows/enforce-dependency-direction.md` |
-| Turbo v2 语法 | `references/turbo-v2-config.md` |
 | 工程陷阱 | `references/gotchas.md` |
-
-静态语义由 owner rule 定义，本 Skill 负责可执行实现。cache identity 覆盖输入、输出与环境；全局治理不使用 affected 缩窄。

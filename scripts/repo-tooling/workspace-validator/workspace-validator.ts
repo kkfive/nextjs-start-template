@@ -11,6 +11,8 @@ export type WorkspaceTaskName = typeof GOVERNED_TASKS[number]
 
 export type WorkspaceValidationCode
   = | 'DANGLING_TEST_OWNER'
+    | 'INVALID_PACKAGE_STRUCTURE'
+    | 'INVALID_TEST_RUNNER'
     | 'MISSING_REQUIRED_TASK'
     | 'OMITTED_TEST_OWNER'
     | 'STALE_WORKSPACE_MANIFEST'
@@ -40,6 +42,7 @@ export type WorkspaceValidationResult = {
 }
 
 type WorkspaceManifest = {
+  exports?: unknown
   name?: unknown
   scripts?: unknown
 }
@@ -92,6 +95,14 @@ export function validateWorkspaceGovernance(rootDir: string): WorkspaceValidatio
 
     const scripts = readScripts(manifest)
     const sourceFiles = collectSourceFiles(path.join(rootDir, workspacePath), rootDir)
+    if (workspacePath.startsWith('packages/')) {
+      for (const requiredFile of ['README.md', 'tsconfig.json']) {
+        if (!fs.existsSync(path.join(rootDir, workspacePath, requiredFile)))
+          missingRequiredTasks.push({ code: 'INVALID_PACKAGE_STRUCTURE', workspace: workspacePath })
+      }
+      if (!isRecord(manifest.exports) || Object.keys(manifest.exports).length === 0)
+        missingRequiredTasks.push({ code: 'INVALID_PACKAGE_STRUCTURE', workspace: workspacePath })
+    }
     const testSources = sourceFiles.filter(isTestSource)
     const requiredTasks = requiredTasksFor(workspacePath, sourceFiles, testSources)
     const notApplicableTasks = GOVERNED_TASKS.filter(task => !requiredTasks.includes(task))
@@ -108,7 +119,11 @@ export function validateWorkspaceGovernance(rootDir: string): WorkspaceValidatio
       }
     }
 
-    const ownsTestTask = typeof scripts['test:run'] === 'string' && scripts['test:run'].length > 0
+    const testCommand = scripts['test:run']
+    const ownsTestTask = typeof testCommand === 'string' && testCommand.length > 0
+    if (ownsTestTask && /passWithNoTests|pass-with-no-tests|\becho\s+(?:pass|ok)\b/iu.test(testCommand)) {
+      missingRequiredTasks.push({ code: 'INVALID_TEST_RUNNER', workspace: workspacePath, task: 'test:run' })
+    }
     if (ownsTestTask && testSources.length === 0) {
       danglingTestOwners.push({
         code: 'DANGLING_TEST_OWNER',

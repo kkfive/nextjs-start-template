@@ -1,7 +1,5 @@
 # Hono Rule
 
-`apps/api` 是独立后端；route handler 负责协议适配与当前业务编排，复杂纯逻辑可在对应 route 目录拆分。`src/lib` 存放服务端基础设施，middleware 只处理横切关注点。
+route handler 负责协议适配和当前业务编排；复杂纯逻辑留在对应 route 目录，不预设额外业务层。`src/lib` 只放基础设施，middleware 只处理横切关注点。
 
-输入使用共享 contract 校验，响应和错误保持统一 envelope；SSE 帧格式必须与客户端解析一致。前端通过 app service 中的 RPC 实例访问，`packages/rpc` 不绑定业务或 app 类型。
-
-前端框架依赖限制由 ESLint/FFG07 校验。行为变化仍需覆盖 schema、状态码、错误传播和关键副作用；契约共同变化时验证真实边界。
+输入复用共享 contract；响应、错误 envelope 与 SSE 帧保持前后端一致。前端业务通过 app 的 RPC service 实例访问。
