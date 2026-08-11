@@ -47,7 +47,11 @@ it('hc POST scenario: json body 经 ky 透传 + 解包', async () => {
   })
   const client = createRpcClient<AppType>(http, BASE)
   const res = await client.example.request.scenario.$post({ json: { scenario: 'success' } })
-  expect(unwrapData(await res.json())).toEqual({ a: 1, b: 2, token: '' })
+  const envelope = await res.json()
+  if ('error' in envelope) {
+    throw new Error('mock 响应不应命中 zod 解析错误分支')
+  }
+  expect(unwrapData(envelope)).toEqual({ a: 1, b: 2, token: '' })
   expect(request).toHaveBeenCalledWith(
     '/example/request/scenario',
     expect.objectContaining({ method: 'POST', prefix: BASE }),
@@ -67,5 +71,10 @@ it('hc business-error: envelope success:false 抛 BusinessError', async () => {
   const client = createRpcClient<AppType>(http, BASE)
   const res = await client.example.request.scenario.$post({ json: { scenario: 'business-error' } })
   const envelope = await res.json()
+  // @hono/zod-validator 0.9 的 .json() 类型混入 ZodSafeParseError 分支；
+  // mock 的是 raw Response，运行时不会命中该分支，用 `error` 字段收窄掉
+  if ('error' in envelope) {
+    throw new Error('mock 响应不应命中 zod 解析错误分支')
+  }
   expect(() => unwrapData(envelope)).toThrow(BusinessError)
 })
