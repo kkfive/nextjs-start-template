@@ -1,88 +1,54 @@
 # 目录约定
 
-## 根目录结构
+## 仓库根目录
 
-```
-├── domain/           # 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
-├── src/              # 应用层 (Next.js)
-├── docs/             # 文档
-├── public/           # 静态资源
-├── typings/          # 全局类型定义
-└── data/             # 静态数据文件
-```
-
-## 领域层 (`domain/`)
-
-```
-domain/
-├── {module}/              # 业务模块
-│   ├── index.ts           # 统一导出
-│   ├── controller.ts      # 业务逻辑编排
-│   ├── service.ts         # API 服务层
-│   ├── hooks.ts           # React Query 适配层（禁止 JSX/UI 渲染）
-│   ├── type.ts            # 类型定义（export type）
-│   ├── schema.ts          # Zod schemas (可选)
-│   └── const/             # 常量 (如 api.ts)
-└── _shared/               # 共享工具 (下划线前缀表示内部模块)
-    ├── types/
-    └── utils/
+```text
+apps/                         # 独立应用
+packages/                     # 共享能力
+internal/                     # 工具链配置预设
+scripts/                      # 可执行脚本入口
+docs/                         # 仓库级文档
+.agents/                      # AI 辅助开发规范
 ```
 
-**规则**:
-- 每个模块必须有 `index.ts` 作为唯一出口
-- `type.ts` 使用 `export type` 导出类型，`index.ts` 统一 `export type * from './type'`
-- `_shared/` 前缀表示跨模块共享的内部代码
+## Next.js app
 
-## 应用层 (`src/`)
-
-```
-src/
-├── app/                   # Next.js App Router
-│   ├── {route}/
-│   │   ├── page.tsx       # 页面组件
-│   │   └── layout.tsx     # 布局组件
-│   └── api/               # API 路由
-│       └── {endpoint}/
-│           └── route.ts
-├── components/
-│   ├── ui/                # 基础 UI (透传或封装 antd)
-│   ├── common/            # 通用功能组件 (可复用的功能性组件)
-│   ├── domain/            # 领域 UI (结合业务逻辑)
-│   │   └── {module}/
-│   ├── {feature}/         # 功能特定组件
-│   └── providers.tsx      # 全局 Providers
-├── hooks/                 # React Hooks
-├── lib/                   # 工具库
-│   ├── request/           # HTTP 客户端
-│   ├── errors/            # 错误处理
-│   └── utils.ts           # 通用工具
-├── store/                 # Zustand stores
-├── config/                # 应用配置
-├── service/               # HTTP 服务实例
-└── __tests__/             # 测试工具和 mocks
+```text
+apps/{app}/src/
+├── app/                       # Next.js 路由；page/layout 仅组合 feature 入口
+│   └── api/                   # 轻量 BFF（Route Handlers）
+├── features/<feature>/        # 视图、calls、hooks、状态、模型、内部测试
+├── components/                # 跨 feature 的 UI、common、providers
+├── config/                    # 应用配置
+├── lib/                       # app 基础设施与工具
+├── service/                   # 仅 HTTP/RPC/SSE 运行时实例
+│   ├── http-client.ts         # client-only
+│   ├── http-server.ts         # server-only
+│   ├── rpc-client.ts          # client-only
+│   ├── rpc-server.ts          # server-only
+│   └── sse-client.ts          # 可选，client-only
+└── styles/                    # 全局样式
 ```
 
-**组件分类说明**：
+## Hono app
 
-| 目录 | 用途 | 特点 | 示例 |
-|------|------|------|------|
-| `ui/` | 基础 UI 组件 | 纯 UI，无业务逻辑，透传或封装第三方 UI 库 | Button, Input, Modal |
-| `common/` | 通用功能组件 | 可复用的功能性组件，与业务场景相关但不依赖特定 domain | PdfViewer, ImageCropper, RichTextEditor |
-| `domain/` | 领域 UI 组件 | 结合特定业务逻辑，依赖 domain 层 | MaterialDocumentViewer, HitokotoCard |
+```text
+apps/api/src/
+├── app.ts                      # Hono 入口（导出 AppType）
+├── routes/                     # zod 校验、HTTP 适配、响应格式化
+├── middleware/                 # 认证、日志、错误处理、CORS
+└── lib/                        # DB、缓存、第三方 SDK
+```
 
 ## 文件放置规则
 
 | 文件类型 | 位置 | 示例 |
-|----------|------|------|
-| 页面组件 | `src/app/{route}/page.tsx` | `src/app/demo/page.tsx` |
-| API 路由 | `src/app/api/{endpoint}/route.ts` | `src/app/api/revalidate/route.ts` |
-| 基础 UI | `src/components/ui/{component}/` | `src/components/ui/button/` |
-| 通用功能组件 | `src/components/common/{component}/` | `src/components/common/pdf-viewer/` |
-| 领域 UI | `src/components/domain/{module}/` | `src/components/domain/material/` |
-| 业务逻辑 | `domain/{module}/` | `domain/material/` |
-| Domain 类型定义 | `domain/{module}/type.ts` | `domain/material/type.ts` |
-| 工具类型定义 | `src/lib/types/{name}.ts` | `src/lib/types/utility.ts` |
-| 全局类型扩展 | `typings/{library}.d.ts` | `typings/axios.d.ts` |
-| React Hook | `src/hooks/use-{name}.ts` | `src/hooks/use-mobile.ts` |
-| Zustand Store | `src/store/{name}-store.ts` | `src/store/mouse-store.ts` |
-| 测试文件 | 与源文件同目录 `{name}.test.ts` | `src/lib/utils.test.ts` |
+|---|---|---|
+| 页面 | `apps/{app}/src/app/{route}/page.tsx` | 组合 `@/features/...` 入口 |
+| 轻量 BFF | `apps/{app}/src/app/api/{endpoint}/route.ts` | `apps/client/src/app/api/revalidate/route.ts` |
+| feature 业务代码 | `apps/{app}/src/features/{feature}/` | `apps/client/src/features/material/` |
+| 跨 feature UI / provider | `apps/{app}/src/components/` | `apps/client/src/components/page-container.tsx` |
+| 业务 API calls | `apps/{app}/src/features/{feature}/model/calls.ts` | `apps/client/src/features/demo/rpc/model/calls.ts` |
+| HTTP / RPC / SSE 实例 | `apps/{app}/src/service/` | `apps/client/src/service/rpc-client.ts` |
+| app 工具函数 | `apps/{app}/src/lib/` | `apps/client/src/lib/utils.ts` |
+| feature 测试 | 与 feature 源文件同目录 | `features/material/calls.test.ts` |

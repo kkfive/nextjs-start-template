@@ -16,10 +16,18 @@
 
 ## Import 黑名单
 
-- **`domain/` 里 import `@/components/*`** → 反向依赖；删除并把 UI 逻辑放到调用方
-- **`src/components/ui/` 里 import `@domain/*`** → 通用 UI 不依赖业务
-- **业务代码 `from 'antd'`** → `from '@/components/ui/<component>'`
-- **`from '@/hooks/*'` 在 Domain Service 中** → hooks 是适配层；让调用方注入
+- **`packages/*` 里 import `apps/*`** → 共享包不依赖应用；逻辑放错位置
+- **`packages/rpc` 里 import `api.AppType`、React 或业务 calls** → 破坏通用边界；rpc 只保留泛型 client factory 与 envelope，AppType、calls 和 hooks 留 app
+- **`packages/contracts` 或 `packages/utils` 引入运行时框架** → 污染所有消费方 bundle
+- **`src/service/` 里 import `@/features/*` 或 `@/components/*`** → 运行时实例不依赖业务或 UI
+- **`src/components/ui/` 里 import feature 业务代码** → 通用 UI 不依赖业务
+- **为 antd 或 `@kkfive/ui` 建纯 re-export** → 直接使用原入口；只有改变默认 props、主题或组合行为时才建 app 封装
+- **`from '@/hooks/*'` 在共享包 Service 中** → hooks 是各 app 适配层；让调用方注入
+
+## 幽灵依赖
+
+- **用了 package.json 未声明的包** → pnpm 严格模式下直接解析失败；新建包时 MUST 完整填写 dependencies / peerDependencies / devDependencies
+- **跨包版本漂移** → 用 syncpack 检测；统一版本通过根 package.json 或 syncpack config 管理
 
 ## 错误处理
 
@@ -29,7 +37,7 @@
 
 ## 测试
 
-- **直接 mock 全局 `fetch`** → 用 MSW 拦截，更接近真实
+- **HTTP 行为测试直接替换整条业务链** → 优先 MSW；adapter contract test 可 mock 最外层 `HttpService.request`，避免固定端口
 - **mock 太深（mock 整个模块）** → mock 最外层 IO（如 http），让被测代码完整跑
 - **跳过失败测试** → 不允许；修代码或修测试，不允许 `.skip`
 

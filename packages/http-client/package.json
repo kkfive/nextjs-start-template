@@ -1,0 +1,19 @@
+{
+  "name": "@kkfive/http-client",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@kkfive/request": "catalog:",
+    "defu": "catalog:"
+  },
+  "devDependencies": {
+    "@kkfive/tsconfig": "workspace:*"
+  }
+}

@@ -5,7 +5,7 @@ App Router 通过导出 `metadata` 或 `generateMetadata` 配置 head。
 ## 静态 metadata
 
 ```ts
-// app/page.tsx
+// apps/client/src/app/page.tsx
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -25,14 +25,15 @@ export const metadata: Metadata = {
 ## 动态 metadata
 
 ```ts
-// app/material/[id]/page.tsx
+// apps/client/src/app/material/[id]/page.tsx
 import type { Metadata } from 'next'
+import { fetchMaterial } from '@/features/material/model/calls'
 
 export async function generateMetadata(
   { params }: { params: Promise<{ id: string }> },
 ): Promise<Metadata> {
   const { id } = await params
-  const m = await Material.getDetail(httpClient, id)
+  const m = await fetchMaterial(rpcServer, id)
   return {
     title: `${m.name} - 素材`,
     description: m.description?.slice(0, 160),
@@ -44,7 +45,7 @@ export async function generateMetadata(
 ## layout 级 metadata
 
 ```ts
-// app/layout.tsx
+// apps/client/src/app/layout.tsx
 export const metadata: Metadata = {
   title: { default: '默认', template: '%s | 站点名' },
   metadataBase: new URL('https://example.com'),

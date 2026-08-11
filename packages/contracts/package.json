@@ -1,0 +1,21 @@
+{
+  "name": "@kkfive/contracts",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./schemas": "./src/schemas/index.ts",
+    "./types": "./src/types/index.ts",
+    "./errors": "./src/errors/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@kkfive/tsconfig": "workspace:*"
+  }
+}

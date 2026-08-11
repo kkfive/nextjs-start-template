@@ -23,9 +23,10 @@ fetch(url, { next: { tags: ['material:list'] } })
 ```ts
 'use server'
 import { revalidateTag, revalidatePath } from 'next/cache'
+import { updateMaterial } from '@/features/material/model/calls'
 
-export async function updateMaterial(id: string, data: Patch) {
-  await Material.update(httpClient, id, data)
+export async function updateMaterialAction(id: string, data: Patch) {
+  await updateMaterial(id, data)
   // 选其一或组合
   revalidateTag('material:list')              // 同 tag 的所有 fetch 失效
   revalidateTag(`material:detail:${id}`)
@@ -37,7 +38,7 @@ export async function updateMaterial(id: string, data: Patch) {
 ## 路由段配置
 
 ```ts
-// app/material/page.tsx
+// apps/client/src/app/material/page.tsx
 export const dynamic = 'force-dynamic'   // 强制每次动态
 export const revalidate = 3600           // 整页 ISR 间隔
 export const fetchCache = 'force-no-store'

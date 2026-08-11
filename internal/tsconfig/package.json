@@ -1,0 +1,15 @@
+{
+  "name": "@kkfive/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./base.json": "./base.json",
+    "./nextjs.json": "./nextjs.json",
+    "./hono.json": "./hono.json"
+  },
+  "files": [
+    "base.json",
+    "hono.json",
+    "nextjs.json"
+  ]
+}

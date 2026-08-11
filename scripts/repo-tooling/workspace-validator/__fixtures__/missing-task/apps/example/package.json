@@ -1,0 +1,7 @@
+{
+  "name": "missing-build-app",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}

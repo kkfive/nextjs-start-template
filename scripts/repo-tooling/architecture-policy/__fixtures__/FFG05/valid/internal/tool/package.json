@@ -1,0 +1,6 @@
+{
+  "name": "@kkfive/tool",
+  "devDependencies": {
+    "@kkfive/tsconfig": "workspace:*"
+  }
+}

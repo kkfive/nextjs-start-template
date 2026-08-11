@@ -32,8 +32,10 @@ App Router 通过文件名声明路由元素。
 
 ## 推荐目录结构
 
+每个 Next.js app 的路由根目录是 `apps/{app}/src/app/`：
+
 ```
-src/app/
+apps/client/src/app/
 ├── (marketing)/         # 营销路由组
 │   ├── page.tsx
 │   └── about/page.tsx
@@ -41,14 +43,16 @@ src/app/
 │   ├── layout.tsx       # 应用 layout
 │   ├── dashboard/page.tsx
 │   └── settings/page.tsx
-├── api/                 # API
+├── api/                 # 轻量 BFF（Route Handlers）
 │   └── materials/route.ts
 └── actions/             # Server Actions
     └── material.ts
 ```
 
+> 真正的后端业务 API 在 `apps/api`（Hono）；`src/app/api/` 仅承担轻量 BFF。
+
 ## 反例
 
-- ❌ 在 `src/app/` 下放可复用组件 → 下沉到 `src/components/`
-- ❌ 在 page 里写 Domain 业务 → 调用 `domain/*` 的 Controller
+- ❌ 在 `src/app/` 下放可复用组件 → 下沉到该 app 的 `src/components/`
+- ❌ 在 page 里写业务实现 → 组合所属 feature 的公开入口；feature 经该 app `src/service` 的运行时实例调用数据
 - ❌ 同一目录既有 `page.tsx` 又有 `route.ts` → Next 报冲突

@@ -1,0 +1,15 @@
+{
+  "extends": "../../internal/tsconfig/base.json",
+  "compilerOptions": {
+    "incremental": false,
+    "composite": false,
+    "target": "ES2022",
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["**/__fixtures__/**"]
+}

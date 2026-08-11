@@ -1,0 +1,108 @@
+import process from 'node:process'
+import { createErrorResponse, HttpService } from '@kkfive/http-client'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { env } from '@/config/env'
+import 'server-only'
+
+function getBaseUrl() {
+  if (env.NEXT_PUBLIC_APP_URL) {
+    return env.NEXT_PUBLIC_APP_URL
+  }
+  if (env.NODE_ENV === 'production') {
+    throw new Error('NEXT_PUBLIC_APP_URL environment variable is required in production')
+  }
+  return 'http://localhost:5373'
+}
+
+const http = new HttpService({
+  prefix: getBaseUrl(),
+  hooks: {
+    beforeRequest: [
+      // Cookie injection interceptor - injects customer ID from cookies
+      async ({ request }) => {
+        const cookieStore = await cookies()
+        request.headers.set('x-customer-id', cookieStore.get('x-customer-id')?.value || '')
+      },
+
+      // Token injection interceptor - adds authorization token from environment or cookies
+      async ({ request }) => {
+        const cookieStore = await cookies()
+        const token = cookieStore.get('auth-token')?.value || process.env.API_TOKEN
+
+        if (token) {
+          request.headers.set('Authorization', `Bearer ${token}`)
+        }
+      },
+
+      // Request logging interceptor - logs outgoing requests
+      async ({ request }) => {
+        const url = request.url
+        const method = request.method || 'GET'
+        const timestamp = new Date().toISOString()
+
+        // 日志只记录非敏感元数据，避免 Authorization、Cookie 等凭据泄漏。
+        // eslint-disable-next-line no-console
+        console.log(`[Server Request] ${timestamp} ${method} ${url}`, {
+          hasBody: !!request.body,
+        })
+      },
+    ],
+    afterResponse: [
+      // Response logging interceptor - logs response status and timing
+      async ({ request, response }) => {
+        const url = request.url
+        const method = request.method || 'GET'
+        const status = response.status
+        const statusText = response.statusText
+        const timestamp = new Date().toISOString()
+
+        // eslint-disable-next-line no-console
+        console.log(
+          `[Server Response] ${timestamp} ${method} ${url} - ${status} ${statusText}`,
+        )
+
+        return response
+      },
+
+      // Error handling interceptor - converts HTTP errors to structured BusinessError
+      async ({ request, options, response }) => {
+        if (!response.ok) {
+          const url = request.url
+          const method = request.method || 'GET'
+
+          // 401 自动跳转登录页（可通过 context.skipAuthRedirect 禁用）
+          if (response.status === 401 && !options.context?.skipAuthRedirect) {
+            redirect('/login')
+          }
+
+          createErrorResponse(
+            { url, method, status: response.status, statusText: response.statusText },
+            null,
+            options,
+          )
+        }
+
+        return response
+      },
+
+      // Performance monitoring interceptor - tracks slow requests
+      async ({ request, response }) => {
+        // Note: In a real implementation, you would track request start time
+        // and calculate duration here. This is a simplified example.
+        const url = request.url
+
+        // Check if response took too long (this is a placeholder)
+        // In production, you'd use performance.now() or similar
+        if (response.status === 200) {
+          // eslint-disable-next-line no-console
+          console.log(`[Server Performance] Request to ${url} completed successfully`)
+        }
+
+        return response
+      },
+    ],
+  },
+})
+
+export { http as httpServer }

@@ -1,0 +1,28 @@
+{
+  "semverGroups": [
+    {
+      "label": "不强制统一 semver range 格式（项目允许 ^/~ 等多种 range）",
+      "dependencies": ["**"],
+      "isIgnored": true
+    }
+  ],
+  "versionGroups": [
+    {
+      "label": "pnpm catalog 管理 react、react-dom 与 typescript 版本语义",
+      "dependencies": ["react", "react-dom", "typescript"],
+      "isIgnored": true
+    },
+    {
+      "label": "pnpm workspace protocol 管理本地包链接",
+      "specifierTypes": ["workspace-protocol"],
+      "isIgnored": true
+    },
+    {
+      "label": "nextjs-config 声明 Next 16 兼容范围",
+      "packages": ["@kkfive/nextjs-config"],
+      "dependencies": ["next"],
+      "dependencyTypes": ["peer"],
+      "isIgnored": true
+    }
+  ]
+}

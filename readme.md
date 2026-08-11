@@ -1,188 +1,78 @@
 # Next.js Start Template
 
-基于 Next.js + React 的项目模板，采用领域驱动三层架构。
+基于 pnpm workspace + Turborepo 的 monorepo 项目模板，采用 Feature-first 架构，支持多应用（客户端 / 管理后台 / API 服务）共享通用能力与 UI。
 
 ## 特性
 
-- **Next.js** + **React** - App Router 与 Server Components
-- **领域驱动架构** - 业务能力与 UI 分离，核心逻辑框架无关
-- **TypeScript** - 完整类型支持
-- **Tailwind CSS** - 原子化 CSS
-- **TanStack Query** - 服务端状态管理
-- **Zustand** - 客户端状态管理
-- **Vitest + MSW** - 单元测试与 API Mock
-- **ESLint + commitlint** - 代码规范与提交规范
+- **Monorepo** — pnpm workspace + Turborepo，`apps/` 独立应用 + `packages/` 共享包 + `internal/` 工具链
+- **Next.js + React** — App Router 与 Server Components
+- **Feature-first** — 业务能力聚合在 app 的 `src/features/<feature>/`；路由只组合，运行时实例只在 `src/service/`
+- **TypeScript** — project references 跨包增量类型检查
+- **Tailwind CSS v4** — 原子化 CSS，主题 token 共享
+- **TanStack Query + Zustand** — 服务端与客户端状态管理
+- **Vitest + MSW** — 单元测试与 API Mock
+- **AI 辅助开发规范** — `AGENTS.md` 提供薄路由，`.agents/` 仅在任务命中时加载
+- **行为 / 证据先行** — 行为变更先定义验收和失败证据，再最小实现、分层回归与独立验收
 
 ## 快速开始
 
-### 1. 克隆模板
-
 ```bash
+# 克隆
 git clone https://github.com/kkfive/nextjs-start-template.git my-project
 cd my-project
-```
 
-### 2. 安装依赖
-
-```bash
+# 安装依赖
 pnpm install
-```
 
-### 3. 清理示例代码
-
-运行以下命令删除示例代码，保留干净的项目骨架：
-
-```bash
-# 删除示例业务模块
-rm -rf domain/example
-
-# 删除示例 UI 组件
-rm -rf src/components/domain/hitokoto
-rm -rf src/components/domain/request
-rm -rf src/components/demo
-rm -rf src/components/home
-
-# 删除示例页面
-rm -rf src/app/demo
-
-# 清理首页（可选，保留则需修改）
-# rm src/app/page.tsx
-```
-
-### 4. 重置 Git 历史（可选）
-
-```bash
-rm -rf .git
-git init
-git add .
-git commit -m "feat: 初始化项目"
-```
-
-### 5. 启动开发
-
-```bash
+# 启动所有 app 开发服务器
 pnpm dev
 ```
 
-访问 http://localhost:5373
+各 app 端口：client `5373`、admin `5374`、api `8787`。单 app 启动用 `pnpm --filter client dev`。
 
 ## 项目结构
 
 ```
-├── domain/           # 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
-│   └── {module}/     # 业务模块 (controller/service/type.ts)
-├── src/
-│   ├── app/          # 页面路由 (仅 page/layout/route)
-│   ├── components/
-│   │   ├── ui/       # 基础 UI (shadcn)
-│   │   └── domain/   # 领域 UI (结合业务逻辑)
-│   ├── lib/          # 基础设施 (HTTP、工具函数)
-│   ├── hooks/        # React Hooks
-│   └── store/        # Zustand stores
-└── docs/             # 文档
+├── apps/                          # 独立应用
+│   ├── client/                    # Next.js 客户端
+│   ├── admin/                     # Next.js 管理后台（示例）
+│   └── api/                       # Hono API 服务（示例）
+├── packages/                      # 共享包
+│   ├── contracts/                 # API 契约（zod schema + 类型）
+│   ├── http-client/               # HTTP 抽象（HttpService）
+│   ├── rpc/                       # 泛型 Hono RPC 工厂与 envelope 解包
+│   ├── utils/                     # 纯工具函数
+│   └── ui/                        # 基础 UI 组件（shadcn）
+├── internal/                      # 工具链配置预设
+│   ├── nextjs-config/             # Next.js 预设
+│   ├── tailwind-config/           # Tailwind/PostCSS 预设
+│   └── tsconfig/                  # TypeScript 预设
+├── scripts/repo-tooling/          # 仓库级架构与 workspace guards
+├── docs/                          # 当前使用文档
+└── .agents/                       # AI 辅助开发规范
 ```
+
+每个 Next.js app 的业务代码归入 `src/features/`，`src/app/` 只负责组合路由，`src/service/` 仅保存 HTTP/RPC/SSE 运行时实例。行为或工程行为变更采用“需求与影响分析 → 验收/证据设计 → 有效 RED 或等价失败证据 → 最小 GREEN → 分层回归 → 独立验收”；不机械要求每个文件新增单元测试。详细架构与开发规范见 [AGENTS.md](AGENTS.md) 与 `.agents/`。
 
 ## 常用命令
 
-| 命令                 | 说明                       |
-| -------------------- | -------------------------- |
-| `pnpm dev`           | 启动开发服务器 (port 5373) |
-| `pnpm build`         | 构建生产版本               |
-| `pnpm lint:fix`      | ESLint 检查并修复          |
-| `pnpm test:run`      | 运行测试                   |
-| `pnpm test:coverage` | 运行测试并生成覆盖率报告   |
+| 命令             | 说明                                                                     |
+| ---------------- | ------------------------------------------------------------------------ |
+| `pnpm dev`       | 启动所有 app 开发服务器                                                  |
+| `pnpm build`     | 构建所有 app                                                             |
+| `pnpm lint`      | ESLint 检查                                                              |
+| `pnpm typecheck` | TypeScript 类型检查                                                      |
+| `pnpm test:run`  | 运行测试                                                                 |
+| `pnpm verify`    | lint、typecheck、依赖一致性、架构策略及 fixture 校验（不替代测试或构建） |
 
-## 架构约定
-
-### 依赖规则
-
-| 层级                     | 可以导入                         | 禁止导入                                   |
-| ------------------------ | -------------------------------- | ------------------------------------------ |
-| `domain/`                | `@/lib/*`、外部库                | `@/components/*`、`@/hooks/*`、`@/store/*` |
-| `src/components/domain/` | `@domain/*`、`@/components/ui/*` | -                                          |
-| `src/components/ui/`     | 外部库                           | `@domain/*`、业务逻辑                      |
-
-### 数据流模式
-
-```
-组件 (useQuery) → Domain Controller → Service → HTTP
-```
-
-详细架构文档见 `docs/architecture.md`
-
-## 创建新模块
-
-### 1. 创建领域模块
-
-```bash
-mkdir -p domain/user
-```
-
-```typescript
-// domain/user/controller.ts
-import type { HttpService } from '@/lib/request'
-
-import { service } from './service'
-
-export async function getUser(http: HttpService, id: string) {
-  return service.getUser(http, id)
-}
-```
-
-```typescript
-// domain/user/service.ts
-import type { HttpService } from '@/lib/request'
-
-export const service = {
-  async getUser(http: HttpService, id: string) {
-    return http.get(`/api/users/${id}`)
-  }
-}
-```
-
-```typescript
-// domain/user/index.ts
-export * as Controller from './controller'
-export { service } from './service'
-export type * from './type'
-```
-
-### 2. 创建领域 UI 组件
-
-```tsx
-// src/components/domain/user/user-card.tsx
-'use client'
-
-import { Controller } from '@domain/user'
-import { useQuery } from '@tanstack/react-query'
-import { Card } from '@/components/ui/card'
-import { httpClient } from '@/service/index.client'
-
-export function UserCard({ userId }: { userId: string }) {
-  const { data, isLoading } = useQuery({
-    queryKey: ['user', userId],
-    queryFn: () => Controller.getUser(httpClient, userId),
-  })
-
-  if (isLoading)
-    return <div>Loading...</div>
-
-  return (
-    <Card>
-      <h2>{data?.name}</h2>
-    </Card>
-  )
-}
-```
+> 单 app 操作：`pnpm --filter client dev`、`pnpm --filter client build` 等。
 
 ## 文档
 
-- [架构文档](docs/architecture.md)
-- [目录约定](docs/conventions/directory.md)
-- [命名规范](docs/conventions/naming.md)
-- [项目协作准则](AGENTS.md)
-- [规则治理决策](docs/decisions/rule-governance.md)
+- [Docker 构建与运行指南](docs/docker.md) — 本地镜像构建、Compose 运行、环境变量与 CI 配置
+- [项目协作准则（AGENTS.md）](AGENTS.md) — AI 辅助开发的全局规范入口
+- [FAQ](docs/faq.md) — 常见问题
 
 ## License
 
-[MIT](https://github.com/kkfive/nextjs-start-template/blob/master/LICENSE)
+[MIT](./LICENSE)

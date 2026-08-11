@@ -28,7 +28,7 @@
 ## 路由
 
 - 选完级别 → 看对应的 `references/level-N-*.md` 模板
-- 不确定 API 是否支持 → 必查官方文档（参见 `/ant-design` 中的 api-query-required）
+- 不确定 API 是否支持 → 必查当前 Ant Design 官方组件文档
 - 反例 / 常见问题 → `references/gotchas.md`
 
 ## 反例：跳级的代价

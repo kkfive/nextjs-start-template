@@ -1,0 +1,368 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ai governance profile contract > keeps the full evidence and regression contract immutable 1`] = `
+[
+  {
+    "evidencePaths": [
+      "apps/client/src/features/account-settings/**/*.test.ts",
+      "apps/client/src/features/account-settings/**/*.test.tsx",
+    ],
+    "evidenceStrategies": [
+      "red",
+    ],
+    "gates": [
+      {
+        "command": "pnpm --filter client test:run",
+        "kind": "command",
+      },
+    ],
+    "id": "next-page",
+    "independentAcceptance": "browser",
+    "redGate": {
+      "command": "pnpm --workspace-root exec vitest run apps/client/src/features/account --reporter=verbose",
+      "expectedExitCode": 1,
+      "failurePattern": "(ACCOUNT_SETTINGS_ROUTE_COMPOSITION_MISSING|ACCOUNT_SETTINGS_SERVER_PREFETCH_MISSING|ACCOUNT_SETTINGS_SAVE_INTERACTION_MISSING)",
+      "forbiddenFailurePatterns": [
+        "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY",
+        "Cannot find module",
+        "Failed to resolve import",
+        "No test files found",
+        "ERR_MODULE_NOT_FOUND",
+      ],
+    },
+    "regressionGates": [
+      {
+        "command": "pnpm test:run",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm verify",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm --filter client build",
+        "kind": "command",
+      },
+    ],
+  },
+  {
+    "evidencePaths": [
+      "packages/http-client/**/*.test.ts",
+    ],
+    "evidenceStrategies": [
+      "characterization",
+      "mutation",
+    ],
+    "gates": [
+      {
+        "command": "pnpm --filter @kkfive/http-client test:run",
+        "kind": "command",
+      },
+    ],
+    "id": "package-test",
+    "independentAcceptance": "reviewer",
+    "redGate": {
+      "command": "pnpm --workspace-root exec vitest run packages/http-client --reporter=verbose",
+      "expectedExitCode": 1,
+      "failurePattern": "(BUSINESS_ERROR_OPTIONS_PRESERVED|CREATE_ERROR_RESPONSE_ERROR_SHAPE_MISSING|HTTP_SERVICE_NETWORK_ISOLATION_MISSING)",
+      "forbiddenFailurePatterns": [
+        "Cannot find module",
+        "Failed to resolve import",
+        "No test files found",
+        "ERR_MODULE_NOT_FOUND",
+        "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY",
+      ],
+    },
+    "regressionGates": [
+      {
+        "command": "pnpm --filter @kkfive/rpc typecheck",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm --filter client test:run",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm test:run",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm verify",
+        "kind": "command",
+      },
+    ],
+  },
+  {
+    "evidencePaths": [
+      "scripts/repo-tooling/**/*.test.ts",
+      "scripts/repo-tooling/**/__fixtures__/**",
+    ],
+    "evidenceStrategies": [
+      "fixture",
+      "red",
+    ],
+    "gates": [
+      {
+        "command": "pnpm test:repo",
+        "kind": "command",
+      },
+      {
+        "assertion": "CI static governance remains full",
+        "kind": "static",
+      },
+      {
+        "assertion": "CI pull request test/build remain affected-only",
+        "kind": "static",
+      },
+      {
+        "assertion": "CI push test/build remain full",
+        "kind": "static",
+      },
+    ],
+    "id": "monorepo-config",
+    "independentAcceptance": "reviewer",
+    "redGate": {
+      "command": "pnpm --workspace-root exec vitest run scripts/repo-tooling --reporter=verbose",
+      "expectedExitCode": 1,
+      "failurePattern": "(TURBO_CACHE_CI_SEMANTICS_MISSING|CI_PULL_REQUEST_AFFECTED_FILTER_MISSING|CI_PUSH_FULL_RUN_MISSING)",
+      "forbiddenFailurePatterns": [
+        "Cannot find module",
+        "Failed to resolve import",
+        "No test files found",
+        "ERR_MODULE_NOT_FOUND",
+        "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY",
+      ],
+    },
+    "regressionGates": [
+      {
+        "command": "pnpm verify",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm test:run",
+        "kind": "command",
+      },
+    ],
+  },
+  {
+    "evidencePaths": [
+      "apps/client/src/features/demo/navigation/**/*.test.ts",
+      "apps/client/src/features/demo/navigation/**/*.test.tsx",
+    ],
+    "evidenceStrategies": [
+      "red",
+    ],
+    "gates": [
+      {
+        "command": "pnpm --filter client test:run",
+        "kind": "command",
+      },
+    ],
+    "id": "bug-fix",
+    "independentAcceptance": "reviewer",
+    "redGate": {
+      "command": "pnpm --workspace-root exec vitest run apps/client/src/features/demo/navigation --reporter=verbose",
+      "expectedExitCode": 1,
+      "failurePattern": "(INVALID_NAVIGATION_QUERY_FALLBACK_MISSING|NAVIGATION_KEYBOARD_STATE_REGRESSION)",
+      "forbiddenFailurePatterns": [
+        "Cannot find module",
+        "Failed to resolve import",
+        "No test files found",
+        "ERR_MODULE_NOT_FOUND",
+        "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY",
+      ],
+    },
+    "regressionGates": [
+      {
+        "command": "pnpm test:run",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm --filter client build",
+        "kind": "command",
+      },
+    ],
+  },
+  {
+    "evidencePaths": [
+      "apps/client/src/features/account-settings/**/*.test.ts",
+      "apps/client/src/features/account-settings/**/*.test.tsx",
+    ],
+    "evidenceStrategies": [
+      "red",
+    ],
+    "gates": [
+      {
+        "command": "pnpm --filter client test:run",
+        "kind": "command",
+      },
+    ],
+    "id": "holdout-client-page",
+    "independentAcceptance": "browser",
+    "redGate": {
+      "command": "pnpm --workspace-root exec vitest run apps/client/src/features/account --reporter=verbose",
+      "expectedExitCode": 1,
+      "failurePattern": "(ACCOUNT_SETTINGS_ROUTE_COMPOSITION_MISSING|ACCOUNT_SETTINGS_SERVER_PREFETCH_MISSING|ACCOUNT_SETTINGS_SAVE_INTERACTION_MISSING)",
+      "forbiddenFailurePatterns": [
+        "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY",
+        "Cannot find module",
+        "Failed to resolve import",
+        "No test files found",
+        "ERR_MODULE_NOT_FOUND",
+      ],
+    },
+    "regressionGates": [
+      {
+        "command": "pnpm test:run",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm verify",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm --filter client build",
+        "kind": "command",
+      },
+    ],
+  },
+  {
+    "evidencePaths": [
+      "packages/http-client/**/*.test.ts",
+    ],
+    "evidenceStrategies": [
+      "characterization",
+      "mutation",
+    ],
+    "gates": [
+      {
+        "command": "pnpm --filter @kkfive/http-client test:run",
+        "kind": "command",
+      },
+    ],
+    "id": "holdout-package-test",
+    "independentAcceptance": "reviewer",
+    "redGate": {
+      "command": "pnpm --workspace-root exec vitest run packages/http-client --reporter=verbose",
+      "expectedExitCode": 1,
+      "failurePattern": "(BUSINESS_ERROR_OPTIONS_PRESERVED|CREATE_ERROR_RESPONSE_ERROR_SHAPE_MISSING|HTTP_SERVICE_NETWORK_ISOLATION_MISSING)",
+      "forbiddenFailurePatterns": [
+        "Cannot find module",
+        "Failed to resolve import",
+        "No test files found",
+        "ERR_MODULE_NOT_FOUND",
+        "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY",
+      ],
+    },
+    "regressionGates": [
+      {
+        "command": "pnpm --filter @kkfive/rpc typecheck",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm --filter client test:run",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm test:run",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm verify",
+        "kind": "command",
+      },
+    ],
+  },
+  {
+    "evidencePaths": [
+      "scripts/repo-tooling/**/*.test.ts",
+      "scripts/repo-tooling/**/__fixtures__/**",
+    ],
+    "evidenceStrategies": [
+      "fixture",
+      "red",
+    ],
+    "gates": [
+      {
+        "command": "pnpm test:repo",
+        "kind": "command",
+      },
+      {
+        "assertion": "CI static governance remains full",
+        "kind": "static",
+      },
+      {
+        "assertion": "CI pull request test/build remain affected-only",
+        "kind": "static",
+      },
+      {
+        "assertion": "CI push test/build remain full",
+        "kind": "static",
+      },
+    ],
+    "id": "holdout-monorepo-cache",
+    "independentAcceptance": "reviewer",
+    "redGate": {
+      "command": "pnpm --workspace-root exec vitest run scripts/repo-tooling --reporter=verbose",
+      "expectedExitCode": 1,
+      "failurePattern": "(TURBO_CACHE_CI_SEMANTICS_MISSING|CI_PULL_REQUEST_AFFECTED_FILTER_MISSING|CI_PUSH_FULL_RUN_MISSING)",
+      "forbiddenFailurePatterns": [
+        "Cannot find module",
+        "Failed to resolve import",
+        "No test files found",
+        "ERR_MODULE_NOT_FOUND",
+        "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY",
+      ],
+    },
+    "regressionGates": [
+      {
+        "command": "pnpm verify",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm test:run",
+        "kind": "command",
+      },
+    ],
+  },
+  {
+    "evidencePaths": [
+      "apps/client/src/features/demo/navigation/**/*.test.ts",
+      "apps/client/src/features/demo/navigation/**/*.test.tsx",
+    ],
+    "evidenceStrategies": [
+      "red",
+    ],
+    "gates": [
+      {
+        "command": "pnpm --filter client test:run",
+        "kind": "command",
+      },
+    ],
+    "id": "holdout-implicit-feature",
+    "independentAcceptance": "reviewer",
+    "redGate": {
+      "command": "pnpm --workspace-root exec vitest run apps/client/src/features/demo/navigation --reporter=verbose",
+      "expectedExitCode": 1,
+      "failurePattern": "(INVALID_NAVIGATION_QUERY_FALLBACK_MISSING|NAVIGATION_KEYBOARD_STATE_REGRESSION)",
+      "forbiddenFailurePatterns": [
+        "Cannot find module",
+        "Failed to resolve import",
+        "No test files found",
+        "ERR_MODULE_NOT_FOUND",
+        "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY",
+      ],
+    },
+    "regressionGates": [
+      {
+        "command": "pnpm test:run",
+        "kind": "command",
+      },
+      {
+        "command": "pnpm --filter client build",
+        "kind": "command",
+      },
+    ],
+  },
+]
+`;

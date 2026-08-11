@@ -1,79 +1,49 @@
 # UI 组件导入规范
 
-**核心原则**：所有层级必须通过 `@/components/ui/*` 使用 UI 组件，禁止直接导入第三方 UI 库（如 antd、sonner 等）
+**核心原则**：基础 UI 控件来自 `@kkfive/ui`，业务代码**直接消费**，不做零价值 re-export 透传层。仅真实加工才封装，且封装必须含实现。
 
-## 导入规则
-
-| 层级 | UI 组件导入规则 | 示例 |
-|------|----------------|------|
-| `src/app/` | ✅ 必须通过 `@/components/ui/*` | `import { Button } from '@/components/ui/button'` |
-| `src/components/domain/` | ✅ 必须通过 `@/components/ui/*` | `import { Modal } from '@/components/ui/modal'` |
-| `src/components/common/` | ✅ 必须通过 `@/components/ui/*` | `import { toast } from '@/components/ui/sonner'` |
-| `src/components/ui/` | ✅ 封装或透传第三方 UI 组件 | `export { Button } from 'antd'` |
-
-## 为什么这样设计
-
-- **统一入口**：所有 UI 组件通过 `ui/` 层统一管理
-- **易于替换**：更换 UI 库时只需修改 `ui/` 层
-- **可扩展**：需要自定义时直接在 `ui/` 层修改
-- **类型安全**：统一的类型导出
-
-## 组件文件结构规范
-
-所有 UI 组件必须使用 `目录/index.tsx` 的形式，禁止直接在 `ui/` 目录下创建 `.tsx` 文件：
+## 包结构
 
 ```
-✅ 正确：
-src/components/ui/
-├── button/
-│   └── index.tsx
-├── modal/
-│   └── index.tsx
-└── sonner/
-    └── index.tsx
+packages/ui/                     基础 UI（shadcn 二次封装 + 自实现，不含 antd）
+  components/                     Button、Input、Dialog、Select 等
+  hooks/                          use-mobile 等基础 hook
+  utils/                          cn()、createIcon 等
 
-❌ 错误：
-src/components/ui/
-├── button.tsx
-├── modal.tsx
-└── sonner.tsx
+apps/{app}/src/components/        跨 feature UI（直接消费 @kkfive/ui，无透传层）
+  common/                         通用功能组件（可复用，不依赖特定业务）
+apps/{app}/src/features/<feature>/components/
+                                  feature 专属业务 UI（可连 feature calls）
 ```
 
-## 透传封装示例
+## 导入规则（Next.js apps）
+
+| 层级 | 导入规则 | 示例 |
+|------|----------|------|
+| `src/app/` | ✅ 直接 `@kkfive/ui/components/*` | `import { Button } from '@kkfive/ui/components/button'` |
+| `src/components/common/` | ✅ 直接 `@kkfive/ui/components/*` / `hooks/*` | `import { useIsMobile } from '@kkfive/ui/hooks/use-mobile'` |
+| `src/features/<feature>/components/` | ✅ 直接 `@kkfive/ui/components/*` + feature calls | — |
+| 任何层 | ❌ 禁零价值透传层 | ~~`apps/{app}/src/components/ui/button.tsx` = `export * from '@kkfive/ui/...'`~~ |
+
+## antd 使用
+
+`@kkfive/ui` 不含 antd。antd 由各 app 按需安装，业务代码**可直接 `from 'antd'`**——antd 是 app 的合法 UI 依赖，不做二次封装（封装若无加工即零价值间接层，徒增 AI 理解与维护成本）。
+
+- 用 antd 独有能力（Form/Table/Upload，或 antd Button 的 `variant`/`icon` API）时直接 import
+- 基础控件优先 `@kkfive/ui/components/*`，减少与 antd 重复
+- ConfigProvider / 主题 token 各 app 自治
+
+## 何时在 app 内封装
+
+仅当存在**真实加工**时才封装，封装必须含实现（非纯 re-export）：
 
 ```typescript
-// src/components/ui/button/index.tsx - 透传 antd Button
-/**
- * Button 组件 - 透传 Ant Design Button
- *
- * 用于触发操作和提交表单
- */
-export { Button } from 'antd'
-export type { ButtonProps } from 'antd'
-
-// src/components/ui/sonner/index.tsx - 透传 sonner
-/**
- * toast 函数 - 显示 Toast 通知
- *
- * 用于在应用中显示临时通知消息
- */
-export { toast, Toaster } from 'sonner'
-export type { ToasterProps } from 'sonner'
-```
-
-## 自定义封装示例
-
-```typescript
-// src/components/ui/custom-button/index.tsx - 自定义样式
-import { Button as AntdButton } from 'antd'
-import type { ButtonProps as AntdButtonProps } from 'antd'
-
-export type CustomButtonProps = AntdButtonProps & {
-  variant?: 'primary' | 'secondary'
+// ✅ 合法封装：含实现，改了默认行为
+import { Button as UiButton } from '@kkfive/ui/components/button'
+export function PageButton(props) {
+  return <UiButton variant="default" size="lg" {...props} />
 }
 
-export function CustomButton({ variant, ...props }: CustomButtonProps) {
-  // 自定义逻辑
-  return <AntdButton {...props} />
-}
+// ❌ 非法：零价值透传，直接用 @kkfive/ui 即可
+export { Button } from '@kkfive/ui/components/button'
 ```

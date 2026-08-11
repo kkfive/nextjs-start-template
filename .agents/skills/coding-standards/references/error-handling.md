@@ -2,8 +2,10 @@
 
 ## 使用项目定义的错误类
 
+错误类定义在各 app 的 `src/lib/errors/`（错误类有 throw/instanceof 行为，不放 `@kkfive/contracts`；契约包只放错误响应数据形状 `ErrorResponseSchema`）。
+
 ```typescript
-// 导入错误类
+// 各 app 内导入错误类
 import { ApiError, AppError, ValidationError } from '@/lib/errors'
 
 // API 错误处理

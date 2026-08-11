@@ -3,14 +3,8 @@
 ## 组件定义
 
 ```tsx
-// 使用函数声明，不使用箭头函数
-// ✅ 正确
+// 公共组件优先使用具名函数声明
 export function HitokotoCard({ initialData }: HitokotoCardProps) {
-  return <div>...</div>
-}
-
-// ❌ 错误
-export const HitokotoCard = ({ initialData }: HitokotoCardProps) => {
   return <div>...</div>
 }
 ```
@@ -29,19 +23,19 @@ export function ClientComponent() {
 
 ```typescript
 // 组件 Props 命名: {ComponentName}Props
-interface HitokotoCardProps {
+type HitokotoCardProps = {
   initialData: Hitokoto.Hitokoto
 }
 
 // 或使用 props.ts 文件
-// src/components/ui/button/props.ts
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+// apps/{app}/src/components/ui/button/props.ts
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   primary?: boolean
 }
 ```
 
 ## 核心原则
 
-- **函数声明优先**：使用 `export function` 而非箭头函数
+- **具名优先**：公共组件优先 `export function`；局部 callback 与确有类型推导需要的组件可使用箭头函数
 - **明确客户端标记**：需要客户端交互的组件必须添加 `'use client'`
 - **类型安全**：所有 Props 必须有明确的类型定义

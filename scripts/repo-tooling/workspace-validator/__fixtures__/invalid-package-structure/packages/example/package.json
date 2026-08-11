@@ -1,0 +1,8 @@
+{
+  "name": "dangling-test-owner",
+  "private": true,
+  "scripts": {
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit"
+  }
+}

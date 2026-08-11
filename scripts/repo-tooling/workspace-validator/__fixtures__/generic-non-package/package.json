@@ -1,0 +1,10 @@
+{
+  "name": "generic-non-package-fixture",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "lint": "eslint .",
+    "test:run": "turbo run test:run",
+    "typecheck": "turbo run typecheck"
+  }
+}

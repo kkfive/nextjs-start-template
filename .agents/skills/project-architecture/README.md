@@ -1,56 +1,6 @@
-# Project Architecture Skill
+# Project Architecture
 
-项目架构和组织规范 Skill
-
-## 用途
-
-提供项目架构、目录约定、命名规范等组织规范。
-
-## 使用场景
-
-- 创建新模块或组件
-- 组织项目结构
-- 文件和目录命名
-- 理解架构分层
-- 解决依赖问题
-
-## 调用方式
-
-```
-/project-architecture
-```
-
-## 包含内容
-
-- **三层架构**：Domain 层、应用层、UI 层
-- **依赖规则**：各层级的导入限制
-- **目录约定**：文件和目录组织规范
-- **命名规范**：文件、目录、代码标识符命名
-
-## 快速示例
-
-### 三层架构
-
-```
-domain/              → 业务能力层 (核心逻辑框架无关，hooks.ts 作为适配层例外)
-src/lib/             → 基础设施层
-src/components/ui/   → 基础 UI
-src/components/domain/ → 业务 UI
-src/app/             → 页面路由层
-```
-
-### 命名规范
-
-```
-目录: kebab-case (user-profile/)
-React 组件文件: kebab-case (hitokoto-card.tsx)
-React 组件: PascalCase (HitokotoCard)
-函数/变量: camelCase (getData, isLoading)
-类型/接口: PascalCase (UserProfile)
-```
-
-## 相关文档
-
-- `references/architecture-overview.md` - 完整架构文档
-- `references/directory-structure.md` - 目录约定
-- `references/naming-conventions.md` - 命名规范
+用于用户明确提出的代码归属、模块拆分、新 app/package 与跨层或跨包依赖边界决策。
+按现有 Feature-first 模板新增普通 page、feature 或 public entry 不触发 `/project-architecture`。
+普通页面实现、单文件实现与 Turbo、CI 工程化不使用此入口。
+入口与完整路由见 [SKILL.md](./SKILL.md)。

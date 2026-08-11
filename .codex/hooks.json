@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "SKILL_ROUTER_PATH=AGENTS.md bash \"${CODEX_PROJECT_DIR:-$PWD}/.codex/hooks/session-start\""
+          }
+        ]
+      }
+    ]
+  }
+}

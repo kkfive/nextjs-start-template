@@ -1,25 +1,49 @@
 # 层级依赖规则
 
-## 禁止的导入
+## 跨包允许的导入
 
-```
-❌ domain/ → @/components/*
-❌ domain/ → @/hooks/*
-❌ domain/ → @/store/*
-❌ domain/ → @/app/*
+```text
+✅ apps/* → @kkfive/rpc, @kkfive/ui, @kkfive/http-client, @kkfive/utils
+✅ app 配置文件 → @kkfive/{tsconfig,nextjs-config,tailwind-config}
+✅ packages/rpc → @kkfive/contracts(type), @kkfive/http-client
+✅ apps/{client,admin}/src/service/rpc-*.ts → api.AppType（仅 import type）
+✅ packages/http-client → @kkfive/contracts（peer）
+✅ packages/ui → react/react-dom（peer）, shadcn/Radix, Tailwind
 ```
 
-## 允许的导入
+## 跨包禁止的导入
 
+```text
+❌ packages/* → apps/*（包括 type-only）
+❌ apps/A → apps/B（唯一例外是 service rpc 文件 type-only 消费 api.AppType）
+❌ packages/ui → antd / 业务代码
+❌ packages/contracts, packages/utils → 任何运行时框架
+❌ internal/* → apps/* 或 packages/*
+❌ 任何层 → 零价值 re-export 透传层
 ```
-✅ domain/ → @/lib/*
-✅ src/components/domain/ → @domain/*
-✅ src/components/domain/ → @/components/ui/*
-✅ src/app/ → @/components/ui/*
+
+## 应用内依赖（Next.js apps）
+
+```text
+✅ apps/{app}/src/app/ → @/features/* 的公开入口、路由元数据、Next.js 能力
+✅ apps/{app}/src/features/ → @/service/* 的运行时实例、@/components/*、@/lib/*、共享包
+✅ apps/{app}/src/service/ → HTTP/RPC/SSE 依赖、server-only/client-only
+❌ apps/{app}/src/app/ → feature 内部私有实现
+❌ apps/{app}/src/service/ → @/features/*、@/components/*、@/app/*、业务 hooks/store
+❌ feature A → feature B 的内部文件（只允许明确公开入口）
+```
+
+## 应用内依赖（Hono app：api）
+
+```text
+✅ apps/api/src/routes/ → @kkfive/contracts、@/lib/*、@/middleware/*
+❌ apps/api → @kkfive/utils/dom（服务端只引 @kkfive/utils/common）
+❌ apps/api → 任何前端框架、@kkfive/http-client
 ```
 
 ## 核心原则
 
-- **Domain 核心逻辑框架无关**：禁止导入 React 组件、Next.js、UI、应用 hooks 和 stores；`domain/**/hooks.ts` 是 React Query 适配层例外
-- **单向依赖**：应用层可以导入 Domain 层，反之不行
-- **抽象层例外**：Domain 层可以导入 `@/lib/*` 抽象层（HTTP、工具函数）
+- **Feature-first**：app 业务能力按 `src/features/<feature>/` 聚合；路由只组合，service 只留运行时实例
+- **单向依赖**：应用层可导入共享包，反之不行；AppType edge 由 app service 接管
+- **实例由 app 创建**：HttpService 抽象在 `@kkfive/http-client`，具体 HTTP/RPC/SSE 实例在 app 的 `src/service/`
+- **稳定入口**：消费公开 export，不建立零价值 alias、re-export 或 shim

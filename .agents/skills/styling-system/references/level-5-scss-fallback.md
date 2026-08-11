@@ -17,7 +17,7 @@
 ## 模板
 
 ```scss
-// src/components/domain/material/material-uploader.scss
+// src/features/material/components/material-uploader.scss
 
 .material-uploader {
   // 覆盖原因：antd Upload 拖拽区域无法通过 API 自定义边框样式

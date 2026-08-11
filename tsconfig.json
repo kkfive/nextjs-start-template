@@ -1,44 +1,13 @@
 {
-  "compilerOptions": {
-    "incremental": true,
-    "target": "ES2017",
-    "jsx": "react-jsx",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@domain/*": [
-        "./domain/*"
-      ]
-    },
-    "resolveJsonModule": true,
-    "allowJs": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "skipLibCheck": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+  "references": [
+    { "path": "packages/contracts" },
+    { "path": "packages/utils" },
+    { "path": "packages/http-client" },
+    { "path": "packages/ui" },
+    { "path": "packages/rpc" },
+    { "path": "apps/client" },
+    { "path": "apps/admin" },
+    { "path": "apps/api" }
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "files": []
 }

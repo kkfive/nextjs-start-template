@@ -1,0 +1,43 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "globalEnv": ["NODE_ENV", "CI"],
+  "globalPassThroughEnv": ["COREPACK_HOME"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!**/*.md",
+        "!**/*.test.*",
+        "!**/*.spec.*",
+        "!**/*.stories.*",
+        "!**/__tests__/**"
+      ],
+      "env": [
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_APP_URL",
+        "NEXT_PUBLIC_DEBUG",
+        "NEXT_PUBLIC_GA_ID",
+        "SKIP_ENV_VALIDATION"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "inputs": ["$TURBO_DEFAULT$"]
+    },
+    "test": {
+      "dependsOn": [],
+      "inputs": ["$TURBO_DEFAULT$"]
+    },
+    "test:run": {
+      "dependsOn": [],
+      "inputs": ["$TURBO_DEFAULT$"]
+    }
+  }
+}

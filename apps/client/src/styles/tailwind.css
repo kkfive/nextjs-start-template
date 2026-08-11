@@ -1,0 +1,340 @@
+@import 'tailwindcss';
+
+@plugin "tailwindcss-animate";
+@plugin "@iconify/tailwind4";
+
+@source "../../../../packages/ui/src";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --surface-page: #f7f4ef;
+  --surface-card: rgba(255, 252, 248, 0.82);
+  --surface-popover: rgba(255, 252, 248, 0.92);
+  --surface-muted: #efe6da;
+  --surface-canvas: rgba(255, 252, 248, 0.74);
+  --gradient-page:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--atmosphere-a) 22%, transparent), transparent 36%),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--atmosphere-b) 18%, transparent), transparent 34%),
+    linear-gradient(180deg, #fbf7f1 0%, #f4efe7 100%);
+  --text-primary: #1f1a16;
+  --text-default: #1f1a16;
+  --text-muted: #6d6458;
+  --text-inverse: #fff9f0;
+  --action-primary: #1f1a16;
+  --action-primary-text: #fff9f0;
+  --action-secondary: #efe6da;
+  --action-secondary-text: #1f1a16;
+  --action-accent: #ef6b4a;
+  --action-accent-text: #fff7f2;
+  --action-destructive: #c9463b;
+  --action-destructive-text: #fff6f3;
+  --action-success: #4f8f66;
+  --action-success-text: #f4fbf6;
+  --action-warning: #c19132;
+  --action-warning-text: #231a0d;
+  --border-default: color-mix(in srgb, #b79f86 26%, #fff);
+  --border-strong: color-mix(in srgb, #8f7a66 42%, #fff);
+  --border-subtle: color-mix(in srgb, #d8ccbf 65%, #fff);
+  --border-input: color-mix(in srgb, #bea890 42%, #fff);
+  --focus-ring: #ef6b4a;
+  --radius-control: 0.5rem;
+  --radius-card: 0.875rem;
+  --radius-panel: 1.25rem;
+  --radius-container: 1.75rem;
+  --atmosphere-a: color-mix(in srgb, #ffb180 86%, white);
+  --atmosphere-b: color-mix(in srgb, #ff8bb1 80%, white);
+  --atmosphere-c: color-mix(in srgb, #72d6de 78%, white);
+  --grid-line: color-mix(in srgb, var(--text-default) 10%, transparent);
+  --atmosphere-glow: 0.34;
+  --particle-opacity: 0.62;
+  --grid-opacity: 0.55;
+}
+
+.dark {
+  --surface-page: #0f1118;
+  --surface-card: rgba(20, 24, 32, 0.76);
+  --surface-popover: rgba(24, 28, 38, 0.88);
+  --surface-muted: #171b24;
+  --surface-canvas: rgba(18, 22, 31, 0.72);
+  --gradient-page:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--atmosphere-a) 18%, transparent), transparent 35%),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--atmosphere-b) 16%, transparent), transparent 36%),
+    linear-gradient(180deg, #10131b 0%, #0b0e14 100%);
+  --text-primary: #edf0f8;
+  --text-default: #edf0f8;
+  --text-muted: #9aa3b6;
+  --text-inverse: #0f1118;
+  --action-primary: #f3f5fb;
+  --action-primary-text: #11131b;
+  --action-secondary: #1a1f2a;
+  --action-secondary-text: #edf0f8;
+  --action-accent: #ff9c73;
+  --action-accent-text: #27160d;
+  --action-destructive: #ff7a73;
+  --action-destructive-text: #26100d;
+  --action-success: #78c892;
+  --action-success-text: #0e1b13;
+  --action-warning: #f0bf67;
+  --action-warning-text: #21170a;
+  --border-default: color-mix(in srgb, #7280a8 22%, transparent);
+  --border-strong: color-mix(in srgb, #8596c7 38%, transparent);
+  --border-subtle: color-mix(in srgb, #5b6788 20%, transparent);
+  --border-input: color-mix(in srgb, #6f7fa8 26%, transparent);
+  --focus-ring: #ff9c73;
+  --atmosphere-glow: 0.28;
+  --particle-opacity: 0.4;
+  --grid-opacity: 0.36;
+}
+
+[data-theme='ocean'] {
+  --atmosphere-a: color-mix(in srgb, #88d8f7 84%, white);
+  --atmosphere-b: color-mix(in srgb, #5ab4ff 84%, white);
+  --atmosphere-c: color-mix(in srgb, #ff8f7e 78%, white);
+  --action-accent: #1a8fb6;
+  --focus-ring: #1a8fb6;
+}
+[data-theme='ocean'].dark {
+  --atmosphere-a: color-mix(in srgb, #2f87d5 70%, transparent);
+  --atmosphere-b: color-mix(in srgb, #3452d3 72%, transparent);
+  --atmosphere-c: color-mix(in srgb, #ff8c70 58%, transparent);
+  --action-accent: #61d1ea;
+  --focus-ring: #61d1ea;
+}
+[data-theme='sunset'] {
+  --atmosphere-a: color-mix(in srgb, #f8a35a 84%, white);
+  --atmosphere-b: color-mix(in srgb, #ef747d 78%, white);
+  --atmosphere-c: color-mix(in srgb, #f8d46d 84%, white);
+  --action-accent: #d85a39;
+  --focus-ring: #d85a39;
+}
+[data-theme='sunset'].dark {
+  --atmosphere-a: color-mix(in srgb, #f78b47 70%, transparent);
+  --atmosphere-b: color-mix(in srgb, #d95074 72%, transparent);
+  --atmosphere-c: color-mix(in srgb, #f2bd4b 58%, transparent);
+  --action-accent: #ff9f6b;
+  --focus-ring: #ff9f6b;
+}
+[data-theme='midnight'] {
+  --atmosphere-a: color-mix(in srgb, #8998ff 82%, white);
+  --atmosphere-b: color-mix(in srgb, #8d7bff 82%, white);
+  --atmosphere-c: color-mix(in srgb, #6fd4df 78%, white);
+  --action-accent: #506ff0;
+  --focus-ring: #506ff0;
+}
+[data-theme='midnight'].dark {
+  --atmosphere-a: color-mix(in srgb, #5061ea 74%, transparent);
+  --atmosphere-b: color-mix(in srgb, #6744df 72%, transparent);
+  --atmosphere-c: color-mix(in srgb, #43b9cf 60%, transparent);
+  --action-accent: #8ea0ff;
+  --focus-ring: #8ea0ff;
+}
+[data-theme='forest'] {
+  --atmosphere-a: color-mix(in srgb, #8cb96c 82%, white);
+  --atmosphere-b: color-mix(in srgb, #53b08b 82%, white);
+  --atmosphere-c: color-mix(in srgb, #f0d26b 80%, white);
+  --action-accent: #5d8f3b;
+  --focus-ring: #5d8f3b;
+}
+[data-theme='forest'].dark {
+  --atmosphere-a: color-mix(in srgb, #5f9751 72%, transparent);
+  --atmosphere-b: color-mix(in srgb, #31997d 72%, transparent);
+  --atmosphere-c: color-mix(in srgb, #d2b750 56%, transparent);
+  --action-accent: #a9ca6b;
+  --focus-ring: #a9ca6b;
+}
+
+@theme inline {
+  --color-canvas: var(--surface-canvas);
+  --color-background: var(--surface-page);
+  --color-foreground: var(--text-default);
+  --color-card: var(--surface-card);
+  --color-card-foreground: var(--text-default);
+  --color-popover: var(--surface-popover);
+  --color-popover-foreground: var(--text-default);
+  --color-primary: var(--action-primary);
+  --color-primary-foreground: var(--action-primary-text);
+  --color-secondary: var(--action-secondary);
+  --color-secondary-foreground: var(--action-secondary-text);
+  --color-muted: var(--surface-muted);
+  --color-muted-foreground: var(--text-muted);
+  --color-accent: var(--action-accent);
+  --color-accent-foreground: var(--action-accent-text);
+  --color-destructive: var(--action-destructive);
+  --color-destructive-foreground: var(--action-destructive-text);
+  --color-success: var(--action-success);
+  --color-success-foreground: var(--action-success-text);
+  --color-warning: var(--action-warning);
+  --color-warning-foreground: var(--action-warning-text);
+  --color-border: var(--border-default);
+  --color-input: var(--border-input);
+  --color-ring: var(--focus-ring);
+  --radius-sm: var(--radius-control);
+  --radius-md: var(--radius-card);
+  --radius-lg: var(--radius-panel);
+  --radius-xl: var(--radius-container);
+}
+
+@theme {
+  --shadow-soft-sm:
+    0 12px 32px -24px color-mix(in srgb, var(--text-default) 24%, transparent),
+    0 2px 10px color-mix(in srgb, var(--text-default) 6%, transparent);
+  --shadow-soft:
+    0 28px 72px -42px color-mix(in srgb, var(--text-default) 28%, transparent),
+    0 4px 20px color-mix(in srgb, var(--text-default) 7%, transparent);
+  --shadow-glass:
+    0 18px 48px -30px color-mix(in srgb, var(--text-default) 24%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 56%, transparent);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image: var(--gradient-page);
+    font-family: var(--font-geist-sans), 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at top left, color-mix(in srgb, var(--atmosphere-a) 14%, transparent), transparent 28%),
+      radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--atmosphere-b) 12%, transparent), transparent 26%),
+      radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--atmosphere-c) 10%, transparent), transparent 32%);
+    z-index: -2;
+  }
+  ::selection {
+    background: var(--action-accent);
+    color: var(--action-accent-text);
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+@keyframes softRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@theme {
+  --animate-soft-rise: softRise 220ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: color-mix(in srgb, var(--surface-card) 74%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.25);
+    backdrop-filter: blur(16px) saturate(1.25);
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--grid-line) 70%, transparent) transparent;
+  }
+
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    content: '';
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 180ms ease-out;
+  }
+  .link-underline:hover::after,
+  .link-underline[data-active='true']::after {
+    transform: scaleX(1);
+  }
+
+  .meta-mono {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .luminous-panel {
+    background: color-mix(in srgb, var(--surface-card) 74%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.25);
+    backdrop-filter: blur(16px) saturate(1.25);
+    @apply border border-border/60 shadow-glass;
+  }
+
+  .atmosphere-grid-mask {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--grid-line) calc(var(--grid-opacity) * 100%), transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--grid-line) calc(var(--grid-opacity) * 100%), transparent) 1px,
+        transparent 1px
+      );
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at center, black 34%, transparent 78%);
+    opacity: 0.85;
+  }
+
+  .luminous-divider {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--atmosphere-b) 46%, var(--border-default)),
+      transparent
+    );
+  }
+
+  /* 共享场顶部淡入遮罩：跨区环境场没有可见起点，光场自然流入下个区块。 */
+  .atmosphere-fade {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 18%);
+    mask-image: linear-gradient(to bottom, transparent, black 18%);
+  }
+}

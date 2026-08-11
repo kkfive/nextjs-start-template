@@ -21,15 +21,15 @@ Server Component 向 Client Component 传 props 时，值必须可被 React 序�
 
 ## 实践
 
-Domain Service 返回值要尽早"扁平化"成 plain object，再跨边界：
+RPC calls 返回值要尽早"扁平化"成 plain object，再跨边界：
 
 ```tsx
 // ✅ Server Component
-const dto = await materialController.getDetail(http, id)
+const dto = await fetchMaterial(rpcServer, id)
 // dto: { id: string, name: string, createdAt: string }
 return <ClientCard data={dto} />
 
-// ❌ 直接传 Domain 内部聚合（含方法或 class）
+// ❌ 直接传含方法或 class 实例的聚合对象
 return <ClientCard model={materialEntity} />
 ```
 

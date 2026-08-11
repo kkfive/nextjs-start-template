@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
+  verify:
+    name: Static Governance
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -28,37 +28,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run ESLint
-        run: pnpm lint
+      - name: Run AI friendliness audit
+        if: always()
+        run: |
+          mkdir -p .artifacts/ai-friendliness
+          pnpm audit:ai-friendliness --format json --output .artifacts/ai-friendliness/report.json
 
-      - name: Verify conventions
-        run: pnpm verify:conventions
-
-  typecheck:
-    name: Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup mise
-        uses: jdx/mise-action@v2
+      - name: Upload AI friendliness report
+        if: always()
+        uses: actions/upload-artifact@v6
         with:
-          cache: true
+          name: ai-friendliness-static-${{ github.run_id }}
+          path: .artifacts/ai-friendliness
+          if-no-files-found: error
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run TypeScript
-        run: pnpm exec tsc --noEmit
+      - name: Run static governance（全量：不使用 affected filter）
+        run: pnpm verify
 
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup mise
         uses: jdx/mise-action@v2
@@ -71,15 +64,35 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Resolve turbo filter（PR 跑受影响包 / push 全量）
+        id: turbo
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" = "pull_request" ] && [ -n "$BASE_REF" ]; then
+            git fetch origin "$BASE_REF" 2>/dev/null || true
+            echo "filter=...[origin/$BASE_REF]" >> "$GITHUB_OUTPUT"
+          else
+            echo "filter=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Run tests
-        run: pnpm test:run
+        run: |
+          if [ -n "${{ steps.turbo.outputs.filter }}" ]; then
+            pnpm exec turbo run test:run --filter="${{ steps.turbo.outputs.filter }}"
+          else
+            pnpm test:run
+          fi
 
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test]
+    needs: [verify, test]
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup mise
         uses: jdx/mise-action@v2
@@ -92,7 +105,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Resolve turbo filter（PR 跑受影响包 / push 全量）
+        id: turbo
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" = "pull_request" ] && [ -n "$BASE_REF" ]; then
+            git fetch origin "$BASE_REF" 2>/dev/null || true
+            echo "filter=...[origin/$BASE_REF]" >> "$GITHUB_OUTPUT"
+          else
+            echo "filter=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build
-        run: pnpm build
+        run: |
+          if [ -n "${{ steps.turbo.outputs.filter }}" ]; then
+            pnpm exec turbo run build --filter="${{ steps.turbo.outputs.filter }}"
+          else
+            pnpm build
+          fi
         env:
           SKIP_ENV_VALIDATION: true

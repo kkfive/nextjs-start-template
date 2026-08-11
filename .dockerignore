@@ -1,0 +1,14 @@
+.git
+.github
+.idea
+.pi
+.turbo
+.workflow
+.vscode
+**/.DS_Store
+**/.env*
+**/.next
+**/.turbo
+**/coverage
+**/dist
+**/node_modules

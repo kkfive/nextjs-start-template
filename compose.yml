@@ -1,0 +1,48 @@
+# Docker Compose 只负责统一镜像构建和本地容器编排。
+# 本地自动读取仓库根目录的 `.env`，CI 直接使用平台环境变量。
+services:
+  api:
+    image: ${IMAGE_REGISTRY:-local}/kkfive-api:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      PORT: '8787'
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
+    ports:
+      - '${API_PORT:-8787}:8787'
+
+  client:
+    image: ${IMAGE_REGISTRY:-local}/kkfive-client:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/client/Dockerfile
+      args:
+        # NEXT_PUBLIC_* 会写入浏览器产物，必须在构建镜像时确定。
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:?必须配置 NEXT_PUBLIC_APP_URL}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?必须配置 NEXT_PUBLIC_API_URL}
+        # 这里只为 Next.js 构建提供服务端地址，不应传入密钥。
+        API_BASE_URL: ${API_BUILD_BASE_URL:?必须配置 API_BUILD_BASE_URL}
+    environment:
+      # 服务端变量在容器启动时注入，同一镜像可用于不同运行环境。
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:?必须配置 NEXT_PUBLIC_APP_URL}
+      API_BASE_URL: ${API_BASE_URL:-http://api:8787}
+      API_TOKEN: ${API_TOKEN:-}
+    ports:
+      - '${CLIENT_PORT:-3000}:3000'
+    depends_on:
+      - api
+
+  admin:
+    image: ${IMAGE_REGISTRY:-local}/kkfive-admin:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?必须配置 NEXT_PUBLIC_API_URL}
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?必须配置 NEXT_PUBLIC_API_URL}
+    ports:
+      - '${ADMIN_PORT:-3001}:3000'
+    depends_on:
+      - api
