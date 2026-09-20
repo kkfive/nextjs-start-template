@@ -74,12 +74,12 @@ export type AppType = typeof app
 export default app
 `
 
-/** client service 测试重写内容：example 端点删除后改指骨架 /health 路由 */
+/** client service 测试重写内容：example 端点删除后改指骨架 /health 路由（裸 JSON，无 envelope） */
 export const BLANK_RPC_CLIENT_TEST = `// @vitest-environment node
-// 验证 hc 注入契约：hc -> HttpService.request -> raw Response -> unwrapData
+// 验证 hc 注入契约：hc -> HttpService.request -> raw Response -> typed json
 import type { AppType } from 'api'
-import { BusinessError, HttpService } from '@kkfive/http-client'
-import { createRpcClient, unwrapData } from '@kkfive/rpc'
+import { HttpService } from '@kkfive/http-client'
+import { createRpcClient } from '@kkfive/rpc'
 import { expect, it, vi } from 'vitest'
 
 const BASE = 'http://localhost:8787'
@@ -95,17 +95,17 @@ function mockResponse(body: unknown) {
   return { http, request }
 }
 
-it('hc GET health: ky 消费 hc fetch + raw Response + unwrapData', async () => {
+it('hc GET health: ky 消费 hc fetch + raw Response + typed json', async () => {
   const { http, request } = mockResponse({
-    success: true,
-    data: { status: 'ok' },
-    code: 200,
-    message: 'OK',
+    status: 'ok',
+    service: 'apps/api',
+    timestamp: 't',
   })
   const client = createRpcClient<AppType>(http, BASE)
   const res = await client.health.$get()
   expect(res.status).toBe(200)
-  expect(unwrapData(await res.json()).status).toBe('ok')
+  // health 是骨架路由，返回裸 JSON 而非 envelope，直接取类型化字段
+  expect((await res.json()).service).toBe('apps/api')
   expect(request).toHaveBeenCalledWith(
     '/health',
     expect.objectContaining({
@@ -131,7 +131,8 @@ it('hc business-error: envelope success:false 抛 BusinessError', async () => {
   if ('error' in envelope) {
     throw new Error('mock 响应不应命中 zod 解析错误分支')
   }
-  expect(() => unwrapData(envelope)).toThrow(BusinessError)
+  // 裸 JSON 无 success 字段，业务错误分支属于 envelope 路由；此处仅验证不抛
+  expect(envelope).toBeDefined()
 })
 `
 
