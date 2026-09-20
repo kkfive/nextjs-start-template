@@ -26,9 +26,9 @@
 - 改变目录归属、模块拆分、依赖边界或新建 app/package：`project-architecture`。
 - Turbo、CI、workspace 或机器治理：`monorepo-engineering`。
 - 行为、契约或工程行为变化：`evidence-first-development`。
-- 审计提示词、rules、skills、触发或上下文成本：`ai-friendliness-audit`。
 
 ## 工作与门禁
 
 - 新建定义前检索已有实现；行为变化路由到 `evidence-first-development`。
+- 治理规则不能以自身存在为保留依据；静态检查通过不等于 agent 行为证据。
 - `.workflow/`、历史状态和 AI 自述不能作为源码或验收证据。

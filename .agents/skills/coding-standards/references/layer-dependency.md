@@ -1,4 +1,6 @@
-# 层级依赖规则
+# 层级依赖规则（FFG 规则源）
+
+> 本文件是 `scripts/repo-tooling/architecture-policy/`（FFG01-07）与根 ESLint import 限制的**规则语义来源**，仅在新增/修改机器规则时阅读；日常编码不需要本文件——违反下列方向的 import 会被门禁直接拦截。规则语义变化时必须同步更新本文件、rule module 与 fixtures。
 
 ## 跨包允许的导入
 

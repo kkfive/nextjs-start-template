@@ -17,6 +17,8 @@
 - 硬编码颜色值（用 CSS Variables）
 - 混用多种方案做同一件事
 
+选择顺序：全局/全实例 → Level 1；主题切换/暗色 → Level 2；单实例且有 API → Level 3（**必查当前 antd 官方文档**确认 `styles`/`classNames` 支持）；布局/间距/响应式 → Level 4；仅内部元素/伪元素/伪类 → Level 5。
+
 ## 升级触发
 
 | 信号 | 升级到 |

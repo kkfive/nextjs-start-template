@@ -25,10 +25,6 @@ build task 若不声明 `env`，改 `.env` / `NEXT_PUBLIC_*` 后 build 命中旧
 
 `inputs: ["$TURBO_DEFAULT$"]` 包含该包源码 + 配置 + 依赖声明。在其上用 `!` 排除无关文件（`!**/*.md`、`!**/*.test.*`）提升命中率。不要从零列举 inputs，容易漏。
 
-## 6. 静态规则 vs 工程化：边界
+## 6. 依赖方向规则的归属
 
-单向依赖规则定义在 `layer-dependency.md`，机器实现位于 `scripts/repo-tooling/architecture-policy/`。规则语义变化时同时更新 reference、rule module 与 valid/invalid fixtures，不能只改文档。
-
-## 7. 依赖方向由 architecture policy 统一检查
-
-`scripts/repo-tooling/architecture-policy/` 同时解析源码 import 与 manifest 依赖，规则集中在 `rules/` 并由 registry 执行。pnpm 严格模式负责解析隔离，Syncpack 只检查版本一致性；不要把两者描述成架构方向校验器。应用内与跨包边界均通过现有 FFG rules 扩展，不另建第二套 lint package。
+规则语义定义在 `coding-standards/references/layer-dependency.md`（规则源），机器实现在 `scripts/repo-tooling/architecture-policy/`（FFG）。规则语义变化时同步更新 reference、rule module 与 valid/invalid fixtures，不能只改文档；不另建第二套 lint package。pnpm 严格模式负责解析隔离，syncpack 只查版本一致性——两者都不是依赖方向校验器。

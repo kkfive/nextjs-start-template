@@ -6,13 +6,12 @@ user-invocable: true
 
 # Next.js App Router
 
-先遵循 `.agents/rules/next-app.rule.md`，再读取一项：
+先遵循 `.agents/rules/next-app.rule.md`，再读取一项。框架通识（文件约定、Metadata API、缓存 API、Server/Client 机制）不在此复述，仅保留项目约束与真实踩坑。
 
 | 任务 | 导航 |
 |---|---|
 | page/layout/loading/error | `workflows/new-page.md` |
 | Route Handler | `workflows/add-api-route.md` |
 | Server Action | `workflows/add-server-action.md` |
-| Server/Client 与序列化 | `rules/server-vs-client.md` 或 `rules/data-serialization.md` |
-| 缓存/Metadata/性能 | `references/caching-strategies.md`、`references/metadata.md` 或 `references/performance.md` |
-| 文件约定/陷阱 | `references/file-conventions.md` 或 `references/gotchas.md` |
+| 缓存失效约定 | `references/caching-strategies.md` |
+| 陷阱 | `references/gotchas.md` |
