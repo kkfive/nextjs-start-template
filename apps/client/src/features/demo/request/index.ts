@@ -1,7 +1,0 @@
-export { default as HitokotoPage } from '../hitokoto/views/hitokoto-page'
-export { default as AuthRequestPage } from './views/auth-request-page'
-export { default as BasicRequestPage } from './views/basic-request-page'
-export { default as ConfigRequestPage } from './views/config-request-page'
-export { default as ErrorsRequestPage } from './views/errors-request-page'
-export { default as InterceptorRequestPage } from './views/interceptor-request-page'
-export { default as SseRequestPage } from './views/sse-request-page'

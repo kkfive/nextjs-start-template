@@ -5,12 +5,10 @@ import { LucideGithub } from '@kkfive/ui/components/icon'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { ThemeSelector } from '@/components/theme-selector'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 const navLinks = [
   { href: '/', label: '首页' },
-  { href: '/demo', label: '演示' },
 ]
 
 export function SiteHeader() {
@@ -92,7 +90,6 @@ export function SiteHeader() {
           >
             <LucideGithub className="size-4" />
           </Link>
-          <ThemeSelector />
           <ThemeToggle />
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { Button } from 'antd'
+import { Button } from '@kkfive/ui/components/button'
 import { Component } from 'react'
 
 type ErrorBoundaryProps = {
@@ -77,7 +77,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <div className="mb-4 text-4xl">⚠️</div>
             <h3 className="mb-2 text-lg font-semibold text-gray-800">组件加载失败</h3>
             <p className="mb-4 text-sm text-gray-600">{this.state.error.message}</p>
-            <Button type="primary" onClick={this.reset}>
+            <Button onClick={this.reset}>
               重试
             </Button>
           </div>
