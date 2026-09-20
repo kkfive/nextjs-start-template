@@ -15,6 +15,7 @@
     "lint:fix": "eslint . --fix",
     "postinstall": "lefthook install",
     "preinstall": "npx only-allow pnpm",
+    "reset": "node scripts/reset-template.mjs",
     "test": "turbo run test",
     "test:repo": "vitest run --testTimeout=120000 --maxWorkers=4 scripts/repo-tooling",
     "test:run": "pnpm run test:repo && turbo run test:run",
