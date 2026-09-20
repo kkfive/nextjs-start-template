@@ -18,3 +18,14 @@ export const contactFormSchema = z.object({
 })
 
 export type ContactFormData = z.infer<typeof contactFormSchema>
+
+/**
+ * 示例：example ping 响应 schema。
+ * 对应 apps/api 的 GET /example/ping，演示跨包 zod-first 契约的最小写法。
+ */
+export const examplePingSchema = z.object({
+  message: z.string(),
+  time: z.string(),
+})
+
+export type ExamplePing = z.infer<typeof examplePingSchema>
