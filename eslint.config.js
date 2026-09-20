@@ -135,11 +135,32 @@ export default antfu(
   tailwindConfig('admin'),
   tailwindConfig('client'),
   {
+    name: 'kkfive/governance/code-quality',
+    rules: {
+      // 类型安全与错误处理由门禁强制，替代提示词中的自律条款。
+      'ts/no-explicit-any': 'error',
+      'no-empty': ['error', { allowEmptyCatch: false }],
+      // 文件名统一 kebab-case；__tests__ 是 Vitest 约定，README/CHANGELOG 等是生态大写约定，予以豁免
+      'unicorn/filename-case': ['error', { case: 'kebabCase', ignore: ['^__tests__$', '^(README|CHANGELOG|LICENSE|CONTRIBUTING)(\\..+)?$'] }],
+      // 图标统一走 @kkfive/ui 的 Iconify 封装，禁止引入其他图标库。
+      'no-restricted-imports': ['error', {
+        paths: [
+          { name: 'lucide-react', message: '图标统一使用 @kkfive/ui/components/icon（Iconify）' },
+          { name: 'react-icons', message: '图标统一使用 @kkfive/ui/components/icon（Iconify）' },
+        ],
+      }],
+    },
+  },
+  {
     name: 'kkfive/runtime/hono',
     files: [`apps/api/${SOURCE_GLOB}`],
     rules: {
       // Hono 服务保持框架无关，禁止反向依赖 app UI、service 与 Next/React。
       'no-restricted-imports': ['error', {
+        paths: [
+          { name: 'lucide-react', message: '图标统一使用 @kkfive/ui/components/icon（Iconify）' },
+          { name: 'react-icons', message: '图标统一使用 @kkfive/ui/components/icon（Iconify）' },
+        ],
         patterns: ['@/components/*', '@/service/*', '@kkfive/utils/dom', 'react', 'react-dom', 'next/*'],
       }],
     },
