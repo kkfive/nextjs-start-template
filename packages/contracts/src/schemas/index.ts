@@ -20,38 +20,12 @@ export const contactFormSchema = z.object({
 export type ContactFormData = z.infer<typeof contactFormSchema>
 
 /**
- * hitokoto（一言）—— 外部 https://hitokoto.cn 的响应形状。
- * api 代理路由用它校验上游响应，前端用它推导类型。
+ * 示例：example ping 响应 schema。
+ * 对应 apps/api 的 GET /example/ping，演示跨包 zod-first 契约的最小写法。
  */
-export const hitokotoResponseSchema = z.object({
-  id: z.number(),
-  uuid: z.string(),
-  hitokoto: z.string(),
-  type: z.string(),
-  from: z.string(),
-  from_who: z.string(),
-  creator: z.string(),
-  creator_uid: z.number(),
-  reviewer: z.number(),
-  commit_from: z.string(),
-  created_at: z.string(),
-  length: z.number(),
+export const examplePingSchema = z.object({
+  message: z.string(),
+  time: z.string(),
 })
 
-export type Hitokoto = z.infer<typeof hitokotoResponseSchema>
-
-/**
- * request scenario 演示：请求体 schema + scenario 枚举。
- */
-export const scenarioSchema = z.object({
-  scenario: z.string(),
-})
-
-export type ScenarioType
-  = | 'success'
-    | 'business-error'
-    | 'error-400'
-    | 'error-401'
-    | 'error-404'
-    | 'error-500'
-    | 'error-503'
+export type ExamplePing = z.infer<typeof examplePingSchema>

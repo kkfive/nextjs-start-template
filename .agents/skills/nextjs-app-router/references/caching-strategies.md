@@ -1,63 +1,20 @@
-# 缓存与重新验证策略
+# 缓存与失效（项目约定）
 
-App Router 的缓存控制集中在 `fetch` 选项与 `revalidate*` API 上。
+Next 缓存 API（`fetch` 选项、`revalidateTag/Path`、路由段配置）为框架通识，此处不重复；只留项目决策。
 
-## 读端：fetch 缓存选项
+## 项目约定
 
-```ts
-// 不缓存（每次新鲜）
-fetch(url, { cache: 'no-store' })
+- **写端必须失效**：Server Action / Route Handler 变更数据后，必须 `revalidateTag` 或 `revalidatePath`，漏掉即页面旧值（本仓最高频 bug 来源）
+- **tag 命名**：`{domain}:list` / `{domain}:detail:{id}`（如 `material:list`、`material:detail:123`）；读端 fetch 用 `next: { tags }` 声明，写端按 tag 失效
+- **默认动态**：Route Handler 默认不加缓存；仅读端且数据稳定才加
+- `next: { tags }` 仅 Server 端 fetch 生效，Client Component 的 fetch 不受 next 缓存管理
 
-// 永久缓存（构建期或首次后静态化）
-fetch(url, { cache: 'force-cache' })
-
-// ISR：60 秒后重新验证
-fetch(url, { next: { revalidate: 60 } })
-
-// 标签缓存：可被 revalidateTag 失效
-fetch(url, { next: { tags: ['material:list'] } })
-```
-
-## 写端：失效缓存
-
-```ts
-'use server'
-import { revalidateTag, revalidatePath } from 'next/cache'
-import { updateMaterial } from '@/features/material/model/calls'
-
-export async function updateMaterialAction(id: string, data: Patch) {
-  await updateMaterial(id, data)
-  // 选其一或组合
-  revalidateTag('material:list')              // 同 tag 的所有 fetch 失效
-  revalidateTag(`material:detail:${id}`)
-  revalidatePath('/material')                 // 按路径失效
-  revalidatePath('/material/[id]', 'page')    // 含动态段
-}
-```
-
-## 路由段配置
-
-```ts
-// apps/client/src/app/material/page.tsx
-export const dynamic = 'force-dynamic'   // 强制每次动态
-export const revalidate = 3600           // 整页 ISR 间隔
-export const fetchCache = 'force-no-store'
-export const runtime = 'nodejs'          // 或 'edge'
-```
-
-## 决策
+## 选择
 
 | 场景 | 选择 |
 |---|---|
 | 数据频繁变化、需立即可见 | `cache: 'no-store'` |
 | 数据稳定、变更可控 | `tags` + Server Action `revalidateTag` |
-| 数据周期变化（如 1 小时） | `next.revalidate` |
-| 一次构建终生不变 | `cache: 'force-cache'`（默认） |
+| 数据周期变化 | `next.revalidate` 秒数 |
 
-## 反例
-
-- ❌ 用 `setInterval` 客户端轮询替代缓存失效
-- ❌ Server Action 改了数据库但忘记 `revalidate*`，页面仍是旧值
-- ❌ 在 Client Component 里手动写 `fetch(url, { next: { tags } })` —— next 缓存仅在 Server 生效
-
-故障排查见 `gotchas.md`。
+故障排查见 `gotchas.md` 缓存节。

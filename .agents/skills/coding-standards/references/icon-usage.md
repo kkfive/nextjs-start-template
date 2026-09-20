@@ -1,8 +1,6 @@
 # 图标使用规范
 
-本项目使用 **Iconify + Tailwind CSS** 方案，通过 `@iconify/tailwind4` 插件实现图标的按需加载。
-
-**禁止**：直接安装 `lucide-react`、`react-icons` 等图标库
+本项目使用 **Iconify + Tailwind CSS** 方案，通过 `@iconify/tailwind4` 插件实现图标的按需加载。其他图标库（lucide-react、react-icons 等）由 eslint `no-restricted-imports` 拦截。
 
 ## 使用方式
 
@@ -31,16 +29,8 @@ export const MdiAccount = CreateIcon('icon-[mdi--account]')
 
 ## 常用图标集
 
-| 图标集 | 前缀 | 说明 |
-|--------|------|------|
-| Lucide | `lucide--` | 简洁线性图标，推荐首选 |
-| Material Design | `mdi--` | Material 风格图标 |
-| Heroicons | `heroicons--` | Tailwind 官方图标 |
-| EOS Icons | `eos-icons--` | 包含加载动画等 |
+图标集查询：[Iconify 图标库](https://icon-sets.iconify.design/)。首选 Lucide（`lucide--`，简洁线性），其次 Material Design（`mdi--`）、Heroicons（`heroicons--`）。
 
 ## 核心原则
 
-- **统一入口**：所有图标通过 `@kkfive/ui/components/icon` 导入
-- **按需加载**：Iconify 自动按需加载图标
-- **类型安全**：图标组件有完整的 TypeScript 类型
-- **样式灵活**：支持 Tailwind className 自定义样式
+- 统一入口 `@kkfive/ui/components/icon`；Iconify 按需加载，支持 className 自定义样式

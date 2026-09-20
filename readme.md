@@ -30,6 +30,18 @@ pnpm dev
 
 各 app 端口：client `5373`、admin `5374`、api `8787`。单 app 启动用 `pnpm --filter client dev`。
 
+## 接管本项目
+
+模板内容分三层：**骨架**（packages、service 运行时、架构 guards，永不删除）、**example**（最简教学示例，教你写法）、**demo**（历史演示内容，在 `playground` 分支）。
+
+| 目标                                 | 做法                                                                                                       |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| 想要空白起点，从零开发               | `pnpm reset`：删除全部示例、重写 home 为空白页，并自动 `pnpm verify` 自校验                                |
+| 想写第一个 feature                   | 参照 `apps/client/src/features/example` 的写法（feature 结构、contracts、API、测试四件套各一份），写完可删 |
+| 想看完整演示（表单/请求/RPC/状态等） | `git checkout playground`                                                                                  |
+
+`pnpm reset` 的删除清单收敛在 `scripts/reset-template.mjs`，幂等可重复执行。
+
 ## 项目结构
 
 ```
@@ -63,6 +75,7 @@ pnpm dev
 | `pnpm lint`      | ESLint 检查                                                              |
 | `pnpm typecheck` | TypeScript 类型检查                                                      |
 | `pnpm test:run`  | 运行测试                                                                 |
+| `pnpm reset`     | 删除模板示例，重写 home 为空白起点，verify 自校验                        |
 | `pnpm verify`    | lint、typecheck、依赖一致性、架构策略及 fixture 校验（不替代测试或构建） |
 
 > 单 app 操作：`pnpm --filter client dev`、`pnpm --filter client build` 等。

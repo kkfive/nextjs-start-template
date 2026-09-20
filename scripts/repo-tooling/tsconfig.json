@@ -6,6 +6,7 @@
     "target": "ES2022",
     "types": ["node"],
     "allowImportingTsExtensions": true,
+    "allowJs": true,
     "declaration": false,
     "declarationMap": false,
     "noEmit": true

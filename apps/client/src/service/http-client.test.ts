@@ -17,7 +17,7 @@ describe('client http service', () => {
   it('should let retryable HTTP errors retry before converting to BusinessError', async () => {
     let requestCount = 0
     server.use(
-      mswHttp.get(`${TEST_BASE_URL}/api/example/request/config`, () => {
+      mswHttp.get(`${TEST_BASE_URL}/api/example/ping`, () => {
         requestCount += 1
 
         if (requestCount === 1) {
@@ -37,7 +37,7 @@ describe('client http service', () => {
     vi.stubEnv('SKIP_ENV_VALIDATION', 'true')
 
     const { httpClient } = await import('./http-client')
-    const result = await httpClient.get('/api/example/request/config', { retry: 1 })
+    const result = await httpClient.get('/api/example/ping', { retry: 1 })
 
     expect(requestCount).toBe(2)
     expect(result).toEqual({

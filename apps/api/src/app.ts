@@ -3,9 +3,7 @@ import { logger } from 'hono/logger'
 import { createCorsMiddleware, readCorsOrigins } from './middleware/cors'
 import { errorHandler } from './middleware/error-handler'
 import { exampleRoutes } from './routes/example'
-import { requestRoutes } from './routes/example/request'
 import { healthRoutes } from './routes/health'
-import { hitokotoRoutes } from './routes/hitokoto'
 
 export type AppOptions = {
   corsOrigins?: readonly string[]
@@ -21,9 +19,7 @@ export function createApp(options: AppOptions = {}) {
     .use('*', logger())
     .onError(errorHandler)
     .route('/health', healthRoutes)
-    .route('/hitokoto', hitokotoRoutes)
     .route('/example', exampleRoutes)
-    .route('/example/request', requestRoutes)
 }
 
 const app = createApp()

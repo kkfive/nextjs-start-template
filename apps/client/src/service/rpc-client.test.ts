@@ -18,43 +18,23 @@ function mockResponse(body: unknown) {
   return { http, request }
 }
 
-it('hc GET hitokoto: ky 消费 hc fetch + raw Response + unwrapData', async () => {
+it('hc GET example ping: ky 消费 hc fetch + raw Response + unwrapData', async () => {
   const { http, request } = mockResponse({
     success: true,
-    data: { hitokoto: 'test quote' },
+    data: { message: 'example ping' },
     code: 200,
     message: 'OK',
   })
   const client = createRpcClient<AppType>(http, BASE)
-  const res = await client.hitokoto.$get()
+  const res = await client.example.ping.$get()
   expect(res.status).toBe(200)
-  expect(unwrapData(await res.json()).hitokoto).toBe('test quote')
+  expect(unwrapData(await res.json()).message).toBe('example ping')
   expect(request).toHaveBeenCalledWith(
-    '/hitokoto',
+    '/example/ping',
     expect.objectContaining({
       prefix: BASE,
       responseParser: { responseReturn: 'raw' },
     }),
-  )
-})
-
-it('hc POST scenario: json body 经 ky 透传 + 解包', async () => {
-  const { http, request } = mockResponse({
-    success: true,
-    data: { a: 1, b: 2, token: '' },
-    code: 200,
-    message: 'OK',
-  })
-  const client = createRpcClient<AppType>(http, BASE)
-  const res = await client.example.request.scenario.$post({ json: { scenario: 'success' } })
-  const envelope = await res.json()
-  if ('error' in envelope) {
-    throw new Error('mock 响应不应命中 zod 解析错误分支')
-  }
-  expect(unwrapData(envelope)).toEqual({ a: 1, b: 2, token: '' })
-  expect(request).toHaveBeenCalledWith(
-    '/example/request/scenario',
-    expect.objectContaining({ method: 'POST', prefix: BASE }),
   )
 })
 
@@ -69,7 +49,7 @@ it('hc business-error: envelope success:false 抛 BusinessError', async () => {
     timestamp: 't',
   })
   const client = createRpcClient<AppType>(http, BASE)
-  const res = await client.example.request.scenario.$post({ json: { scenario: 'business-error' } })
+  const res = await client.example.ping.$get()
   const envelope = await res.json()
   // @hono/zod-validator 0.9 的 .json() 类型混入 ZodSafeParseError 分支；
   // mock 的是 raw Response，运行时不会命中该分支，用 `error` 字段收窄掉

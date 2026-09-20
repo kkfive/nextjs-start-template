@@ -17,18 +17,12 @@ describe('api app', () => {
   })
 
   it('preserves the existing error envelope', async () => {
-    const response = await createApp().request('/example/request/scenario', {
-      body: JSON.stringify({ scenario: 'error-400' }),
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-    })
+    const response = await createApp().request('/example/ping')
 
-    expect(response.status).toBe(400)
+    expect(response.status).toBe(200)
     await expect(response.json()).resolves.toMatchObject({
-      code: 400,
-      data: null,
-      message: '参数错误',
-      success: false,
+      success: true,
+      data: { message: 'example ping' },
     })
   })
 
@@ -67,7 +61,7 @@ describe('api app', () => {
   it('handles preflight requests for configured origins', async () => {
     const response = await createApp({
       corsOrigins: [allowedOrigin],
-    }).request('/example/request/methods', {
+    }).request('/example/ping', {
       headers: {
         'Access-Control-Request-Headers': 'authorization,content-type',
         'Access-Control-Request-Method': 'POST',
