@@ -97,13 +97,15 @@ function mockResponse(body: unknown) {
 
 it('hc GET health: ky 消费 hc fetch + raw Response + unwrapData', async () => {
   const { http, request } = mockResponse({
-    status: 'ok',
-    service: 'apps/api',
+    success: true,
+    data: { status: 'ok' },
+    code: 200,
+    message: 'OK',
   })
   const client = createRpcClient<AppType>(http, BASE)
   const res = await client.health.$get()
   expect(res.status).toBe(200)
-  expect(unwrapData(await res.json()).service).toBe('apps/api')
+  expect(unwrapData(await res.json()).status).toBe('ok')
   expect(request).toHaveBeenCalledWith(
     '/health',
     expect.objectContaining({
@@ -212,10 +214,82 @@ export const handlers = [
 ]
 `
 
+/** apps/api/src/app.test.ts 重写内容：example 断言改指 /health */
+export const BLANK_API_APP_TEST = `import { describe, expect, it } from 'vitest'
+
+import { createApp } from './app'
+
+const allowedOrigin = 'https://client.example.com'
+const deniedOrigin = 'https://unknown.example.com'
+
+describe('api app', () => {
+  it('serves the health endpoint', async () => {
+    const response = await createApp().request('/health')
+
+    expect(response.status).toBe(200)
+    await expect(response.json()).resolves.toMatchObject({
+      service: 'apps/api',
+      status: 'ok',
+    })
+  })
+
+  it('allows a configured cross-origin request', async () => {
+    const response = await createApp({
+      corsOrigins: [allowedOrigin],
+    }).request('/health', {
+      headers: { origin: allowedOrigin },
+    })
+
+    expect(response.headers.get('Access-Control-Allow-Origin')).toBe(allowedOrigin)
+    expect(response.headers.get('Vary')).toContain('Origin')
+  })
+
+  it('reads configured origins from runtime bindings', async () => {
+    const app = createApp()
+    const response = await app.request('/health', {
+      headers: { Origin: allowedOrigin },
+    }, {
+      CORS_ORIGINS: allowedOrigin,
+    })
+
+    expect(response.headers.get('Access-Control-Allow-Origin')).toBe(allowedOrigin)
+  })
+
+  it('does not allow an unknown cross-origin request', async () => {
+    const response = await createApp({
+      corsOrigins: [allowedOrigin],
+    }).request('/health', {
+      headers: { origin: deniedOrigin },
+    })
+
+    expect(response.headers.get('Access-Control-Allow-Origin')).toBeNull()
+  })
+
+  it('handles preflight requests for configured origins', async () => {
+    const response = await createApp({
+      corsOrigins: [allowedOrigin],
+    }).request('/health', {
+      headers: {
+        'Access-Control-Request-Headers': 'authorization,content-type',
+        'Access-Control-Request-Method': 'POST',
+        'origin': allowedOrigin,
+      },
+      method: 'OPTIONS',
+    })
+
+    expect(response.status).toBe(204)
+    expect(response.headers.get('Access-Control-Allow-Origin')).toBe(allowedOrigin)
+    expect(response.headers.get('Access-Control-Allow-Headers')).toBe('Authorization,Content-Type')
+    expect(response.headers.get('Access-Control-Allow-Methods')).toContain('POST')
+  })
+})
+`
+
 /** example 删除后需要同步重写的引用点（home、api app.ts、service 测试、MSW handlers） */
 export const REWRITE_TARGETS = [
   { path: 'apps/client/src/features/home/components/home-page.tsx', content: BLANK_HOME, label: 'home 空白起点' },
   { path: 'apps/api/src/app.ts', content: BLANK_API_APP, label: 'api app.ts（移除 example 路由注册）' },
+  { path: 'apps/api/src/app.test.ts', content: BLANK_API_APP_TEST, label: 'api 测试改指 /health' },
   { path: 'apps/client/src/service/rpc-client.test.ts', content: BLANK_RPC_CLIENT_TEST, label: 'rpc 测试改指 /health' },
   { path: 'apps/client/src/service/http-client.test.ts', content: BLANK_HTTP_CLIENT_TEST, label: 'http 测试改指 /health' },
   { path: 'apps/client/src/__tests__/mocks/handlers.ts', content: BLANK_HANDLERS, label: 'MSW handlers 最小集' },
