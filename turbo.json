@@ -20,6 +20,7 @@
         "NEXT_PUBLIC_APP_URL",
         "NEXT_PUBLIC_DEBUG",
         "NEXT_PUBLIC_GA_ID",
+        "API_BASE_URL",
         "SKIP_ENV_VALIDATION"
       ]
     },
