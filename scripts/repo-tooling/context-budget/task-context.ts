@@ -1,9 +1,9 @@
-import type { TaskRouteClosureInput } from '../ai-friendliness-audit/types.ts'
+import type { TaskRouteClosureInput } from './task-route-closure-types.ts'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import path from 'node:path'
-import { calculateTaskRouteClosure } from '../ai-friendliness-audit/task-route-closure.ts'
 import { buildTaskContextPacket, contextBudgetDefaults } from './context-budget.ts'
+import { calculateTaskRouteClosure } from './task-route-closure.ts'
 
 export type TaskContextPacketInput = TaskRouteClosureInput & {
   maxBytes?: number

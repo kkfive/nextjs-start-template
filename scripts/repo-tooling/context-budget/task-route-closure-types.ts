@@ -1,31 +1,3 @@
-export type AuditSeverity = 'error' | 'warning'
-
-export type AuditLocation = {
-  file: string
-  line: number
-}
-
-export type AuditEvidence = {
-  kind: 'filesystem' | 'route' | 'similarity' | 'token-budget'
-  details: Record<string, number | string>
-}
-
-export type AuditFinding = AuditLocation & {
-  checkId: 'AIFA001' | 'AIFA002' | 'AIFA003' | 'AIFA004' | 'AIFA005'
-  evidence: AuditEvidence
-  message: string
-  relatedLocations?: AuditLocation[]
-  severity: AuditSeverity
-}
-
-export type AuditMetrics = {
-  governanceCorpusEstimatedTokens: number
-  /** @deprecated backward-compatible alias of governanceCorpusEstimatedTokens */
-  estimatedTokens: number
-  governanceBytes: number
-  governanceFiles: number
-}
-
 export type TaskRouteClosureInput = {
   intentNames?: readonly string[]
   skillNames?: readonly string[]
@@ -85,24 +57,4 @@ export type TaskRouteClosureReport = {
   input: TaskRouteClosureNormalizedInput
   missingReferences: readonly TaskRouteClosureMissingReference[]
   stats: TaskRouteClosureStats
-}
-
-export type AuditReport = {
-  schemaVersion: 'ai-friendliness-audit/1'
-  rootDir: string
-  verdict: 'failed' | 'passed'
-  metrics: AuditMetrics
-  findings: AuditFinding[]
-  taskRouteClosure?: TaskRouteClosureReport
-}
-
-export type AuditConfig = {
-  documentTokenBudget: number
-  duplicateMinimumCharacters: number
-}
-
-export type RunStaticAuditOptions = {
-  config?: Partial<AuditConfig>
-  rootDir: string
-  taskRouteClosureInput?: TaskRouteClosureInput
 }

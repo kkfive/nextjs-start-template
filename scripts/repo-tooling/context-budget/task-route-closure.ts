@@ -5,7 +5,7 @@ import type {
   TaskRouteClosureInput,
   TaskRouteClosureMissingReference,
   TaskRouteClosureReport,
-} from './types.ts'
+} from './task-route-closure-types.ts'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import path from 'node:path'

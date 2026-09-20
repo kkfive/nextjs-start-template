@@ -1,3 +1,0 @@
-# Details
-
-Fixture reference target.
