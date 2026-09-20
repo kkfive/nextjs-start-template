@@ -1,6 +1,7 @@
 'use client'
 
 import type { ContactFormData } from '@kkfive/contracts'
+import type { Path, UseFormRegister } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { contactFormSchema } from '@kkfive/contracts'
 import { cn } from '@kkfive/ui'
@@ -22,10 +23,10 @@ function FormField({
   rows,
 }: {
   label: string
-  name: string
+  name: Path<ContactFormData>
   type?: string
   placeholder?: string
-  register: any
+  register: UseFormRegister<ContactFormData>
   error?: { message?: string }
   description?: string
   icon: React.ReactNode
@@ -128,7 +129,7 @@ function SuccessCard({ data, onReset }: { data: ContactFormData, onReset: () => 
 
       <button
         onClick={onReset}
-        className="active:scale-95 mt-4 w-full rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-green-700"
+        className="mt-4 w-full rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-green-700 active:scale-95"
       >
         再次提交
       </button>
