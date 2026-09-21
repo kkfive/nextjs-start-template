@@ -5,10 +5,12 @@ import { LucideGithub } from '@kkfive/ui/components/icon'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { ThemeSelector } from '@/components/theme-selector'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 const navLinks = [
   { href: '/', label: '首页' },
+  { href: '/demo', label: '演示' },
   { href: '/example', label: '示例' },
 ]
 
@@ -45,7 +47,7 @@ export function SiteHeader() {
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-50 px-4 pt-3 transition-transform duration-300 ease-out sm:px-6',
-        hidden ? 'translate-y-[-150%]' : 'translate-y-0',
+        hidden ? '-translate-y-[150%]' : 'translate-y-0',
       )}
       onFocus={() => setHidden(false)}
     >
@@ -91,6 +93,7 @@ export function SiteHeader() {
           >
             <LucideGithub className="size-4" />
           </Link>
+          <ThemeSelector />
           <ThemeToggle />
         </div>
       </div>

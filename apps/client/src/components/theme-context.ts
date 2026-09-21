@@ -2,9 +2,7 @@
 
 import { createContext, useContext } from 'react'
 
-// 单主题收敛：保留联合类型与 context 结构，作为日后扩展自定义主题的写法参照。
-// 新增主题时：扩展此联合类型 + 在 styles/tailwind.css 增加 [data-theme='<id>'] 变量块。
-export type ColorTheme = 'warm'
+export type ColorTheme = 'warm' | 'ocean' | 'sunset' | 'midnight' | 'forest'
 export type Mode = 'light' | 'dark' | 'system'
 
 type ThemeProviderState = {

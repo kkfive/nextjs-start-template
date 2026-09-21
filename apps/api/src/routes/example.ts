@@ -1,10 +1,8 @@
-import { examplePingSchema } from '@kkfive/contracts'
-
+import { zValidator } from '@hono/zod-validator'
+import { contactFormSchema, examplePingSchema } from '@kkfive/contracts'
 import { Hono } from 'hono'
 
 // 链式：typeof 累积路由 Schema，hc 才能推导
-// example 是模板保留的最简示例：一条跨包 contract + 一个端点，
-// 演示「contract 校验输入/输出 → hc 类型化调用」的完整链路。接管时可整体删除。
 export const exampleRoutes = new Hono()
   .get('/ping', (c) => {
     const data = examplePingSchema.parse({
@@ -12,4 +10,23 @@ export const exampleRoutes = new Hono()
       time: new Date().toISOString(),
     })
     return c.json({ success: true, data })
+  })
+  .post('/contact', zValidator('json', contactFormSchema), (c) => {
+    const data = c.req.valid('json')
+    return c.json({
+      success: true,
+      data: { received: true, name: data.name, email: data.email },
+    })
+  })
+  .get('/schema-demo', (c) => {
+    return c.json({
+      success: true,
+      data: {
+        message: 'apps/api 演示 @kkfive/contracts 校验',
+        endpoints: [
+          'POST /example/contact — 用 contactFormSchema 校验请求体',
+          'GET /example/schema-demo — 本说明',
+        ],
+      },
+    })
   })

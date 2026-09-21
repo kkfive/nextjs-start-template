@@ -1,5 +1,6 @@
 import type { SiteFooterData, SiteFooterLink } from './site-footer-model'
 import Link from 'next/link'
+import { AtmosphereLayer } from './atmosphere/atmosphere-layer'
 import { defaultSiteFooterData } from './site-footer-model'
 
 type SiteFooterViewProps = {
@@ -28,6 +29,7 @@ export function SiteFooterView({ data, className = '' }: SiteFooterViewProps) {
   return (
     <footer className={`relative overflow-hidden rounded-4xl border border-border/70 bg-card/86 p-6 shadow-soft-sm sm:p-8 ${className}`}>
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border/80 to-transparent" />
+      <AtmosphereLayer intensity="footer" gridInset="inset-x-[12%] top-[18%] bottom-[14%]" />
       <div className="relative grid [grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr))] gap-8">
         <section className="min-w-0">
           {data.brand.href
