@@ -13,6 +13,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@esdora/kit": "catalog:",
+    "@hookform/resolvers": "catalog:",
     "@kkfive/contracts": "workspace:*",
     "@kkfive/http-client": "workspace:*",
     "@kkfive/rpc": "workspace:*",
@@ -25,10 +27,13 @@
     "client-only": "catalog:",
     "framer-motion": "catalog:",
     "next": "catalog:",
+    "pdfjs-dist": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-hook-form": "catalog:",
     "server-only": "catalog:",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "zustand": "catalog:"
   },
   "devDependencies": {
     "@iconify/json": "catalog:",

@@ -43,6 +43,7 @@
     "eslint-plugin-react-refresh": "catalog:",
     "eslint-plugin-tailwindcss": "catalog:",
     "lefthook": "catalog:",
+    "playwright": "catalog:",
     "syncpack": "catalog:",
     "tailwindcss": "catalog:",
     "taze": "catalog:",

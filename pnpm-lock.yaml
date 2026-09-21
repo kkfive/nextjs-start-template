@@ -182,6 +182,9 @@ catalogs:
     '@esdora/biz':
       specifier: ^0.2.0
       version: 0.2.0
+    '@esdora/kit':
+      specifier: ^0.6.0
+      version: 0.6.0
     '@eslint-react/eslint-plugin':
       specifier: ^5.20.1
       version: 5.20.1
@@ -191,6 +194,9 @@ catalogs:
     '@hono/zod-validator':
       specifier: ^0.9.1
       version: 0.9.1
+    '@hookform/resolvers':
+      specifier: ^5.7.1
+      version: 5.9.1
     '@iconify/json':
       specifier: ^2.2.530
       version: 2.2.530
@@ -293,6 +299,12 @@ catalogs:
     next:
       specifier: ^16.3.5
       version: 16.3.5
+    pdfjs-dist:
+      specifier: ^6.3.289
+      version: 6.3.289
+    playwright:
+      specifier: ^1.63.0
+      version: 1.63.0
     postcss:
       specifier: ^8.5.28
       version: 8.5.28
@@ -308,6 +320,9 @@ catalogs:
     react-dom:
       specifier: 19.2.7
       version: 19.2.7
+    react-hook-form:
+      specifier: ^7.85.0
+      version: 7.88.0
     react-pdf:
       specifier: ^11.0.0
       version: 11.0.0
@@ -356,6 +371,9 @@ catalogs:
     zod:
       specifier: ^4.6.5
       version: 4.6.5
+    zustand:
+      specifier: ^5.0.14
+      version: 5.0.15
 
 importers:
 
@@ -397,6 +415,9 @@ importers:
       lefthook:
         specifier: 'catalog:'
         version: 2.1.14
+      playwright:
+        specifier: 'catalog:'
+        version: 1.63.0
       syncpack:
         specifier: 'catalog:'
         version: 15.3.3
@@ -525,6 +546,12 @@ importers:
 
   apps/client:
     dependencies:
+      '@esdora/kit':
+        specifier: 'catalog:'
+        version: 0.6.0
+      '@hookform/resolvers':
+        specifier: 'catalog:'
+        version: 5.9.1(ajv@8.20.0)(react-hook-form@7.88.0(react@19.2.7))(zod@4.6.5)
       '@kkfive/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
@@ -561,18 +588,27 @@ importers:
       next:
         specifier: 'catalog:'
         version: 16.3.5(@types/node@26.6.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.104.1)
+      pdfjs-dist:
+        specifier: 'catalog:'
+        version: 6.3.289
       react:
         specifier: 'catalog:'
         version: 19.2.7
       react-dom:
         specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
+      react-hook-form:
+        specifier: 'catalog:'
+        version: 7.88.0(react@19.2.7)
       server-only:
         specifier: 'catalog:'
         version: 0.0.1
       zod:
         specifier: 'catalog:'
         version: 4.6.5
+      zustand:
+        specifier: 'catalog:'
+        version: 5.0.15(@types/react@19.3.0)(react@19.2.7)
     devDependencies:
       '@iconify/json':
         specifier: 'catalog:'
@@ -1279,6 +1315,9 @@ packages:
   '@esdora/biz@0.2.0':
     resolution: {integrity: sha512-SnaStEXewMOs7/nul4t4qLpnQQuJDT1hdbIKnwMsSSTutSYv0uy+sPrAc9NM+l+VbALPUjk8ei4oEUh0zQKj9g==}
 
+  '@esdora/kit@0.6.0':
+    resolution: {integrity: sha512-GVPi+gS0vr2CsPX0wm67ekxWcbF66hqbqQhL1zNOGXNa4J2lEn88TkpMqZowWCse5c9DOriHULpaUP3DZkraqg==}
+
   '@eslint-community/eslint-plugin-eslint-comments@4.7.2':
     resolution: {integrity: sha512-LF03qURSwEWm2dz5wtdDCzNk+7Opl0X7q6I3undsaIuNsEiNvRV3BCtqu14Q/6Pzg1tBj44LcxpW2EpSLZStZw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -1433,6 +1472,84 @@ packages:
     peerDependencies:
       hono: '>=4.11.2'
       zod: ^3.25.0 || ^4.0.0
+
+  '@hookform/resolvers@5.9.1':
+    resolution: {integrity: sha512-7b7vsbraJxKgjVSA1Nur9tLwj539WGJUBLA7QNvXnFoT2pM5Z7G+6rlukk4B2/QrTZy6huRtH6wKeESPKuIr6w==}
+    peerDependencies:
+      '@sinclair/typebox': '>=0.25.24'
+      '@standard-schema/spec': ^1.0.0
+      '@typeschema/main': '>=0.13.7'
+      '@vinejs/vine': ^2.0.0 || ^3.0.0 || ^4.0.0
+      ajv: ^8.12.0
+      ajv-errors: ^3.0.0
+      ajv-formats: ^2.1.1
+      arktype: ^2.0.0
+      ata-validator: ^1.2.0
+      class-transformer: '>=0.4.0'
+      class-validator: '>=0.12.0'
+      computed-types: ^1.0.0
+      effect: ^3.10.3
+      fluentvalidation-ts: ^3.0.0
+      fp-ts: ^2.7.0
+      io-ts: ^2.0.0
+      joi: ^17.0.0 || ^18.0.0
+      nope-validator: '>=0.12.0'
+      react-hook-form: ^7.55.0
+      superstruct: '>=0.12.0'
+      typanion: ^3.3.2
+      valibot: '>=0.31.0 || ^1.0.0-beta.4 || ^1.0.0-rc'
+      vest: '>=6.0.0'
+      yup: ^1.0.0
+      zod: ^3.25.0 || ^4.0.0
+    peerDependenciesMeta:
+      '@sinclair/typebox':
+        optional: true
+      '@standard-schema/spec':
+        optional: true
+      '@typeschema/main':
+        optional: true
+      '@vinejs/vine':
+        optional: true
+      ajv:
+        optional: true
+      ajv-errors:
+        optional: true
+      ajv-formats:
+        optional: true
+      arktype:
+        optional: true
+      ata-validator:
+        optional: true
+      class-transformer:
+        optional: true
+      class-validator:
+        optional: true
+      computed-types:
+        optional: true
+      effect:
+        optional: true
+      fluentvalidation-ts:
+        optional: true
+      fp-ts:
+        optional: true
+      io-ts:
+        optional: true
+      joi:
+        optional: true
+      nope-validator:
+        optional: true
+      superstruct:
+        optional: true
+      typanion:
+        optional: true
+      valibot:
+        optional: true
+      vest:
+        optional: true
+      yup:
+        optional: true
+      zod:
+        optional: true
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -2565,6 +2682,9 @@ packages:
 
   '@speed-highlight/core@1.2.23':
     resolution: {integrity: sha512-iRoq6i6JDJP6Mt2A5JaPvzw0pgYHH6k92ij+yXiTrB7T2y9N789aWE3EHWj/5ztlJBokcCBja3iYLVdu5wgnkg==}
+
+  '@standard-schema/utils@0.3.0':
+    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
   '@stylistic/eslint-plugin@5.10.0':
     resolution: {integrity: sha512-nPK52ZHvot8Ju/0A4ucSX1dcPV2/1clx0kLcH5wDmrE4naKso7TUC/voUyU1O9OTKTrR6MYip6LP0ogEMQ9jPQ==}
@@ -4856,6 +4976,16 @@ packages:
   pkg-types@2.3.1:
     resolution: {integrity: sha512-y+ichcgc2LrADuhLNAx8DFjVfgz91pRxfZdI3UDhxHvcVEZsenLO+7XaU5vOp0u/7V/wZ+plyuQxtrDlZJ+yeg==}
 
+  playwright-core@1.63.0:
+    resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.63.0:
+    resolution: {integrity: sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
@@ -4958,6 +5088,12 @@ packages:
     resolution: {integrity: sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ==}
     peerDependencies:
       react: ^19.2.7
+
+  react-hook-form@7.88.0:
+    resolution: {integrity: sha512-QRaLOWhX93YCnMiRfnOFRSwWXZNt8qhm2JTZwypoDvKpSffTJHmpzMXt8U6PV5UThvL3IiiLDUWe2nHMtz6Mmw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
 
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
@@ -5814,6 +5950,24 @@ packages:
   zod@4.6.5:
     resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
 
+  zustand@5.0.15:
+    resolution: {integrity: sha512-MpSEjRiBkA9crSYeOUH32rJC7SVqAbm0Fqcqge/bUi2PPoLcBWKOsG+C8mevmpr8TwXHBVkChbbJiyvkE+i/3A==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
@@ -6279,6 +6433,8 @@ snapshots:
       qs: 6.15.3
       tailwind-merge: 3.6.0
 
+  '@esdora/kit@0.6.0': {}
+
   '@eslint-community/eslint-plugin-eslint-comments@4.7.2(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))':
     dependencies:
       escape-string-regexp: 4.0.0
@@ -6470,6 +6626,14 @@ snapshots:
   '@hono/zod-validator@0.9.1(hono@4.13.8)(zod@4.6.5)':
     dependencies:
       hono: 4.13.8
+      zod: 4.6.5
+
+  '@hookform/resolvers@5.9.1(ajv@8.20.0)(react-hook-form@7.88.0(react@19.2.7))(zod@4.6.5)':
+    dependencies:
+      '@standard-schema/utils': 0.3.0
+      react-hook-form: 7.88.0(react@19.2.7)
+    optionalDependencies:
+      ajv: 8.20.0
       zod: 4.6.5
 
   '@humanfs/core@0.19.2':
@@ -7340,6 +7504,8 @@ snapshots:
       solid-js: 1.9.15
 
   '@speed-highlight/core@1.2.23': {}
+
+  '@standard-schema/utils@0.3.0': {}
 
   '@stylistic/eslint-plugin@5.10.0(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))':
     dependencies:
@@ -9755,6 +9921,12 @@ snapshots:
       exsolve: 1.1.0
       pathe: 2.0.3
 
+  playwright-core@1.63.0: {}
+
+  playwright@1.63.0:
+    dependencies:
+      playwright-core: 1.63.0
+
   pluralize@8.0.0: {}
 
   pnpm-workspace-yaml@1.9.1:
@@ -9844,6 +10016,10 @@ snapshots:
     dependencies:
       react: 19.2.7
       scheduler: 0.27.0
+
+  react-hook-form@7.88.0(react@19.2.7):
+    dependencies:
+      react: 19.2.7
 
   react-is@17.0.2: {}
 
@@ -10690,5 +10866,10 @@ snapshots:
   zod@4.4.3: {}
 
   zod@4.6.5: {}
+
+  zustand@5.0.15(@types/react@19.3.0)(react@19.2.7):
+    optionalDependencies:
+      '@types/react': 19.3.0
+      react: 19.2.7
 
   zwitch@2.0.4: {}
