@@ -20,12 +20,33 @@ export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)
  * 新增示例内容时同步维护本清单；reset-template.test.ts 守护清单不腐烂。
  */
 export const TEMPLATE_EXAMPLES = [
-  // client feature 四件套
+  // ===== client example 四件套（feature-first 最简示例） =====
   'apps/client/src/features/example',
-  // 路由组合入口
   'apps/client/src/app/example',
-  // api 示例端点
   'apps/api/src/routes/example.ts',
+
+  // ===== demo 演示内容（client 页面与代理路由） =====
+  'apps/client/src/features/demo',
+  'apps/client/src/app/demo',
+  'apps/client/src/app/api/example',
+  'apps/client/src/app/api/hitokoto',
+
+  // ===== demo 演示内容（api 路由） =====
+  'apps/api/src/routes/example/request.ts',
+  'apps/api/src/routes/example/sse.ts',
+  'apps/api/src/routes/hitokoto.ts',
+
+  // ===== demo 演示内容（admin SSR hitokoto） =====
+  'apps/admin/src/features/hitokoto',
+
+  // ===== demo 演示皮肤（atmosphere / 多主题 / tech-stack） =====
+  'apps/client/src/components/atmosphere',
+  'apps/client/src/components/theme-selector.tsx',
+  'apps/client/src/components/ui/link',
+  'apps/client/src/components/ui/navigation-link',
+  'apps/client/src/lib/tech-stack.ts',
+  'apps/client/src/features/home/components/home-page-client.tsx',
+  'apps/client/src/features/home/components/hero-section.tsx',
 ]
 
 /** home 重写为空白起点的最小内容 */
@@ -286,9 +307,244 @@ describe('api app', () => {
 })
 `
 
+/** admin 最小欢迎页：hitokoto SSR 示例删除后的空白起点 */
+export const BLANK_ADMIN_PAGE = `// admin 最小欢迎页：演示 SSR + service 实例的接入点
+// 接管本项目：本页业务能力应放入 src/features/<feature>/（feature-first）
+export default function HomePage() {
+  return (
+    <main style={{ fontFamily: 'system-ui, sans-serif', padding: '2rem', maxWidth: 720 }}>
+      <h1>Admin（管理后台示例）</h1>
+      <p>
+        这是 monorepo 中的
+        <code>apps/admin</code>
+        ，演示 Next.js SSR 消费
+        <code>@kkfive/rpc</code>
+        。
+      </p>
+
+      <h2>项目结构</h2>
+      <ul>
+        <li>
+          <code>src/app/</code>
+          {' '}
+          — Next.js App Router
+        </li>
+        <li>
+          <code>src/features/</code>
+          {' '}
+          — 业务调用与页面能力
+        </li>
+        <li>
+          <code>src/service/</code>
+          {' '}
+          — HttpService 实例注入
+        </li>
+      </ul>
+    </main>
+  )
+}
+`
+
+/** site-header 空白起点：移除 ThemeSelector 与 demo/example 导航 */
+export const BLANK_SITE_HEADER = `'use client'
+
+import { cn } from '@kkfive/ui'
+import { LucideGithub } from '@kkfive/ui/components/icon'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { ThemeToggle } from '@/components/theme-toggle'
+
+const navLinks = [
+  { href: '/', label: '首页' },
+]
+
+export function SiteHeader() {
+  const pathname = usePathname()
+  const [hidden, setHidden] = useState(false)
+
+  // 路由变化时重新显示
+  useEffect(() => {
+    setHidden(false)
+  }, [pathname])
+
+  // 向下滚动隐藏，向上滚动 / 回到顶部显示
+  useEffect(() => {
+    let lastY = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      if (y < 16) {
+        setHidden(false)
+      }
+      else if (y > lastY + 4) {
+        setHidden(true)
+      }
+      else if (y < lastY - 4) {
+        setHidden(false)
+      }
+      lastY = y
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  return (
+    <header
+      className={cn(
+        'fixed inset-x-0 top-0 z-50 px-4 pt-3 transition-transform duration-300 ease-out sm:px-6',
+        hidden ? 'translate-y-[-150%]' : 'translate-y-0',
+      )}
+      onFocus={() => setHidden(false)}
+    >
+      <div className="glass mx-auto flex h-12 max-w-5xl items-center justify-between gap-3 rounded-full border border-border/60 px-3 shadow-glass sm:px-4">
+        {/* Logo */}
+        <Link
+          href="/"
+          className="meta-mono inline-flex min-h-11 items-center rounded-full px-2 text-foreground transition-opacity hover:opacity-70"
+        >
+          KKFIVE/NST
+        </Link>
+
+        {/* 导航 */}
+        <nav className="hidden items-center gap-1 sm:flex" aria-label="主导航">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                data-active={isActive}
+                className={cn(
+                  'inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-sm transition-colors',
+                  isActive
+                    ? 'bg-muted font-medium text-foreground'
+                    : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground',
+                )}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* 右侧操作 */}
+        <div className="flex items-center gap-1">
+          <Link
+            href="https://github.com/kkfive/nextjs-start-template"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:inline-flex"
+            aria-label="GitHub 仓库"
+          >
+            <LucideGithub className="size-4" />
+          </Link>
+          <ThemeToggle />
+        </div>
+      </div>
+    </header>
+  )
+}
+`
+
+/** site-footer 空白起点：移除 AtmosphereLayer 演示皮肤 */
+export const BLANK_SITE_FOOTER = `import type { SiteFooterData, SiteFooterLink } from './site-footer-model'
+import Link from 'next/link'
+import { defaultSiteFooterData } from './site-footer-model'
+
+type SiteFooterViewProps = {
+  data: SiteFooterData
+  className?: string
+}
+
+function FooterLink({ link }: { link: SiteFooterLink }) {
+  return (
+    <Link
+      href={link.href}
+      target={link.external ? '_blank' : undefined}
+      rel={link.external ? 'noopener noreferrer' : undefined}
+      className="group flex min-h-11 flex-col items-start justify-center rounded-lg py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+    >
+      <span className="link-underline">
+        {link.label}
+        {link.external ? ' ↗' : ''}
+      </span>
+      {link.description && <span className="mt-0.5 block text-xs text-muted-foreground/70">{link.description}</span>}
+    </Link>
+  )
+}
+
+export function SiteFooterView({ data, className = '' }: SiteFooterViewProps) {
+  return (
+    <footer className={\`relative overflow-hidden rounded-4xl border border-border/70 bg-card/86 p-6 shadow-soft-sm sm:p-8 \${className}\`}>
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border/80 to-transparent" />
+      <div className="relative grid [grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr))] gap-8">
+        <section className="min-w-0">
+          {data.brand.href
+            ? <Link href={data.brand.href} className="inline-flex min-h-11 items-center text-base font-semibold tracking-tight">{data.brand.name}</Link>
+            : <h2 className="text-base font-semibold tracking-tight">{data.brand.name}</h2>}
+          {data.brand.description && <p className="mt-3 max-w-xs text-sm leading-6 text-muted-foreground">{data.brand.description}</p>}
+        </section>
+
+        {data.groups?.map(group => (
+          <nav key={group.id} aria-label={group.title}>
+            <h2 className="meta-mono mb-3 text-muted-foreground">{group.title}</h2>
+            <div className="space-y-1">{group.links.map(link => <FooterLink key={\`\${group.id}-\${link.href}-\${link.label}\`} link={link} />)}</div>
+          </nav>
+        ))}
+
+        {data.friends && (
+          <nav aria-label="友情链接">
+            <h2 className="meta-mono mb-3 text-muted-foreground">友情链接</h2>
+            <div className="space-y-1">{data.friends.map(link => <FooterLink key={\`\${link.href}-\${link.label}\`} link={link} />)}</div>
+          </nav>
+        )}
+
+        {data.contacts && (
+          <section aria-labelledby="footer-contact-title">
+            <h2 id="footer-contact-title" className="meta-mono mb-3 text-muted-foreground">联系</h2>
+            <address className="space-y-2 text-sm text-muted-foreground not-italic">
+              {data.contacts.map(contact => (
+                <p key={\`\${contact.label}-\${contact.value}\`}>
+                  <span className="block text-xs text-muted-foreground/70">{contact.label}</span>
+                  {contact.href ? <Link className="inline-flex min-h-11 items-center hover:text-foreground" href={contact.href}>{contact.value}</Link> : contact.value}
+                </p>
+              ))}
+            </address>
+          </section>
+        )}
+      </div>
+
+      <div className="relative mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border/50 pt-5 text-[11px] text-muted-foreground">
+        <span>{data.copyright}</span>
+        {data.compliance?.map(link => <FooterLink key={\`\${link.href}-\${link.label}\`} link={link} />)}
+        <span className="ml-auto font-mono">{[data.version, data.build].filter(Boolean).join(' · ')}</span>
+      </div>
+    </footer>
+  )
+}
+
+export function SiteFooter() {
+  return (
+    <div className="px-4 pt-10 pb-6 sm:px-6">
+      <div className="mx-auto max-w-300">
+        <SiteFooterView data={defaultSiteFooterData} />
+      </div>
+    </div>
+  )
+}
+`
+
+/** home index 导出形状：对齐 BLANK_HOME 的具名导出 */
+export const BLANK_HOME_INDEX = `export { HomePage } from './components/home-page'
+`
+
 /** example 删除后需要同步重写的引用点（home、api app.ts、service 测试、MSW handlers） */
 export const REWRITE_TARGETS = [
   { path: 'apps/client/src/features/home/components/home-page.tsx', content: BLANK_HOME, label: 'home 空白起点' },
+  { path: 'apps/client/src/features/home/index.ts', content: BLANK_HOME_INDEX, label: 'home 导出形状对齐空白起点' },
+  { path: 'apps/admin/src/app/page.tsx', content: BLANK_ADMIN_PAGE, label: 'admin 空白起点（移除 hitokoto SSR）' },
+  { path: 'apps/client/src/components/site-header.tsx', content: BLANK_SITE_HEADER, label: 'header 空白起点（移除 ThemeSelector/demo 导航）' },
+  { path: 'apps/client/src/components/site-footer.tsx', content: BLANK_SITE_FOOTER, label: 'footer 空白起点（移除 AtmosphereLayer）' },
   { path: 'apps/api/src/app.ts', content: BLANK_API_APP, label: 'api app.ts（移除 example 路由注册）' },
   { path: 'apps/api/src/app.test.ts', content: BLANK_API_APP_TEST, label: 'api 测试改指 /health' },
   { path: 'apps/client/src/service/rpc-client.test.ts', content: BLANK_RPC_CLIENT_TEST, label: 'rpc 测试改指 /health' },
