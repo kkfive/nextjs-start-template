@@ -114,3 +114,9 @@ jobs:
           fi
         env:
           SKIP_ENV_VALIDATION: true
+          # 构建期即求值 getBaseUrl()（http-server.ts），生产构建必须提供 NEXT_PUBLIC_APP_URL；
+          # 与 docker-images.yml 一致，允许用仓库变量覆盖兜底值
+          NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL || 'http://docker-build.invalid' }}
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL || 'http://docker-build.invalid' }}
+          # rpc-server.ts 构建期即求值 getRpcBaseUrl()，同样必需（Dockerfile 中亦为必填 ARG）
+          API_BASE_URL: ${{ vars.API_BASE_URL || 'http://docker-build.invalid' }}
