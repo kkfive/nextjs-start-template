@@ -2,7 +2,7 @@
 /**
  * pnpm reset —— 模板剥离脚本。
  *
- * 删除最简示例（example 四件套），重写引用点为空白起点，
+ * 删除 demo 演示内容与 example 四件套，重写引用点为空白起点，
  * 然后运行 pnpm verify 自校验。幂等：清单内已不存在的路径直接跳过。
  *
  * 用法：pnpm reset [--skip-verify]

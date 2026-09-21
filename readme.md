@@ -32,13 +32,13 @@ pnpm dev
 
 ## 接管本项目
 
-模板内容分三层：**骨架**（packages、service 运行时、架构 guards，永不删除）、**example**（最简教学示例，教你写法）、**demo**（历史演示内容，在 `playground` 分支）。
+模板内容分三层：**骨架**（packages、service 运行时、架构 guards，永不删除）、**example**（最简教学示例，教你写法）、**demo**（完整演示内容，与骨架同分支共存，仅主分支维护）。
 
 | 目标                                 | 做法                                                                                                       |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| 想要空白起点，从零开发               | `pnpm reset`：删除全部示例、重写 home 为空白页，并自动 `pnpm verify` 自校验                                |
+| 想要空白起点，从零开发               | `pnpm reset`：删除全部演示与示例、重写接线点为空白起点，并自动 `pnpm verify` 自校验                        |
 | 想写第一个 feature                   | 参照 `apps/client/src/features/example` 的写法（feature 结构、contracts、API、测试四件套各一份），写完可删 |
-| 想看完整演示（表单/请求/RPC/状态等） | `git checkout playground`                                                                                  |
+| 想看完整演示（表单/请求/RPC/状态等） | `pnpm dev` 后访问 `/demo`（接管前始终可用，无需切换分支）                                                  |
 
 `pnpm reset` 的删除清单收敛在 `scripts/reset-template.mjs`，幂等可重复执行。
 
